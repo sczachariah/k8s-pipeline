@@ -21,22 +21,26 @@ pipeline {
 
                     sh label: 'init helm', script: '''
                     helm init
-
-                    retVal=`echo \\`helm ls wls-operator\\``
-
-                    if [[ !  -z  "$retVal" ]]; then
-                     helm delete --purge wls-operator
-                     sleep 120
-                    fi
                     '''
 
                     sh label: 'deploy operator', script: '''
-                    helm install kubernetes/charts/weblogic-operator \
-                        --name wls-operator \
-                        --namespace weblogic-operator-ns \
-                        --set serviceAccount=weblogic-operator-ns \
-                        --set "domainNamespaces={}" \
-                        --wait
+                    retVal=`echo \\`helm ls wls-operator\\``
+
+                    if [[ !  -z  "$retVal" ]]; then
+                        helm upgrade \
+                            --reuse-values \
+                            --set "domainNamespaces={}" \
+                            --wait \
+                            wls-operator \
+                            kubernetes/charts/weblogic-operator
+                    else
+                        helm install kubernetes/charts/weblogic-operator \
+                            --name wls-operator \
+                            --namespace weblogic-operator-ns \
+                            --set serviceAccount=weblogic-operator-ns \
+                            --set "domainNamespaces={}" \
+                            --wait
+                    fi
                     '''
 
                     sh label: 'verify operator', script: '''
