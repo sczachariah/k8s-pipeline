@@ -155,6 +155,8 @@ EOF
             container(name: 'jnlp') {
                 echo '****Cleanup****'
                 sh label: 'clean wls domain', script: '''
+                kubectl delete pods --all -n $WLS_DOMAIN_NAME
+                kubectl delete jobs --all -n $WLS_DOMAIN_NAME
                 kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME'
                 '''
 
