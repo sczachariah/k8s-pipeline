@@ -29,7 +29,7 @@ pipeline {
                     if [[ !  -z  "$retVal" ]]; then
                         helm upgrade \
                             --reuse-values \
-                            --set "domainNamespaces={}" \
+                            --set "domainNamespaces={$WLS_DOMAIN_NAME}" \
                             --wait \
                             wls-operator \
                             kubernetes/charts/weblogic-operator
