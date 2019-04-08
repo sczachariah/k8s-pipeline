@@ -98,11 +98,23 @@ pipeline {
                         docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
                         docker push cisystem.docker.oraclecorp.com/domain-home-in-image:$WLS_DOMAIN_NAME
                         
-                        sed -i '/image: \"domain-home-in-image:12.2.1.3\"/c\\image: \"cisystem.docker.oraclecorp.com/domain-home-in-image:$WLS_DOMAIN_NAME\"' ${WORKSPACE}/domain.yaml
+                        sed -i '/image: \"domain-home-in-image:12.2.1.3\"/c\\  image: \"cisystem.docker.oraclecorp.com/domain-home-in-image:$WLS_DOMAIN_NAME\"' ${WORKSPACE}/domain.yaml
                         cat ${WORKSPACE}/domain.yaml
                         kubectl apply -f ${WORKSPACE}/domain.yaml
                         '''
                     }
+                }
+            }
+        }
+
+        stage('deploy tools') {
+            steps {
+                container(name: 'jnlp') {
+                    git branch: 'master',
+                            credentialsId: 'sandeep.zachariah.ssh',
+                            url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
+
+                    sh 'kubectl apply -f kubernetes/tools/selenium/'
                 }
             }
         }
@@ -116,14 +128,6 @@ pipeline {
 
                     sh 'ls -ltr'
 //                    sh 'mvn clean install'
-                }
-            }
-        }
-
-        stage('deploy tools container') {
-            steps {
-                container(name: 'jnlp') {
-                    sh 'kubectl apply -f '
                 }
             }
         }
