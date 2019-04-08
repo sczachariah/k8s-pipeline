@@ -45,7 +45,6 @@ pipeline {
 
                     sh label: 'verify operator', script: '''
                     kubectl get pods -n weblogic-operator-ns
-                    kubectl logs -n weblogic-operator-ns -c weblogic-operator deployments/weblogic-operator
                     '''
                 }
             }
