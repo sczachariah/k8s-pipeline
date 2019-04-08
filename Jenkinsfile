@@ -97,7 +97,7 @@ pipeline {
                         docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
                         docker push cisystem.docker.oraclecorp.com/domain-home-in-image:$WLS_DOMAIN_NAME
                         
-                        sed -i "s#image: \"domain-home-in-image:12.2.1.3\"#  image: cisystem.docker.oraclecorp.com/domain-home-in-image:${WLS_DOMAIN_NAME}#g" ${WORKSPACE}/domain.yaml
+                        sed -i "s#domain-home-in-image:12.2.1.3#cisystem.docker.oraclecorp.com/domain-home-in-image:${WLS_DOMAIN_NAME}#g" ${WORKSPACE}/domain.yaml
                         cat ${WORKSPACE}/domain.yaml
                         kubectl apply -n $WLS_DOMAIN_NAME -f ${WORKSPACE}/domain.yaml
                         '''
