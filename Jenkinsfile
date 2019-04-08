@@ -120,15 +120,15 @@ pipeline {
 
                     sh label: 'generate test props', script: '''
                     cat <<EOF > ${WORKSPACE}/test.props
-                        SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
-                        SELENIUM_HUB_PORT=4444
-                        WLS_ADMIN_HOST=
-                        WLS_ADMIN_PORT=7001
-                        WLS_CLUSTER_HOST=$WLS_DOMAIN_NAME-cluster-cluster1.fmwk8s
-                        WLS_CLUSTER_PORT=8001
-                        WLS_ADMIN_USERNAME=weblogic
-                        WLS_ADMIN_PASSWORD=welcome1
-                    EOF
+SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
+SELENIUM_HUB_PORT=4444
+WLS_ADMIN_HOST=
+WLS_ADMIN_PORT=7001
+WLS_CLUSTER_HOST=$WLS_DOMAIN_NAME-cluster-cluster1.fmwk8s
+WLS_CLUSTER_PORT=8001
+WLS_ADMIN_USERNAME=weblogic
+WLS_ADMIN_PASSWORD=welcome1
+EOF
                     
                     cat ${WORKSPACE}/test.props
                     '''
