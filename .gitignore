@@ -1,0 +1,22 @@
+# Maven
+target/
+*.ser
+*.ec
+test-ouput/
+
+# IntelliJ Idea
+.idea/
+out/
+*.ipr
+*.iws
+*.iml
+
+# Eclipse
+.classpath
+.project
+.settings/
+.metadata/
+
+# Go
+vendor/
+dist/
