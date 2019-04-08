@@ -75,7 +75,7 @@ pipeline {
 
                         sh label: 'set domain secret', script: '''
                          retVal=`echo \\`kubectl get secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME\\``
-                         if [[ $retVal == *"not found"* ]]; then
+                         if [[ "$retVal" == *"not found"* ]]; then
                             kubernetes/samples/scripts/create-weblogic-domain-credentials/create-weblogic-credentials.sh -u weblogic -p welcome1 -n $WLS_DOMAIN_NAME -d $WLS_DOMAIN_NAME
                          fi
                         '''
