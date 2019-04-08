@@ -58,8 +58,8 @@ pipeline {
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
-                        export https_proxy=$http_proxy
-                        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                        export https_proxy=
+                        docker login http://docker.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
                         '''
 
                         sh label: 'upgrade helm', script: '''
