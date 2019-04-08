@@ -115,6 +115,19 @@ pipeline {
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                     sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
+
+                    sh label: 'generate test props', script: '''
+                    cat <<EOF > ${WORKSPACE}/test.props
+                        SELENIUM_HUB_HOST=selenium-standalone-firefox
+                        SELENIUM_HUB_PORT=4444
+                        WLS_ADMIN_HOST=
+                        WLS_ADMIN_PORT=
+                        WLS_ADMIN_USERNAME=weblogic
+                        WLS_ADMIN_PASSWORD=welcome1
+                    EOF
+                    
+                    cat ${WORKSPACE}/test.props
+                    '''
                 }
             }
         }
