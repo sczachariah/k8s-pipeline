@@ -153,7 +153,6 @@ EOF
     post {
         always {
             container(name: 'jnlp') {
-                echo '****Cleanup****'
                 sh label: 'clean wls domain', script: '''
                 kubectl delete pods --all -n $WLS_DOMAIN_NAME
                 kubectl delete jobs --all -n $WLS_DOMAIN_NAME
