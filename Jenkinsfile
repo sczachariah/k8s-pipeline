@@ -100,6 +100,9 @@ pipeline {
                         sed -i "s#domain-home-in-image:12.2.1.3#cisystem.docker.oraclecorp.com/domain-home-in-image:${WLS_DOMAIN_NAME}#g" ${WORKSPACE}/domain.yaml
                         cat ${WORKSPACE}/domain.yaml
                         kubectl apply -n $WLS_DOMAIN_NAME -f ${WORKSPACE}/domain.yaml
+                        
+                        kubectl get pods -n $WLS_DOMAIN_NAME
+                        kubectl get services -n $WLS_DOMAIN_NAME
                         '''
                     }
                 }
