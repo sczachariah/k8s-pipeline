@@ -58,7 +58,6 @@ pipeline {
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
-                        docker login http://docker.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
                         '''
 
                         sh label: 'upgrade helm', script: '''
@@ -85,6 +84,7 @@ pipeline {
                     '''
 
                         sh label: 'create domain', script: '''
+                        docker login http://docker.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
                         cd kubernetes/samples/scripts/create-weblogic-domain/domain-home-in-image
                     ./create-domain.sh -u weblogic -p welcome1 -i create-domain-inputs.yaml -o ${WORKSPACE}/weblogic-operator-output-directory
 
@@ -111,6 +111,18 @@ pipeline {
         stage('run selenium shell') {
             steps {
                 container(name: 'jnlp') {
+                    sh 'ls -ltr'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            steps {
+                container(name: 'jnlp') {
+                    echo '****Cleanup****'
+                    sh 'kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME'
                     sh 'ls -ltr'
                 }
             }
