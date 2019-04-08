@@ -57,7 +57,7 @@ pipeline {
                                 url: 'https://github.com/oracle/weblogic-kubernetes-operator'
 
                         sh 'export KUBECONFIG=${KUBECONFIG}'
-                        sh 'docker login -u $DOCKER_USERNAME -p DOCKER_PASSWORD'
+                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
 
                         sh label: 'upgrade helm', script: '''
                     helm upgrade \
