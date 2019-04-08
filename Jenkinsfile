@@ -58,7 +58,7 @@ pipeline {
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
-                        export https_proxy=
+                        export http_proxy=http://www-proxy.us.oracle.com:80
                         docker login http://docker.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
                         '''
 
