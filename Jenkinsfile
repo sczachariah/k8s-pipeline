@@ -58,7 +58,6 @@ pipeline {
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
-                        export http_proxy=http://www-proxy.us.oracle.com:80
                         docker login http://docker.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
                         '''
 
@@ -78,6 +77,7 @@ pipeline {
                         sh label: 'prepare domain files', script: '''
                     cd kubernetes/samples/scripts/create-weblogic-domain/domain-home-in-image                  
                     cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
+                    cat create-domain-inputs.yaml
 
                     sed -i '/domainUID: domain1/c\\domainUID: $WLS_DOMAIN_NAME' create-domain-inputs.yaml                  
                     sed -i '/namespace: default/c\\namespace: $WLS_DOMAIN_NAME' create-domain-inputs.yaml
@@ -85,6 +85,7 @@ pipeline {
                     '''
 
                         sh label: 'create domain', script: '''
+                        cd kubernetes/samples/scripts/create-weblogic-domain/domain-home-in-image
                     ./create-domain.sh -u weblogic -p welcome1 -i create-domain-inputs.yaml -o ${WORKSPACE}/weblogic-operator-output-directory
 
                     cp ${WORKSPACE}/weblogic-operator-output-directory/weblogic-domains/wls-domain1/domain.yaml ${WORKSPACE}
@@ -103,7 +104,7 @@ pipeline {
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                     sh 'ls -ltr'
-                    sh 'mvn clean install'
+//                    sh 'mvn clean install'
                 }
             }
         }
