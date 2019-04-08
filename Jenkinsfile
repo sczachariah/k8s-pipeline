@@ -84,7 +84,7 @@ pipeline {
                     '''
 
                         sh label: 'create domain', script: '''
-                        docker login http://docker.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
                         cd kubernetes/samples/scripts/create-weblogic-domain/domain-home-in-image
                     ./create-domain.sh -u weblogic -p welcome1 -i create-domain-inputs.yaml -o ${WORKSPACE}/weblogic-operator-output-directory
 
@@ -119,12 +119,10 @@ pipeline {
 
     post {
         always {
-            steps {
-                container(name: 'jnlp') {
-                    echo '****Cleanup****'
-                    sh 'kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME'
-                    sh 'ls -ltr'
-                }
+            container(name: 'jnlp') {
+                echo '****Cleanup****'
+                sh 'kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME'
+                sh 'ls -ltr'
             }
         }
     }
