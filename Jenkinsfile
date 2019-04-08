@@ -11,42 +11,41 @@ pipeline {
         WLS_DOMAIN_NAME = 'wls-domain1'
     }
     stages {
-//        stage('deploy weblogic operator') {
-//            steps {
-//                container('jnlp') {
-//                    git branch: 'master',
-//                            url: 'https://github.com/oracle/weblogic-kubernetes-operator'
-//
-//                    sh 'export KUBECONFIG=${KUBECONFIG}'
-//
-//                    sh label: 'init helm', script: '''
-//                    helm init
-//
-//                    retVal=`echo \\`helm ls wls-operator\\``
-//
-//                    if [[ !  -z  "$retVal" ]]; then
-//                     helm delete --purge wls-operator
-//                     sleep 120
-//                    fi
-//                    '''
-//
-//                    sh label: 'deploy operator', script: '''
-//                    helm install kubernetes/charts/weblogic-operator \
-//                        --name wls-operator \
-//                        --namespace weblogic-operator-ns \
-//                        --set image=oracle/weblogic-kubernetes-operator:2.0.1 \
-//                        --set serviceAccount=weblogic-operator-ns \
-//                        --set "domainNamespaces={}" \
-//                        --wait
-//                    '''
-//
-//                    sh label: 'verify operator', script: '''
-//                    kubectl get pods -n weblogic-operator-ns
-//                    kubectl logs -n weblogic-operator-ns -c weblogic-operator deployments/weblogic-operator
-//                    '''
-//                }
-//            }
-//        }
+        stage('deploy weblogic operator') {
+            steps {
+                container('jnlp') {
+                    git branch: 'master',
+                            url: 'https://github.com/oracle/weblogic-kubernetes-operator'
+
+                    sh 'export KUBECONFIG=${KUBECONFIG}'
+
+                    sh label: 'init helm', script: '''
+                    helm init
+
+                    retVal=`echo \\`helm ls wls-operator\\``
+
+                    if [[ !  -z  "$retVal" ]]; then
+                     helm delete --purge wls-operator
+                     sleep 120
+                    fi
+                    '''
+
+                    sh label: 'deploy operator', script: '''
+                    helm install kubernetes/charts/weblogic-operator \
+                        --name wls-operator \
+                        --namespace weblogic-operator-ns \
+                        --set serviceAccount=weblogic-operator-ns \
+                        --set "domainNamespaces={}" \
+                        --wait
+                    '''
+
+                    sh label: 'verify operator', script: '''
+                    kubectl get pods -n weblogic-operator-ns
+                    kubectl logs -n weblogic-operator-ns -c weblogic-operator deployments/weblogic-operator
+                    '''
+                }
+            }
+        }
 
         stage('deploy weblogic domain') {
             steps {
@@ -122,7 +121,7 @@ pipeline {
                         SELENIUM_HUB_PORT=4444
                         WLS_ADMIN_HOST=
                         WLS_ADMIN_PORT=7001
-                        WLS_CLUSTER_HOST=$WLS_DOMAIN_NAME-cluster-cluster1
+                        WLS_CLUSTER_HOST=$WLS_DOMAIN_NAME-cluster-cluster1.fmwk8s
                         WLS_CLUSTER_PORT=8001
                         WLS_ADMIN_USERNAME=weblogic
                         WLS_ADMIN_PASSWORD=welcome1
