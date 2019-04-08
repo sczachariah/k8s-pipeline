@@ -73,9 +73,9 @@ pipeline {
                   cd kubernetes/samples/scripts/create-weblogic-domain/domain-home-in-image                  
                   cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
 
-                  sed -i '/domainUID: domain1/c\domainUID: $WLS_DOMAIN_NAME' create-domain-inputs.yaml                  
-                  sed -i '/namespace: default/c\namespace: $WLS_DOMAIN_NAME' create-domain-inputs.yaml
-                  sed -i '/weblogicCredentialsSecretName: domain1-weblogic-credentials/c\weblogicCredentialsSecretName: $WLS_DOMAIN_NAME-weblogic-credentials' create-domain-inputs.yaml
+                  sed -i '/domainUID: domain1/c\\domainUID: $WLS_DOMAIN_NAME' create-domain-inputs.yaml                  
+                  sed -i '/namespace: default/c\\namespace: $WLS_DOMAIN_NAME' create-domain-inputs.yaml
+                  sed -i '/weblogicCredentialsSecretName: domain1-weblogic-credentials/c\\weblogicCredentialsSecretName: $WLS_DOMAIN_NAME-weblogic-credentials' create-domain-inputs.yaml
                   '''
 
                     sh label: 'create domain', script: '''
