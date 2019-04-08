@@ -50,17 +50,18 @@ pipeline {
 
         stage('deploy weblogic domain') {
             steps {
-                container('dind') {
-                    git branch: 'master',
-                            url: 'https://github.com/oracle/weblogic-kubernetes-operator'
+                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
+                                  usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]) {
+                    container('dind') {
+                        git branch: 'master',
+                                url: 'https://github.com/oracle/weblogic-kubernetes-operator'
 
-                    withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
-                                      usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]) {
                         sh 'export KUBECONFIG=${KUBECONFIG}'
-                        sh 'docker login -u $DOCKER_USERNAME -p DOCKER_PASSWORD'
-                    }
 
-                    sh label: 'upgrade helm', script: '''
+                        sh 'docker login -u $DOCKER_USERNAME -p DOCKER_PASSWORD'
+
+
+                        sh label: 'upgrade helm', script: '''
                     helm upgrade \
                         --reuse-values \
                         --set "domainNamespaces={$WLS_DOMAIN_NAME}" \
@@ -69,11 +70,11 @@ pipeline {
                         kubernetes/charts/weblogic-operator
                     '''
 
-                    sh label: 'set domain secret', script: '''
+                        sh label: 'set domain secret', script: '''
                     kubernetes/samples/scripts/create-weblogic-domain-credentials/create-weblogic-credentials.sh -u weblogic -p welcome1 -n $WLS_DOMAIN_NAME -d $WLS_DOMAIN_NAME
                     '''
 
-                    sh label: 'prepare domain files', script: '''
+                        sh label: 'prepare domain files', script: '''
                     cd kubernetes/samples/scripts/create-weblogic-domain/domain-home-in-image                  
                     cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
 
@@ -82,12 +83,13 @@ pipeline {
                     sed -i '/weblogicCredentialsSecretName: domain1-weblogic-credentials/c\\weblogicCredentialsSecretName: $WLS_DOMAIN_NAME-weblogic-credentials' create-domain-inputs.yaml
                     '''
 
-                    sh label: 'create domain', script: '''
+                        sh label: 'create domain', script: '''
                     ./create-domain.sh -u weblogic -p welcome1 -i create-domain-inputs.yaml -o ${WORKSPACE}/weblogic-operator-output-directory
 
                     cp ${WORKSPACE}/weblogic-operator-output-directory/weblogic-domains/wls-domain1/domain.yaml ${WORKSPACE}
                     cat ${WORKSPACE}/domain.yaml
                   '''
+                    }
                 }
             }
         }
