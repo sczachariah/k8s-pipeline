@@ -150,22 +150,22 @@ EOF
         }
     }
 
-    post {
-        always {
-            container(name: 'jnlp') {
-                sh label: 'clean wls domain', script: '''
-                kubectl delete pods --all -n $WLS_DOMAIN_NAME
-                kubectl delete jobs --all -n $WLS_DOMAIN_NAME
-                kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME
-                '''
-
-                sh label: 'clean weblogic operator', script: '''
-                retVal=`echo \\`helm ls wls-operator\\``
-                if [[ !  -z  "$retVal" ]]; then
-                    helm delete --purge wls-operator
-                fi
-                '''
-            }
-        }
-    }
+//    post {
+//        always {
+//            container(name: 'jnlp') {
+//                sh label: 'clean weblogic domain', script: '''
+//                kubectl delete pods --all -n $WLS_DOMAIN_NAME
+//                kubectl delete jobs --all -n $WLS_DOMAIN_NAME
+//                kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME
+//                '''
+//
+//                sh label: 'clean weblogic operator', script: '''
+//                retVal=`echo \\`helm ls wls-operator\\``
+//                if [[ !  -z  "$retVal" ]]; then
+//                    helm delete --purge wls-operator
+//                fi
+//                '''
+//            }
+//        }
+//    }
 }
