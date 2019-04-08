@@ -140,7 +140,7 @@ pipeline {
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                     sh 'ls -ltr'
-//                    sh 'mvn clean install'
+//                    sh 'mvn clean test -Dmyproperty=${WORKSPACE}/test.props'
                 }
             }
         }
