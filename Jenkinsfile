@@ -80,9 +80,9 @@ pipeline {
                         cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
                         cat create-domain-inputs.yaml
 
-                        sed -i '/domainUID: domain1/c\\domainUID: $WLS_DOMAIN_NAME' create-domain-inputs.yaml                  
-                        sed -i '/namespace: default/c\\namespace: $WLS_DOMAIN_NAME' create-domain-inputs.yaml
-                        sed -i '/weblogicCredentialsSecretName: domain1-weblogic-credentials/c\\weblogicCredentialsSecretName: $WLS_DOMAIN_NAME-weblogic-credentials' create-domain-inputs.yaml
+                        sed -i "s#domainUID: domain1#domainUID: $WLS_DOMAIN_NAME#g" create-domain-inputs.yaml                  
+                        sed -i "s#namespace: default#namespace: $WLS_DOMAIN_NAME#g" create-domain-inputs.yaml
+                        sed -i "s#weblogicCredentialsSecretName: domain1-weblogic-credentials#weblogicCredentialsSecretName: $WLS_DOMAIN_NAME-weblogic-credentials#g" create-domain-inputs.yaml
                         '''
 
                         sh label: 'create domain', script: '''
@@ -98,9 +98,9 @@ pipeline {
                         docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
                         docker push cisystem.docker.oraclecorp.com/domain-home-in-image:$WLS_DOMAIN_NAME
                         
-                        sed -i '/image: \"domain-home-in-image:12.2.1.3\"/c\\  image: cisystem.docker.oraclecorp.com/domain-home-in-image:${WLS_DOMAIN_NAME}' ${WORKSPACE}/domain.yaml
+                        sed -i "s#image: \"domain-home-in-image:12.2.1.3\"#  image: cisystem.docker.oraclecorp.com/domain-home-in-image:${WLS_DOMAIN_NAME}#g" ${WORKSPACE}/domain.yaml
                         cat ${WORKSPACE}/domain.yaml
-                        kubectl apply -f ${WORKSPACE}/domain.yaml
+                        kubectl apply -n $WLS_DOMAIN_NAME -f ${WORKSPACE}/domain.yaml
                         '''
                     }
                 }
@@ -121,7 +121,9 @@ pipeline {
                         SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
                         SELENIUM_HUB_PORT=4444
                         WLS_ADMIN_HOST=
-                        WLS_ADMIN_PORT=
+                        WLS_ADMIN_PORT=7001
+                        WLS_CLUSTER_HOST=$WLS_DOMAIN_NAME-cluster-cluster1
+                        WLS_CLUSTER_PORT=8001
                         WLS_ADMIN_USERNAME=weblogic
                         WLS_ADMIN_PASSWORD=welcome1
                     EOF
