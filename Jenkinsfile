@@ -114,7 +114,7 @@ pipeline {
                             credentialsId: 'sandeep.zachariah.ssh',
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-                    sh 'kubectl apply -f kubernetes/tools/selenium/'
+                    sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
                 }
             }
         }
