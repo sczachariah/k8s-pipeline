@@ -151,8 +151,18 @@ pipeline {
         always {
             container(name: 'jnlp') {
                 echo '****Cleanup****'
-                sh 'kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME'
+                sh label: 'clean wls domain', script: '''
+                kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME'
+                '''
+
                 sh 'ls -ltr'
+
+                sh label: 'clean weblogic operator', script: '''
+                retVal=`echo \\`helm ls wls-operator\\``
+                if [[ !  -z  "$retVal" ]]; then
+                    helm delete --purge wls-operator
+                fi
+                '''
             }
         }
     }
