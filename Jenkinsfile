@@ -94,8 +94,12 @@ pipeline {
                         cat ${WORKSPACE}/domain.yaml
                     
                         docker images
+                        docker tag domain-home-in-image:12.2.1.3 cisystem.docker.oraclecorp.com/domain-home-in-image:$WLS_DOMAIN_NAME
                         docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
-                        docker push cisystem.docker.oraclecorp.com/domain-home-in-image:12.2.1.3
+                        docker push cisystem.docker.oraclecorp.com/domain-home-in-image:$WLS_DOMAIN_NAME
+                        
+                        sed -i '/image: \"domain-home-in-image:12.2.1.3\"/c\\image: \"cisystem.docker.oraclecorp.com/domain-home-in-image:$WLS_DOMAIN_NAME\"' ${WORKSPACE}/domain.yaml
+                        cat ${WORKSPACE}/domain.yaml
                         kubectl apply -f ${WORKSPACE}/domain.yaml
                         '''
                     }
@@ -115,10 +119,11 @@ pipeline {
                 }
             }
         }
-        stage('run selenium shell') {
+
+        stage('deploy tools container') {
             steps {
                 container(name: 'jnlp') {
-                    sh 'ls -ltr'
+                    sh 'kubectl apply -f '
                 }
             }
         }
