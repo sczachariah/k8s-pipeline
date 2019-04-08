@@ -20,30 +20,30 @@ pipeline {
                     sh 'export KUBECONFIG=${KUBECONFIG}'
 
                     sh label: 'init helm', script: '''
-              helm init
+                    helm init
               
-              retVal=`echo \\`helm ls wls-operator\\``
+                    retVal=`echo \\`helm ls wls-operator\\``
               
-              if [[ !  -z  "$retVal" ]]; then
-               helm delete --purge wls-operator
-               sleep 30
-              fi
-              '''
+                    if [[ !  -z  "$retVal" ]]; then
+                     helm delete --purge wls-operator
+                     sleep 30
+                    fi
+                    '''
 
                     sh label: 'deploy operator', script: '''
-              helm install kubernetes/charts/weblogic-operator \
-                --name wls-operator \
-                --namespace weblogic-operator-ns \
-                --set image=oracle/weblogic-kubernetes-operator:2.0.1 \
-                --set serviceAccount=weblogic-operator-ns \
-                --set "domainNamespaces={}" \
-                --wait
-              '''
+                    helm install kubernetes/charts/weblogic-operator \
+                        --name wls-operator \
+                        --namespace weblogic-operator-ns \
+                        --set image=oracle/weblogic-kubernetes-operator:2.0.1 \
+                        --set serviceAccount=weblogic-operator-ns \
+                        --set "domainNamespaces={}" \
+                        --wait
+                    '''
 
                     sh label: 'verify operator', script: '''
-              kubectl get pods -n weblogic-operator-ns
-              kubectl logs -n weblogic-operator-ns -c weblogic-operator deployments/weblogic-operator
-              '''
+                    kubectl get pods -n weblogic-operator-ns
+                    kubectl logs -n weblogic-operator-ns -c weblogic-operator deployments/weblogic-operator
+                    '''
                 }
             }
         }
@@ -57,26 +57,26 @@ pipeline {
                     sh 'export KUBECONFIG=${KUBECONFIG}'
 
                     sh label: 'upgrade helm', script: '''
-                  helm upgrade \
-                    --reuse-values \
-                    --set "domainNamespaces={$WLS_DOMAIN_NAME}" \
-                    --wait \
-                    wls-operator \
-                    kubernetes/charts/weblogic-operator
-                  '''
+                    helm upgrade \
+                        --reuse-values \
+                        --set "domainNamespaces={$WLS_DOMAIN_NAME}" \
+                        --wait \
+                        wls-operator \
+                        kubernetes/charts/weblogic-operator
+                    '''
 
                     sh label: 'set domain secret', script: '''
-                  kubernetes/samples/scripts/create-weblogic-domain-credentials/create-weblogic-credentials.sh -u weblogic -p welcome1 -n $WLS_DOMAIN_NAME -d $WLS_DOMAIN_NAME
-                  '''
+                    kubernetes/samples/scripts/create-weblogic-domain-credentials/create-weblogic-credentials.sh -u weblogic -p welcome1 -n $WLS_DOMAIN_NAME -d $WLS_DOMAIN_NAME
+                    '''
 
                     sh label: 'prepare domain files', script: '''
-                  cd kubernetes/samples/scripts/create-weblogic-domain/domain-home-in-image                  
-                  cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
+                    cd kubernetes/samples/scripts/create-weblogic-domain/domain-home-in-image                  
+                    cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
 
-                  sed -i '/domainUID: domain1/c\\domainUID: $WLS_DOMAIN_NAME' create-domain-inputs.yaml                  
-                  sed -i '/namespace: default/c\\namespace: $WLS_DOMAIN_NAME' create-domain-inputs.yaml
-                  sed -i '/weblogicCredentialsSecretName: domain1-weblogic-credentials/c\\weblogicCredentialsSecretName: $WLS_DOMAIN_NAME-weblogic-credentials' create-domain-inputs.yaml
-                  '''
+                    sed -i '/domainUID: domain1/c\\domainUID: $WLS_DOMAIN_NAME' create-domain-inputs.yaml                  
+                    sed -i '/namespace: default/c\\namespace: $WLS_DOMAIN_NAME' create-domain-inputs.yaml
+                    sed -i '/weblogicCredentialsSecretName: domain1-weblogic-credentials/c\\weblogicCredentialsSecretName: $WLS_DOMAIN_NAME-weblogic-credentials' create-domain-inputs.yaml
+                    '''
 
                     sh label: 'create domain', script: '''
                     ./create-domain.sh -u weblogic -p welcome1 -i create-domain-inputs.yaml -o ${WORKSPACE}/weblogic-operator-output-directory
