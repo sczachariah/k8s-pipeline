@@ -26,7 +26,7 @@ pipeline {
               
                     if [[ !  -z  "$retVal" ]]; then
                      helm delete --purge wls-operator
-                     sleep 30
+                     sleep 60
                     fi
                     '''
 
