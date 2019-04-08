@@ -150,28 +150,28 @@ EOF
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                     sh 'ls -ltr'
+                    sh 'sleep 1000'
 //                    sh 'mvn clean test -Dmyproperty=${WORKSPACE}/test.props'
                 }
             }
         }
     }
 
-//    post {
-//        always {
-//            container(name: 'jnlp') {
-//                sh label: 'clean weblogic domain', script: '''
-//                kubectl delete pods --all -n $WLS_DOMAIN_NAME
-//                kubectl delete jobs --all -n $WLS_DOMAIN_NAME
-//                kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME
-//                '''
-//
+    post {
+        always {
+            container(name: 'jnlp') {
+                sh label: 'clean weblogic domain', script: '''
+                kubectl delete domain $WLS_DOMAIN_NAME -n $WLS_DOMAIN_NAME
+                #kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME
+                '''
+
 //                sh label: 'clean weblogic operator', script: '''
 //                retVal=`echo \\`helm ls wls-operator\\``
 //                if [[ !  -z  "$retVal" ]]; then
 //                    helm delete --purge wls-operator
 //                fi
 //                '''
-//            }
-//        }
-//    }
+            }
+        }
+    }
 }
