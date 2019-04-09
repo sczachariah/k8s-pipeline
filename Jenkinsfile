@@ -150,8 +150,8 @@ EOF
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                     sh 'ls -ltr'
-                    sh 'sleep 1000'
-//                    sh 'mvn clean test -Dmyproperty=${WORKSPACE}/test.props'
+                    sh 'sleep 600'
+                    sh 'mvn clean test -Dtest.properties=${WORKSPACE}/test.props'
                 }
             }
         }
