@@ -142,24 +142,32 @@ EOF
             }
         }
 
-        stage('build maven test') {
-            steps {
-                container('jnlp') {
-                    git branch: 'master',
-                            credentialsId: 'sandeep.zachariah.ssh',
-                            url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
+        stage('execute tests') {
+            parallel {
+                stage('verify weblogic ready') {
+                    steps {
+                        container('jnlp') {
+                            sh label: 'verify weblogic ready', script: '''
+                            sleep 300
+                    
+                            curl -v http://wls-domain1-admin-server.wls-domain1.svc.cluster.local:7001/weblogic/ready
+                            curl -v http://wls-domain1-cluster-cluster-1.wls-domain1.svc.cluster.local:8001/weblogic/ready
+                            '''
+                        }
+                    }
+                }
+                stage('build and run maven test') {
+                    steps {
+                        container('jnlp') {
+                            git branch: 'master',
+                                    credentialsId: 'sandeep.zachariah.ssh',
+                                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
-                    sh 'ls -ltr'
-                    sh 'sleep 300'
-
-                    sh label: 'verify weblogic ready', script: '''
-                    curl -v http://wls-domain1-admin-server.wls-domain1.svc.cluster.local:7001/weblogic/ready
-                    curl -v http://wls-domain1-cluster-cluster-1.wls-domain1.svc.cluster.local:8001/weblogic/ready
-                    '''
-
-                    sh label: 'execute tests', script: '''
-                    mvn clean test -Dtest.properties=${WORKSPACE}/test.props
-                    '''
+                            sh label: 'execute tests', script: '''
+                            mvn clean test -Dtest.properties=${WORKSPACE}/test.props
+                            '''
+                        }
+                    }
                 }
             }
         }
