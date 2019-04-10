@@ -156,6 +156,7 @@ EOF
                         }
                     }
                 }
+
                 stage('build and run maven test') {
                     steps {
                         container('jnlp') {
