@@ -150,7 +150,7 @@ EOF
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                     sh 'ls -ltr'
-                    sh 'sleep 600'
+                    sh 'sleep 300'
 
                     sh label: 'verify weblogic ready', script: '''
                     curl -v http://wls-domain1-admin-server.wls-domain1.svc.cluster.local:7001/weblogic/ready
