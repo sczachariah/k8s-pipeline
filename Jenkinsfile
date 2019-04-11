@@ -165,6 +165,7 @@ EOF
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                             sh label: 'execute tests', script: '''
+                            sleep 120
                             mvn clean test -Dtest.properties=${WORKSPACE}/test.props
                             '''
                         }
