@@ -26,6 +26,9 @@ pipeline {
                         export KUBECONFIG=${KUBECONFIG}
                         '''
                         sh label: 'create domain', script: '''
+						cp -rf  soa-kubernetes-operator  soa-kubernetes-operator_backup
+						
+						cd soa-kubernetes-operator
                         docker login container-registry.oracle.com -u 'jaya.selvaraj@oracle.com' -p 'Changeme_123'
 						
 						docker pull container-registry.oracle.com/database/enterprise:12.2.0.1
@@ -42,8 +45,7 @@ pipeline {
 						docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
 						docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
 						
-						cp -rf  soa-kubernetes-operator  soa-kubernetes-operator_backup
-						cd soa-kubernetes-operator
+
 						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
                         '''
                     }
