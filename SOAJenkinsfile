@@ -26,7 +26,7 @@ pipeline {
                         export KUBECONFIG=${KUBECONFIG}
                         '''
                         sh label: 'create domain', script: '''
-                        docker login container-registry.oracle.com -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+                        docker login container-registry.oracle.com -u 'jaya.selvaraj@oracle.com' -p 'Changeme_123'
 						
 						docker pull container-registry.oracle.com/database/enterprise:12.2.0.1
 						docker tag  container-registry.oracle.com/database/enterprise:12.2.0.1  oracle/database:12.2.0.1
