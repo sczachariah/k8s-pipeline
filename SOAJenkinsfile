@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('build soa operator image') {
             steps {
-                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub2',
+                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
                                  [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
