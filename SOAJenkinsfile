@@ -19,7 +19,7 @@ pipeline {
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                     container('dind') {
                         git branch: 'master',
-								credentialsId: 'sandeep.zachariah.ssh',
+								credentialsId: 'swati.mukundan.ssh',
                                 url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
 
                         sh label: 'setup env', script: '''
