@@ -42,7 +42,6 @@ pipeline {
 						docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
 						docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
 						
-						git clone git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git
 						cp -rf  soa-kubernetes-operator  soa-kubernetes-operator_backup
 						cd soa-kubernetes-operator
 						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
