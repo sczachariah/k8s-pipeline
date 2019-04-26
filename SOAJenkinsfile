@@ -26,6 +26,7 @@ pipeline {
                         export KUBECONFIG=${KUBECONFIG}
                         '''
                         sh label: 'create domain', script: '''
+						git clone git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git
 						echo "dirctory content"
 						ls
 						cp -rf  soa-kubernetes-operator  soa-kubernetes-operator_backup
