@@ -13,9 +13,9 @@ pipeline {
     stages {
         stage('build soa operator image') {
             steps {
-                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
+                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub2',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
-                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
+                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jaya.selvaraj.docker',
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                     container('dind') {
                         git branch: 'master',
@@ -101,13 +101,13 @@ pipeline {
 
         stage('deploy soa domain in pv') {
             steps {
-                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
+                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub2',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
-                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
+                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jaya.selvaraj.docker',
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                     container('dind') {
                         git branch: 'master',
-								credentialsId: 'sandeep.zachariah.ssh',
+								credentialsId: 'jaya.selvaraj.ssh',
                                 url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
 
                         sh label: 'setup env', script: '''
@@ -198,7 +198,7 @@ pipeline {
             steps {
                 container(name: 'jnlp') {
                     git branch: 'master',
-                            credentialsId: 'sandeep.zachariah.ssh',
+                            credentialsId: 'jaya.selvaraj.ssh',
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                     sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
@@ -227,7 +227,7 @@ EOF
                     steps {
                         container('jnlp') {
                             git branch: 'master',
-                                    credentialsId: 'sandeep.zachariah.ssh',
+                                    credentialsId: 'jaya.selvaraj.ssh',
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                             sh label: 'execute tests', script: '''
