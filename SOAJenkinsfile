@@ -13,14 +13,13 @@ pipeline {
     stages {
         stage('build soa operator image') {
             steps {
-                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub2',
+                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
-                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jaya.selvaraj.docker',
+                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                     container('dind') {
                         git branch: 'master',
-								credentialsId: 'jaya.selvaraj.ssh',
-                                url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
+								url: 'https://orahub.oraclecorp.com/tooling/soa-kubernetes-operator'
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
@@ -101,14 +100,14 @@ pipeline {
 
         stage('deploy soa domain in pv') {
             steps {
-                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub2',
+                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
                                  [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jaya.selvaraj.docker',
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                     container('dind') {
                         git branch: 'master',
-								credentialsId: 'jaya.selvaraj.ssh',
-                                url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
+								url: 'https://orahub.oraclecorp.com/tooling/soa-kubernetes-operator'
+                                
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
