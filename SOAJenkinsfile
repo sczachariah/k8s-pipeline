@@ -26,6 +26,8 @@ pipeline {
                         export KUBECONFIG=${KUBECONFIG}
                         '''
                         sh label: 'create domain', script: '''
+						echo "dirctory content"
+						ls
 						cp -rf  soa-kubernetes-operator  soa-kubernetes-operator_backup
 						
 						cd soa-kubernetes-operator
