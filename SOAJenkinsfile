@@ -11,6 +11,23 @@ pipeline {
         SOA_DOMAIN_NAME = 'soainfra'
     }
     stages {
+	        stage('deploy soa operator') {
+            steps {
+                container('jnlp') {
+                    git branch: 'master',
+							credentialsId: 'sandeep.zachariah.ssh',
+                            url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
+
+                    sh 'export KUBECONFIG=${KUBECONFIG}'
+
+                    sh label: 'init helm', script: '''
+					echo "dirctory content"
+					ls
+                    helm init
+                    '''
+                }
+            }
+        }
         stage('build soa operator image') {
             steps {
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
