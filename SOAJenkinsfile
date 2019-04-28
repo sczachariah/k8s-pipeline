@@ -11,7 +11,7 @@ pipeline {
         SOA_DOMAIN_NAME = 'soainfra'
     }
     stages {
-	        stage('deploy soa operator') {
+	        stage('download soa operator code') {
             steps {
                 container('jnlp') {
                     git branch: 'master',
