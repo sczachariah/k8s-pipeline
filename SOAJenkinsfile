@@ -116,7 +116,7 @@ pipeline {
             steps {
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
-                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jaya.selvaraj.docker',
+                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                     container('dind') {
                         git branch: 'master',
