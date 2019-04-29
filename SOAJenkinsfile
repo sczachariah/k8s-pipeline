@@ -69,8 +69,8 @@ pipeline {
 						'''
 
 						sh label: 'deploy operator', script: '''
-						kubectl create namespace $NAMESPACE
-						kubectl create serviceaccount -n $NAMESPACE  soa-operator-sa
+						kubectl create namespace ${NAMESPACE}
+						kubectl create serviceaccount -n ${NAMESPACE}  soa-operator-sa
 						cat deploy.sh
 						sed -i "s#IMAGE="soa-kubernetes-operator:2.1"#IMAGE="cisystem.docker.oraclecorp.com/soa-operator-image:2.1"#g" deploy.sh  
 						
@@ -83,7 +83,7 @@ pipeline {
 						else
 							helm install kubernetes/charts/soa-kubernetes-operator \
 								--name soa-kubernetes-operator \
-								--namespace $NAMESPACE \
+								--namespace ${NAMESPACE} \
 								--set image=cisystem.docker.oraclecorp.com/soa-operator-image:2.1 \
 								--set serviceAccount=soa-operator-sa \
 								--set "domainNamespaces={}" \
@@ -92,8 +92,8 @@ pipeline {
 						'''
 
 						sh label: 'verify operator', script: '''
-						kubectl get pods -n $NAMESPACE
-						kubectl logs -n $NAMESPACE -c weblogic-operator deployments/weblogic-operator
+						kubectl get pods -n ${NAMESPACE}
+						kubectl logs -n ${NAMESPACE} -c weblogic-operator deployments/weblogic-operator
 						'''
                     }
                 }
@@ -269,7 +269,7 @@ EOF
         always {
             container(name: 'jnlp') {
                 sh label: 'clean weblogic domain', script: '''
-				kubectl delete namespace $NAMESPACE
+				kubectl delete namespace ${NAMESPACE}
                 #kubectl delete domain $SOA_DOMAIN_NAME -n soa-domain1
                 #kubectl delete secret $SOA_DOMAIN_NAME-domain-credentials -n soa-domain1				
                 '''
