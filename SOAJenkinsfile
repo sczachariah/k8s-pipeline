@@ -59,24 +59,8 @@ pipeline {
 
 						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
                         '''
-                    }
-                }
-            }
-        }
-        stage('deploy soa operator') {
-            steps {
-                container('jnlp') {
-                    git branch: 'master',
-							credentialsId: 'sandeep.zachariah.ssh',
-                            url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
-
-                    sh 'export KUBECONFIG=${KUBECONFIG}'
-
-                    sh label: 'init helm', script: '''
-                    helm init
-                    '''
-
-                    sh label: 'deploy operator', script: '''
+						
+						                    sh label: 'deploy operator', script: '''
 					#kubectl create namespace soa-operator-ns
 					#kubectl create serviceaccount -n soa-operator-ns  soa-operator-sa
 					helm delete --purge soa-kubernetes-operator
@@ -106,6 +90,24 @@ pipeline {
                     kubectl get pods -n soa-operator-ns
 					kubectl logs -n soa-operator-ns -c weblogic-operator deployments/weblogic-operator
                     '''
+                    }
+                }
+            }
+        }
+        stage('deploy soa operator') {
+            steps {
+                container('jnlp') {
+                    git branch: 'master',
+							credentialsId: 'sandeep.zachariah.ssh',
+                            url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
+
+                    sh 'export KUBECONFIG=${KUBECONFIG}'
+
+                    sh label: 'init helm', script: '''
+                    helm init
+                    '''
+
+
                 }
             }
         }
