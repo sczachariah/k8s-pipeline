@@ -79,6 +79,7 @@ pipeline {
                     sh label: 'deploy operator', script: '''
 					#kubectl create namespace soa-operator-ns
 					#kubectl create serviceaccount -n soa-operator-ns  soa-operator-sa
+					helm delete --purge soa-kubernetes-operator
 					
                     retVal=`echo \\`helm ls soa-kubernetes-operator\\``
 
