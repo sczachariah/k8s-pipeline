@@ -58,8 +58,8 @@ pipeline {
 						
 //						docker pull traefik:1.7.6
 						
-//						docker pull container-registry.oracle.com/java/serverjre:latest
-//						docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
+						docker pull container-registry.oracle.com/java/serverjre:latest
+						docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
 						
 						docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
 						docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
@@ -179,11 +179,15 @@ pipeline {
 
                         sed -i "s#managedServerNameBase: soa_server1#managedServerNameBase: soa_server#g" create-domain-inputs.yaml                  
                         sed -i "s#persistentVolumeClaimName: soa-domain1-domain-pvc#persistentVolumeClaimName: soa-domain1-weblogic-sample-pvc#g" create-domain-inputs.yaml
+						sed -i "s#image: oracle/soa:12.2.1.3#image: container-registry.oracle.com/middleware/soasuite:12.2.1.3#g" create-domain-inputs.yaml  
                         '''
 						
 						sh label: 'Create DB', script: '''
                         cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
                         cp soadb.yaml soadb.yaml.orig
+						cat soadb.yaml
+						
+						sed -i "s#image: oracle/database:12.2.0.1#image: container-registry.oracle.com/database/enterprise:12.2.0.1#g" create-domain-inputs.yaml 
 						
 						kubectl create -f soadb.yaml
 						
@@ -229,6 +233,12 @@ WLS_CLUSTER_HOST=$SOA_DOMAIN_NAME-cluster-cluster-1.$SOA_DOMAIN_NAME
 WLS_CLUSTER_PORT=8001
 WLS_ADMIN_USERNAME=weblogic
 WLS_ADMIN_PASSWORD=Welcome1
+ADMIN_SERVER=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7001/console
+ADMIN_SERVER-EM=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7001/em
+MANAGED_SERVER-WEBLOGIC-READY=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/weblogic/ready
+MANAGED_SERVER-SOA-INFRA=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/soa-infra
+MANAGED_SERVER-SOA-COMPOSER=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/soa/composer
+MANAGED_SERVER-INT-WORKLIST=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/integration/worklistapp
 EOF
                     
                     cat ${WORKSPACE}/test.props
@@ -243,12 +253,12 @@ EOF
                     steps {
                         container('jnlp') {
                             git branch: 'master',
-                                    credentialsId: 'jaya.selvaraj.ssh',
+                                    credentialsId: 'sandeep.zachariah.ssh',
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                             sh label: 'execute tests', script: '''
                             sleep 120
-                            mvn clean test -Dtest.properties=${WORKSPACE}/test.props
+                            mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/test.props
                             '''
                         }
                     }
