@@ -86,6 +86,7 @@ pipeline {
                         helm upgrade \
                             --reuse-values \
                             --set "domainNamespaces={'soa-domain1'}" \
+							--set image=soa-kubernetes-operator:2.1 \
                             --wait \
                             soa-kubernetes-operator \
                             kubernetes/charts/soa-kubernetes-operator
@@ -93,6 +94,7 @@ pipeline {
                         helm install kubernetes/charts/soa-kubernetes-operator \
                             --name soa-kubernetes-operator \
                             --namespace soa-operator-ns \
+							--set image=soa-kubernetes-operator:2.1 \
                             --set serviceAccount=soa-operator-sa \
                             --set "domainNamespaces={}" \
                             --wait
