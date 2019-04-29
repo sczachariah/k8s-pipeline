@@ -68,12 +68,10 @@ pipeline {
 						'''
 
 						sh label: 'deploy operator', script: '''
-						kubectl create namespace soa-ns-5
-						kubectl create serviceaccount -n soa-ns-5  soa-operator-sa
+						kubectl create namespace soa-operator-ns
+						kubectl create serviceaccount -n soa-operator-ns  soa-operator-sa
 						cat deploy.sh
-						sed -i "s#IMAGE="soa-kubernetes-operator:2.1"#IMAGE="cisystem.docker.oraclecorp.com/soa-operator-image:2.1"#g" deploy.sh  
-						
-						#helm delete --purge soa-kubernetes-operator
+						sed -i "s#IMAGE="soa-kubernetes-operator:2.1"#IMAGE="cisystem.docker.oraclecorp.com/soa-operator-image:2.1"#g" deploy.sh
 					
 						retVal=`echo \\`helm ls soa-kubernetes-operator\\``
 
@@ -82,7 +80,7 @@ pipeline {
 						else
 							helm install kubernetes/charts/soa-kubernetes-operator \
 								--name soa-kubernetes-operator \
-								--namespace soa-ns-5 \
+								--namespace soa-operator-ns \
 								--set image=cisystem.docker.oraclecorp.com/soa-operator-image:2.1 \
 								--set serviceAccount=soa-operator-sa \
 								--set "domainNamespaces={}" \
@@ -91,8 +89,8 @@ pipeline {
 						'''
 
 						sh label: 'verify operator', script: '''
-						kubectl get pods -n soa-ns-5
-						kubectl logs -n soa-ns-5 -c weblogic-operator deployments/weblogic-operator
+						kubectl get pods -n soa-operator-ns
+						kubectl logs -n soa-operator-ns -c weblogic-operator deployments/weblogic-operator
 						'''
                     }
                 }
@@ -129,10 +127,6 @@ pipeline {
 
                         sh label: 'upgrade helm', script: '''
 						
-						kubectl delete namespace soa-domain1
-						
-						kubectl create namespace soa-domain1
-						
                         helm upgrade \
                             --reuse-values \
                             --set "domainNamespaces={soa-domain1}" \
@@ -164,8 +158,8 @@ pipeline {
                         cat ${WORKSPACE}/soa-domain1-domain-pv.yaml
 						cat ${WORKSPACE}/soa-domain1-domain-pvc.yaml
                     
-                        kubectl create -f soa-domain1-domain-pv.yaml -n soa-domain1 
-						kubectl create -f soa-domain1-domain-pvc.yaml -n soa-domain1
+                        kubectl apply -f soa-domain1-domain-pv.yaml -n soa-domain1 
+						kubectl apply -f soa-domain1-domain-pvc.yaml -n soa-domain1
                         
                         kubectl describe pv soa-domain1-domain-pv -n soa-domain1
                         kubectl describe pvc soa-domain1-domain-pvc -n soa-domain1
@@ -189,7 +183,7 @@ pipeline {
 						
 						sed -i "s#image: oracle/database:12.2.0.1#image: container-registry.oracle.com/database/enterprise:12.2.0.1#g" create-domain-inputs.yaml 
 						
-						kubectl create -f soadb.yaml
+						kubectl apply -f soadb.yaml
 						
                         kubectl get pods,svc -n soa-domain1 |grep soadb
 						kubectl logs soadb-0 -n soa-domain1
@@ -271,9 +265,10 @@ EOF
         always {
             container(name: 'jnlp') {
                 sh label: 'clean weblogic domain', script: '''
-				kubectl delete namespace soa-ns-5
-                #kubectl delete domain $SOA_DOMAIN_NAME -n soa-domain1
-                #kubectl delete secret $SOA_DOMAIN_NAME-domain-credentials -n soa-domain1				
+                kubectl delete domain $SOA_DOMAIN_NAME -n soa-domain1
+                kubectl delete secret $SOA_DOMAIN_NAME-domain-credentials -n soa-domain1
+                kubectl delete pvc soa-domain1-domain-pvc -n soa-domain1
+                kubectl delete all --all -n soa-domain1 --force --grace-period=0		
                 '''
 
                 sh label: 'clean weblogic operator', script: '''
