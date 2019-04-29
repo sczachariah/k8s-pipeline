@@ -265,9 +265,9 @@ EOF
         always {
             container(name: 'jnlp') {
                 sh label: 'clean weblogic domain', script: '''
-                kubectl delete domain $SOA_DOMAIN_NAME -n soa-domain1
+                #kubectl delete domain $SOA_DOMAIN_NAME -n soa-domain1
                 #kubectl delete secret $SOA_DOMAIN_NAME-domain-credentials -n soa-domain1
-				kubectl delete namespace soa-operator-ns
+				#kubectl delete namespace soa-operator-ns
                 '''
 
 //                sh label: 'clean weblogic operator', script: '''
