@@ -58,8 +58,10 @@ pipeline {
 						
 
 						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
+						
+						docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-operator-image:2.1
 						docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
-						docker push cisystem.docker.oraclecorp.com/soa-operator-image
+						docker push cisystem.docker.oraclecorp.com/soa-operator-image:2.1
                         '''
 						sh label: 'init helm', script: '''
 						helm init
@@ -68,6 +70,9 @@ pipeline {
 						sh label: 'deploy operator', script: '''
 						kubectl create namespace soa-operator-ns
 						kubectl create serviceaccount -n soa-operator-ns  soa-operator-sa
+						cat deploy.sh
+						sed -i "s#IMAGE="soa-kubernetes-operator:2.1"#IMAGE="cisystem.docker.oraclecorp.com/soa-operator-image:2.1"#g" deploy.sh  
+						
 						#helm delete --purge soa-kubernetes-operator
 					
 						retVal=`echo \\`helm ls soa-kubernetes-operator\\``
@@ -78,7 +83,7 @@ pipeline {
 							helm install kubernetes/charts/soa-kubernetes-operator \
 								--name soa-kubernetes-operator \
 								--namespace soa-operator-ns \
-								--set image=cisystem.docker.oraclecorp.com/soa-operator-image \
+								--set image=cisystem.docker.oraclecorp.com/soa-operator-image:2.1 \
 								--set serviceAccount=soa-operator-sa \
 								--set "domainNamespaces={}" \
 								--wait
