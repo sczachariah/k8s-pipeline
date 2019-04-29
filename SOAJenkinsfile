@@ -58,7 +58,37 @@ pipeline {
 						
 
 						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
+						docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+						docker push cisystem.docker.oraclecorp.com/soa-operator-image
                         '''
+						sh label: 'init helm', script: '''
+						helm init
+						'''
+
+						sh label: 'deploy operator', script: '''
+						kubectl create namespace soa-operator-ns
+						kubectl create serviceaccount -n soa-operator-ns  soa-operator-sa
+						#helm delete --purge soa-kubernetes-operator
+					
+						retVal=`echo \\`helm ls soa-kubernetes-operator\\``
+
+						if [[ !  -z  "$retVal" ]]; then
+							helm delete --purge soa-kubernetes-operator
+						else
+							helm install kubernetes/charts/soa-kubernetes-operator \
+								--name soa-kubernetes-operator \
+								--namespace soa-operator-ns \
+								--set image=cisystem.docker.oraclecorp.com/soa-operator-image \
+								--set serviceAccount=soa-operator-sa \
+								--set "domainNamespaces={}" \
+								--wait
+						fi
+						'''
+
+						sh label: 'verify operator', script: '''
+						kubectl get pods -n soa-operator-ns
+						kubectl logs -n soa-operator-ns -c weblogic-operator deployments/weblogic-operator
+						'''
                     }
                 }
             }
@@ -72,40 +102,7 @@ pipeline {
 
                     sh 'export KUBECONFIG=${KUBECONFIG}'
 
-                    sh label: 'init helm', script: '''
-                    helm init
-                    '''
-
-                    sh label: 'deploy operator', script: '''
-					kubectl create namespace soa-operator-ns
-					kubectl create serviceaccount -n soa-operator-ns  soa-operator-sa
-					#helm delete --purge soa-kubernetes-operator
-					
-                    retVal=`echo \\`helm ls soa-kubernetes-operator\\``
-
-                    if [[ !  -z  "$retVal" ]]; then
-                        helm upgrade \
-                            --reuse-values \
-                            --set "domainNamespaces={'soa-domain1'}" \
-							--set image=soa-kubernetes-operator:2.1 \
-                            --wait \
-                            soa-kubernetes-operator \
-                            kubernetes/charts/soa-kubernetes-operator
-                    else
-                        helm install kubernetes/charts/soa-kubernetes-operator \
-                            --name soa-kubernetes-operator \
-                            --namespace soa-operator-ns \
-							--set image=soa-kubernetes-operator:2.1 \
-                            --set serviceAccount=soa-operator-sa \
-                            --set "domainNamespaces={}" \
-                            --wait
-                    fi
-                    '''
-
-                    sh label: 'verify operator', script: '''
-                    kubectl get pods -n soa-operator-ns
-					kubectl logs -n soa-operator-ns -c weblogic-operator deployments/weblogic-operator
-                    '''
+                    
                 }
             }
         }
