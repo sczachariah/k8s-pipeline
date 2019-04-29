@@ -77,7 +77,7 @@ pipeline {
                     '''
 
                     sh label: 'deploy operator', script: '''
-					kubectl create namespace soa-operator-ns
+					#kubectl create namespace soa-operator-ns
 					kubectl create serviceaccount -n soa-operator-ns  soa-operator-sa
 					
                     retVal=`echo \\`helm ls soa-kubernetes-operator\\``
