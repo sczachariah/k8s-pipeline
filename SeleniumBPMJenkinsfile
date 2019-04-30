@@ -24,7 +24,7 @@ pipeline {
 SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
 SELENIUM_HUB_PORT=4444
 WLS_ADMIN_USERNAME=weblogic
-WLS_ADMIN_PASSWORD=Welcome1
+WLS_ADMIN_PASSWORD=welcome1
 ADMIN_SERVER=http://slc00yed.us.oracle.com:7001/console
 BPM_SERVER=http://slc00yed.us.oracle.com:7003/bpm/composer/
 EOF
@@ -45,7 +45,6 @@ EOF
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                             sh label: 'execute tests', script: '''
-                            sleep 120
                             mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/test.props
                             '''
                         }
