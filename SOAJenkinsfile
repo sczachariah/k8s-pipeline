@@ -8,7 +8,7 @@ pipeline {
     }
     environment {
         KUBECONFIG = credentials('admin.ci.kubeconfig')
-        SOA_DOMAIN_NAME = 'soa-domain2'
+        SOA_DOMAIN_NAME = 'soa-domain3'
     }
     stages {
 	        stage('download soa operator code') {
@@ -68,8 +68,8 @@ pipeline {
 						'''
 
 						sh label: 'deploy operator', script: '''
-						kubectl create namespace soa-ns-6
-						kubectl create serviceaccount -n soa-ns-6  soa-operator-sa
+						kubectl create namespace soa-ns-7
+						kubectl create serviceaccount -n soa-ns-7  soa-operator-sa
 						cat deploy.sh
 						sed -i "s#IMAGE="soa-kubernetes-operator:2.1"#IMAGE="cisystem.docker.oraclecorp.com/soa-operator-image:2.1"#g" deploy.sh
 					
@@ -80,7 +80,7 @@ pipeline {
 						else
 							helm install kubernetes/charts/soa-kubernetes-operator \
 								--name soa-kubernetes-operator \
-								--namespace soa-ns-6 \
+								--namespace soa-ns-7 \
 								--set image=cisystem.docker.oraclecorp.com/soa-operator-image:2.1 \
 								--set serviceAccount=soa-operator-sa \
 								--set "domainNamespaces={}" \
@@ -89,8 +89,8 @@ pipeline {
 						'''
 
 						sh label: 'verify operator', script: '''
-						kubectl get pods -n soa-ns-6
-						kubectl logs -n soa-ns-6 -c weblogic-operator deployments/weblogic-operator
+						kubectl get pods -n soa-ns-7
+						kubectl logs -n soa-ns-7 -c weblogic-operator deployments/weblogic-operator
 						'''
                     }
                 }
@@ -127,18 +127,20 @@ pipeline {
 
                         sh label: 'upgrade helm', script: '''
 						
+						kubectl create namespace soa-domain3
+						
                         helm upgrade \
                             --reuse-values \
-                            --set "domainNamespaces={soa-domain2}" \
+                            --set "domainNamespaces={soa-domain3}" \
                             --wait \
                             soa-kubernetes-operator \
                             kubernetes/charts/soa-kubernetes-operator
                         '''
 
                         sh label: 'set domain secret', script: '''
-                         retVal=`echo \\`kubectl get secret $SOA_DOMAIN_NAME-domain-credentials -n soa-domain2\\``
+                         retVal=`echo \\`kubectl get secret $SOA_DOMAIN_NAME-domain-credentials -n soa-domain3\\``
                          if [[ "$retVal" == *"not found"* ]]; then
-                            kubernetes/samples/scripts/create-domain-credentials.sh -u weblogic -p Welcome1 -n soa-domain2 -d soa-domain2 -s soa-domain2-domain-credentials
+                            kubernetes/samples/scripts/create-domain-credentials.sh -u weblogic -p Welcome1 -n soa-domain3 -d soa-domain3 -s soa-domain3-domain-credentials
                          fi
                         '''
 						
@@ -153,16 +155,16 @@ pipeline {
                         cd kubernetes/samples/scripts/create-soa-domain-pv-pvc
                         ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
 
-                        cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soa-domain2-domain-pv.yaml ${WORKSPACE}
-						cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soa-domain2-domain-pvc.yaml ${WORKSPACE}
-                        cat ${WORKSPACE}/soa-domain2-domain-pv.yaml
-						cat ${WORKSPACE}/soa-domain2-domain-pvc.yaml
+                        cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soa-domain3-domain-pv.yaml ${WORKSPACE}
+						cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soa-domain3-domain-pvc.yaml ${WORKSPACE}
+                        cat ${WORKSPACE}/soa-domain3-domain-pv.yaml
+						cat ${WORKSPACE}/soa-domain3-domain-pvc.yaml
                     
-                        kubectl apply -f soa-domain2-domain-pv.yaml -n soa-domain2 
-						kubectl apply -f soa-domain2-domain-pvc.yaml -n soa-domain2
+                        kubectl apply -f soa-domain3-domain-pv.yaml -n soa-domain3 
+						kubectl apply -f soa-domain3-domain-pvc.yaml -n soa-domain3
                         
-                        kubectl describe pv soa-domain2-domain-pv -n soa-domain2
-                        kubectl describe pvc soa-domain2-domain-pvc -n soa-domain2
+                        kubectl describe pv soa-domain3-domain-pv -n soa-domain3
+                        kubectl describe pvc soa-domain3-domain-pvc -n soa-domain3
                         '''
 
                         sh label: 'prepare domain files', script: '''
@@ -172,7 +174,7 @@ pipeline {
                         cat create-domain-inputs.yaml
 
                         sed -i "s#managedServerNameBase: soa_server1#managedServerNameBase: soa_server#g" create-domain-inputs.yaml                  
-                        sed -i "s#persistentVolumeClaimName: soa-domain2-domain-pvc#persistentVolumeClaimName: soa-domain2-weblogic-sample-pvc#g" create-domain-inputs.yaml
+                        sed -i "s#persistentVolumeClaimName: soa-domain3-domain-pvc#persistentVolumeClaimName: soa-domain3-weblogic-sample-pvc#g" create-domain-inputs.yaml
 						sed -i "s#image: oracle/soa:12.2.1.3#image: container-registry.oracle.com/middleware/soasuite:12.2.1.3#g" create-domain-inputs.yaml  
                         '''
 						
@@ -185,8 +187,8 @@ pipeline {
 						
 						kubectl apply -f soadb.yaml
 						
-                        kubectl get pods,svc -n soa-domain2 |grep soadb
-						kubectl logs soadb-0 -n soa-domain2
+                        kubectl get pods,svc -n soa-domain3 |grep soadb
+						kubectl logs soadb-0 -n soa-domain3
                         '''
 
                         sh label: 'create domain', script: '''
@@ -194,14 +196,14 @@ pipeline {
                         cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
                         ./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
 
-                        cp ${WORKSPACE}/soa-operator-output-directory/soa-domains/soa-domain2/domain.yaml ${WORKSPACE}
+                        cp ${WORKSPACE}/soa-operator-output-directory/soa-domains/soa-domain3/domain.yaml ${WORKSPACE}
                         cat ${WORKSPACE}/domain.yaml
                     
                         kubectl apply -f ${WORKSPACE}/domain.yaml
                         
-                        kubectl get all,domains -n soa-domain2
-                        kubectl logs soa-domain2-adminserver -n soa-domain2
-						kubectl logs soa-domain2-soa-server1 -n soa-domain2
+                        kubectl get all,domains -n soa-domain3
+                        kubectl logs soa-domain3-adminserver -n soa-domain3
+						kubectl logs soa-domain3-soa-server1 -n soa-domain3
                         '''
                     }
                 }
@@ -265,10 +267,10 @@ EOF
         always {
             container(name: 'jnlp') {
                 sh label: 'clean weblogic domain', script: '''
-                kubectl delete domain $SOA_DOMAIN_NAME -n soa-domain2
-                kubectl delete secret $SOA_DOMAIN_NAME-domain-credentials -n soa-domain2
-                kubectl delete pvc soa-domain2-domain-pvc -n soa-domain2
-                kubectl delete all --all -n soa-domain2 --force --grace-period=0		
+                kubectl delete domain $SOA_DOMAIN_NAME -n soa-domain3
+                kubectl delete secret $SOA_DOMAIN_NAME-domain-credentials -n soa-domain3
+                kubectl delete pvc soa-domain3-domain-pvc -n soa-domain3
+                kubectl delete all --all -n soa-domain3 --force --grace-period=0		
                 '''
 
                 sh label: 'clean weblogic operator', script: '''
