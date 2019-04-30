@@ -1,0 +1,62 @@
+pipeline {
+    agent {
+        kubernetes {
+            label 'fmwk8s-test-infra-slave'
+            namespace 'fmwk8s'
+            inheritFrom 'fmwk8s-test-infra-slave'
+        }
+    }
+    environment {
+        KUBECONFIG = credentials('admin.ci.kubeconfig')
+    }
+    stages {
+        stage('deploy Test tools') {
+            steps {
+                container(name: 'jnlp') {
+                    git branch: 'master',
+                            credentialsId: 'jaya.selvaraj.ssh',
+                            url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
+
+                    sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
+
+                    sh label: 'generate test props', script: '''
+                    cat <<EOF > ${WORKSPACE}/test.props
+SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
+SELENIUM_HUB_PORT=4444
+WLS_ADMIN_USERNAME=weblogic
+WLS_ADMIN_PASSWORD=Welcome1
+ADMIN_SERVER=http://slc00yed.us.oracle.com:7001/console
+ADMIN_SERVER-EM=http://slc00yed.us.oracle.com:7001/em
+MANAGED_SERVER-WEBLOGIC-READY=http://slc00yed.us.oracle.com:7003/weblogic/ready
+MANAGED_SERVER-SOA-INFRA=http://slc00yed.us.oracle.com:7003/soa-infra
+MANAGED_SERVER-SOA-COMPOSER=http://slc00yed.us.oracle.com:7003/soa/composer
+MANAGED_SERVER-INT-WORKLIST=http://slc00yed.us.oracle.com:7003/integration/worklistapp
+EOF
+                    
+                    cat ${WORKSPACE}/test.props
+                    '''
+                }
+            }
+        }
+
+        stage('execute tests') {
+            parallel {
+                stage('build and run maven test') {
+                    steps {
+                        container('jnlp') {
+                            git branch: 'master',
+                                    credentialsId: 'sandeep.zachariah.ssh',
+                                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
+
+                            sh label: 'execute tests', script: '''
+                            sleep 120
+                            mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/test.props
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
