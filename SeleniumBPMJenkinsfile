@@ -45,7 +45,7 @@ EOF
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                             sh label: 'execute tests', script: '''
-                            mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/test.props
+                            mvn test -Dtest=BPMsanityTest -Dtest.properties=${WORKSPACE}/test.props
                             '''
                         }
                     }
