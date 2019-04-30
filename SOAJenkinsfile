@@ -68,6 +68,7 @@ pipeline {
 						'''
 
 						sh label: 'deploy operator', script: '''
+						kubectl delete namespace soa-ns-9
 						kubectl create namespace soa-ns-9
 						kubectl create serviceaccount -n soa-ns-9  soa-operator-sa
 						cat deploy.sh
