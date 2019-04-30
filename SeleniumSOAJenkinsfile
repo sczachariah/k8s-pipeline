@@ -25,12 +25,12 @@ SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
 SELENIUM_HUB_PORT=4444
 WLS_ADMIN_USERNAME=weblogic
 WLS_ADMIN_PASSWORD=Welcome1
-ADMIN_SERVER=http://slc00yed.us.oracle.com:7001/console
-ADMIN_SERVER-EM=http://slc00yed.us.oracle.com:7001/em
-MANAGED_SERVER-WEBLOGIC-READY=http://slc00yed.us.oracle.com:7003/weblogic/ready
-MANAGED_SERVER-SOA-INFRA=http://slc00yed.us.oracle.com:7003/soa-infra
-MANAGED_SERVER-SOA-COMPOSER=http://slc00yed.us.oracle.com:7003/soa/composer
-MANAGED_SERVER-INT-WORKLIST=http://slc00yed.us.oracle.com:7003/integration/worklistapp
+ADMIN_SERVER=http://slc06qlu.us.oracle.com:7001/console
+ADMIN_SERVER-EM=http://slc06qlu.us.oracle.com:7001/em
+MANAGED_SERVER-WEBLOGIC-READY=http://slc06qlu.us.oracle.com:7003/weblogic/ready
+MANAGED_SERVER-SOA-INFRA=http://slc06qlu.us.oracle.com:7003/soa-infra
+MANAGED_SERVER-SOA-COMPOSER=http://slc06qlu.us.oracle.com:7003/soa/composer
+MANAGED_SERVER-INT-WORKLIST=http://slc06qlu.us.oracle.com:7003/integration/worklistapp
 EOF
                     
                     cat ${WORKSPACE}/test.props
@@ -49,7 +49,6 @@ EOF
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                             sh label: 'execute tests', script: '''
-                            sleep 120
                             mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/test.props
                             '''
                         }
