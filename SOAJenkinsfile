@@ -68,8 +68,8 @@ pipeline {
 						'''
 
 						sh label: 'deploy operator', script: '''
-						kubectl create namespace soa-ns-7
-						kubectl create serviceaccount -n soa-ns-7  soa-operator-sa
+						kubectl create namespace soa-ns-8
+						kubectl create serviceaccount -n soa-ns-8  soa-operator-sa
 						cat deploy.sh
 						sed -i "s#IMAGE="soa-kubernetes-operator:2.1"#IMAGE="cisystem.docker.oraclecorp.com/soa-operator-image:2.1"#g" deploy.sh
 					
@@ -80,7 +80,7 @@ pipeline {
 						else
 							helm install kubernetes/charts/soa-kubernetes-operator \
 								--name soa-kubernetes-operator \
-								--namespace soa-ns-7 \
+								--namespace soa-ns-8 \
 								--set image=cisystem.docker.oraclecorp.com/soa-operator-image:2.1 \
 								--set serviceAccount=soa-operator-sa \
 								--set "domainNamespaces={}" \
@@ -89,8 +89,8 @@ pipeline {
 						'''
 
 						sh label: 'verify operator', script: '''
-						kubectl get pods -n soa-ns-7
-						kubectl logs -n soa-ns-7 -c weblogic-operator deployments/weblogic-operator
+						kubectl get pods -n soa-ns-8
+						kubectl logs -n soa-ns-8 -c weblogic-operator deployments/weblogic-operator
 						'''
                     }
                 }
