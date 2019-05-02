@@ -35,7 +35,7 @@ MANAGED_SERVER-INT-WORKLIST=http://slc06qlu.us.oracle.com:7003/integration/workl
 BPM_SERVER=http://slc00yed.us.oracle.com:7003/bpm/composer/
 
 OSB_SERVER=http://slc09cru.us.oracle.com:7001/servicebus
-DOMAIN_TYPE=bpm
+DOMAIN_TYPE=soa
 EOF
                     
                     cat ${WORKSPACE}/test.props
