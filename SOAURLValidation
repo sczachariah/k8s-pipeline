@@ -54,11 +54,12 @@ EOF
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                             sh label: 'execute tests', script: '''
+							echo "jayatest Test started"
 							if [[ `cat ${WORKSPACE}/test.props | grep DOMAIN_TYPE | cut -d'=' -f2` == *"soa"* ]]; then
 								mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/test.props
-							if [[ `cat ${WORKSPACE}/test.props | grep DOMAIN_TYPE | cut -d'=' -f2` == *"osb"* ]]; then
+							elif [[ `cat ${WORKSPACE}/test.props | grep DOMAIN_TYPE | cut -d'=' -f2` == *"osb"* ]]; then
 								mvn test -Dtest=OSBsanityTest -Dtest.properties=${WORKSPACE}/test.props
-							if [[ `cat ${WORKSPACE}/test.props | grep DOMAIN_TYPE | cut -d'=' -f2` == *"bpm"* ]]; then
+							elif [[ `cat ${WORKSPACE}/test.props | grep DOMAIN_TYPE | cut -d'=' -f2` == *"bpm"* ]]; then
 								mvn test -Dtest=BPMsanityTest -Dtest.properties=${WORKSPACE}/test.props
 							fi							
                             
