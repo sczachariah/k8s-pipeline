@@ -27,6 +27,13 @@ WLS_ADMIN_USERNAME=weblogic
 WLS_ADMIN_PASSWORD=welcome1
 ADMIN_SERVER=http://slc00yed.us.oracle.com:7001/console
 BPM_SERVER=http://slc00yed.us.oracle.com:7003/bpm/composer/
+
+ADMIN_SERVER-EM=http://slc06qlu.us.oracle.com:7001/em
+MANAGED_SERVER-WEBLOGIC-READY=http://slc06qlu.us.oracle.com:7003/weblogic/ready
+MANAGED_SERVER-SOA-INFRA=http://slc06qlu.us.oracle.com:7003/soa-infra
+MANAGED_SERVER-SOA-COMPOSER=http://slc06qlu.us.oracle.com:7003/soa/composer
+MANAGED_SERVER-INT-WORKLIST=http://slc06qlu.us.oracle.com:7003/integration/worklistapp
+DOMAIN_TYPE=osb
 EOF
                     
                     cat ${WORKSPACE}/test.props
@@ -43,10 +50,19 @@ EOF
                             git branch: 'master',
                                     credentialsId: 'sandeep.zachariah.ssh',
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
-
+									
+							Properties properties = new Properties()
+							File propertiesFile = new File('test.properties')
+							propertiesFile.withInputStream {
+								properties.load(it)
+							}
+							
+							if(properties.DOMAIN_TYPE == 'osb')
+							{
                             sh label: 'execute tests', script: '''
                             mvn test -Dtest=BPMsanityTest -Dtest.properties=${WORKSPACE}/test.props
                             '''
+							}
                         }
                     }
                 }
