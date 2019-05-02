@@ -52,7 +52,7 @@ EOF
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 									
 							Properties properties = new Properties()
-							File propertiesFile = new File('test.properties')
+							File propertiesFile = new File(${WORKSPACE}/test.props)
 							propertiesFile.withInputStream {
 								properties.load(it)
 							}
