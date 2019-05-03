@@ -19,9 +19,12 @@ pipeline {
 
                     sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
 
-                    sh label: 'find file', script: '''
-                    ls -ltr
-                    ls -ltr ${WORKSPACE}
+                    sh label: 'generate test props', script: '''
+                    cat <<EOF > ${WORKSPACE}/test.props
+
+EOF
+
+                    cat ${WORKSPACE}/test.props
                     '''
                 }
             }
