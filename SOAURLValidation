@@ -45,9 +45,9 @@ EOF
 							echo "***********Checking content of the workspace******************"
 							ls
 							echo "***********Find under workspace******************"
-							find /scratch/syseng -name ${PROPERTY_FILE}
+							find /scratch/syseng -name PROPERTY_FILE
 							echo "***********Find under tmp******************"
-							find /tmp -name ${PROPERTY_FILE}
+							find /tmp -name PROPERTY_FILE
 							echo "***********Checking is values passed properly******************"
 							echo PROPERTY_FILE
 							echo ${PROPERTY_FILE}
