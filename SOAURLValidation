@@ -58,11 +58,11 @@ EOF
 							
 							if [[ ${PRODUCT_NAME} == *"SOA"* ]]; then							
 								if [[ ${COMPONENT_NAME} == *"SOA"* ]]; then
-									mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/${PROPERTY_FILE}
+									mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/PROPERTY_FILE
 								elif [[ ${COMPONENT_NAME} == *"OSB"* ]]; then
-									mvn test -Dtest=OSBsanityTest -Dtest.properties=${WORKSPACE}/${PROPERTY_FILE}
+									mvn test -Dtest=OSBsanityTest -Dtest.properties=${WORKSPACE}/PROPERTY_FILE
 								elif [[ ${COMPONENT_NAME} == *"BPM"* ]]; then
-									mvn test -Dtest=BPMsanityTest -Dtest.properties=${WORKSPACE}/${PROPERTY_FILE}
+									mvn test -Dtest=BPMsanityTest -Dtest.properties=${WORKSPACE}/PROPERTY_FILE
 								fi
 							fi							
                             
