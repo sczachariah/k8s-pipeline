@@ -23,7 +23,7 @@ pipeline {
                     cat <<EOF > ${WORKSPACE}/test.props
 
 EOF
-                    
+
                     cat ${WORKSPACE}/test.props
                     '''
                 }
