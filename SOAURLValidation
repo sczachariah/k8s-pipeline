@@ -44,7 +44,7 @@ EOF
 							cd ${WORKSPACE}
 							echo "***********Checking content of the workspace******************"
 							ls
-							find / -name ${PROPERTY_FILE}
+							find /scratch/syseng -name ${PROPERTY_FILE}
 							echo "***********Checking is values passed properly******************"
 							echo PROPERTY_FILE
 							echo ${PROPERTY_FILE}
