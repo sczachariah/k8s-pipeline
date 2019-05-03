@@ -48,6 +48,7 @@ EOF
 							find /scratch/syseng -name PROPERTY_FILE
 							echo "***********Find under tmp******************"
 							find /tmp -name PROPERTY_FILE
+							find / -name PROPERTY_FILE
 							echo "***********Checking is values passed properly******************"
 							echo PROPERTY_FILE
 							echo ${PROPERTY_FILE}
