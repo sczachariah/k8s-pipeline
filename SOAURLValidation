@@ -21,21 +21,7 @@ pipeline {
 
                     sh label: 'generate test props', script: '''
                     cat <<EOF > ${WORKSPACE}/test.props
-SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
-SELENIUM_HUB_PORT=4444
-WLS_ADMIN_USERNAME=weblogic
-WLS_ADMIN_PASSWORD=welcome1
-ADMIN_SERVER=http://slc06qlu.us.oracle.com:7001/console
-ADMIN_SERVER-EM=http://slc06qlu.us.oracle.com:7001/em
-MANAGED_SERVER-WEBLOGIC-READY=http://slc06qlu.us.oracle.com:7003/weblogic/ready
-MANAGED_SERVER-SOA-INFRA=http://slc06qlu.us.oracle.com:7003/soa-infra
-MANAGED_SERVER-SOA-COMPOSER=http://slc06qlu.us.oracle.com:7003/soa/composer
-MANAGED_SERVER-INT-WORKLIST=http://slc06qlu.us.oracle.com:7003/integration/worklistapp
 
-BPM_SERVER=http://slc00yed.us.oracle.com:7003/bpm/composer/
-
-OSB_SERVER=http://slc09cru.us.oracle.com:7001/servicebus
-DOMAIN_TYPE=soa
 EOF
                     
                     cat ${WORKSPACE}/test.props
@@ -54,14 +40,25 @@ EOF
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
 
                             sh label: 'execute tests', script: '''
-							echo "jayatest Test started"
+							echo "***********Moving to workspace******************"
+							cd ${WORKSPACE}
+							echo "***********Checking content of the workspace******************"
+							ls
+							echo "***********Checking is values passed properly******************"
+							echo PROPERTY_FILE
+							echo ${PROPERTY_FILE}
+							echo PROPERTY_FILE
+							echo ${PROPERTY_FILE}
+							echo PROPERTY_FILE
+							echo ${PROPERTY_FILE}
+							
 							if [[ ${PRODUCT_NAME} == *"SOA"* ]]; then							
 								if [[ ${COMPONENT_NAME} == *"SOA"* ]]; then
-									mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/${PROPERTY_FILE}
+									mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/PROPERTY_FILE
 								elif [[ ${COMPONENT_NAME} == *"OSB"* ]]; then
-									mvn test -Dtest=OSBsanityTest -Dtest.properties=${WORKSPACE}/${PROPERTY_FILE}
+									mvn test -Dtest=OSBsanityTest -Dtest.properties=${WORKSPACE}/PROPERTY_FILE
 								elif [[ ${COMPONENT_NAME} == *"BPM"* ]]; then
-									mvn test -Dtest=BPMsanityTest -Dtest.properties=${WORKSPACE}/${PROPERTY_FILE}
+									mvn test -Dtest=BPMsanityTest -Dtest.properties=${WORKSPACE}/PROPERTY_FILE
 								fi
 							fi							
                             
