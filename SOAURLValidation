@@ -55,12 +55,14 @@ EOF
 
                             sh label: 'execute tests', script: '''
 							echo "jayatest Test started"
-							if [[ `cat ${WORKSPACE}/test.props | grep DOMAIN_TYPE | cut -d'=' -f2` == *"soa"* ]]; then
-								mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/test.props
-							elif [[ `cat ${WORKSPACE}/test.props | grep DOMAIN_TYPE | cut -d'=' -f2` == *"osb"* ]]; then
-								mvn test -Dtest=OSBsanityTest -Dtest.properties=${WORKSPACE}/test.props
-							elif [[ `cat ${WORKSPACE}/test.props | grep DOMAIN_TYPE | cut -d'=' -f2` == *"bpm"* ]]; then
-								mvn test -Dtest=BPMsanityTest -Dtest.properties=${WORKSPACE}/test.props
+							if [[ ${PRODUCT_NAME} == *"SOA"* ]]; then							
+								if [[ ${COMPONENT_NAME} == *"SOA"* ]]; then
+									mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/${PROPERTY_FILE}
+								elif [[ ${COMPONENT_NAME} == *"OSB"* ]]; then
+									mvn test -Dtest=OSBsanityTest -Dtest.properties=${WORKSPACE}/${PROPERTY_FILE}
+								elif [[ ${COMPONENT_NAME} == *"BPM"* ]]; then
+									mvn test -Dtest=BPMsanityTest -Dtest.properties=${WORKSPACE}/${PROPERTY_FILE}
+								fi
 							fi							
                             
                             '''
