@@ -17,10 +17,15 @@ pipeline {
                             credentialsId: 'jaya.selvaraj.ssh',
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-                    ls -ltr
-
                     sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
 
+                    sh label: 'generate test props', script: '''
+                    cat <<EOF > ${WORKSPACE}/test.props
+
+EOF
+
+                    cat ${WORKSPACE}/test.props
+                    '''
                 }
             }
         }
@@ -39,7 +44,12 @@ pipeline {
 							cd ${WORKSPACE}
 							echo "***********Checking content of the workspace******************"
 							ls
-							
+							echo "***********Find under workspace******************"
+							find /scratch/syseng -name ${PROPERTY_FILE}
+							echo "***********Find under tmp******************"
+							find /tmp -name ${PROPERTY_FILE}
+							echo "***********Checking is values passed properly******************"
+							echo PROPERTY_FILE
 							echo ${PROPERTY_FILE}
 							echo PRODUCT_NAME
 							echo ${PRODUCT_NAME}
