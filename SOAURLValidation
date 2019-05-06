@@ -7,9 +7,7 @@ pipeline {
         }
     }
     environment {
-	
-        KUBECONFIG = /net/slc13pkv/scratch/cmoger/.kube/config
-		
+        KUBECONFIG = /net/slc13pkv/scratch/cmoger/slc13pkv_kubeconfig
     }
     stages {
         stage('deploy Test tools') {
