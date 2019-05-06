@@ -7,7 +7,7 @@ pipeline {
         }
     }
     environment {
-        KUBECONFIG = credentials('admin.ci.kubeconfig')
+        KUBECONFIG = /net/slc13pkv/scratch/cmoger/slc13pkv_kubeconfig
     }
     stages {
         stage('deploy Test tools') {
@@ -21,7 +21,8 @@ pipeline {
 
                     sh label: 'generate test props', script: '''
                     cat <<EOF > ${WORKSPACE}/test.props
-
+SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
+SELENIUM_HUB_PORT=4444
 EOF
 
                     cat ${WORKSPACE}/test.props
