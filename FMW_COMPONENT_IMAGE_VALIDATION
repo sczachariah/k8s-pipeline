@@ -44,18 +44,21 @@ EOF
 							cd ${WORKSPACE}
 							echo "***********Checking content of the workspace******************"
 							ls
-							echo "***********Find under workspace******************"
-							find /scratch/syseng -name PROPERTY_FILE
-							echo "***********Find under tmp******************"
-							find /tmp -name PROPERTY_FILE
-							find / -name PROPERTY_FILE
 							echo "***********Checking is values passed properly******************"
-							echo PROPERTY_FILE
-							echo ${PROPERTY_FILE}
 							echo PRODUCT_NAME
 							echo ${PRODUCT_NAME}
 							echo COMPONENT_NAME
 							echo ${COMPONENT_NAME}
+							echo ADMIN_USERNAME
+							echo ${ADMIN_USERNAME}
+							echo ADMIN_PASSWORD
+							echo ${ADMIN_PASSWORD}
+							echo K8S_IP
+							echo ${K8S_IP}
+							echo ADMIN_NODE_PORT
+							echo ${ADMIN_NODE_PORT}
+							echo MS_NODE_PORT
+							echo ${MS_NODE_PORT}
 							sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${COMPONENT_NAME}/urlTemplate.properties
 							sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${COMPONENT_NAME}/urlTemplate.properties
 							sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${COMPONENT_NAME}/urlTemplate.properties
