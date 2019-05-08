@@ -37,7 +37,7 @@ EOF
                         container('jnlp') {
                             git branch: 'master',
                                     credentialsId: 'sandeep.zachariah.ssh',
-                                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
+                                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-urltests.git'
 
                             sh label: 'execute tests', script: '''
 							echo "***********Moving to workspace******************"
