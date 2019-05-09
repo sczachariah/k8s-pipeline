@@ -30,18 +30,15 @@ pipeline {
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
                         #kubectl create ns ${SOA_OPERATOR_NS}
-                        kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS} 
+                        #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS} 
                         helm init
                         '''
 
                         sh label: 'build soa operator image', script: '''
 						git clone https://orahub.oraclecorp.com/tooling/soa-kubernetes-operator
-						echo "directory content"
-						ls
-						cp -rf  soa-kubernetes-operator  soa-kubernetes-operator_backup
-						
+											
 						cd soa-kubernetes-operator
-                        docker login container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+                        docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
 						
 						docker pull container-registry.oracle.com/java/serverjre:latest
 						docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
