@@ -14,7 +14,7 @@ pipeline {
         SOA_DOMAIN_NAME = 'soainfra'
         SOA_DOMAIN_NS = 'soainfra'
     }
-    
+
     stages {
         stage('build and deploy soa operator') {
             steps {
