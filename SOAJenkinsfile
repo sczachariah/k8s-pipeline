@@ -8,27 +8,13 @@ pipeline {
     }
     environment {
         KUBECONFIG = credentials('admin.ci.kubeconfig')
+        SOA_OPERATOR_NS = 'soa-operator-ns-1'
+        SOA_OPERATOR_SA = 'soa-operator-sa'
         SOA_DOMAIN_NAME = 'soainfra'
+        SOA_DOMAIN_NS = 'soainfra'
     }
     stages {
-	        stage('download soa operator code') {
-            steps {
-                container('jnlp') {
-                    git branch: 'master',
-							credentialsId: 'sandeep.zachariah.ssh',
-                            url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
-
-                    sh 'export KUBECONFIG=${KUBECONFIG}'
-
-                    sh label: 'init helm', script: '''
-					echo "dirctory content"
-					ls
-                    helm init
-                    '''
-                }
-            }
-        }
-        stage('build soa operator image') {
+        stage('build and deploy soa operator') {
             steps {
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
@@ -40,15 +26,19 @@ pipeline {
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
+                        kubectl create ns ${SOA_OPERATOR_NS}
+                        kubectl create sa ${SOA_OPERATOR_SA}
+                        helm init
                         '''
-                        sh label: 'create domain', script: '''
+
+                        sh label: 'build soa operator image', script: '''
 						git clone https://orahub.oraclecorp.com/tooling/soa-kubernetes-operator
-						echo "dirctory content"
+						echo "directory content"
 						ls
 						cp -rf  soa-kubernetes-operator  soa-kubernetes-operator_backup
 						
 						cd soa-kubernetes-operator
-                        docker login container-registry.oracle.com -u 'jaya.selvaraj@oracle.com' -p 'Changeme_123'
+                        docker login container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
 						
 						docker pull container-registry.oracle.com/java/serverjre:latest
 						docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
@@ -58,226 +48,201 @@ pipeline {
 						
 
 						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
-						
-						docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-operator-image:2.1
-						docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
-						docker push cisystem.docker.oraclecorp.com/soa-operator-image:2.1
-                        '''
-						sh label: 'init helm', script: '''
-						helm init
 						'''
 
-						sh label: 'deploy operator', script: '''
-						kubectl delete namespace soa-ns-9
-						kubectl create namespace soa-ns-9
-						kubectl create serviceaccount -n soa-ns-9  soa-operator-sa
-						cat deploy.sh
-						sed -i "s#IMAGE="soa-kubernetes-operator:2.1"#IMAGE="cisystem.docker.oraclecorp.com/soa-operator-image:2.1"#g" deploy.sh
-					
+                        sh label: 'push soa operator image', script: '''
+						docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
+						docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+						docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
+                        '''
+
+						sh label: 'deploy soa operator', script: '''
 						retVal=`echo \\`helm ls soa-kubernetes-operator\\``
 
 						if [[ !  -z  "$retVal" ]]; then
-							helm delete --purge soa-kubernetes-operator
+						    helm upgrade \
+						        --reuse-values \
+						        --set "domainNamespaces={$SOA_DOMAIN_NAME}" \
+						        --wait \
+						        soa-kubernetes-operator \
+						        kubernetes/charts/soa-kubernetes-operator
 						else
 							helm install kubernetes/charts/soa-kubernetes-operator \
 								--name soa-kubernetes-operator \
-								--namespace soa-ns-9 \
-								--set image=cisystem.docker.oraclecorp.com/soa-operator-image:2.1 \
-								--set serviceAccount=soa-operator-sa \
+								--set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 \
+								--namespace ${SOA_OPERATOR_NS} \
+								--set serviceAccount=${SOA_OPERATOR_SA} \
 								--set "domainNamespaces={}" \
 								--wait
 						fi
 						'''
 
-						sh label: 'verify operator', script: '''
-						kubectl get pods -n soa-ns-9
-						kubectl logs -n soa-ns-9 -c weblogic-operator deployments/weblogic-operator
+						sh label: 'verify soa operator', script: '''
+						kubectl get pods -n ${SOA_OPERATOR_NS}
+						kubectl logs -n ${SOA_OPERATOR_NS} -c weblogic-operator deployments/weblogic-operator
 						'''
                     }
                 }
             }
         }
-        stage('deploy soa operator') {
-            steps {
-                container('jnlp') {
-                    git branch: 'master',
-							credentialsId: 'sandeep.zachariah.ssh',
-                            url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
 
-                    sh 'export KUBECONFIG=${KUBECONFIG}'
-
-                    
-                }
-            }
-        }
-
-        stage('deploy soa domain in pv') {
-            steps {
-                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
-                                  usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
-                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
-                                  usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
-                    container('dind') {
-                        git branch: 'master',
-								url: 'https://orahub.oraclecorp.com/tooling/soa-kubernetes-operator'
-                                
-
-                        sh label: 'setup env', script: '''
-                        export KUBECONFIG=${KUBECONFIG}
-                        '''
-
-                        sh label: 'upgrade helm', script: '''
-						
-						kubectl create namespace soans
-						
-                        helm upgrade \
-                            --reuse-values \
-                            --set "domainNamespaces={soans}" \
-                            --wait \
-                            soa-kubernetes-operator \
-                            kubernetes/charts/soa-kubernetes-operator
-                        '''
-
-                        sh label: 'set domain secret', script: '''
-                         retVal=`echo \\`kubectl get secret $SOA_DOMAIN_NAME-domain-credentials -n soans\\``
-                         if [[ "$retVal" == *"not found"* ]]; then
-                            kubernetes/samples/scripts/create-domain-credentials.sh -u weblogic -p Welcome1 -n soans -d soainfra -s soainfra-domain-credentials
-                         fi
-                        '''
-						
-						sh label: 'prepare pv and pvc files', script: '''
-                        cd kubernetes/samples/scripts/create-soa-domain-pv-pvc                  
-                        cp create-pv-pvc-inputs.yaml create-pv-pvc-inputs.yaml.orig
-                        cat create-pv-pvc-inputs.yaml
-
-						sed -i "s#baseName: weblogic-sample#baseName: domain#g" create-pv-pvc-inputs.yaml 
-                        '''
-						sh label: 'create vloume', script: '''
-                        cd kubernetes/samples/scripts/create-soa-domain-pv-pvc
-                        ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
-
-                        cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soainfra-domain-pv.yaml ${WORKSPACE}
-						cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soainfra-domain-pvc.yaml ${WORKSPACE}
-                        cat ${WORKSPACE}/soainfra-domain-pv.yaml
-						cat ${WORKSPACE}/soainfra-domain-pvc.yaml
-                    
-                        kubectl create -f soainfra-domain-pv.yaml -n soans 
-						kubectl create -f soainfra-domain-pvc.yaml -n soans
-                        
-                        kubectl describe pv soainfra-domain-pv -n soans
-                        kubectl describe pvc soainfra-domain-pvc -n soans
-                        '''
-
-                        sh label: 'prepare domain files', script: '''
-                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
-                        cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
-						cp create-domain-job-template.yaml create-domain-job-template.yaml.orig
-                        cat create-domain-inputs.yaml
-
-                        sed -i "s#managedServerNameBase: soa_server1#managedServerNameBase: soa_server#g" create-domain-inputs.yaml                  
-                        sed -i "s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: soainfra-weblogic-sample-pvc#g" create-domain-inputs.yaml
-						sed -i "s#image: oracle/soa:12.2.1.3#image: container-registry.oracle.com/middleware/soasuite:12.2.1.3#g" create-domain-inputs.yaml  
-                        '''
-						
-						sh label: 'Create DB', script: '''
-                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
-                        cp soadb.yaml soadb.yaml.orig
-						cat soadb.yaml
-						
-						sed -i "s#image: oracle/database:12.2.0.1#image: container-registry.oracle.com/database/enterprise:12.2.0.1#g" soadb.yaml 
-						
-						kubectl apply -f soadb.yaml
-						
-                        kubectl get pods,svc -n soans |grep soadb
-						kubectl logs soadb-0 -n soans
-                        '''
-
-                        sh label: 'create domain', script: '''
-                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
-                        ./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
-
-                        cp ${WORKSPACE}/soa-operator-output-directory/soa-domains/soainfra/domain.yaml ${WORKSPACE}
-                        cat ${WORKSPACE}/domain.yaml
-                    
-                        kubectl apply -f ${WORKSPACE}/domain.yaml
-                        
-                        kubectl get all,domains -n soans
-                        kubectl logs soainfra-adminserver -n soans
-						kubectl logs soainfra-soa-server1 -n soans
-                        '''
-                    }
-                }
-            }
-        }
-
-        stage('deploy tools') {
-            steps {
-                container(name: 'jnlp') {
-                    git branch: 'master',
-                            credentialsId: 'jaya.selvaraj.ssh',
-                            url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
-
-                    sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
-
-                    sh label: 'generate test props', script: '''
-                    cat <<EOF > ${WORKSPACE}/test.props
-SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
-SELENIUM_HUB_PORT=4444
-WLS_ADMIN_SERVER_HOST=$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME
-WLS_ADMIN_SERVER_PORT=7001
-WLS_CLUSTER_HOST=$SOA_DOMAIN_NAME-cluster-cluster-1.$SOA_DOMAIN_NAME
-WLS_CLUSTER_PORT=8001
-WLS_ADMIN_USERNAME=weblogic
-WLS_ADMIN_PASSWORD=Welcome1
-ADMIN_SERVER=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7001/console
-ADMIN_SERVER-EM=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7001/em
-MANAGED_SERVER-WEBLOGIC-READY=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/weblogic/ready
-MANAGED_SERVER-SOA-INFRA=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/soa-infra
-MANAGED_SERVER-SOA-COMPOSER=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/soa/composer
-MANAGED_SERVER-INT-WORKLIST=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/integration/worklistapp
-EOF
-                    
-                    cat ${WORKSPACE}/test.props
-                    '''
-                }
-            }
-        }
-
-        stage('execute tests') {
-            parallel {
-                stage('build and run maven test') {
-                    steps {
-                        container('jnlp') {
-                            git branch: 'master',
-                                    credentialsId: 'sandeep.zachariah.ssh',
-                                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
-
-                            sh label: 'execute tests', script: '''
-                            sleep 120
-                            mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/test.props
-                            '''
-                        }
-                    }
-                }
-            }
-        }
+//        stage('deploy soa domain in pv') {
+//            steps {
+//                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
+//                                  usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
+//                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
+//                                  usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
+//                    container('dind') {
+//                        git branch: 'master',
+//								url: 'https://orahub.oraclecorp.com/tooling/soa-kubernetes-operator'
+//
+//
+//                        sh label: 'setup env', script: '''
+//                        export KUBECONFIG=${KUBECONFIG}
+//                        '''
+//
+//                        sh label: 'upgrade helm', script: '''
+//
+//						kubectl create namespace soans
+//
+//                        helm upgrade \
+//                            --reuse-values \
+//                            --set "domainNamespaces={soans}" \
+//                            --wait \
+//                            soa-kubernetes-operator \
+//                            kubernetes/charts/soa-kubernetes-operator
+//                        '''
+//
+//                        sh label: 'set domain secret', script: '''
+//                         retVal=`echo \\`kubectl get secret $SOA_DOMAIN_NAME-domain-credentials -n soans\\``
+//                         if [[ "$retVal" == *"not found"* ]]; then
+//                            kubernetes/samples/scripts/create-domain-credentials.sh -u weblogic -p Welcome1 -n soans -d soainfra -s soainfra-domain-credentials
+//                         fi
+//                        '''
+//
+//						sh label: 'prepare pv and pvc files', script: '''
+//                        cd kubernetes/samples/scripts/create-soa-domain-pv-pvc
+//                        cp create-pv-pvc-inputs.yaml create-pv-pvc-inputs.yaml.orig
+//                        cat create-pv-pvc-inputs.yaml
+//
+//						sed -i "s#baseName: weblogic-sample#baseName: domain#g" create-pv-pvc-inputs.yaml
+//                        '''
+//						sh label: 'create vloume', script: '''
+//                        cd kubernetes/samples/scripts/create-soa-domain-pv-pvc
+//                        ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
+//
+//                        cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soainfra-domain-pv.yaml ${WORKSPACE}
+//						cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soainfra-domain-pvc.yaml ${WORKSPACE}
+//                        cat ${WORKSPACE}/soainfra-domain-pv.yaml
+//						cat ${WORKSPACE}/soainfra-domain-pvc.yaml
+//
+//                        kubectl create -f soainfra-domain-pv.yaml -n soans
+//						kubectl create -f soainfra-domain-pvc.yaml -n soans
+//
+//                        kubectl describe pv soainfra-domain-pv -n soans
+//                        kubectl describe pvc soainfra-domain-pvc -n soans
+//                        '''
+//
+//                        sh label: 'prepare domain files', script: '''
+//                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
+//                        cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
+//						cp create-domain-job-template.yaml create-domain-job-template.yaml.orig
+//                        cat create-domain-inputs.yaml
+//
+//                        sed -i "s#managedServerNameBase: soa_server1#managedServerNameBase: soa_server#g" create-domain-inputs.yaml
+//                        sed -i "s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: soainfra-weblogic-sample-pvc#g" create-domain-inputs.yaml
+//						sed -i "s#image: oracle/soa:12.2.1.3#image: container-registry.oracle.com/middleware/soasuite:12.2.1.3#g" create-domain-inputs.yaml
+//                        '''
+//
+//						sh label: 'Create DB', script: '''
+//                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
+//                        cp soadb.yaml soadb.yaml.orig
+//						cat soadb.yaml
+//
+//						sed -i "s#image: oracle/database:12.2.0.1#image: container-registry.oracle.com/database/enterprise:12.2.0.1#g" soadb.yaml
+//
+//						kubectl apply -f soadb.yaml
+//
+//                        kubectl get pods,svc -n soans |grep soadb
+//						kubectl logs soadb-0 -n soans
+//                        '''
+//
+//                        sh label: 'create domain', script: '''
+//                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
+//                        ./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
+//
+//                        cp ${WORKSPACE}/soa-operator-output-directory/soa-domains/soainfra/domain.yaml ${WORKSPACE}
+//                        cat ${WORKSPACE}/domain.yaml
+//
+//                        kubectl apply -f ${WORKSPACE}/domain.yaml
+//
+//                        kubectl get all,domains -n soans
+//                        kubectl logs soainfra-adminserver -n soans
+//						kubectl logs soainfra-soa-server1 -n soans
+//                        '''
+//                    }
+//                }
+//            }
+//        }
+//
+//        stage('deploy tools') {
+//            steps {
+//                container(name: 'jnlp') {
+//                    git branch: 'master',
+//                            credentialsId: 'jaya.selvaraj.ssh',
+//                            url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
+//
+//                    sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
+//
+//                    sh label: 'generate test props', script: '''
+//                    cat <<EOF > ${WORKSPACE}/test.props
+//SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
+//SELENIUM_HUB_PORT=4444
+//WLS_ADMIN_SERVER_HOST=$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME
+//WLS_ADMIN_SERVER_PORT=7001
+//WLS_CLUSTER_HOST=$SOA_DOMAIN_NAME-cluster-cluster-1.$SOA_DOMAIN_NAME
+//WLS_CLUSTER_PORT=8001
+//WLS_ADMIN_USERNAME=weblogic
+//WLS_ADMIN_PASSWORD=Welcome1
+//ADMIN_SERVER=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7001/console
+//ADMIN_SERVER-EM=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7001/em
+//MANAGED_SERVER-WEBLOGIC-READY=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/weblogic/ready
+//MANAGED_SERVER-SOA-INFRA=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/soa-infra
+//MANAGED_SERVER-SOA-COMPOSER=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/soa/composer
+//MANAGED_SERVER-INT-WORKLIST=http://$SOA_DOMAIN_NAME-admin-server.$SOA_DOMAIN_NAME:7003/integration/worklistapp
+//EOF
+//
+//                    cat ${WORKSPACE}/test.props
+//                    '''
+//                }
+//            }
+//        }
+//
+//        stage('execute tests') {
+//            parallel {
+//                stage('build and run maven test') {
+//                    steps {
+//                        container('jnlp') {
+//                            git branch: 'master',
+//                                    credentialsId: 'sandeep.zachariah.ssh',
+//                                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-wlstests.git'
+//
+//                            sh label: 'execute tests', script: '''
+//                            sleep 120
+//                            #mvn test -Dtest=SOAsanityTest -Dtest.properties=${WORKSPACE}/test.props
+//                            '''
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     post {
         always {
             container(name: 'jnlp') {
-                sh label: 'clean weblogic domain', script: '''
-                kubectl delete domain $SOA_DOMAIN_NAME -n soans
-                kubectl delete secret $SOA_DOMAIN_NAME-domain-credentials -n soans
-                kubectl delete pvc $SOA_DOMAIN_NAME-domain-pvc -n soans
-                kubectl delete all --all -n soans --force --grace-period=0		
-                '''
-
-                sh label: 'clean weblogic operator', script: '''
-                retVal=`echo \\`helm ls soa-kubernetes-operator\\``
-                if [[ !  -z  "$retVal" ]]; then
-                    helm delete --purge soa-kubernetes-operator
-                fi
+                sh label: 'clean soa domain', script: '''
+                echo cleanup
                 '''
             }
         }
