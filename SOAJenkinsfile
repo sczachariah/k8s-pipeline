@@ -34,8 +34,8 @@ pipeline {
                         helm init
                         '''
 
-                        sh label: 'build soa operator image', script: '''											
-						cd soa-kubernetes-operator
+                        sh label: 'build soa operator image', script: '''
+                        ls										
                         docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
 						
 						docker pull container-registry.oracle.com/java/serverjre:latest
