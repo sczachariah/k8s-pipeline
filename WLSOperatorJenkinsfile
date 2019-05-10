@@ -7,7 +7,7 @@ pipeline {
         }
     }
     environment {
-        KUBECONFIG = credentials('admin.ci.kubeconfig')
+        KUBECONFIG = credentials('docker-for-desktop-cluster.kubeconfig')
         WLS_DOMAIN_NAME = 'wls-domain1'
     }
     stages {
