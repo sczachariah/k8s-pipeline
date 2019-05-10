@@ -31,55 +31,53 @@ pipeline {
                         export KUBECONFIG=${KUBECONFIG}
                         #kubectl create ns ${SOA_OPERATOR_NS}
                         #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS} 
-                        #helm init
+                        helm init
                         '''
 
-                        sh label: 'build soa operator image', script: '''
-						#git clone https://orahub.oraclecorp.com/tooling/soa-kubernetes-operator
-											
-						#cd soa-kubernetes-operator
-                        #docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+                        sh label: 'build soa operator image', script: '''											
+						cd soa-kubernetes-operator
+                        docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
 						
-						#docker pull container-registry.oracle.com/java/serverjre:latest
-						#docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
+						docker pull container-registry.oracle.com/java/serverjre:latest
+						docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
 						
-						#docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
-						#docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
+						docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
+						docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
 						
 
-						#docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
+						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
 						'''
 
                         sh label: 'push soa operator image', script: '''
-						#docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
-						#docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
-						#docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
+						docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
+						docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+						docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
                         '''
 
                         sh label: 'deploy soa operator', script: '''
-						#retVal=`echo \\`helm ls soa-kubernetes-operator\\``
+						retVal=`echo \\`helm ls soa-kubernetes-operator\\``
 
-						#if [[ !  -z  "$retVal" ]]; then
-						#    helm upgrade \
-						#        --reuse-values \
-						#        --set "domainNamespaces={$SOA_DOMAIN_NAME}" \
-						#        --wait \
-						#        soa-kubernetes-operator \
-						#        kubernetes/charts/soa-kubernetes-operator
-						#else
-						#	helm install kubernetes/charts/soa-kubernetes-operator \
-						#		--name soa-kubernetes-operator \
-						#		--set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 \
-						#		--namespace ${SOA_OPERATOR_NS} \
-						#		--set serviceAccount=${SOA_OPERATOR_SA} \
-						#		--set "domainNamespaces={}" \
-						#		--wait
-						#fi
+						if [[ !  -z  "$retVal" ]]; then
+						    helm upgrade \
+						        --reuse-values \
+						        --set "domainNamespaces={$SOA_DOMAIN_NAME}" \
+						        --wait \
+						        soa-kubernetes-operator \
+						        kubernetes/charts/soa-kubernetes-operator
+						else
+							helm install kubernetes/charts/soa-kubernetes-operator \
+								--name soa-kubernetes-operator \
+								--set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 \
+								--namespace ${SOA_OPERATOR_NS} \
+								--set serviceAccount=${SOA_OPERATOR_SA} \
+								--set "domainNamespaces={}" \
+								--wait
+						fi
 						'''
 
                         sh label: 'verify soa operator', script: '''
-						#kubectl get pods -n ${SOA_OPERATOR_NS}
-						#kubectl logs -n ${SOA_OPERATOR_NS} -c weblogic-operator deployments/weblogic-operator
+						kubectl get pods -n ${SOA_OPERATOR_NS}
+						kubectl logs -n ${SOA_OPERATOR_NS} -c weblogic-operator deployments/weblogic-operator
 						'''
                     }
                 }
