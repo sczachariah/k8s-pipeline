@@ -108,6 +108,19 @@ pipeline {
                             kubernetes/charts/soa-kubernetes-operator
                         '''
 
+                        sh label: 'setup db', script: '''
+                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
+                        cp soadb.yaml soadb.yaml.orig
+						cat soadb.yaml
+
+						#sed -i "s#image: oracle/database:12.2.0.1#image: container-registry.oracle.com/database/enterprise:12.2.0.1#g" soadb.yaml
+
+						#kubectl apply -f soadb.yaml
+
+                        #kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
+						#kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
+                        '''
+
                         sh label: 'configure domain secrets', script: '''
                          retVal=`echo \\`kubectl get secret ${SOA_DOMAIN_NAME}-domain-credentials -n ${SOA_DOMAIN_NS}\\``
                          if [[ "$retVal" == *"not found"* ]]; then
@@ -119,12 +132,12 @@ pipeline {
                         cd kubernetes/samples/scripts/create-soa-domain-pv-pvc
                         cp create-pv-pvc-inputs.yaml create-pv-pvc-inputs.yaml.orig
 
+						sed -i "s#baseName: domain#baseName: ${SOA_DOMAIN_NS}#g" create-pv-pvc-inputs.yaml
 						sed -i "s#domainUID: soainfra#domainUID: ${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
 						sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" create-pv-pvc-inputs.yaml
 						sed -i "s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: /scratch/u01/DockerVolume/${SOA_DOMAIN_NS}/${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
                         cat create-pv-pvc-inputs.yaml
                         
-                        cat create-pv-pvc.sh
                         ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
 
                         cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soainfra-domain-pv.yaml ${WORKSPACE}
@@ -139,10 +152,27 @@ pipeline {
                         #kubectl describe pvc soainfra-domain-pvc -n ${SOA_DOMAIN_NS}
                         '''
 
-                        sh label: 'setup db', script: '''
-                        '''
-
                         sh label: 'create domain in pv', script: '''
+                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
+                        cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
+                        cp create-domain-job-template.yaml create-domain-job-template.yaml.orig
+                        cat create-domain-inputs.yaml
+
+                        sed -i "s#managedServerNameBase: soa_server1#managedServerNameBase: soa_server#g" create-domain-inputs.yaml
+                        sed -i "s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc#g" create-domain-inputs.yaml
+                        sed -i "s#image: oracle/soa:12.2.1.3#image: container-registry.oracle.com/middleware/soasuite:12.2.1.3#g" create-domain-inputs.yaml
+                        cat create-domain-inputs.yaml
+                        
+                        #./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
+
+                        #cp ${WORKSPACE}/soa-operator-output-directory/soa-domains/soainfra/domain.yaml ${WORKSPACE}
+                        #cat ${WORKSPACE}/domain.yaml
+
+                        #kubectl apply -f ${WORKSPACE}/domain.yaml
+
+                        #kubectl get all,domains -n ${SOA_DOMAIN_NS}
+                        #kubectl logs soainfra-adminserver -n ${SOA_DOMAIN_NS}
+                        #kubectl logs soainfra-soa-server1 -n ${SOA_DOMAIN_NS}
                         '''
                     }
                 }
