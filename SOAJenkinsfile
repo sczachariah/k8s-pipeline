@@ -31,12 +31,11 @@ pipeline {
                         export KUBECONFIG=${KUBECONFIG}
                         #kubectl create ns ${SOA_OPERATOR_NS}
                         #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS}
-                        kubectl create ns ${SOA_DOMAIN_NS}
+                        #kubectl create ns ${SOA_DOMAIN_NS}
                         helm init
                         '''
 
-                        sh label: 'build soa operator image', script: '''
-                        ls										
+                        sh label: 'build soa operator image', script: '''							
                         #docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
 						
 						#docker pull container-registry.oracle.com/java/serverjre:latest
@@ -93,7 +92,8 @@ pipeline {
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                     container('dind') {
                         git branch: 'master',
-                                url: 'https://github.com/oracle/weblogic-kubernetes-operator'
+                                credentialsId: 'sandeep.zachariah.ssh',
+                                url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
