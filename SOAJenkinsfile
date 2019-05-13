@@ -60,7 +60,7 @@ pipeline {
 						if [[ !  -z  "$retVal" ]]; then
 						    helm upgrade \
 						        --reuse-values \
-						        --set "domainNamespaces={$SOA_DOMAIN_NAME}" \
+						        --set "domainNamespaces={$SOA_DOMAIN_NS}" \
 						        --wait \
 						        soa-kubernetes-operator \
 						        kubernetes/charts/soa-kubernetes-operator
@@ -96,13 +96,13 @@ pipeline {
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
-                        #kubectl create ns ${SOA_DOMAIN_NS}
+                        kubectl create ns ${SOA_DOMAIN_NS}
                         '''
 
                         sh label: 'upgrade helm', script: '''
                         helm upgrade \
                             --reuse-values \
-                            --set "domainNamespaces={$SOA_DOMAIN_NAME}" \
+                            --set "domainNamespaces={$SOA_DOMAIN_NS}" \
                             --wait \
                             soa-kubernetes-operator \
                             kubernetes/charts/soa-kubernetes-operator
