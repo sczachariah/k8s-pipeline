@@ -26,7 +26,7 @@ pipeline {
     stages {
         stage('build and deploy soa operator') {
             steps {
-                log('INFO', 'Starting SOA pipeline with runId ${RUN_SUFFIX} and '+ this.binding.getVariable('BUILD_NUMBER'))
+                log('INFO', 'Starting SOA pipeline with runId ${RUN_SUFFIX}')
 
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
