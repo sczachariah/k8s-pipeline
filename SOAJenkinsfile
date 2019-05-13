@@ -27,13 +27,20 @@ pipeline {
                                 credentialsId: 'sandeep.zachariah.ssh',
                                 url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
 
-                        sh label: 'setup env', script: '''
-                        export KUBECONFIG=${KUBECONFIG}
-                        #kubectl create ns ${SOA_OPERATOR_NS}
-                        #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS}
-                        #kubectl create ns ${SOA_DOMAIN_NS}
-                        helm init
-                        '''
+                        try {
+                            sh label: 'setup env', script: '''
+                            export KUBECONFIG=${KUBECONFIG}
+                            kubectl create ns ${SOA_OPERATOR_NS}
+                            kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS}
+                            kubectl create ns ${SOA_DOMAIN_NS}
+                            '''
+                        }
+                        catch (exc) {
+                            echo 'Namespace already exist. Proceeding!'
+                        }
+                        finally {
+                            sh 'helm init'
+                        }
 
                         sh label: 'build soa operator image', script: '''							
                         #docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
