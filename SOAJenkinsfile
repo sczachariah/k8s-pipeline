@@ -140,16 +140,16 @@ pipeline {
                         
                         ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
 
-                        cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soainfra-domain-pv.yaml ${WORKSPACE}
-						cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soainfra-domain-pvc.yaml ${WORKSPACE}
-                        cat ${WORKSPACE}/soainfra-domain-pv.yaml
-						cat ${WORKSPACE}/soainfra-domain-pvc.yaml
+                        cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml ${WORKSPACE}
+						cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml ${WORKSPACE}
+                        cat ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml
+						cat ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml
 
-                        #kubectl apply -f ${WORKSPACE}/soainfra-domain-pv.yaml -n ${SOA_DOMAIN_NS}
-						#kubectl apply -f ${WORKSPACE}/soainfra-domain-pvc.yaml -n ${SOA_DOMAIN_NS}
+                        #kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml -n ${SOA_DOMAIN_NS}
+						#kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml -n ${SOA_DOMAIN_NS}
 
-                        #kubectl describe pv soainfra-domain-pv -n ${SOA_DOMAIN_NS}
-                        #kubectl describe pvc soainfra-domain-pvc -n ${SOA_DOMAIN_NS}
+                        #kubectl describe pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
+                        #kubectl describe pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
                         '''
 
                         sh label: 'create domain in pv', script: '''
