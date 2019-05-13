@@ -10,7 +10,7 @@ pipeline {
     environment {
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         SOA_OPERATOR_NS = 'sczachar-soa-operator-ns'
-        SOA_OPERATOR_SA = 'soa-operator-sa'
+        SOA_OPERATOR_SA = 'default'
         SOA_DOMAIN_NAME = 'soainfra'
         SOA_DOMAIN_NS = 'sczachar-soainfra'
     }
@@ -118,9 +118,7 @@ pipeline {
                         sh label: 'prepare persistent volume', script: '''
                         cd kubernetes/samples/scripts/create-soa-domain-pv-pvc
                         cp create-pv-pvc-inputs.yaml create-pv-pvc-inputs.yaml.orig
-                        cat create-pv-pvc-inputs.yaml
 
-						#sed -i "s#baseName: domain#baseName: ${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
 						sed -i "s#domainUID: soainfra#domainUID: ${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
 						sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" create-pv-pvc-inputs.yaml
 						sed -i "s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: /scratch/u01/DockerVolume/${SOA_DOMAIN_NS}/${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
