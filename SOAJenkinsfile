@@ -10,6 +10,7 @@ pipeline {
     }
 
     environment {
+        RUN_SUFFIX = uniqueId()
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         SOA_OPERATOR_NS = 'sczachar-soa-operator-ns'
         SOA_OPERATOR_SA = 'default'
