@@ -1,5 +1,8 @@
 @Library('fmwk8s-pipeline-library') _
 
+
+import static com.oracle.fmwk8s.common.Common.getUniqueId
+
 pipeline {
     agent {
         kubernetes {
@@ -10,7 +13,7 @@ pipeline {
     }
 
     environment {
-        RUN_SUFFIX = uniqueId()
+        RUN_SUFFIX = getUniqueId()
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         SOA_OPERATOR_NS = 'sczachar-soa-operator-ns'
         SOA_OPERATOR_SA = 'default'
@@ -22,7 +25,7 @@ pipeline {
     stages {
         stage('build and deploy soa operator') {
             steps {
-                log('INFO', 'Starting SOA pipeline')
+                log('INFO', 'Starting SOA pipeline with runId ${RUN_SUFFIX}')
 
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
