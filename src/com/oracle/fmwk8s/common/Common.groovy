@@ -7,7 +7,7 @@ class Common {
         def date = new Date()
         def sdf = new SimpleDateFormat("MMddHHmmss")
 
-        def buildNumber = System.getenv("BUILD_NUMBER")
+        def buildNumber = evaluate("BUILD_NUMBER")
         def uniqueId = sdf.format(date) + "." + buildNumber
 
         return uniqueId
