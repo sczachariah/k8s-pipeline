@@ -21,8 +21,7 @@ pipeline {
     stages {
         stage('build and deploy soa operator') {
             steps {
-                log level: 'INFO',
-                        message: 'Starting SOA pipeline'
+                log('INFO', 'Starting SOA pipeline')
 
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
