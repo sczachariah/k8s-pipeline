@@ -30,7 +30,8 @@ pipeline {
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
                         #kubectl create ns ${SOA_OPERATOR_NS}
-                        #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS} 
+                        #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS}
+                        kubectl create ns ${SOA_DOMAIN_NS}
                         helm init
                         '''
 
@@ -96,7 +97,6 @@ pipeline {
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
-                        kubectl create ns ${SOA_DOMAIN_NS}
                         '''
 
                         sh label: 'upgrade helm', script: '''
