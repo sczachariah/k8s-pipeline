@@ -1,4 +1,4 @@
-@Library('fmwk8s-pipeline-library')_
+@Library('fmwk8s-pipeline-library') _
 
 pipeline {
     agent {
@@ -21,7 +21,8 @@ pipeline {
     stages {
         stage('build and deploy soa operator') {
             steps {
-                log.info 'Starting SOA pipeline'
+                log level: 'INFO',
+                        message: 'Starting SOA pipeline'
 
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
