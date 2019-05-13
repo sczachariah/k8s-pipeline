@@ -124,7 +124,8 @@ pipeline {
 						sed -i "s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: /scratch/u01/DockerVolume/${SOA_DOMAIN_NS}/${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
                         cat create-pv-pvc-inputs.yaml
                         
-                        sh create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
+                        cat create-pv-pvc.sh
+                        ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
 
                         cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soainfra-domain-pv.yaml ${WORKSPACE}
 						cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/soainfra-domain-pvc.yaml ${WORKSPACE}
