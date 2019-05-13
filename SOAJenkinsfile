@@ -18,6 +18,10 @@ pipeline {
     stages {
         stage('build and deploy soa operator') {
             steps {
+                script {
+                    log.info 'Starting SOA pipeline'
+                }
+
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
                                  [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
