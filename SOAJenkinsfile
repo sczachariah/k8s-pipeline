@@ -1,7 +1,8 @@
 @Library('fmwk8s-pipeline-library') _
 
 
-import static com.oracle.fmwk8s.common.Common.getUniqueId
+import com.oracle.fmwk8s.common.Common
+
 
 pipeline {
     agent {
@@ -13,7 +14,7 @@ pipeline {
     }
 
     environment {
-        RUN_SUFFIX = getUniqueId()
+        RUN_SUFFIX = Common.getUniqueId()
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         SOA_OPERATOR_NS = 'sczachar-soa-operator-ns'
         SOA_OPERATOR_SA = 'default'
