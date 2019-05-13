@@ -1,3 +1,5 @@
+@Library('fmwk8s-pipeline-library')_
+
 pipeline {
     agent {
         kubernetes {
@@ -19,8 +21,7 @@ pipeline {
     stages {
         stage('build and deploy soa operator') {
             steps {
-                library 'fmwk8s-pipeline-library'
-                
+
                 script {
                     log.info 'Starting SOA pipeline'
                 }
