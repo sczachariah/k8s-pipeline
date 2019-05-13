@@ -36,22 +36,22 @@ pipeline {
 
                         sh label: 'build soa operator image', script: '''
                         ls										
-                        docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+                        #docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
 						
-						docker pull container-registry.oracle.com/java/serverjre:latest
-						docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
+						#docker pull container-registry.oracle.com/java/serverjre:latest
+						#docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
 						
-						docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
-						docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
+						#docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
+						#docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
 						
 
-						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
+						#docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
 						'''
 
                         sh label: 'push soa operator image', script: '''
-						docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
-						docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
-						docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
+						#docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
+						#docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+						#docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
                         '''
 
                         sh label: 'deploy soa operator', script: '''
@@ -86,23 +86,51 @@ pipeline {
 
         stage('deploy soa domain in pv') {
             steps {
-                sh label: 'setup env', script: '''
-                '''
+                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
+                                  usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
+                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
+                                  usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
+                    container('dind') {
+                        git branch: 'master',
+                                url: 'https://github.com/oracle/weblogic-kubernetes-operator'
 
-                sh label: 'upgrade helm', script: '''
-                '''
+                        sh label: 'setup env', script: '''
+                        export KUBECONFIG=${KUBECONFIG}
+                        #kubectl create ns ${SOA_DOMAIN_NS}
+                        '''
 
-                sh label: 'configure domain secrets', script: '''
-                '''
+                        sh label: 'upgrade helm', script: '''
+                        helm upgrade \
+                            --reuse-values \
+                            --set "domainNamespaces={$SOA_DOMAIN_NAME}" \
+                            --wait \
+                            soa-kubernetes-operator \
+                            kubernetes/charts/soa-kubernetes-operator
+                        '''
 
-                sh label: 'prepare persistent volume', script: '''
-                '''
+                        sh label: 'configure domain secrets', script: '''
+                         retVal=`echo \\`kubectl get secret ${SOA_DOMAIN_NAME}-domain-credentials -n ${SOA_DOMAIN_NS}\\``
+                         if [[ "$retVal" == *"not found"* ]]; then
+                            kubernetes/samples/scripts/create-domain-credentials.sh -u weblogic -p Welcome1 -n ${SOA_DOMAIN_NS} -d ${SOA_DOMAIN_NAME} -s ${SOA_DOMAIN_NAME}-domain-credentials
+                         fi
+                        '''
 
-                sh label: 'setup db', script: '''
-                '''
+                        sh label: 'prepare persistent volume', script: '''
+                        cd kubernetes/samples/scripts/create-soa-domain-pv-pvc
+                        cp create-pv-pvc-inputs.yaml create-pv-pvc-inputs.yaml.orig
+                        cat create-pv-pvc-inputs.yaml
 
-                sh label: 'create domain in pv', script: '''
-                '''
+						sed -i "s#baseName: weblogic-sample#baseName: ${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
+                        '''
+
+
+                        sh label: 'setup db', script: '''
+                        '''
+
+                        sh label: 'create domain in pv', script: '''
+                        '''
+                    }
+                }
             }
         }
 
