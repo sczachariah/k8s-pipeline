@@ -8,11 +8,11 @@ pipeline {
     }
 
     environment {
-        KUBECONFIG = credentials('admin.ci.kubeconfig')
-        SOA_OPERATOR_NS = 'soa-operator-ns-1'
+        KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
+        SOA_OPERATOR_NS = 'sczachar-soa-operator-ns'
         SOA_OPERATOR_SA = 'soa-operator-sa'
         SOA_DOMAIN_NAME = 'soainfra'
-        SOA_DOMAIN_NS = 'soainfra'
+        SOA_DOMAIN_NS = 'sczachar-soainfra'
     }
 
     stages {
@@ -29,8 +29,8 @@ pipeline {
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
-                        #kubectl create ns ${SOA_OPERATOR_NS}
-                        #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS} 
+                        kubectl create ns ${SOA_OPERATOR_NS}
+                        kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS} 
                         helm init
                         '''
 
