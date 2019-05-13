@@ -17,9 +17,8 @@ pipeline {
 
 
     stages {
-        library 'fmwk8s-pipeline-library'
-
         stage('build and deploy soa operator') {
+            library 'fmwk8s-pipeline-library'
             steps {
                 script {
                     log.info 'Starting SOA pipeline'
@@ -95,6 +94,7 @@ pipeline {
         }
 
         stage('deploy soa domain in pv') {
+            library 'fmwk8s-pipeline-library'
             steps {
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
@@ -190,6 +190,7 @@ pipeline {
         }
 
         stage('deploy test tools') {
+            library 'fmwk8s-pipeline-library'
             steps {
                 sh label: 'setup env', script: '''
                 '''
@@ -200,6 +201,7 @@ pipeline {
         }
 
         stage('run tests') {
+            library 'fmwk8s-pipeline-library'
             parallel {
                 stage('verify soa ready') {
                     steps {
@@ -226,6 +228,7 @@ pipeline {
 
     post {
         always {
+            library 'fmwk8s-pipeline-library'
             container(name: 'jnlp') {
                 sh label: 'clean soa domain', script: '''
                 echo cleanup
