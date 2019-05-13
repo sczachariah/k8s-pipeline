@@ -109,7 +109,7 @@ pipeline {
                         '''
 
                         sh label: 'setup db', script: '''
-                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
+                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
                         cp soadb.yaml soadb.yaml.orig
 						cat soadb.yaml
 
@@ -153,7 +153,7 @@ pipeline {
                         '''
 
                         sh label: 'create domain in pv', script: '''
-                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/single-Managed-server
+                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
                         cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
                         cp create-domain-job-template.yaml create-domain-job-template.yaml.orig
                         cat create-domain-inputs.yaml
