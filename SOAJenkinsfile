@@ -15,12 +15,12 @@ pipeline {
         SOA_DOMAIN_NS = 'sczachar-soainfra'
     }
 
-    library 'fmwk8s-pipeline-library'
 
     stages {
+        library 'fmwk8s-pipeline-library'
+
         stage('build and deploy soa operator') {
             steps {
-
                 script {
                     log.info 'Starting SOA pipeline'
                 }
