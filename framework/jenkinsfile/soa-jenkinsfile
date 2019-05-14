@@ -140,7 +140,7 @@ pipeline {
                             echo "Should execute script"
                             #kubernetes/samples/scripts/create-soa-domain-credentials/create-soa-credentials.sh -u weblogic -p Welcome1 -n ${SOA_DOMAIN_NS} -d ${SOA_DOMAIN_NAME}
                          fi
-                         ls -ltr kubernetes/samples/scripts/create-soa-domain-credentials
+                         ls -ltr kubernetes/samples/scripts/create-soa-domain-credentials/
                         '''
 
                         sh label: 'prepare persistent volume', script: '''
