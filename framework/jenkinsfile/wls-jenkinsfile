@@ -107,7 +107,7 @@ pipeline {
                         cd kubernetes/samples/scripts/create-weblogic-domain/domain-home-in-image
                         ./create-domain.sh -u weblogic -p welcome1 -i create-domain-inputs.yaml -o ${WORKSPACE}/weblogic-operator-output-directory
 
-                        cp ${WORKSPACE}/weblogic-operator-output-directory/weblogic-domains/wls-domain1/domain.yaml ${WORKSPACE}
+                        cp ${WORKSPACE}/weblogic-operator-output-directory/weblogic-domains/${WLS_DOMAIN_NAME}/domain.yaml ${WORKSPACE}
                         cat ${WORKSPACE}/domain.yaml
                     
                         docker images
