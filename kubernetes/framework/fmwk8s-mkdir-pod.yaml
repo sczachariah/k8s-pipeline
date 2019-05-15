@@ -17,7 +17,7 @@ spec:
     - name: fmwk8s-mkdir
       image: k8s.gcr.io/busybox
       command: ["/bin/sh"]
-      args: ["-c", "mkdir -p /root/$NFS_DOMAIN_DIR"]
+      args: ["-c", "mkdir -p /root/$NFS_DOMAIN_DIR && chmod -R 777 /root/$NFS_DOMAIN_DIR"]
       securityContext:
         runAsUser: 756208
         allowPrivilegeEscalation: true
