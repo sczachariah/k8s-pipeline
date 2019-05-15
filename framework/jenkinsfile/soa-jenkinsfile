@@ -116,7 +116,7 @@ pipeline {
             }
         }
 
-        stage('provision soa environment') {
+        stage('prepare soa environment') {
             parallel {
                 stage('setup database') {
                     steps {
