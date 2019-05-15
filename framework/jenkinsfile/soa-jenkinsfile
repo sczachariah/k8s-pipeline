@@ -228,7 +228,7 @@ pipeline {
                                 kubectl describe pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
                                 '''
 
-                                sh label: 'create domain in pv', script: '''
+                                sh label: 'prepare domain in pv', script: '''
                                 cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
                                 cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
                                 cp create-domain-job-template.yaml create-domain-job-template.yaml.orig
