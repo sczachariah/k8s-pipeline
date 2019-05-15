@@ -42,7 +42,7 @@ pipeline {
                         export KUBECONFIG=${KUBECONFIG}
                         #kubectl create ns ${SOA_OPERATOR_NS}
                         #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS}
-                        #kubectl create ns ${SOA_DOMAIN_NS}
+                        kubectl create ns ${SOA_DOMAIN_NS}
                         
                         helm init
                         '''
@@ -129,10 +129,10 @@ pipeline {
 						sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" soadb.yaml
 						cat soadb.yaml
 
-						#kubectl apply -f soadb.yaml
-						#sleep 300
-                        #kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
-						#kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
+						kubectl apply -f soadb.yaml
+						sleep 300
+                        kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
+						kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
                         '''
 
                         sh label: 'configure domain secrets', script: '''
@@ -160,11 +160,11 @@ pipeline {
                         cat ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml
 						cat ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml
 
-                        #kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml -n ${SOA_DOMAIN_NS}
-						#kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml -n ${SOA_DOMAIN_NS}
+                        kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml -n ${SOA_DOMAIN_NS}
+						kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml -n ${SOA_DOMAIN_NS}
 
-                        #kubectl describe pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
-                        #kubectl describe pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
+                        kubectl describe pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
+                        kubectl describe pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
                         '''
 
                         sh label: 'create domain in pv', script: '''
@@ -182,17 +182,17 @@ pipeline {
                         sed -i "s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc#g" create-domain-inputs.yaml
                         cat create-domain-inputs.yaml
                         
-                        #./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
+                        ./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
 
-                        #cp ${WORKSPACE}/soa-operator-output-directory/soa-domains/soainfra/domain.yaml ${WORKSPACE}
-                        #cat ${WORKSPACE}/domain.yaml
+                        cp ${WORKSPACE}/soa-operator-output-directory/soa-domains/soainfra/domain.yaml ${WORKSPACE}
+                        cat ${WORKSPACE}/domain.yaml
 
-                        #kubectl apply -f ${WORKSPACE}/domain.yaml
-                        #sleep 300
+                        kubectl apply -f ${WORKSPACE}/domain.yaml
+                        sleep 300
 
-                        #kubectl get all,domains -n ${SOA_DOMAIN_NS}
-                        #kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
-                        #kubectl logs ${SOA_DOMAIN_NAME}-soa-server1 -n ${SOA_DOMAIN_NS}
+                        kubectl get all,domains -n ${SOA_DOMAIN_NS}
+                        kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
+                        kubectl logs ${SOA_DOMAIN_NAME}-soa-server1 -n ${SOA_DOMAIN_NS}
                         '''
                     }
                 }
@@ -214,6 +214,8 @@ pipeline {
                 stage('verify soa ready') {
                     steps {
                         sh label: 'setup env', script: '''
+                        echo "Running Tests"
+                        sleep 300
                         '''
                     }
                 }
