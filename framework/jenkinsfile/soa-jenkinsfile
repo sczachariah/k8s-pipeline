@@ -162,10 +162,11 @@ pipeline {
 						            sleep 60
 						            dbstat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep soadb\\``
 						        done
-						        #sleep 300
+						        echo "DB container is Running."
+						        sleep 300
 						        
                                 kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
-						        #kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
+						        kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
                                 '''
                             }
                         }
@@ -219,11 +220,11 @@ pipeline {
                                 cat ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml
 						        cat ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml
 
-                                #kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml -n ${SOA_DOMAIN_NS}
-						        #kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml -n ${SOA_DOMAIN_NS}
+                                kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml -n ${SOA_DOMAIN_NS}
+						        kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml -n ${SOA_DOMAIN_NS}
 
-                                #kubectl describe pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
-                                #kubectl describe pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
+                                kubectl describe pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
+                                kubectl describe pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
                                 '''
 
                                 sh label: 'create domain in pv', script: '''
@@ -239,6 +240,7 @@ pipeline {
                                 sed -i "s#exposeAdminT3Channel: false#exposeAdminT3Channel: true#g" create-domain-inputs.yaml
                                 sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" create-domain-inputs.yaml
                                 sed -i "s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc#g" create-domain-inputs.yaml
+                                sed -i "s#initialManagedServerReplicas: 2#initialManagedServerReplicas: 0#g" create-domain-inputs.yaml
                                 cat create-domain-inputs.yaml
                         
                                 #./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
