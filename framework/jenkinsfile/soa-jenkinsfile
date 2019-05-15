@@ -231,7 +231,7 @@ pipeline {
 						        sed -i "s#domainUID: soainfra#domainUID: ${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
 						        sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" create-pv-pvc-inputs.yaml
 						        sed -i "s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: ${NFS_DOMAIN_PATH}#g" create-pv-pvc-inputs.yaml
-						        #sed -i "s#weblogicDomainStorageReclaimPolicy: Retain#weblogicDomainStorageReclaimPolicy: Delete#g" create-pv-pvc-inputs.yaml
+						        sed -i "s#weblogicDomainStorageReclaimPolicy: Retain#weblogicDomainStorageReclaimPolicy: Recycle#g" create-pv-pvc-inputs.yaml
                                 cat create-pv-pvc-inputs.yaml
                         
                                 ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
