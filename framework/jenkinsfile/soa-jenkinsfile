@@ -22,7 +22,7 @@ pipeline {
         SOA_DOMAIN_NAME = 'soainfra'
         SOA_DOMAIN_NS = 'sczachar-soainfra' + "-${RUN_SUFFIX}"
         FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
-        NFS_DOMAIN_DIR = "${SOA_DOMAIN_NS}/${SOA_DOMAIN_NAME}"
+        NFS_DOMAIN_DIR = "${SOA_DOMAIN_NS}"
         NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
     }
 
