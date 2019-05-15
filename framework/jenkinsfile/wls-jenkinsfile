@@ -15,6 +15,7 @@ pipeline {
         RUN_SUFFIX = Common.getUniqueId(this)
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         WLS_OPERATOR_NS = 'wls-operator-ns' + "-${RUN_SUFFIX}"
+        WLS_OPERATOR_REL = "${RUN_SUFFIX}"
         WLS_DOMAIN_NAME = 'wlsdomain'
         WLS_DOMAIN_NS = 'wls-domain-ns' + "-${RUN_SUFFIX}"
     }
@@ -34,18 +35,18 @@ pipeline {
                     '''
 
                     sh label: 'deploy operator', script: '''
-                    retVal=`echo \\`helm ls wls-operator\\``
+                    retVal=`echo \\`helm ls ${WLS_OPERATOR_REL}\\``
 
                     if [[ !  -z  "$retVal" ]]; then
                         helm upgrade \
                             --reuse-values \
                             --set "domainNamespaces={$WLS_DOMAIN_NS}" \
                             --wait \
-                            wls-operator \
+                            ${WLS_OPERATOR_REL} \
                             kubernetes/charts/weblogic-operator
                     else
                         helm install kubernetes/charts/weblogic-operator \
-                            --name wls-operator \
+                            --name ${WLS_OPERATOR_REL} \
                             --namespace ${WLS_OPERATOR_NS} \
                             --set serviceAccount=default \
                             --set "domainNamespaces={}" \
@@ -79,13 +80,13 @@ pipeline {
                             --reuse-values \
                             --set "domainNamespaces={$WLS_DOMAIN_NS}" \
                             --wait \
-                            wls-operator \
+                            ${WLS_OPERATOR_REL} \
                             kubernetes/charts/weblogic-operator
                         '''
 
                         sh label: 'set domain secret', script: '''
-                         retVal=`echo \\`kubectl get secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NS\\``
-                         if [[ "$retVal" == *"not found"* ]]; then
+                         retVal=`echo \\`kubectl get secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NS 2>&1\\``
+                         if echo "$retVal" | grep -q "not found"; then
                             kubernetes/samples/scripts/create-weblogic-domain-credentials/create-weblogic-credentials.sh -u weblogic -p welcome1 -n $WLS_DOMAIN_NS -d $WLS_DOMAIN_NAME
                          fi
                         '''
@@ -190,21 +191,96 @@ EOF
     post {
         always {
             container(name: 'jnlp') {
-                sh label: 'clean weblogic domain', script: '''
-                kubectl delete domain $WLS_DOMAIN_NAME -n $WLS_DOMAIN_NS
-                kubectl delete configmaps --all -n $WLS_DOMAIN_NS
-                #kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NS
-                kubectl delete ns $WLS_DOMAIN_NS
-                '''
-
-                sh label: 'clean weblogic operator', script: '''
-                retVal=`echo \\`helm ls wls-operator\\``
-                if [[ !  -z  "$retVal" ]]; then
-                    helm delete --purge wls-operator
-                fi
-                kubectl delete configmaps --all -n $WLS_OPERATOR_NS
-                kubectl delete ns $WLS_OPERATOR_NS
-                '''
+                script {
+                    try {
+                        sh label: 'clean operator', script: '''
+                        helm delete --purge ${WLS_OPERATOR_REL}
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup operator failed!!."
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean domain pods and services', script: '''
+                        kubectl delete jobs --all -n ${WLS_DOMAIN_NS}
+                        kubectl delete services --all -n ${WLS_DOMAIN_NS}
+                        kubectl delete pods --all -n ${WLS_DOMAIN_NS}
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup domain pods and services failed!!"
+                    }
+                    finally {
+                        sleep 10
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean domain configmap and stateful sets', script: '''
+                        kubectl delete configmaps --all -n ${WLS_DOMAIN_NS}
+                        kubectl delete statefulsets --all -n ${WLS_DOMAIN_NS}
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup domain configmap and stateful sets failed!!"
+                    }
+                    finally {
+                        sleep 30
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean domain resource', script: '''
+                        kubectl delete domain ${WLS_DOMAIN_NAME} -n ${WLS_DOMAIN_NS}
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup domain resource failed!!"
+                    }
+                    finally {
+                        sleep 30
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean domain namespace', script: '''
+                        kubectl delete ns ${WLS_DOMAIN_NS}
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup domain namespace failed!!"
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean operator', script: '''
+                        helm delete --purge ${WLS_OPERATOR_REL}
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup operator failed!!."
+                    }
+                    finally {
+                        sleep 10
+                        sh label: 'clean operator namespace', script: '''
+                        kubectl delete configmaps --all -n ${WLS_OPERATOR_NS}
+                        '''
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean operator namespace', script: '''
+                        kubectl delete all --all -n ${WLS_OPERATOR_NS}
+                        sleep 10
+                        kubectl delete ns ${WLS_OPERATOR_NS}
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup operator namespace failed!!."
+                    }
+                }
             }
         }
     }
