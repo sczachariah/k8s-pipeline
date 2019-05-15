@@ -123,7 +123,7 @@ pipeline {
                                           usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
                                          [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
                                           usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
-                            container('jnlp') {
+                            container('dind') {
                                 git branch: 'master',
                                         credentialsId: 'sandeep.zachariah.ssh',
                                         url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
