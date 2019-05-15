@@ -240,20 +240,21 @@ pipeline {
                     }
                 }
             }
+        }
 
-            parallel {
-                stage('start soa domain') {
-                    steps {
-                        sh label: 'create domain in pv', script: '''
+        stage('start soa domain') {
+            steps {
+                sh label: 'create domain in pv', script: '''
                         #kubectl apply -f ${WORKSPACE}/domain.yaml
                         #sleep 300
+                        ls -ltr
+                        cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
+                        ls -ltr
                     
                         #kubectl get all,domains -n ${SOA_DOMAIN_NS}
                         #kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
                         #kubectl logs ${SOA_DOMAIN_NAME}-soa-server1 -n ${SOA_DOMAIN_NS}
                         '''
-                    }
-                }
             }
         }
 
