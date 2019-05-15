@@ -237,31 +237,44 @@ pipeline {
     post {
         always {
             container(name: 'jnlp') {
-                sh label: 'clean soa domain', script: '''
-                echo cleanup
+                script {
+                    try {
+                        sh label: 'clean soa operator', script: '''
+                        #helm delete --purge soa-kubernetes-operator
+                        #sleep 30
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup operator failed!!."
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean others', script: '''
+                        kubectl delete jobs --all -n ${SOA_DOMAIN_NS}
+                        kubectl delete services --all -n ${SOA_DOMAIN_NS}
+                        kubectl delete pods --all -n ${SOA_DOMAIN_NS}
+                        sleep 30
                 
-                #helm delete --purge soa-kubernetes-operator
-                #sleep 30
+                        kubectl delete configmaps --all -n ${SOA_DOMAIN_NS}
+                        kubectl delete statefulsets --all -n ${SOA_DOMAIN_NS}
+                        sleep 30
                 
-                kubectl delete jobs --all -n ${SOA_DOMAIN_NS}
-                kubectl delete services --all -n ${SOA_DOMAIN_NS}
-                kubectl delete pods --all -n ${SOA_DOMAIN_NS}
-                sleep 30
+                        kubectl delete domain ${SOA_DOMAIN_NAME} -n ${SOA_DOMAIN_NS}
+                        sleep 30
                 
-                kubectl delete configmaps --all -n ${SOA_DOMAIN_NS}
-                kubectl delete statefulsets --all -n ${SOA_DOMAIN_NS}
-                sleep 30
+                        kubectl delete pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
+                        sleep 60
+                        kubectl delete pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
+                        sleep 60
                 
-                kubectl delete domain ${SOA_DOMAIN_NAME} -n ${SOA_DOMAIN_NS}
-                sleep 30
-                
-                kubectl delete pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
-                sleep 60
-                kubectl delete pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
-                sleep 60
-                
-                kubectl delete ns ${SOA_DOMAIN_NS}
-                '''
+                        kubectl delete ns ${SOA_DOMAIN_NS}
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup other failed!!"
+                    }
+                }
             }
         }
     }

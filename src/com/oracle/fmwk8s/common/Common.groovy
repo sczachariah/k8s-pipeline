@@ -8,7 +8,7 @@ class Common {
         def sdf = new SimpleDateFormat("MMddHHmmss")
 
         def buildNumber = "${script.env.BUILD_NUMBER}"
-        def uniqueId = sdf.format(date) + "." + buildNumber
+        def uniqueId = sdf.format(date) + "-" + buildNumber
 
         return uniqueId
     }
