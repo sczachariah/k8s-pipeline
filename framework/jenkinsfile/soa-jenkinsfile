@@ -21,6 +21,8 @@ pipeline {
         SOA_OPERATOR_REL = "${RUN_SUFFIX}"
         SOA_DOMAIN_NAME = 'soainfra'
         SOA_DOMAIN_NS = 'sczachar-soainfra' + "-${RUN_SUFFIX}"
+        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
+        NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${SOA_DOMAIN_NS}/${SOA_DOMAIN_NAME}"
     }
 
 
@@ -111,6 +113,23 @@ pipeline {
 						kubectl get pods -n ${SOA_OPERATOR_NS}
 						kubectl logs -n ${SOA_OPERATOR_NS} -c weblogic-operator deployments/weblogic-operator
 						'''
+                    }
+
+                    container('jnlp') {
+                        git branch: 'master',
+                                credentialsId: 'sandeep.zachariah.ssh',
+                                url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
+
+                        sh label: 'create nfs folder', script: '''
+                        export KUBECONFIG=${KUBECONFIG}
+                        
+                        cd kubernetes/framework
+                        sed -i "s#%FMWK8S_NFS_HOME%#${FMWK8S_NFS_HOME}#g" fmwk8s-mkdir-pod.yaml
+                        sed -i "s#%NFS_DOMAIN_PATH%#${NFS_DOMAIN_PATH}#g" fmwk8s-mkdir-pod.yaml
+                        cat fmwk8s-mkdir-pod.yaml
+                        
+                        kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${SOA_DOMAIN_NS}
+                        '''
                     }
                 }
             }
@@ -210,7 +229,7 @@ pipeline {
 						        sed -i "s#baseName: domain#baseName: ${SOA_DOMAIN_NS}#g" create-pv-pvc-inputs.yaml
 						        sed -i "s#domainUID: soainfra#domainUID: ${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
 						        sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" create-pv-pvc-inputs.yaml
-						        sed -i "s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: /scratch/u01/DockerVolume/${SOA_DOMAIN_NS}/${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
+						        sed -i "s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: ${NFS_DOMAIN_PATH}#g" create-pv-pvc-inputs.yaml
 						        #sed -i "s#weblogicDomainStorageReclaimPolicy: Retain#weblogicDomainStorageReclaimPolicy: Delete#g" create-pv-pvc-inputs.yaml
                                 cat create-pv-pvc-inputs.yaml
                         
