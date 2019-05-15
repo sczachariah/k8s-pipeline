@@ -130,6 +130,7 @@ pipeline {
 						cat soadb.yaml
 
 						#kubectl apply -f soadb.yaml
+						#sleep 300
                         #kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
 						#kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
                         '''
@@ -149,7 +150,7 @@ pipeline {
 						sed -i "s#domainUID: soainfra#domainUID: ${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
 						sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" create-pv-pvc-inputs.yaml
 						sed -i "s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: /scratch/u01/DockerVolume/${SOA_DOMAIN_NS}/${SOA_DOMAIN_NAME}#g" create-pv-pvc-inputs.yaml
-						sed -i "s#weblogicDomainStorageReclaimPolicy: Retain#weblogicDomainStorageReclaimPolicy: Delete#g" create-pv-pvc-inputs.yaml
+						#sed -i "s#weblogicDomainStorageReclaimPolicy: Retain#weblogicDomainStorageReclaimPolicy: Delete#g" create-pv-pvc-inputs.yaml
                         cat create-pv-pvc-inputs.yaml
                         
                         ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
@@ -187,7 +188,7 @@ pipeline {
                         #cat ${WORKSPACE}/domain.yaml
 
                         #kubectl apply -f ${WORKSPACE}/domain.yaml
-                        #sleep 60
+                        #sleep 300
 
                         #kubectl get all,domains -n ${SOA_DOMAIN_NS}
                         #kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
@@ -242,19 +243,21 @@ pipeline {
                 #helm delete --purge soa-kubernetes-operator
                 #sleep 30
                 
-                kubectl delete jobs -n ${SOA_DOMAIN_NS}
-                kubectl delete services -n ${SOA_DOMAIN_NS}
-                kubectl delete pods -n ${SOA_DOMAIN_NS}
+                kubectl delete jobs --all -n ${SOA_DOMAIN_NS}
+                kubectl delete services --all -n ${SOA_DOMAIN_NS}
+                kubectl delete pods --all -n ${SOA_DOMAIN_NS}
                 sleep 30
                 
-                kubectl delete configmaps -n ${SOA_DOMAIN_NS}
-                kubectl delete statefulsets -n ${SOA_DOMAIN_NS}
+                kubectl delete configmaps --all -n ${SOA_DOMAIN_NS}
+                kubectl delete statefulsets --all -n ${SOA_DOMAIN_NS}
                 sleep 30
                 
                 kubectl delete domain ${SOA_DOMAIN_NAME} -n ${SOA_DOMAIN_NS}
                 sleep 30
                 
-                #rm -rf /scratch/DockerVolume/SOA/*
+                kubectl delete pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
+                sleep 60
+                kubectl delete pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
                 '''
             }
         }
