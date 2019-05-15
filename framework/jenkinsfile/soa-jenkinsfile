@@ -323,9 +323,6 @@ pipeline {
                     catch (exc) {
                         echo "Cleanup operator failed!!."
                     }
-                    finally {
-                        sleep 30
-                    }
                 }
                 script {
                     try {
@@ -393,9 +390,6 @@ pipeline {
                     catch (exc) {
                         echo "Cleanup domain namespace failed!!"
                     }
-                    finally {
-                        sleep 30
-                    }
                 }
                 script {
                     try {
@@ -423,9 +417,6 @@ pipeline {
                     }
                     catch (exc) {
                         echo "Cleanup operator namespace failed!!."
-                    }
-                    finally {
-                        sleep 30
                     }
                 }
             }
