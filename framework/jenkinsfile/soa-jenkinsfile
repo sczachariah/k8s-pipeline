@@ -236,6 +236,7 @@ pipeline {
                                 sed -i "s#domainHome: /u01/oracle/user_projects/domains/soainfra#domainHome: /u01/oracle/user_projects/domains/${SOA_DOMAIN_NAME}#g" create-domain-inputs.yaml
                                 sed -i "s#weblogicCredentialsSecretName: soainfra-domain-credentials#weblogicCredentialsSecretName: ${SOA_DOMAIN_NAME}-weblogic-credentials#g" create-domain-inputs.yaml
                                 sed -i "s#image: oracle/soa:12.2.1.3#image: container-registry.oracle.com/middleware/soasuite:12.2.1.3#g" create-domain-inputs.yaml
+                                sed -i "s/#imagePullSecretName:/imagePullSecretName: regcred/g" create-domain-inputs.yaml
                                 sed -i "s#logHome: /u01/oracle/user_projects/domains/logs/soainfra#logHome: /u01/oracle/user_projects/domains/logs/${SOA_DOMAIN_NAME}#g" create-domain-inputs.yaml
                                 sed -i "s#exposeAdminT3Channel: false#exposeAdminT3Channel: true#g" create-domain-inputs.yaml
                                 sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" create-domain-inputs.yaml
