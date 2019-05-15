@@ -162,7 +162,7 @@ pipeline {
 						            sleep 60
 						            dbstat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep soadb\\``
 						        done
-						        sleep 300
+						        #sleep 300
 						        
                                 kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
 						        kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
