@@ -17,13 +17,13 @@ spec:
     - name: fmwk8s-mkdir
       image: k8s.gcr.io/busybox
       command: ["/bin/sh"]
-      args: ["-c", "mkdir -p /root/$NFS_DOMAIN_PATH"]
+      args: ["-c", "mkdir -p /root/$NFS_DOMAIN_DIR"]
       securityContext:
         runAsUser: 756208
         allowPrivilegeEscalation: true
       env:
-        - name: NFS_DOMAIN_PATH
-          value: %NFS_DOMAIN_PATH%
+        - name: NFS_DOMAIN_DIR
+          value: %NFS_DOMAIN_DIR%
       volumeMounts:
         - name: fmwk8s-nfs-home
           mountPath: "/root"
