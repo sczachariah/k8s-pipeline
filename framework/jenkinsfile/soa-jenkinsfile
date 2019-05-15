@@ -247,32 +247,78 @@ pipeline {
                     catch (exc) {
                         echo "Cleanup operator failed!!."
                     }
+                    finally {
+                        sleep 30000
+                    }
                 }
                 script {
                     try {
-                        sh label: 'clean others', script: '''
+                        sh label: 'clean domain pods and services', script: '''
                         kubectl delete jobs --all -n ${SOA_DOMAIN_NS}
                         kubectl delete services --all -n ${SOA_DOMAIN_NS}
                         kubectl delete pods --all -n ${SOA_DOMAIN_NS}
-                        sleep 30
-                
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup domain pods and services failed!!"
+                    }
+                    finally {
+                        sleep 30000
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean domain configmap and stateful sets', script: '''
                         kubectl delete configmaps --all -n ${SOA_DOMAIN_NS}
                         kubectl delete statefulsets --all -n ${SOA_DOMAIN_NS}
-                        sleep 30
-                
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup domain configmap and stateful sets failed!!"
+                    }
+                    finally {
+                        sleep 30000
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean domain resource', script: '''
                         kubectl delete domain ${SOA_DOMAIN_NAME} -n ${SOA_DOMAIN_NS}
-                        sleep 30
-                
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup domain resource failed!!"
+                    }
+                    finally {
+                        sleep 30000
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean domain persistent volume', script: '''
                         kubectl delete pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
                         sleep 60
                         kubectl delete pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
-                        sleep 60
-                
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup domain persistent volume failed!!"
+                    }
+                    finally {
+                        sleep 30000
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean domain namespace', script: '''
                         kubectl delete ns ${SOA_DOMAIN_NS}
                         '''
                     }
                     catch (exc) {
-                        echo "Cleanup other failed!!"
+                        echo "Cleanup domain namespace failed!!"
+                    }
+                    finally {
+                        sleep 30000
                     }
                 }
             }
