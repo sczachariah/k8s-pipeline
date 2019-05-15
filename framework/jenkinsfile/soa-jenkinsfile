@@ -151,7 +151,8 @@ pipeline {
 						        
 						        dbstat='dbstat'
 						        i=0
-						        while [ `echo "$dbstat" | grep -q "Running"` ]; do
+						        while [ -n "$(echo $dbstat | grep -q Running > /dev/null)" ]
+						        do
 						            i++
 						            echo "DB is not Running. Iteration $i of 25. Sleeping"
 						            sleep 60
