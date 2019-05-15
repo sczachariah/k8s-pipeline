@@ -157,7 +157,7 @@ pipeline {
 						                echo "Timeout waiting for DB. Exiting!!."
 						                exit 1
 						            fi
-						            i=i+1
+						            i=$i+1
 						            echo "DB is not Running. Iteration $i of 25. Sleeping"
 						            sleep 60
 						            dbstat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep soadb\\``
