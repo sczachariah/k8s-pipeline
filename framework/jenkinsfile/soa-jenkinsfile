@@ -135,7 +135,7 @@ pipeline {
                         '''
 
                         sh label: 'configure domain secrets', script: '''
-                         retVal=`echo \\`kubectl get secret ${SOA_DOMAIN_NAME}-domain-credentials -n ${SOA_DOMAIN_NS} 2>&1\\``
+                         retVal=`echo \\`kubectl get secret ${SOA_DOMAIN_NAME}-weblogic-credentials -n ${SOA_DOMAIN_NS} 2>&1\\``
                          if echo "$retVal" | grep -q "not found"; then
                             kubernetes/samples/scripts/create-soa-domain-credentials/create-domain-credentials.sh -u weblogic -p Welcome1 -n ${SOA_DOMAIN_NS} -d ${SOA_DOMAIN_NAME}
                          fi
@@ -169,12 +169,18 @@ pipeline {
                         cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
                         cp create-domain-inputs.yaml create-domain-inputs.yaml.orig
                         cp create-domain-job-template.yaml create-domain-job-template.yaml.orig
-                        cat create-domain-inputs.yaml
-
-                        sed -i "s#managedServerNameBase: soa_server1#managedServerNameBase: soa_server#g" create-domain-inputs.yaml
-                        sed -i "s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc#g" create-domain-inputs.yaml
+                        
+                        sed -i "s#domainUID: soainfra#domainUID: ${SOA_DOMAIN_NAME}#g" create-domain-inputs.yaml
+                        sed -i "s#domainHome: /u01/oracle/user_projects/domains/soainfra#domainHome: /u01/oracle/user_projects/domains/${SOA_DOMAIN_NAME}#g" create-domain-inputs.yaml
+                        sed -i "s#weblogicCredentialsSecretName: soainfra-domain-credentials#weblogicCredentialsSecretName: ${SOA_DOMAIN_NAME}-weblogic-credentials#g" create-domain-inputs.yaml
                         sed -i "s#image: oracle/soa:12.2.1.3#image: container-registry.oracle.com/middleware/soasuite:12.2.1.3#g" create-domain-inputs.yaml
+                        sed -i "s#logHome: /u01/oracle/user_projects/domains/logs/soainfra#logHome: /u01/oracle/user_projects/domains/logs/${SOA_DOMAIN_NAME}#g" create-domain-inputs.yaml
+                        sed -i "s#exposeAdminT3Channel: false#exposeAdminT3Channel: true#g" create-domain-inputs.yaml
+                        sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" create-domain-inputs.yaml
+                        sed -i "s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc#g" create-domain-inputs.yaml
                         cat create-domain-inputs.yaml
+                        
+                        cat create-domain-job-template.yaml
                         
                         #./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
 
