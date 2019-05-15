@@ -262,7 +262,7 @@ pipeline {
                                 sed -i "s#exposeAdminT3Channel: false#exposeAdminT3Channel: true#g" create-domain-inputs.yaml
                                 sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" create-domain-inputs.yaml
                                 sed -i "s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc#g" create-domain-inputs.yaml
-                                sed -i "s#initialManagedServerReplicas: 2#initialManagedServerReplicas: 0#g" create-domain-inputs.yaml
+                                sed -i "s#initialManagedServerReplicas: 2#initialManagedServerReplicas: 1#g" create-domain-inputs.yaml
                                 cat create-domain-inputs.yaml
                                 
                                 sed -i "s#soadb:1521#soadb.${SOA_DOMAIN_NS}:1521#g" create-domain-job-template.yaml
