@@ -241,16 +241,18 @@ pipeline {
                 }
             }
 
-            stage('start soa domain'){
-                steps{
-                    sh label: 'create domain in pv', script: '''
-                    #kubectl apply -f ${WORKSPACE}/domain.yaml
-                    #sleep 300
+            parallel {
+                stage('start soa domain') {
+                    steps {
+                        sh label: 'create domain in pv', script: '''
+                        #kubectl apply -f ${WORKSPACE}/domain.yaml
+                        #sleep 300
                     
-                    #kubectl get all,domains -n ${SOA_DOMAIN_NS}
-                    #kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
-                    #kubectl logs ${SOA_DOMAIN_NAME}-soa-server1 -n ${SOA_DOMAIN_NS}
-                    '''
+                        #kubectl get all,domains -n ${SOA_DOMAIN_NS}
+                        #kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
+                        #kubectl logs ${SOA_DOMAIN_NAME}-soa-server1 -n ${SOA_DOMAIN_NS}
+                        '''
+                    }
                 }
             }
         }
