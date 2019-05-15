@@ -148,7 +148,16 @@ pipeline {
 						        cat soadb.yaml
 
 						        kubectl apply -f soadb.yaml
-						        sleep 1200
+						        
+						        retval=''
+						        i=0
+						        while [ echo "$retVal" | grep -q "Running" ]; do
+						            i++
+						            echo "DB is not Running. Iteration $i of 25. Sleeping"
+						            sleep 60
+						            retVal=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep soadb\\``
+						        done
+						        
                                 kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
 						        kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
                                 '''
