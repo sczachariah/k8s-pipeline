@@ -135,7 +135,7 @@ pipeline {
                         '''
 
                         sh label: 'configure domain secrets', script: '''
-                         retVal=`echo `kubectl get secret ${SOA_DOMAIN_NAME}-domain-credentials -n ${SOA_DOMAIN_NS} 2>&1``
+                         retVal=`echo \\`kubectl get secret ${SOA_DOMAIN_NAME}-domain-credentials -n ${SOA_DOMAIN_NS} 2>&1\\``
                          if [[ "$retVal" == *"not found"* ]]; then
                             echo "Should execute script"
                             #kubernetes/samples/scripts/create-soa-domain-credentials/create-soa-credentials.sh -u weblogic -p Welcome1 -n ${SOA_DOMAIN_NS} -d ${SOA_DOMAIN_NAME}
