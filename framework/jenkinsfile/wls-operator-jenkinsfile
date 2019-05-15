@@ -60,7 +60,7 @@ pipeline {
 
         stage('deploy weblogic domain') {
             steps {
-                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
+                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sczachar.dockerhub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
                                  [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
