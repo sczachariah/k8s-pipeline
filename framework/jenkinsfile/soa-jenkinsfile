@@ -165,7 +165,7 @@ pipeline {
 						        #sleep 300
 						        
                                 kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
-						        kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
+						        #kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
                                 '''
                             }
                         }
@@ -256,11 +256,11 @@ pipeline {
         stage('start soa domain') {
             steps {
                 sh label: 'create domain in pv', script: '''
+                cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
+                cat create-domain-inputs.yaml
+                cat soadb.yaml
                 #kubectl apply -f ${WORKSPACE}/domain.yaml
                 #sleep 300
-                ls -ltr
-                cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
-                ls -ltr
                 
                 #kubectl get all,domains -n ${SOA_DOMAIN_NS}
                 #kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
@@ -284,8 +284,6 @@ pipeline {
                 stage('verify soa ready') {
                     steps {
                         sh label: 'setup env', script: '''
-                        echo "Running Tests"
-                        sleep 300
                         '''
                     }
                 }
