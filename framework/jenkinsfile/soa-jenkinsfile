@@ -336,7 +336,7 @@ pipeline {
                         echo "Cleanup domain pods and services failed!!"
                     }
                     finally {
-                        sleep 30
+                        sleep 10
                     }
                 }
                 script {
@@ -363,14 +363,14 @@ pipeline {
                         echo "Cleanup domain resource failed!!"
                     }
                     finally {
-                        sleep 60
+                        sleep 30
                     }
                 }
                 script {
                     try {
                         sh label: 'clean domain persistent volume', script: '''
                         kubectl delete pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
-                        sleep 30
+                        sleep 10
                         kubectl delete pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
                         '''
                     }
@@ -378,7 +378,7 @@ pipeline {
                         echo "Cleanup domain persistent volume failed!!"
                     }
                     finally {
-                        sleep 30
+                        sleep 10
                     }
                 }
                 script {
@@ -401,7 +401,7 @@ pipeline {
                         echo "Cleanup operator failed!!."
                     }
                     finally {
-                        sleep 30
+                        sleep 10
                         sh label: 'clean operator namespace', script: '''
                         kubectl delete configmaps --all -n ${SOA_OPERATOR_NS}
                         '''
@@ -411,7 +411,7 @@ pipeline {
                     try {
                         sh label: 'clean operator namespace', script: '''
                         kubectl delete all --all -n ${SOA_OPERATOR_NS}
-                        sleep 30
+                        sleep 10
                         kubectl delete ns ${SOA_OPERATOR_NS}
                         '''
                     }
