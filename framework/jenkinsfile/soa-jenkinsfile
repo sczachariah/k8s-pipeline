@@ -290,7 +290,7 @@ pipeline {
                 sleep 300
                 
                 kubectl get all,domains -n ${SOA_DOMAIN_NS}
-                kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
+                #kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
                 '''
             }
         }
