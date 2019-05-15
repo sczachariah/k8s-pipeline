@@ -179,14 +179,10 @@ pipeline {
                                          [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
                                           usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                             container('jnlp') {
-                                git branch: 'master',
-                                        credentialsId: 'sandeep.zachariah.ssh',
-                                        url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
-
                                 sh label: 'setup env', script: '''
                                 export KUBECONFIG=${KUBECONFIG}
                                 helm init
-                                sleep 300
+                                sleep 120
                                 '''
 
                                 sh label: 'upgrade helm', script: '''
