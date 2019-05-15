@@ -16,10 +16,11 @@ pipeline {
     environment {
         RUN_SUFFIX = Common.getUniqueId(this)
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
-        SOA_OPERATOR_NS = 'sczachar-soa-operator-ns'
+        SOA_OPERATOR_NS = 'sczachar-soa-operator-ns' + ${RUN_SUFFIX}
         SOA_OPERATOR_SA = 'default'
+        SOA_OPERATOR_REL = ${RUN_SUFFIX}
         SOA_DOMAIN_NAME = 'soainfra'
-        SOA_DOMAIN_NS = 'sczachar-soainfra'
+        SOA_DOMAIN_NS = 'sczachar-soainfra' + ${RUN_SUFFIX}
     }
 
 
@@ -86,18 +87,18 @@ pipeline {
                         '''
 
                         sh label: 'deploy soa operator', script: '''
-						retVal=`echo \\`helm ls soa-kubernetes-operator\\``
+						retVal=`echo \\`helm ls ${SOA_OPERATOR_REL}\\``
 
 						if [[ !  -z  "$retVal" ]]; then
 						    helm upgrade \
 						        --reuse-values \
 						        --set "domainNamespaces={$SOA_DOMAIN_NS}" \
 						        --wait \
-						        soa-kubernetes-operator \
+						        ${SOA_OPERATOR_REL} \
 						        kubernetes/charts/soa-kubernetes-operator
 						else
 							helm install kubernetes/charts/soa-kubernetes-operator \
-								--name soa-kubernetes-operator \
+								--name ${SOA_OPERATOR_REL} \
 								--set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 \
 								--namespace ${SOA_OPERATOR_NS} \
 								--set serviceAccount=${SOA_OPERATOR_SA} \
@@ -190,7 +191,7 @@ pipeline {
                                     --reuse-values \
                                     --set "domainNamespaces={$SOA_DOMAIN_NS}" \
                                     --wait \
-                                    soa-kubernetes-operator \
+                                    ${SOA_OPERATOR_REL} \
                                     kubernetes/charts/soa-kubernetes-operator
                                 '''
 
@@ -313,7 +314,7 @@ pipeline {
                 script {
                     try {
                         sh label: 'clean soa operator', script: '''
-                        helm delete --purge soa-kubernetes-operator
+                        helm delete --purge ${SOA_OPERATOR_REL}
                         '''
                     }
                     catch (exc) {
@@ -396,11 +397,29 @@ pipeline {
                 script {
                     try {
                         sh label: 'clean soa operator', script: '''
-                        helm delete --purge soa-kubernetes-operator
+                        helm delete --purge ${SOA_OPERATOR_REL}
                         '''
                     }
                     catch (exc) {
                         echo "Cleanup operator failed!!."
+                    }
+                    finally {
+                        sleep 30
+                        sh label: 'clean operator namespace', script: '''
+                        kubectl delete configmaps --all -n {SOA_OPERATOR_NS}
+                        '''
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean operator namespace', script: '''
+                        kubectl delete all --all -n {SOA_OPERATOR_NS}
+                        sleep 30
+                        kubectl delete ns {SOA_OPERATOR_NS}
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup operator namespace failed!!."
                     }
                     finally {
                         sleep 30
