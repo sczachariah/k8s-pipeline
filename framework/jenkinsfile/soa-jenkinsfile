@@ -248,7 +248,7 @@ pipeline {
                         echo "Cleanup operator failed!!."
                     }
                     finally {
-                        sleep 30000
+                        sleep 30
                     }
                 }
                 script {
@@ -263,7 +263,7 @@ pipeline {
                         echo "Cleanup domain pods and services failed!!"
                     }
                     finally {
-                        sleep 30000
+                        sleep 30
                     }
                 }
                 script {
@@ -277,7 +277,7 @@ pipeline {
                         echo "Cleanup domain configmap and stateful sets failed!!"
                     }
                     finally {
-                        sleep 30000
+                        sleep 30
                     }
                 }
                 script {
@@ -290,7 +290,7 @@ pipeline {
                         echo "Cleanup domain resource failed!!"
                     }
                     finally {
-                        sleep 30000
+                        sleep 30
                     }
                 }
                 script {
@@ -305,7 +305,7 @@ pipeline {
                         echo "Cleanup domain persistent volume failed!!"
                     }
                     finally {
-                        sleep 30000
+                        sleep 30
                     }
                 }
                 script {
@@ -318,7 +318,7 @@ pipeline {
                         echo "Cleanup domain namespace failed!!"
                     }
                     finally {
-                        sleep 30000
+                        sleep 30
                     }
                 }
             }
