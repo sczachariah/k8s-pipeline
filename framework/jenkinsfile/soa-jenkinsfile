@@ -30,7 +30,7 @@ pipeline {
     stages {
         stage('build and deploy soa operator') {
             steps {
-                log('INFO', 'Starting SOA pipeline with runId ' + sh(returnStdout: true, script: 'echo ${RUN_SUFFIX}'))
+                log('INFO', 'Starting SOA pipeline with unique runId ' + sh(returnStdout: true, script: 'echo ${RUN_SUFFIX}'))
 
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
