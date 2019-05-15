@@ -88,6 +88,7 @@ pipeline {
                         sed -i "s#domainUID: domain1#domainUID: $WLS_DOMAIN_NAME#g" create-domain-inputs.yaml                  
                         sed -i "s#namespace: default#namespace: $WLS_DOMAIN_NAME#g" create-domain-inputs.yaml
                         sed -i "s#weblogicCredentialsSecretName: domain1-weblogic-credentials#weblogicCredentialsSecretName: $WLS_DOMAIN_NAME-weblogic-credentials#g" create-domain-inputs.yaml
+                        sed -i "s#exposeAdminT3Channel: false#exposeAdminT3Channel: true#g" create-domain-inputs.yaml
                         '''
 
                         sh label: 'create domain', script: '''
@@ -109,6 +110,7 @@ pipeline {
                         
                         kubectl get pods -n $WLS_DOMAIN_NAME
                         kubectl get services -n $WLS_DOMAIN_NAME
+                        sleep 300
                         '''
                     }
                 }
@@ -166,7 +168,7 @@ EOF
 
                             sh label: 'execute tests', script: '''
                             sleep 120
-                            mvn clean test -Dtest.properties=${WORKSPACE}/test.props
+                            #mvn clean test -Dtest.properties=${WORKSPACE}/test.props
                             '''
                         }
                     }
@@ -180,15 +182,19 @@ EOF
             container(name: 'jnlp') {
                 sh label: 'clean weblogic domain', script: '''
                 kubectl delete domain $WLS_DOMAIN_NAME -n $WLS_DOMAIN_NAME
+                kubectl delete configmaps --all -n -n $WLS_DOMAIN_NAME
                 #kubectl delete secret $WLS_DOMAIN_NAME-weblogic-credentials -n $WLS_DOMAIN_NAME
+                kubectl delete ns $WLS_DOMAIN_NAME
                 '''
 
-//                sh label: 'clean weblogic operator', script: '''
-//                retVal=`echo \\`helm ls wls-operator\\``
-//                if [[ !  -z  "$retVal" ]]; then
-//                    helm delete --purge wls-operator
-//                fi
-//                '''
+                sh label: 'clean weblogic operator', script: '''
+                retVal=`echo \\`helm ls wls-operator\\``
+                if [[ !  -z  "$retVal" ]]; then
+                    helm delete --purge wls-operator
+                fi
+                kubectl delete configmaps --all -n weblogic-operator-ns
+                kubectl delete ns weblogic-operator-ns
+                '''
             }
         }
     }
