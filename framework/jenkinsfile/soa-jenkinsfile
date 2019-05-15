@@ -313,8 +313,7 @@ pipeline {
                 script {
                     try {
                         sh label: 'clean soa operator', script: '''
-                        #helm delete --purge soa-kubernetes-operator
-                        #sleep 30
+                        helm delete --purge soa-kubernetes-operator
                         '''
                     }
                     catch (exc) {
@@ -389,6 +388,19 @@ pipeline {
                     }
                     catch (exc) {
                         echo "Cleanup domain namespace failed!!"
+                    }
+                    finally {
+                        sleep 30
+                    }
+                }
+                script {
+                    try {
+                        sh label: 'clean soa operator', script: '''
+                        helm delete --purge soa-kubernetes-operator
+                        '''
+                    }
+                    catch (exc) {
+                        echo "Cleanup operator failed!!."
                     }
                     finally {
                         sleep 30
