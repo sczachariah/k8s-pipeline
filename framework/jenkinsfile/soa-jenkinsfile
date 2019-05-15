@@ -22,7 +22,8 @@ pipeline {
         SOA_DOMAIN_NAME = 'soainfra'
         SOA_DOMAIN_NS = 'sczachar-soainfra' + "-${RUN_SUFFIX}"
         FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
-        NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${SOA_DOMAIN_NS}/${SOA_DOMAIN_NAME}"
+        NFS_DOMAIN_DIR = "${SOA_DOMAIN_NS}/${SOA_DOMAIN_NAME}"
+        NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
     }
 
 
@@ -125,7 +126,7 @@ pipeline {
                         
                         cd kubernetes/framework
                         sed -i "s#%FMWK8S_NFS_HOME%#${FMWK8S_NFS_HOME}#g" fmwk8s-mkdir-pod.yaml
-                        sed -i "s#%NFS_DOMAIN_PATH%#${NFS_DOMAIN_PATH}#g" fmwk8s-mkdir-pod.yaml
+                        sed -i "s#%NFS_DOMAIN_DIR%#${NFS_DOMAIN_DIR}#g" fmwk8s-mkdir-pod.yaml
                         cat fmwk8s-mkdir-pod.yaml
                         
                         kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${SOA_DOMAIN_NS}
