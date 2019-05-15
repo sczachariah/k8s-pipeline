@@ -309,7 +309,7 @@ pipeline {
     post {
         always {
             container(name: 'jnlp') {
-                script('clean soa operator') {
+                script {
                     try {
                         sh label: 'clean soa operator', script: '''
                         #helm delete --purge soa-kubernetes-operator
@@ -323,7 +323,7 @@ pipeline {
                         sleep 30
                     }
                 }
-                script('clean pods and services') {
+                script {
                     try {
                         sh label: 'clean domain pods and services', script: '''
                         kubectl delete jobs --all -n ${SOA_DOMAIN_NS}
@@ -338,7 +338,7 @@ pipeline {
                         sleep 30
                     }
                 }
-                script('clean configmaps and stateful sets') {
+                script {
                     try {
                         sh label: 'clean domain configmap and stateful sets', script: '''
                         kubectl delete configmaps --all -n ${SOA_DOMAIN_NS}
@@ -352,7 +352,7 @@ pipeline {
                         sleep 30
                     }
                 }
-                script('clean domain resource') {
+                script {
                     try {
                         sh label: 'clean domain resource', script: '''
                         kubectl delete domain ${SOA_DOMAIN_NAME} -n ${SOA_DOMAIN_NS}
@@ -365,7 +365,7 @@ pipeline {
                         sleep 30
                     }
                 }
-                script('clean persistent volumes') {
+                script {
                     try {
                         sh label: 'clean domain persistent volume', script: '''
                         kubectl delete pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
@@ -380,7 +380,7 @@ pipeline {
                         sleep 30
                     }
                 }
-                script('clean namespace') {
+                script {
                     try {
                         sh label: 'clean domain namespace', script: '''
                         #kubectl delete ns ${SOA_DOMAIN_NS}
