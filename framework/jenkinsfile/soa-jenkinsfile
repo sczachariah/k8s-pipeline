@@ -103,13 +103,14 @@ pipeline {
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
                                  [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
-                    container('dind') {
+                    container('jnlp') {
                         git branch: 'master',
                                 credentialsId: 'sandeep.zachariah.ssh',
                                 url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
 
                         sh label: 'setup env', script: '''
                         export KUBECONFIG=${KUBECONFIG}
+                        helm init
                         '''
 
                         sh label: 'upgrade helm', script: '''
@@ -122,17 +123,21 @@ pipeline {
                         '''
 
                         sh label: 'setup db', script: '''
+                        kubectl create secret docker-registry regcred --docker-server=http://container-registry.oracle.com \
+                        --docker-username=${DOCKER_USERNAME_CISYSTEM} --docker-password=${DOCKER_PASSWORD_CISYSTEM} --docker-email=${DOCKER_USERNAME_CISYSTEM}
+
                         cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
                         cp soadb.yaml soadb.yaml.orig
 
 						sed -i "s#image: oracle/database:12.2.0.1#image: container-registry.oracle.com/database/enterprise:12.2.0.1#g" soadb.yaml
 						sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" soadb.yaml
+						sed -i "s#imagePullPolicy: IfNotPresent#imagePullPolicy: IfNotPresent\nimagePullSecrets:\n  - name: regcred#g" soadb.yaml
 						cat soadb.yaml
 
-						kubectl apply -f soadb.yaml
-						sleep 300
-                        kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
-						kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
+						#kubectl apply -f soadb.yaml
+						#sleep 300
+                        #kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
+						#kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
                         '''
 
                         sh label: 'configure domain secrets', script: '''
@@ -160,11 +165,11 @@ pipeline {
                         cat ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml
 						cat ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml
 
-                        kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml -n ${SOA_DOMAIN_NS}
-						kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml -n ${SOA_DOMAIN_NS}
+                        #kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml -n ${SOA_DOMAIN_NS}
+						#kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml -n ${SOA_DOMAIN_NS}
 
-                        kubectl describe pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
-                        kubectl describe pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
+                        #kubectl describe pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
+                        #kubectl describe pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
                         '''
 
                         sh label: 'create domain in pv', script: '''
@@ -182,17 +187,17 @@ pipeline {
                         sed -i "s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc#g" create-domain-inputs.yaml
                         cat create-domain-inputs.yaml
                         
-                        ./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
+                        #./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
 
                         cp ${WORKSPACE}/soa-operator-output-directory/soa-domains/soainfra/domain.yaml ${WORKSPACE}
                         cat ${WORKSPACE}/domain.yaml
 
-                        kubectl apply -f ${WORKSPACE}/domain.yaml
-                        sleep 300
+                        #kubectl apply -f ${WORKSPACE}/domain.yaml
+                        #sleep 300
 
-                        kubectl get all,domains -n ${SOA_DOMAIN_NS}
-                        kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
-                        kubectl logs ${SOA_DOMAIN_NAME}-soa-server1 -n ${SOA_DOMAIN_NS}
+                        #kubectl get all,domains -n ${SOA_DOMAIN_NS}
+                        #kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
+                        #kubectl logs ${SOA_DOMAIN_NAME}-soa-server1 -n ${SOA_DOMAIN_NS}
                         '''
                     }
                 }
@@ -313,7 +318,7 @@ pipeline {
                 script {
                     try {
                         sh label: 'clean domain namespace', script: '''
-                        kubectl delete ns ${SOA_DOMAIN_NS}
+                        #kubectl delete ns ${SOA_DOMAIN_NS}
                         '''
                     }
                     catch (exc) {
