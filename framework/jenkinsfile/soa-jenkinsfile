@@ -71,22 +71,22 @@ pipeline {
                         }
 
                         sh label: 'build soa operator image', script: '''							
-                        #docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+                        docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
 						
-						#docker pull container-registry.oracle.com/java/serverjre:latest
-						#docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
+						docker pull container-registry.oracle.com/java/serverjre:latest
+						docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
 						
-						#docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
-						#docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
+						docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
+						docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
 						
 
-						#docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
+						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
 						'''
 
                         sh label: 'push soa operator image', script: '''
-						#docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
+						docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
 						docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
-						#docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
+						docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
                         '''
 
                         sh label: 'deploy soa operator', script: '''
@@ -259,7 +259,8 @@ pipeline {
                                 sed -i "s#image: oracle/soa:12.2.1.3#image: container-registry.oracle.com/middleware/soasuite:12.2.1.3#g" create-domain-inputs.yaml
                                 sed -i "s/#imagePullSecretName:/imagePullSecretName: regcred/g" create-domain-inputs.yaml
                                 sed -i "s#logHome: /u01/oracle/user_projects/domains/logs/soainfra#logHome: /u01/oracle/user_projects/domains/logs/${SOA_DOMAIN_NAME}#g" create-domain-inputs.yaml
-                                sed -i "s#exposeAdminT3Channel: false#exposeAdminT3Channel: true#g" create-domain-inputs.yaml
+                                #sed -i "s#exposeAdminT3Channel: false#exposeAdminT3Channel: true#g" create-domain-inputs.yaml
+                                #sed -i "s/#t3PublicAddress:/t3PublicAddress: fmwk8s.us.oracle.com/g" create-domain-inputs.yaml
                                 sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" create-domain-inputs.yaml
                                 sed -i "s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc#g" create-domain-inputs.yaml
                                 sed -i "s#initialManagedServerReplicas: 2#initialManagedServerReplicas: 1#g" create-domain-inputs.yaml
