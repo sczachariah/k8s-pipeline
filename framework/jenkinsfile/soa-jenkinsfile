@@ -258,6 +258,9 @@ pipeline {
                 kubectl delete pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
                 sleep 60
                 kubectl delete pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
+                sleep 60
+                
+                kubectl delete ns ${SOA_DOMAIN_NS}
                 '''
             }
         }
