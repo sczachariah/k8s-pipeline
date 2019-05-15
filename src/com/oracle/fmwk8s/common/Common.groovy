@@ -5,10 +5,10 @@ import java.text.SimpleDateFormat
 class Common {
     static def getUniqueId(def script) {
         def date = new Date()
-        def sdf = new SimpleDateFormat("MMddHHmmss")
+        def sdf = new SimpleDateFormat("MMddHHmm")
 
         def buildNumber = "${script.env.BUILD_NUMBER}"
-        def uniqueId = sdf.format(date) + "-" + buildNumber
+        def uniqueId = buildNumber + "-" + sdf.format(date)
 
         return uniqueId
     }
