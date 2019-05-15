@@ -81,7 +81,7 @@ pipeline {
 
                         sh label: 'push soa operator image', script: '''
 						#docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
-						#docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+						docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
 						#docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
                         '''
 
