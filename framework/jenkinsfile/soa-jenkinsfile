@@ -149,7 +149,7 @@ pipeline {
 
 						        kubectl apply -f soadb.yaml
 						        
-						        retval=''
+						        retval='retval'
 						        i=0
 						        while [ echo "$retVal" | grep -q "Running" ]; do
 						            i++
@@ -322,7 +322,7 @@ pipeline {
                         sleep 30
                     }
                 }
-                script {
+                script('clean pods and services') {
                     try {
                         sh label: 'clean domain pods and services', script: '''
                         kubectl delete jobs --all -n ${SOA_DOMAIN_NS}
@@ -337,7 +337,7 @@ pipeline {
                         sleep 30
                     }
                 }
-                script {
+                script('clean configmaps and stateful sets') {
                     try {
                         sh label: 'clean domain configmap and stateful sets', script: '''
                         kubectl delete configmaps --all -n ${SOA_DOMAIN_NS}
@@ -351,7 +351,7 @@ pipeline {
                         sleep 30
                     }
                 }
-                script {
+                script('clean domain resource') {
                     try {
                         sh label: 'clean domain resource', script: '''
                         kubectl delete domain ${SOA_DOMAIN_NAME} -n ${SOA_DOMAIN_NS}
@@ -364,7 +364,7 @@ pipeline {
                         sleep 30
                     }
                 }
-                script {
+                script('clean persistent volumes') {
                     try {
                         sh label: 'clean domain persistent volume', script: '''
                         kubectl delete pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
@@ -379,7 +379,7 @@ pipeline {
                         sleep 30
                     }
                 }
-                script {
+                script('clean namespace') {
                     try {
                         sh label: 'clean domain namespace', script: '''
                         #kubectl delete ns ${SOA_DOMAIN_NS}
