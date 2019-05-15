@@ -141,9 +141,12 @@ pipeline {
                         '''
 
                         sh label: 'setup db', script: '''
-                        kubectl create secret docker-registry regcred --docker-server=http://container-registry.oracle.com \
-                        --docker-username=${DOCKER_USERNAME_CISYSTEM} --docker-password=${DOCKER_PASSWORD_CISYSTEM} --docker-email=${DOCKER_USERNAME_CISYSTEM}
-
+                        retVal=`echo \\`kubectl get secret regcred -n ${SOA_DOMAIN_NS} 2>&1\\``
+                         if echo "$retVal" | grep -q "not found"; then
+                            kubectl create secret docker-registry regcred -n ${SOA_DOMAIN_NS} --docker-server=http://container-registry.oracle.com \
+                            --docker-username=${DOCKER_USERNAME_CISYSTEM} --docker-password=${DOCKER_PASSWORD_CISYSTEM} --docker-email=${DOCKER_USERNAME_CISYSTEM}
+                         fi
+                       
                         cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
                         cp soadb.yaml soadb.yaml.orig
 
