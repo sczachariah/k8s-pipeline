@@ -1,8 +1,9 @@
 @Library('fmwk8s-pipeline-library') _
 
 
-import com.oracle.fmwk8s.common.Cleanup
 import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.env.Domain
+import com.oracle.fmwk8s.env.Operator
 
 pipeline {
     agent {
@@ -335,13 +336,13 @@ pipeline {
         always {
             container(name: 'jnlp') {
                 script {
-                    Cleanup.cleanOperator this, "${SOA_OPERATOR_REL}"
+                    Operator.cleanOperator this, "${SOA_OPERATOR_REL}"
 
-                    Cleanup.cleanDomain this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
-                    Cleanup.cleanDomainNamespace this, "${SOA_DOMAIN_NS}"
+                    Domain.cleanDomain this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
+                    Domain.cleanDomainNamespace this, "${SOA_DOMAIN_NS}"
 
-                    Cleanup.cleanOperator this, "${SOA_OPERATOR_REL}"
-                    Cleanup.cleanOperatorNamespace this, "${SOA_OPERATOR_NS}"
+                    Operator.cleanOperator this, "${SOA_OPERATOR_REL}"
+                    Operator.cleanOperatorNamespace this, "${SOA_OPERATOR_NS}"
                 }
             }
         }

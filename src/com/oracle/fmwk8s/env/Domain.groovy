@@ -1,32 +1,21 @@
-package com.oracle.fmwk8s.common
+package com.oracle.fmwk8s.env
 
-class Cleanup {
-    static cleanOperator(script, release) {
-        try {
-            script.sh "helm delete --purge ${release}"
-        }
-        catch (exc) {
-            Log.error(script, "Cleanup operator failed!!.")
-        }
-    }
+import com.oracle.fmwk8s.common.Log
 
-    static cleanOperatorNamespace(script, namespace) {
-        try {
-            script.sh "kubectl delete configmaps --all -n ${namespace}"
-            script.sh "kubectl delete all --all -n ${namespace}"
-            sleep 10
-            script.sh "kubectl delete ns ${namespace}"
-        }
-        catch (exc) {
-            Log.error(script, "Cleanup operator namespace failed!!.")
-        }
-    }
+class Domain {
+    static configureDomainSecret(script) {}
+
+    static preparePersistentVolume(script) {}
+
+    static prepareDomain(script) {}
+
+    static createDomain(script) {}
 
     static cleanDomain(script, domainName, namespace) {
         try {
-            script.sh "kubectl delete jobs --all -n ${namespace}"
-            script.sh "kubectl delete services --all -n ${namespace}"
-            script.sh "kubectl delete pods --all -n ${namespace}"
+            script.sh "kubectl delete jobs --all -n ${namespace} && \
+                       kubectl delete services --all -n ${namespace} && \
+                       kubectl delete pods --all -n ${namespace}"
         }
         catch (exc) {
             Log.error(script, "Cleanup domain pods and services failed!!")
@@ -77,6 +66,4 @@ class Cleanup {
             Log.error(script, "Cleanup domain namespace failed!!")
         }
     }
-
-    static def cleanDatabase(script, namespace) {}
 }
