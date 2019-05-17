@@ -3,9 +3,7 @@ package com.oracle.fmwk8s.common
 class Cleanup {
     static cleanOperator(script, release) {
         try {
-            script.sh label: 'clean soa operator', script: '''
-                        helm delete --purge ${release}
-                        '''
+            script.sh "helm delete --purge ${release}"
         }
         catch (exc) {
             Log.error(script, "Cleanup operator failed!!.")
@@ -14,12 +12,10 @@ class Cleanup {
 
     static cleanOperatorNamespace(script, namespace) {
         try {
-            script.sh label: 'clean operator namespace', script: '''
-                        kubectl delete configmaps --all -n ${namespace}
-                        kubectl delete all --all -n ${namespace}
-                        sleep 10
-                        kubectl delete ns ${namespace}
-                        '''
+            script.sh "kubectl delete configmaps --all -n ${namespace}"
+            script.sh "kubectl delete all --all -n ${namespace}"
+            sleep 10
+            script.sh "kubectl delete ns ${namespace}"
         }
         catch (exc) {
             Log.error(script, "Cleanup operator namespace failed!!.")
@@ -28,11 +24,9 @@ class Cleanup {
 
     static cleanDomain(script, domainName, namespace) {
         try {
-            script.sh label: 'clean domain pods and services', script: '''
-                        kubectl delete jobs --all -n ${namespace}
-                        kubectl delete services --all -n ${namespace}
-                        kubectl delete pods --all -n ${namespace}
-                        '''
+            script.sh "kubectl delete jobs --all -n ${namespace}"
+            script.sh "kubectl delete services --all -n ${namespace}"
+            script.sh "kubectl delete pods --all -n ${namespace}"
         }
         catch (exc) {
             Log.error(script, "Cleanup domain pods and services failed!!")
@@ -42,10 +36,8 @@ class Cleanup {
         }
 
         try {
-            script.sh label: 'clean domain configmap and stateful sets', script: '''
-                        kubectl delete configmaps --all -n ${namespace}
-                        kubectl delete statefulsets --all -n ${namespace}
-                        '''
+            script.sh "kubectl delete configmaps --all -n ${namespace}"
+            script.sh "kubectl delete statefulsets --all -n ${namespace}"
         }
         catch (exc) {
             Log.error(script, "Cleanup domain configmap and stateful sets failed!!")
@@ -55,9 +47,7 @@ class Cleanup {
         }
 
         try {
-            script.sh label: 'clean domain resource', script: '''
-                        kubectl delete domain ${domainName} -n ${namespace}
-                        '''
+            script.sh "kubectl delete domain ${domainName} -n ${namespace}"
         }
         catch (exc) {
             Log.error(script, "Cleanup domain resource failed!!")
@@ -67,11 +57,9 @@ class Cleanup {
         }
 
         try {
-            script.sh label: 'clean domain persistent volume', script: '''
-                        kubectl delete pvc ${domainName}-${namespace}-pvc -n ${namespace}
-                        sleep 10
-                        kubectl delete pv ${domainName}-${namespace}-pv -n ${namespace}
-                        '''
+            script.sh "kubectl delete pvc ${domainName}-${namespace}-pvc -n ${namespace}"
+            sleep 10
+            script.sh "kubectl delete pv ${domainName}-${namespace}-pv -n ${namespace}"
         }
         catch (exc) {
             Log.error(script, "Cleanup domain persistent volume failed!!")
@@ -83,9 +71,7 @@ class Cleanup {
 
     static cleanDomainNamespace(script, namespace) {
         try {
-            script.sh label: 'clean domain namespace', script: '''
-                        kubectl delete ns ${namespace}
-                        '''
+            script.sh "kubectl delete ns ${namespace}"
         }
         catch (exc) {
             Log.error(script, "Cleanup domain namespace failed!!")
