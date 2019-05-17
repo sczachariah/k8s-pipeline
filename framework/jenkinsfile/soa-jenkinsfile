@@ -1,6 +1,7 @@
 @Library('fmwk8s-pipeline-library') _
 
 
+import com.oracle.fmwk8s.common.Cleanup
 import com.oracle.fmwk8s.common.Common
 
 
@@ -334,16 +335,7 @@ pipeline {
     post {
         always {
             container(name: 'jnlp') {
-                script {
-                    try {
-                        sh label: 'clean soa operator', script: '''
-                        helm delete --purge ${SOA_OPERATOR_REL}
-                        '''
-                    }
-                    catch (exc) {
-                        echo "Cleanup operator failed!!."
-                    }
-                }
+                Cleanup.cleanOperator("${SOA_OPERATOR_REL}")
                 script {
                     try {
                         sh label: 'clean domain pods and services', script: '''
