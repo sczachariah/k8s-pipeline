@@ -1,18 +1,15 @@
 package com.oracle.fmwk8s.common
 
 class Log {
-    static info(String message) {
-        String msg = (String) "INFO: ${message}"
-        echo msg
+    static info(script, message) {
+        script.echo "INFO: ${message}"
     }
 
-    static warning(String message) {
-        String msg = (String) "WARNING: ${message}"
-        echo msg
+    static warning(script, message) {
+        script.echo "WARNING: ${message}"
     }
 
-    static error(String message) {
-        String msg = (String) "ERROR: ${message}"
-        echo msg
+    static error(script, message) {
+        script.echo "ERROR: ${message}"
     }
 }

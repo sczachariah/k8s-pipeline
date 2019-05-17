@@ -1,20 +1,20 @@
 package com.oracle.fmwk8s.common
 
 class Cleanup {
-    static cleanOperator(String release) {
+    static cleanOperator(script, release) {
         try {
-            sh label: 'clean soa operator', script: '''
+            script.sh label: 'clean soa operator', script: '''
                         helm delete --purge ${release}
                         '''
         }
         catch (exc) {
-            Log.error("Cleanup operator failed!!.")
+            Log.error(script, "Cleanup operator failed!!.")
         }
     }
 
-    static cleanOperatorNamespace(String namespace) {
+    static cleanOperatorNamespace(script, namespace) {
         try {
-            sh label: 'clean operator namespace', script: '''
+            script.sh label: 'clean operator namespace', script: '''
                         kubectl delete configmaps --all -n ${namespace}
                         kubectl delete all --all -n ${namespace}
                         sleep 10
@@ -22,75 +22,75 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            Log.error("Cleanup operator namespace failed!!.")
+            Log.error(script, "Cleanup operator namespace failed!!.")
         }
     }
 
-    static cleanDomain(String domainName, String namespace) {
+    static cleanDomain(script, domainName, namespace) {
         try {
-            sh label: 'clean domain pods and services', script: '''
+            script.sh label: 'clean domain pods and services', script: '''
                         kubectl delete jobs --all -n ${namespace}
                         kubectl delete services --all -n ${namespace}
                         kubectl delete pods --all -n ${namespace}
                         '''
         }
         catch (exc) {
-            Log.error("Cleanup domain pods and services failed!!")
+            Log.error(script, "Cleanup domain pods and services failed!!")
         }
         finally {
             sleep 10
         }
 
         try {
-            sh label: 'clean domain configmap and stateful sets', script: '''
+            script.sh label: 'clean domain configmap and stateful sets', script: '''
                         kubectl delete configmaps --all -n ${namespace}
                         kubectl delete statefulsets --all -n ${namespace}
                         '''
         }
         catch (exc) {
-            Log.error("Cleanup domain configmap and stateful sets failed!!")
+            Log.error(script, "Cleanup domain configmap and stateful sets failed!!")
         }
         finally {
             sleep 30
         }
 
         try {
-            sh label: 'clean domain resource', script: '''
+            script.sh label: 'clean domain resource', script: '''
                         kubectl delete domain ${domainName} -n ${namespace}
                         '''
         }
         catch (exc) {
-            Log.error("Cleanup domain resource failed!!")
+            Log.error(script, "Cleanup domain resource failed!!")
         }
         finally {
             sleep 30
         }
 
         try {
-            sh label: 'clean domain persistent volume', script: '''
+            script.sh label: 'clean domain persistent volume', script: '''
                         kubectl delete pvc ${domainName}-${namespace}-pvc -n ${namespace}
                         sleep 10
                         kubectl delete pv ${domainName}-${namespace}-pv -n ${namespace}
                         '''
         }
         catch (exc) {
-            Log.error("Cleanup domain persistent volume failed!!")
+            Log.error(script, "Cleanup domain persistent volume failed!!")
         }
         finally {
             sleep 10
         }
     }
 
-    static cleanDomainNamespace(String namespace) {
+    static cleanDomainNamespace(script, namespace) {
         try {
-            sh label: 'clean domain namespace', script: '''
+            script.sh label: 'clean domain namespace', script: '''
                         kubectl delete ns ${namespace}
                         '''
         }
         catch (exc) {
-            Log.error("Cleanup domain namespace failed!!")
+            Log.error(script, "Cleanup domain namespace failed!!")
         }
     }
 
-    static def cleanDatabase(String namespace) {}
+    static def cleanDatabase(script, namespace) {}
 }
