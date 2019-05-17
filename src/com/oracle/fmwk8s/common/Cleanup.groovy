@@ -8,7 +8,7 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            log("ERROR", "Cleanup operator failed!!.")
+            Log.error("Cleanup operator failed!!.")
         }
     }
 
@@ -22,7 +22,7 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            log("ERROR", "Cleanup operator namespace failed!!.")
+            Log.error("Cleanup operator namespace failed!!.")
         }
     }
 
@@ -35,7 +35,7 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            log("ERROR", "Cleanup domain pods and services failed!!")
+            Log.error("Cleanup domain pods and services failed!!")
         }
         finally {
             sleep 10
@@ -48,7 +48,7 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            log("ERROR", "Cleanup domain configmap and stateful sets failed!!")
+            Log.error("Cleanup domain configmap and stateful sets failed!!")
         }
         finally {
             sleep 30
@@ -60,7 +60,7 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            log("ERROR", "Cleanup domain resource failed!!")
+            Log.error("Cleanup domain resource failed!!")
         }
         finally {
             sleep 30
@@ -74,7 +74,7 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            log("ERROR", "Cleanup domain persistent volume failed!!")
+            Log.error("Cleanup domain persistent volume failed!!")
         }
         finally {
             sleep 10
@@ -88,7 +88,7 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            log("ERROR", "Cleanup domain namespace failed!!")
+            Log.error("Cleanup domain namespace failed!!")
         }
     }
 
