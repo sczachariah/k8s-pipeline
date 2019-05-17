@@ -8,11 +8,25 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            echo "Cleanup operator failed!!."
+            log("ERROR", "Cleanup operator failed!!.")
         }
     }
 
-    static def cleanDomain(String domainName, String namespace) {
+    static cleanOperatorNamespace(String namespace) {
+        try {
+            sh label: 'clean operator namespace', script: '''
+                        kubectl delete configmaps --all -n ${namespace}
+                        kubectl delete all --all -n ${namespace}
+                        sleep 10
+                        kubectl delete ns ${namespace}
+                        '''
+        }
+        catch (exc) {
+            log("ERROR", "Cleanup operator namespace failed!!.")
+        }
+    }
+
+    static cleanDomain(String domainName, String namespace) {
         try {
             sh label: 'clean domain pods and services', script: '''
                         kubectl delete jobs --all -n ${namespace}
@@ -21,7 +35,7 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            echo "Cleanup domain pods and services failed!!"
+            log("ERROR", "Cleanup domain pods and services failed!!")
         }
         finally {
             sleep 10
@@ -34,7 +48,7 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            echo "Cleanup domain configmap and stateful sets failed!!"
+            log("ERROR", "Cleanup domain configmap and stateful sets failed!!")
         }
         finally {
             sleep 30
@@ -46,7 +60,7 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            echo "Cleanup domain resource failed!!"
+            log("ERROR", "Cleanup domain resource failed!!")
         }
         finally {
             sleep 30
@@ -60,10 +74,21 @@ class Cleanup {
                         '''
         }
         catch (exc) {
-            echo "Cleanup domain persistent volume failed!!"
+            log("ERROR", "Cleanup domain persistent volume failed!!")
         }
         finally {
             sleep 10
+        }
+    }
+
+    static cleanDomainNamespace(String namespace) {
+        try {
+            sh label: 'clean domain namespace', script: '''
+                        kubectl delete ns ${namespace}
+                        '''
+        }
+        catch (exc) {
+            log("ERROR", "Cleanup domain namespace failed!!")
         }
     }
 

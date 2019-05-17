@@ -340,7 +340,7 @@ pipeline {
 
                     Cleanup.cleanDomain("${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}")
                     Cleanup.cleanDomainNamespace("${SOA_DOMAIN_NS}")
-                    
+
                     Cleanup.cleanOperator("${SOA_OPERATOR_REL}")
                     Cleanup.cleanOperatorNamespace("${SOA_OPERATOR_NS}")
                 }

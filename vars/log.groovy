@@ -3,6 +3,8 @@ def call(String level = 'INFO', String message = '') {
         info(message)
     else if (level.equals('WARNING'))
         warning(message)
+    else if (level.equals('ERROR'))
+        error(message)
 }
 
 def info(message) {
@@ -11,4 +13,8 @@ def info(message) {
 
 def warning(message) {
     echo "WARNING: ${message}"
+}
+
+def error(message) {
+    echo "ERROR: ${message}"
 }
