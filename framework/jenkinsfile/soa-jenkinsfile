@@ -2,6 +2,7 @@
 
 
 import com.oracle.fmwk8s.common.Cleanup
+import com.oracle.fmwk8s.common.Common
 
 pipeline {
     agent {
@@ -13,7 +14,7 @@ pipeline {
     }
 
     environment {
-        RUN_SUFFIX = "105-05162322"
+        RUN_SUFFIX = Common.getUniqueId(this)
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         SOA_OPERATOR_NS = 'soa-operator-ns' + "-${RUN_SUFFIX}"
         SOA_OPERATOR_SA = 'default'
@@ -44,7 +45,7 @@ pipeline {
                             try {
                                 sh label: 'create operator namespace', script: '''
                                 export KUBECONFIG=${KUBECONFIG}
-                                #kubectl create ns ${SOA_OPERATOR_NS}
+                                kubectl create ns ${SOA_OPERATOR_NS}
                                 #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS}
                                 '''
                             }
@@ -56,7 +57,7 @@ pipeline {
                             try {
                                 sh label: 'create domain namespace', script: '''
                                 export KUBECONFIG=${KUBECONFIG}
-                                #kubectl create ns ${SOA_DOMAIN_NS}
+                                kubectl create ns ${SOA_DOMAIN_NS}
                                 '''
                             }
                             catch (exc) {
@@ -70,22 +71,22 @@ pipeline {
                         }
 
                         sh label: 'build soa operator image', script: '''							
-                        #docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+                        docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
 						
-						#docker pull container-registry.oracle.com/java/serverjre:latest
-						#docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
+						docker pull container-registry.oracle.com/java/serverjre:latest
+						docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
 						
-						#docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
-						#docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
+						docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
+						docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
 						
 
-						#docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
+						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
 						'''
 
                         sh label: 'push soa operator image', script: '''
-						#docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
-						#docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
-						#docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
+						docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
+						docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+						docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
                         '''
 
                         sh label: 'deploy soa operator', script: '''
@@ -110,7 +111,7 @@ pipeline {
 						'''
 
                         sh label: 'verify soa operator', script: '''
-						#kubectl get pods -n ${SOA_OPERATOR_NS}
+						kubectl get pods -n ${SOA_OPERATOR_NS}
 						#kubectl logs -n ${SOA_OPERATOR_NS} -c weblogic-operator deployments/weblogic-operator
 						'''
                     }
@@ -128,7 +129,7 @@ pipeline {
                         sed -i "s#%NFS_DOMAIN_DIR%#${NFS_DOMAIN_DIR}#g" fmwk8s-mkdir-pod.yaml
                         cat fmwk8s-mkdir-pod.yaml
                         
-                        #kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${SOA_DOMAIN_NS}
+                        kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${SOA_DOMAIN_NS}
                         '''
                     }
                 }
@@ -167,25 +168,25 @@ pipeline {
 						        sed -i "s#terminationGracePeriodSeconds: 30#terminationGracePeriodSeconds: 30\\n      imagePullSecrets:\\n      - name: regcred#g" soadb.yaml
 						        cat soadb.yaml
 
-						        #kubectl apply -f soadb.yaml
+						        kubectl apply -f soadb.yaml
 						        
 						        dbstat='dbstat'
 						        i=0
-						        #until `echo $dbstat | grep -q Running` > /dev/null
-						        #do
-						        #    if [ $i == 25 ]; then
-						        #        echo "Timeout waiting for DB. Exiting!!."
-						        #        exit 1
-						        #    fi
-						        #    i=$((i+1))
-						        #    echo "DB is not Running. Iteration $i of 25. Sleeping"
-						        #    sleep 60
-						        #    dbstat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep soadb\\``
-						        #done
-						        #echo "DB container is Running."
-						        #sleep 300
+						        until `echo $dbstat | grep -q Running` > /dev/null
+						        do
+						            if [ $i == 25 ]; then
+						                echo "Timeout waiting for DB. Exiting!!."
+						                exit 1
+						            fi
+						            i=$((i+1))
+						            echo "DB is not Running. Iteration $i of 25. Sleeping"
+						            sleep 60
+						            dbstat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep soadb\\``
+						        done
+						        echo "DB container is Running."
+						        sleep 300
 						        
-                                #kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
+                                kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
 						        #kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
                                 '''
                             }
@@ -202,7 +203,7 @@ pipeline {
                             container('jnlp') {
                                 sh label: 'setup env', script: '''
                                 export KUBECONFIG=${KUBECONFIG}
-                                #sleep 120
+                                sleep 120
                                 '''
 
                                 sh label: 'upgrade helm', script: '''
@@ -233,18 +234,18 @@ pipeline {
 						        sed -i "s#weblogicDomainStorageReclaimPolicy: Retain#weblogicDomainStorageReclaimPolicy: Recycle#g" create-pv-pvc-inputs.yaml
                                 cat create-pv-pvc-inputs.yaml
                         
-                                #./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
+                                ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
 
                                 cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml ${WORKSPACE}
 						        cp ${WORKSPACE}/soa-operator-output-directory/pv-pvcs/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml ${WORKSPACE}
                                 cat ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml
 						        cat ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml
 
-                                #kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml -n ${SOA_DOMAIN_NS}
-						        #kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml -n ${SOA_DOMAIN_NS}
+                                kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv.yaml -n ${SOA_DOMAIN_NS}
+						        kubectl apply -f ${WORKSPACE}/${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc.yaml -n ${SOA_DOMAIN_NS}
 
-                                #kubectl describe pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
-                                #kubectl describe pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
+                                kubectl describe pv ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pv -n ${SOA_DOMAIN_NS}
+                                kubectl describe pvc ${SOA_DOMAIN_NAME}-${SOA_DOMAIN_NS}-pvc -n ${SOA_DOMAIN_NS}
                                 '''
 
                                 sh label: 'prepare domain in pv', script: '''
@@ -279,17 +280,17 @@ pipeline {
             steps {
                 sh label: 'create domain in pv', script: '''
                 cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
-                #./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
+                ./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory
                 
                 cp ${WORKSPACE}/soa-operator-output-directory/soa-domains/${SOA_DOMAIN_NAME}/domain.yaml ${WORKSPACE}
                 cat ${WORKSPACE}/domain.yaml
                 '''
 
                 sh label: 'start domain', script: '''
-                #kubectl apply -f ${WORKSPACE}/domain.yaml
-                #sleep 300
+                kubectl apply -f ${WORKSPACE}/domain.yaml
+                sleep 360
                 
-                #kubectl get all,domains -n ${SOA_DOMAIN_NS}
+                kubectl get all,domains -n ${SOA_DOMAIN_NS}
                 #kubectl logs ${SOA_DOMAIN_NAME}-adminserver -n ${SOA_DOMAIN_NS}
                 '''
             }
