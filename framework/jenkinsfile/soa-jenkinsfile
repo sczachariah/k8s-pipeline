@@ -31,7 +31,7 @@ pipeline {
     stages {
         stage('build and deploy soa operator') {
             steps {
-                log('INFO', 'Starting SOA pipeline with unique runId ' + sh(returnStdout: true, script: 'echo ${RUN_SUFFIX}'))
+                log('INFO', 'Starting SOA pipeline with unique runId ' + "${RUN_SUFFIX}")
 
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
@@ -337,46 +337,12 @@ pipeline {
             container(name: 'jnlp') {
                 script {
                     Cleanup.cleanOperator("${SOA_OPERATOR_REL}")
-                    Cleanup.cleanDomain("${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}")
-                }
 
-                script {
-                    try {
-                        sh label: 'clean domain namespace', script: '''
-                        kubectl delete ns ${SOA_DOMAIN_NS}
-                        '''
-                    }
-                    catch (exc) {
-                        echo "Cleanup domain namespace failed!!"
-                    }
-                }
-                script {
-                    try {
-                        sh label: 'clean soa operator', script: '''
-                        helm delete --purge ${SOA_OPERATOR_REL}
-                        '''
-                    }
-                    catch (exc) {
-                        echo "Cleanup operator failed!!."
-                    }
-                    finally {
-                        sleep 10
-                        sh label: 'clean operator namespace', script: '''
-                        kubectl delete configmaps --all -n ${SOA_OPERATOR_NS}
-                        '''
-                    }
-                }
-                script {
-                    try {
-                        sh label: 'clean operator namespace', script: '''
-                        kubectl delete all --all -n ${SOA_OPERATOR_NS}
-                        sleep 10
-                        kubectl delete ns ${SOA_OPERATOR_NS}
-                        '''
-                    }
-                    catch (exc) {
-                        echo "Cleanup operator namespace failed!!."
-                    }
+                    Cleanup.cleanDomain("${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}")
+                    Cleanup.cleanDomainNamespace("${SOA_DOMAIN_NS}")
+                    
+                    Cleanup.cleanOperator("${SOA_OPERATOR_REL}")
+                    Cleanup.cleanOperatorNamespace("${SOA_OPERATOR_NS}")
                 }
             }
         }
