@@ -335,7 +335,9 @@ pipeline {
     post {
         always {
             container(name: 'jnlp') {
-                Cleanup.cleanOperator("${SOA_OPERATOR_REL}")
+                script {
+                    Cleanup.cleanOperator("${SOA_OPERATOR_REL}")
+                }
                 script {
                     try {
                         sh label: 'clean domain pods and services', script: '''
