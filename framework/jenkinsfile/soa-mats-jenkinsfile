@@ -316,7 +316,8 @@ pipeline {
                         container('jnlp') {
                             sh label: 'verify weblogic ready', script: '''
                             curl -v "http://${SOA_DOMAIN_NAME}-adminserver.${SOA_DOMAIN_NS}.svc.cluster.local:7001/weblogic/ready"
-                            curl -v "http://${SOA_DOMAIN_NAME}-cluster-cluster-1.${SOA_DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            #curl -v "http://${SOA_DOMAIN_NAME}-cluster-cluster-1.${SOA_DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${SOA_DOMAIN_NAME}-cluster-soa-cluster.${SOA_DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
                             '''
                         }
                     }
