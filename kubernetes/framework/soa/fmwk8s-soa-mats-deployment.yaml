@@ -1,0 +1,25 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fmwk8s-soa-mats
+  labels:
+    app: fmwk8s-soa-mats
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fmwk8s-soa-mats
+  template:
+    metadata:
+      labels:
+        app: fmwk8s-soa-mats
+    spec:
+      containers:
+        - name: fmwk8s-soa-mats
+          image: "%SOA_MATS_IMAGE%"
+          envFrom:
+            - configMapRef:
+                name: fmwk8s-soa-env-configmap
+---
+---
