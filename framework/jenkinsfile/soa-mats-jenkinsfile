@@ -336,20 +336,18 @@ pipeline {
                             sed -i "s#%ADMIN_SERVER_NAME_SVC%#${SOA_DOMAIN_NAME}-admin-server.${SOA_DOMAIN_NS}.svc.cluster.local#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%WEBLOGIC_USER%#${WEBLOGIC_USER}#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%ADMIN_PASSWORD%#${ADMIN_PASSWORD}#g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s###g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%ADMIN_PORT%#7001#g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%ADMIN_SERVER_NAME%##g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%ADMIN_SSL_PORT%##g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%CONNECTION_STRING%#soadb.${SOA_DOMAIN_NS}:1521/soapdb.us.oracle.com#g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%DB_HOST%#soadb.${SOA_DOMAIN_NS}#g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%DB_PORT%#1521#g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%DB_SCHEMA_PASSWORD%#Welcome1#g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%DB_SID%#soapdb.us.oracle.com#g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%JDBC_URL%#jdbc:oracle:thin:@soadb.${SOA_DOMAIN_NS}:1521/soapdb.us.oracle.com#g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%MANAGED_SERVER_NAME_BASE%#soa_server#g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%MANAGED_SERVER_PORT%#8001#g" fmwk8s-soa-env-configmap.yaml                            
+                            sed -i "s#%MDS_USER%#SOA1_MDS#g" fmwk8s-soa-env-configmap.yaml
                             cat fmwk8s-soa-env-configmap.yaml
                             
                             sed -i "s#%SOA_MATS_IMAGE%#soa-mats-test:12214#g" fmwk8s-soa-mats-deployment.yaml
@@ -358,25 +356,25 @@ pipeline {
 
                             sh label: 'run test', script: '''
                             kubectl apply -f fmwk8s-soa-env-configmap.yaml -n ${SOA_DOMAIN_NS}
-                            kubectl apply -f fmwk8s-soa-mats-deployment.yaml -n ${SOA_DOMAIN_NS}
+                            #kubectl apply -f fmwk8s-soa-mats-deployment.yaml -n ${SOA_DOMAIN_NS}
                             
-                            testStat='testStat'
-                            until `echo $testStat | grep -q Terminated` > /dev/null
-                            do
-                                echo "Test is Running. Sleeping"
-                                sleep 60
-                                testStat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep fmwk8s-soa-mats\\``
-                            done
+                            #testStat='testStat'
+                            #until `echo $testStat | grep -q Terminated` > /dev/null
+                            #do
+                            #    echo "Test is Running. Sleeping"
+                            #    sleep 60
+                            #    testStat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep fmwk8s-soa-mats\\``
+                            #done
                                 
-                                echo "Test Execution Finished."
+                            #echo "Test Execution Finished."
                             '''
 
                             sh label: 'publish results', script: '''
                             '''
 
                             sh label: 'clean tests', script: '''
-                            kubectl delete deployment fmwk8s-soa-mats -n ${SOA_DOMAIN_NS}
-                            kubectl delete configmap fmwk8s-soa-env-configmap -n ${SOA_DOMAIN_NS} 
+                            #kubectl delete deployment fmwk8s-soa-mats -n ${SOA_DOMAIN_NS}
+                            #kubectl delete configmap fmwk8s-soa-env-configmap -n ${SOA_DOMAIN_NS} 
                             '''
                         }
 
