@@ -338,7 +338,7 @@ pipeline {
                             sed -i "s#%WEBLOGIC_USER%#${WEBLOGIC_USER}#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%ADMIN_PASSWORD%#${ADMIN_PASSWORD}#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%ADMIN_PORT%#7001#g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s#%ADMIN_SERVER_NAME%##g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%ADMIN_SERVER_NAME%#admin-server#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%ADMIN_SSL_PORT%##g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%CONNECTION_STRING%#soadb.${SOA_DOMAIN_NS}:1521/soapdb.us.oracle.com#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%DB_HOST%#soadb.${SOA_DOMAIN_NS}#g" fmwk8s-soa-env-configmap.yaml
