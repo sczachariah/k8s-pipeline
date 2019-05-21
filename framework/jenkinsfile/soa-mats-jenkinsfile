@@ -358,25 +358,25 @@ pipeline {
                             sh label: 'run test', script: '''
                             cd kubernetes/framework/soa
                             kubectl apply -f fmwk8s-soa-env-configmap.yaml -n ${SOA_DOMAIN_NS}
-                            #kubectl apply -f fmwk8s-soa-mats-deployment.yaml -n ${SOA_DOMAIN_NS}
+                            kubectl apply -f fmwk8s-soa-mats-deployment.yaml -n ${SOA_DOMAIN_NS}
                             
-                            #testStat='testStat'
-                            #until `echo $testStat | grep -q Terminated` > /dev/null
-                            #do
-                            #    echo "Test is Running. Sleeping"
-                            #    sleep 60
-                            #    testStat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep fmwk8s-soa-mats\\``
-                            #done
+                            testStat='testStat'
+                            until `echo $testStat | grep -q Terminated` > /dev/null
+                            do
+                                echo "Test is Running. Sleeping"
+                                sleep 60
+                                testStat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep fmwk8s-soa-mats\\``
+                            done
                                 
-                            #echo "Test Execution Finished."
+                            echo "Test Execution Finished."
                             '''
 
                             sh label: 'publish results', script: '''
                             '''
 
                             sh label: 'clean tests', script: '''
-                            #kubectl delete deployment fmwk8s-soa-mats -n ${SOA_DOMAIN_NS}
-                            #kubectl delete configmap fmwk8s-soa-env-configmap -n ${SOA_DOMAIN_NS} 
+                            kubectl delete deployment fmwk8s-soa-mats -n ${SOA_DOMAIN_NS}
+                            kubectl delete configmap fmwk8s-soa-env-configmap -n ${SOA_DOMAIN_NS} 
                             '''
                         }
 
