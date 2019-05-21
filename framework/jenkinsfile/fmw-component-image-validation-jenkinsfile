@@ -45,22 +45,15 @@ EOF
 							echo "***********Checking content of the workspace******************"
 							ls
 							echo "***********Checking is values passed properly******************"
-							echo PRODUCT_NAME
-							echo ${PRODUCT_NAME}
-							echo PRODUCT_DOMAIN_TYPE
-							echo ${PRODUCT_DOMAIN_TYPE}
-							echo ADMIN_USERNAME
-							echo ${ADMIN_USERNAME}
-							echo ADMIN_PASSWORD
-							echo ${ADMIN_PASSWORD}
-							echo K8S_IP
-							echo ${K8S_IP}
-							echo ADMIN_NODE_PORT
-							echo ${ADMIN_NODE_PORT}
-							echo MS_NODE_PORT
-							echo ${MS_NODE_PORT}
-							echo BUILD_NUMBER ${BUILD_NUMBER}
-							echo BUILD_URL ${BUILD_URL}	
+							echo "PRODUCT_NAME          : ${PRODUCT_NAME} \
+							      PRODUCT_DOMAIN_TYPE   : ${PRODUCT_DOMAIN_TYPE} \
+                                  ADMIN_USERNAME        : ${ADMIN_USERNAME} \
+                                  ADMIN_PASSWORD        : ${ADMIN_PASSWORD} \
+							      K8S_IP$               : {K8S_IP} \
+							      ADMIN_NODE_PORT       : ${ADMIN_NODE_PORT} \
+							      MS_NODE_PORT          : ${MS_NODE_PORT} \
+							      BUILD_NUMBER          : ${BUILD_NUMBER} \
+							      BUILD_URL             : ${BUILD_URL}"	
 					
 							if [[ ${PRODUCT_NAME} == *"SOA"* ]]; then
 								sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
