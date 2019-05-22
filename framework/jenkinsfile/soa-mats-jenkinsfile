@@ -364,15 +364,15 @@ pipeline {
                             echo "Sleeping"
                             sleep 600
                             
-                            #testStat='testStat'
-                            #until `echo $testStat | grep -q Terminated` > /dev/null
-                            #do
-                            #    echo "Test is Running. Sleeping"
-                            #    sleep 60
-                            #    testStat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep fmwk8s-soa-mats\\``
-                            #done
+                            testStat='testStat'
+                            until `echo $testStat | grep -q Terminated` > /dev/null
+                            do
+                                echo "Test is Running. Sleeping"
+                                sleep 60
+                                testStat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep fmwk8s-soa-mats\\``
+                            done
                                 
-                            #echo "Test Execution Finished."
+                            echo "Test Execution Finished."
                             '''
 
                             sh label: 'publish results', script: '''
