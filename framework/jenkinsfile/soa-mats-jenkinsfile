@@ -360,6 +360,9 @@ pipeline {
                             kubectl apply -f fmwk8s-soa-env-configmap.yaml -n ${SOA_DOMAIN_NS}
                             kubectl apply -f fmwk8s-soa-mats-deployment.yaml -n ${SOA_DOMAIN_NS}
                             kubectl get all -n ${SOA_DOMAIN_NS}
+
+                            echo "Sleeping"
+                            sleep 600
                             
                             #testStat='testStat'
                             #until `echo $testStat | grep -q Terminated` > /dev/null
@@ -376,6 +379,8 @@ pipeline {
                             '''
 
                             sh label: 'clean tests', script: '''
+                            kubectl delete deployment fmwk8s-soa-mats -n ${SOA_DOMAIN_NS}
+                            kubectl delete configmap fmwk8s-soa-env-configmap -n ${SOA_DOMAIN_NS}
                             '''
                         }
 
