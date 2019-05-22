@@ -372,8 +372,8 @@ pipeline {
                             #echo "Test Execution Finished."
                             '''
 
-                            #sh label: 'publish results', script: '''
-                            #'''
+                            sh label: 'publish results', script: '''
+                            '''
 
                             #sh label: 'clean tests', script: '''
                             #kubectl delete deployment fmwk8s-soa-mats -n ${SOA_DOMAIN_NS}
