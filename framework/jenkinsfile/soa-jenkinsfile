@@ -29,9 +29,9 @@ pipeline {
 
 
     stages {
-        stage('build and deploy soa operator') {
+        stage('build and deploy <fmw-product> operator') {
             steps {
-                log('INFO', 'Starting SOA pipeline with unique runId ' + "${RUN_SUFFIX}")
+                log('INFO', 'Starting <fmw-product> pipeline with unique runId ' + "${RUN_SUFFIX}")
 
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                   usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
@@ -71,7 +71,7 @@ pipeline {
                             }
                         }
 
-                        sh label: 'build soa operator image', script: '''							
+                        sh label: 'build <fmw-product> operator image', script: '''							
                         docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
 						
 						docker pull container-registry.oracle.com/java/serverjre:latest
@@ -84,13 +84,13 @@ pipeline {
 						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
 						'''
 
-                        sh label: 'push soa operator image', script: '''
+                        sh label: 'push <fmw-product> operator image', script: '''
 						docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
 						docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
 						docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
                         '''
 
-                        sh label: 'deploy soa operator', script: '''
+                        sh label: 'deploy <fmw-product> operator', script: '''
 						retVal=`echo \\`helm ls ${SOA_OPERATOR_REL}\\``
 
 						if [[ !  -z  "$retVal" ]]; then
@@ -111,7 +111,7 @@ pipeline {
 						fi
 						'''
 
-                        sh label: 'verify soa operator', script: '''
+                        sh label: 'verify <fmw-product> operator', script: '''
 						kubectl get pods -n ${SOA_OPERATOR_NS}
 						#kubectl logs -n ${SOA_OPERATOR_NS} -c weblogic-operator deployments/weblogic-operator
 						'''
@@ -137,7 +137,7 @@ pipeline {
             }
         }
 
-        stage('prepare soa environment') {
+        stage('prepare <fmw-product> environment') {
             parallel {
                 stage('setup database') {
                     steps {
@@ -195,7 +195,7 @@ pipeline {
                     }
                 }
 
-                stage('prepare soa domain in pv') {
+                stage('prepare <fmw-product> domain in pv') {
                     steps {
                         withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
                                           usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
@@ -277,7 +277,7 @@ pipeline {
             }
         }
 
-        stage('deploy soa domain') {
+        stage('deploy <fmw-product> domain') {
             steps {
                 sh label: 'create domain in pv', script: '''
                 cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
@@ -309,7 +309,7 @@ pipeline {
 
         stage('run tests') {
             parallel {
-                stage('verify soa ready') {
+                stage('verify <fmw-product> ready') {
                     steps {
                         sh label: 'setup env', script: '''
                         '''
