@@ -6,11 +6,12 @@ pipeline {
             inheritFrom 'fmwk8s-test-infra-slave'
         }
     }
-    properties:
+    properties {
        - inject:
           properties-content: |
             FOO=bar
             BAZ=foobar
+    }
     environment {
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
     }
