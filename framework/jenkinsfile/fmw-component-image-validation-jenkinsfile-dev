@@ -13,7 +13,6 @@ pipeline {
         stage('deploy Test tools') {
             steps {
                 container(name: 'jnlp') {
-                    currentBuild.description = 'http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation/detail/fmw-component-image-validation/'
                     git branch: 'master',
                             credentialsId: 'jaya.selvaraj.ssh',
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
@@ -74,7 +73,9 @@ EOF
     post {
         always {
            script {
-           	  FileOutputStream out = new FileOutputStream("out.properties");
+           	  currentBuild.displayName = "True"
+              currentBuild.description = "The best description."
+              FileOutputStream out = new FileOutputStream("out.properties");
               props.setProperty("status", "success");
               props.store(out, null);
               out.close();
