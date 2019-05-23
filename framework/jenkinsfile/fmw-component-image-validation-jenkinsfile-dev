@@ -43,6 +43,7 @@ EOF
 							echo "***********Moving to workspace******************"
 							cd ${WORKSPACE}
 							echo "***********Checking content of the workspace******************"
+							echo "blue_flag=true" >> ${WORKSPACE}/out.properties
 							ls
 							echo "***********Checking is values passed properly******************"
 							echo -e "\nPRODUCT_NAME : ${PRODUCT_NAME} \n PRODUCT_DOMAIN_TYPE : ${PRODUCT_DOMAIN_TYPE} \n ADMIN_USERNAME : ${ADMIN_USERNAME} \n ADMIN_PASSWORD : ${ADMIN_PASSWORD} \n K8S_IP : ${K8S_IP} \n ADMIN_NODE_PORT : ${ADMIN_NODE_PORT} \n MS_NODE_PORT : ${MS_NODE_PORT} \n BUILD_NUMBER : ${BUILD_NUMBER} \n BUILD_URL : ${BUILD_URL}"	
@@ -75,6 +76,7 @@ EOF
            script {
            	  currentBuild.displayName = "true"
               currentBuild.description = "http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation-dev/detail/fmw-component-image-validation-dev/${BUILD_NUMBER}/pipeline"
+
            }
         }
     }
