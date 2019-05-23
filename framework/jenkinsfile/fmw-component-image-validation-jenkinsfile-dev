@@ -8,12 +8,12 @@ pipeline {
     }
     environment {
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
-        currentBuild.description = 'http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation/detail/fmw-component-image-validation/'
     }
     stages {
         stage('deploy Test tools') {
             steps {
                 container(name: 'jnlp') {
+                    currentBuild.description = 'http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation/detail/fmw-component-image-validation/'
                     git branch: 'master',
                             credentialsId: 'jaya.selvaraj.ssh',
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
