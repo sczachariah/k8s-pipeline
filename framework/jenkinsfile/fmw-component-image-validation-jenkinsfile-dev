@@ -6,10 +6,15 @@ pipeline {
             inheritFrom 'fmwk8s-test-infra-slave'
         }
     }
+    properties:
+      - inject:
+          properties-content: |
+            FOO=bar
+            BAZ=foobar
     parameters {
-        string(name: 'blue_ocean_flag', value: 'true')
-        string(name: 'blue_ocean_link', value: 'http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/')
-    }
+        string(name: 'blue_ocean_flag', defaultValue: 'true')
+        string(name: 'blue_ocean_link', defaultValue: 'http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/')
+     }
     environment {
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
     }
