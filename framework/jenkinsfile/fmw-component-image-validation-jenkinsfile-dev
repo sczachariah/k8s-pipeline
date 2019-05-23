@@ -8,7 +8,8 @@ pipeline {
     }
     environment {
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
-        currentBuild.description = 'http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation/detail/fmw-component-image-validation/${BUILD_NUMBER}/pipeline'
+        properties([parameters([string(flag: 'true', link: 'http://hudsonci.oraclecorp.com/jenkins/fmwk8s/b')])])
+        currentBuild.description = 'http://hudsonci.oraclecorp.com/jenkins/fmwk8s/bluehttp://hudsonci.oraclecorp.com/jenkins/fmwk8s/bl/organizations/jenkins/fmw-component-image-validation/detail/fmw-component-image-validation/${BUILD_NUMBER}/pipeline'
     }
     stages {
         stage('deploy Test tools') {
