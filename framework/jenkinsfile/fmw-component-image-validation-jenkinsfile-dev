@@ -75,10 +75,6 @@ EOF
            script {
            	  currentBuild.displayName = "true"
               currentBuild.description = "http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation-dev/detail/fmw-component-image-validation-dev/${BUILD_NUMBER}/pipeline"
-                                  cat <<EOF > ${WORKSPACE}/test.props
-              SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
-              SELENIUM_HUB_PORT=4444
-              EOF
               echo "blue_flag=true" >> ${WORKSPACE}/deploy_job.props
            }
         }
