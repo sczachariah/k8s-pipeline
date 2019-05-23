@@ -7,9 +7,9 @@ pipeline {
         }
     }
     parameters {
-        string(name: 'flag', description: 'True')
-        string(name: 'GERRIT_PATCHSET_REVISION', description: 'To solve MissingPropertyException')
-     }
+        string(name: 'blue_ocean_flag', value: 'true')
+        string(name: 'blue_ocean_link', value: 'http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/')
+    }
     environment {
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
     }
@@ -77,13 +77,12 @@ EOF
     post {
         always {
            script {
-           	  writeFile file: 'props.txt', text: 'flag=true'
-              script {
-                 def props = readProperties file:'props.txt';
-              }
-              sh "echo $props['flag']"
+           	  FileOutputStream out = new FileOutputStream("out.properties");
+              props.setProperty("status", "success");
+              props.store(out, null);
+              out.close();
            }
         }
-     }
+    }
 
 }
