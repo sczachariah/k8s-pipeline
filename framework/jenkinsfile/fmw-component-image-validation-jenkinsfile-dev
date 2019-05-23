@@ -1,0 +1,75 @@
+pipeline {
+    agent {
+        kubernetes {
+            label 'fmwk8s-test-infra-slave'
+            namespace 'fmwk8s'
+            inheritFrom 'fmwk8s-test-infra-slave'
+        }
+    }
+    environment {
+        KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
+        currentBuild.description = "http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation/detail/fmw-component-image-validation/${BUILD_NUMBER}/pipeline"
+    }
+    stages {
+        stage('deploy Test tools') {
+            steps {
+                container(name: 'jnlp') {
+                    git branch: 'master',
+                            credentialsId: 'jaya.selvaraj.ssh',
+                            url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
+
+                    sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
+
+                    sh label: 'generate test props', script: '''
+                    cat <<EOF > ${WORKSPACE}/test.props
+SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
+SELENIUM_HUB_PORT=4444
+EOF
+                    cat ${WORKSPACE}/test.props
+                    '''
+                }
+            }
+        }
+
+        stage('execute tests') {
+            parallel {
+                stage('build and run maven test') {
+                    steps {
+                        container('jnlp') {
+                            git branch: 'master',
+                                    credentialsId: 'sandeep.zachariah.ssh',
+                                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-urltests.git'
+
+                            sh label: 'execute tests', script: '''
+							echo "***********Moving to workspace******************"
+							cd ${WORKSPACE}
+							echo "***********Checking content of the workspace******************"
+							ls
+							echo "***********Checking is values passed properly******************"
+							echo -e "\nPRODUCT_NAME : ${PRODUCT_NAME} \n PRODUCT_DOMAIN_TYPE : ${PRODUCT_DOMAIN_TYPE} \n ADMIN_USERNAME : ${ADMIN_USERNAME} \n ADMIN_PASSWORD : ${ADMIN_PASSWORD} \n K8S_IP : ${K8S_IP} \n ADMIN_NODE_PORT : ${ADMIN_NODE_PORT} \n MS_NODE_PORT : ${MS_NODE_PORT} \n BUILD_NUMBER : ${BUILD_NUMBER} \n BUILD_URL : ${BUILD_URL}"	
+					
+							if [[ ${PRODUCT_NAME} == *"SOA"* ]]; then
+								sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
+								sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
+								sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
+								sed -i -e "s|UNAME|${ADMIN_USERNAME}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
+								sed -i -e "s|PWD|${ADMIN_PASSWORD}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
+								
+								if [[ ${PRODUCT_DOMAIN_TYPE} == *"SOA"* ]]; then
+									mvn test -Dtest=SOAsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
+								elif [[ ${PRODUCT_DOMAIN_TYPE} == *"OSB"* ]]; then
+									mvn test -Dtest=OSBsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
+								elif [[ ${PRODUCT_DOMAIN_TYPE} == *"BPM"* ]]; then
+									mvn test -Dtest=BPMsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
+								fi
+							fi							
+                            
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
