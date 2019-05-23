@@ -73,12 +73,9 @@ EOF
     post {
         always {
            script {
-           	  currentBuild.displayName = "True"
-              currentBuild.description = "The best description."
-              FileOutputStream out = new FileOutputStream("out.properties");
-              props.setProperty("status", "success");
-              props.store(out, null);
-              out.close();
+           	  currentBuild.displayName = "true"
+              currentBuild.description = "http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation-dev/detail/fmw-component-image-validation-dev/${BUILD_NUMBER}/pipeline"
+              echo blue_flag=true >> ${WORKSPACE}/deploy_job.properties
            }
         }
     }
