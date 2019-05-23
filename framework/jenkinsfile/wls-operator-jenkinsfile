@@ -1,9 +1,9 @@
 pipeline {
     agent {
         kubernetes {
-            label 'fmwk8s-test-infra-slave'
+            label 'fmwk8s-test-mats-slave'
             namespace 'kube-system'
-            inheritFrom 'fmwk8s-test-infra-slave'
+            inheritFrom 'fmwk8s-test-mats-slave'
         }
     }
     environment {

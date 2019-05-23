@@ -6,9 +6,9 @@ import com.oracle.fmwk8s.common.Common
 pipeline {
     agent {
         kubernetes {
-            label 'fmwk8s-test-infra-slave'
+            label 'fmwk8s-test-mats-slave'
             namespace 'fmwk8s'
-            inheritFrom 'fmwk8s-test-infra-slave'
+            inheritFrom 'fmwk8s-test-mats-slave'
         }
     }
     environment {
