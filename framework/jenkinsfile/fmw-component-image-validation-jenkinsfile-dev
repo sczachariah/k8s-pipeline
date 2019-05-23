@@ -74,5 +74,16 @@ EOF
             }
         }
     }
+    post {
+        always {
+           script {
+           	  writeFile file: 'props.txt', text: 'flag=true'
+              script {
+                 def props = readProperties file:'props.txt';
+              }
+              sh "echo $props['flag']"
+           }
+        }
+     }
 
 }
