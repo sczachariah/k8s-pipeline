@@ -6,10 +6,12 @@ pipeline {
             inheritFrom 'fmwk8s-test-infra-slave'
         }
     }
+    parameters {
+        string(name: 'flag', description: 'True')
+        string(name: 'GERRIT_PATCHSET_REVISION', description: 'To solve MissingPropertyException')
+     }
     environment {
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
-        properties([parameters([string(flag: 'true', link: 'http://hudsonci.oraclecorp.com/jenkins/fmwk8s/b')])])
-        currentBuild.description = 'http://hudsonci.oraclecorp.com/jenkins/fmwk8s/bluehttp://hudsonci.oraclecorp.com/jenkins/fmwk8s/bl/organizations/jenkins/fmw-component-image-validation/detail/fmw-component-image-validation/${BUILD_NUMBER}/pipeline'
     }
     stages {
         stage('deploy Test tools') {
