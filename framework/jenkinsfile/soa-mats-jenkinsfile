@@ -335,6 +335,7 @@ pipeline {
                         
                             cd kubernetes/framework/soa
                             sed -i "s#%ADMIN_SERVER_NAME_SVC%#${SOA_DOMAIN_NAME}-adminserver.${SOA_DOMAIN_NS}.svc.cluster.local#g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%MANAGED_SERVER_NAME_SVC%#${SOA_DOMAIN_NAME}-soa-server2.${SOA_DOMAIN_NS}.svc.cluster.local#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%WEBLOGIC_USER%#${WEBLOGIC_USER}#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%ADMIN_PASSWORD%#${ADMIN_PASSWORD}#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%ADMIN_PORT%#7001#g" fmwk8s-soa-env-configmap.yaml
