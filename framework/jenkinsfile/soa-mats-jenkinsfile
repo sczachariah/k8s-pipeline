@@ -352,7 +352,7 @@ pipeline {
                             sed -i "s#%MDS_USER%#SOA1_MDS#g" fmwk8s-soa-env-configmap.yaml
                             cat fmwk8s-soa-env-configmap.yaml
                             
-                            sed -i "s#%SOA_MATS_IMAGE%#cisystem.docker.oraclecorp.com/soa-mats-test:12214-zip1#g" fmwk8s-soa-mats-deployment.yaml
+                            sed -i "s#%SOA_MATS_IMAGE%#cisystem.docker.oraclecorp.com/soa-mats-test:12214-job#g" fmwk8s-soa-mats-deployment.yaml
                             cat fmwk8s-soa-mats-deployment.yaml
                             '''
 
