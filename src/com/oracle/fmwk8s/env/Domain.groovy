@@ -11,6 +11,8 @@ class Domain {
 
     static createDomain(script) {}
 
+    static isDomainReady(script) {}
+
     static cleanDomain(script, domainName, namespace) {
         try {
             script.sh "kubectl delete jobs --all -n ${namespace} && \
