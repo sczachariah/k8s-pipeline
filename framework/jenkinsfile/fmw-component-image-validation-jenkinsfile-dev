@@ -68,8 +68,11 @@ EOF
 
 							if [[ ${PRODUCT_NAME} == *"ODI"* ]]; then
 							    echo "ODI Testing*******"
-							    sh "curl -s --head --request GET  http://${K8S_IP}:${ADMIN_NODE_PORT}/oraclediagent | grep '200'"
-                                return true
+                                if curl -s --head  --request GET http://10.241.111.5:32600/oraclediagent/ | grep "200 OK" > /dev/null; then
+                                    echo "ODI up"
+                                else
+                                    echo "ODI down"
+                                fi
 							fi
                             
                             '''
