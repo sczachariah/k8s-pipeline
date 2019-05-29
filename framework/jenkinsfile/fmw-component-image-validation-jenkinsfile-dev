@@ -49,12 +49,14 @@ EOF
 							echo -e "\nPRODUCT_NAME : ${PRODUCT_NAME} \n PRODUCT_DOMAIN_TYPE : ${PRODUCT_DOMAIN_TYPE} \n ADMIN_USERNAME : ${ADMIN_USERNAME} \n ADMIN_PASSWORD : ${ADMIN_PASSWORD} \n K8S_IP : ${K8S_IP} \n ADMIN_NODE_PORT : ${ADMIN_NODE_PORT} \n MS_NODE_PORT : ${MS_NODE_PORT} \n BUILD_NUMBER : ${BUILD_NUMBER} \n BUILD_URL : ${BUILD_URL}"	
 					        if [[ $PRODUCT_NAME} == *"ODI"* ]]; then
                                 echo "***********Checking ODI URL******************"
-                                waitUntil {
-                                    try {
-                                        sh "curl -s --head  --request GET  http://${K8S_IP}:${ADMIN_NODE_PORT}/oraclediagent | grep '200'"
-                                        return true
-                                    } catch (Exception e) {
-                                        return false
+                                timeout(time: 15, unit: 'SECONDS') {
+                                    waitUntil {
+                                        try {
+                                            sh "curl -s --head --request GET  http://${K8S_IP}:${ADMIN_NODE_PORT}/oraclediagent | grep '200'"
+                                            return true
+                                        }catch (Exception e){
+                                            return false
+                                        }
                                     }
                                 }
                             fi
