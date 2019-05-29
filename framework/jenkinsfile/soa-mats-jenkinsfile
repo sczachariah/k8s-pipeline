@@ -366,7 +366,7 @@ pipeline {
                             sleep 600
                             
                             testStat='testStat'
-                            until `echo $testStat | grep -q Terminated` > /dev/null
+                            until `echo $testStat | grep -q Completed` > /dev/null
                             do
                                 echo "Test is Running. Sleeping"
                                 sleep 60
