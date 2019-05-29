@@ -359,7 +359,7 @@ pipeline {
                             sh label: 'run test', script: '''
                             cd kubernetes/framework/soa
                             kubectl apply -f fmwk8s-soa-env-configmap.yaml -n ${SOA_DOMAIN_NS}
-                            kubectl apply -f fmwk8s-soa-mats-deployment.yaml -n ${SOA_DOMAIN_NS}
+                            kubectl apply -f fmwk8s-soa-mats-pod.yaml -n ${SOA_DOMAIN_NS}
                             kubectl get all -n ${SOA_DOMAIN_NS}
 
                             echo "Sleeping"
