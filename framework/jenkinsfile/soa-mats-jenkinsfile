@@ -380,7 +380,7 @@ pipeline {
                             '''
 
                             sh label: 'clean tests', script: '''
-                            kubectl delete deployment fmwk8s-soa-mats -n ${SOA_DOMAIN_NS}
+                            kubectl delete pods fmwk8s-soa-mats -n ${SOA_DOMAIN_NS}
                             kubectl delete configmap fmwk8s-soa-env-configmap -n ${SOA_DOMAIN_NS}
                             '''
                         }
