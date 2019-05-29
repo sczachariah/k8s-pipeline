@@ -68,11 +68,15 @@ EOF
 
 							if [[ ${PRODUCT_NAME} == *"ODI"* ]]; then
 							    echo "ODI Testing*******"
+						        sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+						        sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+						        mvn test -Dtest=ODIsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
                                 if curl -s --head  --request GET http://${K8S_IP}:${ADMIN_NODE_PORT}/oraclediagent/ | grep "200 OK" > /dev/null; then
                                     echo "ODI up***"
                                 else
                                     echo "ODI down"
                                 fi
+
 							fi
                             
                             '''
