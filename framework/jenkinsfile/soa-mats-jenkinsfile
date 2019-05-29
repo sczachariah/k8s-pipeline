@@ -335,7 +335,7 @@ pipeline {
                         
                             cd kubernetes/framework/soa
                             sed -i "s#%ADMIN_SERVER_NAME_SVC%#${SOA_DOMAIN_NAME}-adminserver.${SOA_DOMAIN_NS}#g" fmwk8s-soa-env-configmap.yaml
-                            sed -i "s#%MANAGED_SERVER_NAME_SVC%#${SOA_DOMAIN_NAME}-soa-server2.${SOA_DOMAIN_NS}#g" fmwk8s-soa-env-configmap.yaml
+                            sed -i "s#%MANAGED_SERVER_NAME_SVC%#${SOA_DOMAIN_NAME}-cluster-soa-cluster.${SOA_DOMAIN_NS}#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%WEBLOGIC_USER%#${WEBLOGIC_USER}#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%ADMIN_PASSWORD%#${ADMIN_PASSWORD}#g" fmwk8s-soa-env-configmap.yaml
                             sed -i "s#%ADMIN_PORT%#7001#g" fmwk8s-soa-env-configmap.yaml
@@ -380,7 +380,8 @@ pipeline {
                             '''
 
                             sh label: 'clean tests', script: '''
-                            kubectl delete deployment fmwk8s-soa-mats -n ${SOA_DOMAIN_NS}
+                            #kubectl delete deployment fmwk8s-soa-mats -n ${SOA_DOMAIN_NS}
+                            kubectl delete pod fmwk8s-soa-mats -n ${SOA_DOMAIN_NS}
                             kubectl delete configmap fmwk8s-soa-env-configmap -n ${SOA_DOMAIN_NS}
                             '''
                         }
