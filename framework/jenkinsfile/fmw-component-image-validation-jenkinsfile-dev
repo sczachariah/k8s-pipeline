@@ -61,8 +61,19 @@ EOF
 									mvn test -Dtest=OSBsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
 								elif [[ ${PRODUCT_DOMAIN_TYPE} == *"BPM"* ]]; then
 									mvn test -Dtest=BPMsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
+								elif [[ ${PRODUCT_DOMAIN_TYPE} == *"WCS"* ]]; then
+                                	mvn test -Dtest=WCSsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
 								elif [[ ${PRODUCT_DOMAIN_TYPE} == *"ODI"* ]]; then
-                                	mvn test -Dtest=ODIsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
+                                    echo "***********Checking ODI URL******************"
+                                    waitUntil {
+                                    try {
+                                        sh "curl -s --head  --request GET  http://${K8S_IP}:${ADMIN_NODE_PORT}/oraclediagent | grep '200'"
+                                        return true
+                                        } catch (Exception e) {
+                                        return false
+                                        }
+                                    }
+
 								fi
 							fi							
                             
