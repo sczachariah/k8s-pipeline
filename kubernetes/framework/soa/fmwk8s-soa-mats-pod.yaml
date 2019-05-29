@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fmwk8s-soa-mats
+spec:
+  containers:
+    - name: fmwk8s-soa-mats
+      image: "%SOA_MATS_IMAGE%"
+      envFrom:
+        - configMapRef:
+            name: fmwk8s-soa-env-configmap
+---
+---
