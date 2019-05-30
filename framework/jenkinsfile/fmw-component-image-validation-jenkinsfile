@@ -88,7 +88,7 @@ EOF
     post {
         always {
             script {
-                currentBuild.displayName = ${PRODUCT_NAME}
+                currentBuild.displayName = this.env.PRODUCT_NAME
             }
         }
     }
