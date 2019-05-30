@@ -29,11 +29,6 @@ data:
   "MDS_USER": "%MDS_USER%"
   "MDS_PASSWORD": "%DB_SCHEMA_PASSWORD%"
   "MDS_TYPE": "db"
-  "MW_HOME": "/u01/oracle"
-  "ORACLE_HOME": "/u01/oracle/soa"
   "REALMNAME": "jazn.com"
-  "SOA_HOME": "/u01/oracle/soa/soa"
-  "WLS_HOME": "/u01/oracle/wlserver"
-  "WORKDIR": "/u01/SOA_MATS_TESTS"
 ---
 ---
