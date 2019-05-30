@@ -69,6 +69,14 @@ EOF
                             	sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
                             	mvn test -Dtest=ODIsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
                             fi
+
+                            if [[ ${PRODUCT_NAME} == *"OHS"* ]]; then
+                                echo "OHS Testing*******"
+                               	sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                               	sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                mvn test -Dtest=OHSsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
+                            fi
+
                             
                             '''
                         }
