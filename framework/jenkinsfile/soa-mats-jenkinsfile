@@ -16,7 +16,6 @@ pipeline {
 
     environment {
         RUN_SUFFIX = Common.getUniqueId(this)
-        TEST_IMAGE_TAG = ${TEST_IMAGE_TAG}
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         SOA_OPERATOR_NS = 'soa-operator-ns' + "-${RUN_SUFFIX}"
         SOA_OPERATOR_SA = 'default'
