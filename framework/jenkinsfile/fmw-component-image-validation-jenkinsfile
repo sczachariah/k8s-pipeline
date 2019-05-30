@@ -85,5 +85,12 @@ EOF
             }
         }
     }
+    post {
+        always {
+            script {
+                currentBuild.displayName = ${PRODUCT_NAME}
+            }
+        }
+    }
 
 }
