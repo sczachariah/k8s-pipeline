@@ -16,6 +16,7 @@ pipeline {
 
     environment {
         RUN_SUFFIX = Common.getUniqueId(this)
+        TEST_IMAGE_TAG = ${TEST_IMAGE_TAG}
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         SOA_OPERATOR_NS = 'soa-operator-ns' + "-${RUN_SUFFIX}"
         SOA_OPERATOR_SA = 'default'
@@ -352,7 +353,7 @@ pipeline {
                             sed -i "s#%MDS_USER%#SOA1_MDS#g" fmwk8s-soa-env-configmap.yaml
                             cat fmwk8s-soa-env-configmap.yaml
                             
-                            sed -i "s#%SOA_MATS_IMAGE%#cisystem.docker.oraclecorp.com/soa-mats-test:12214-job-log#g" fmwk8s-soa-mats-pod.yaml
+                            sed -i "s#%SOA_MATS_IMAGE%#${TEST_IMAGE_TAG}#g" fmwk8s-soa-mats-pod.yaml
                             cat fmwk8s-soa-mats-pod.yaml
                             '''
 
