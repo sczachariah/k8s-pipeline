@@ -86,7 +86,13 @@ EOF
                                 mvn test -Dtest=WLSINFRAsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
                             fi
 
-                            
+                            if [[ ${PRODUCT_NAME} == *"WLS-DEVELOPER"* || ${PRODUCT_NAME} == *"WLS-GENERIC"* ]]; then
+                                sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                mvn test -Dtest=WLS_DEV_GENERICsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
+                            fi
+
+
                             '''
                         }
                     }
