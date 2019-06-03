@@ -25,7 +25,7 @@ pipeline {
         stage('deploy weblogic operator') {
             steps {
                 container('jnlp') {
-                    git branch: 'release/2.2',
+                    git branch: 'release/2.1',
                             url: 'https://github.com/oracle/weblogic-kubernetes-operator'
 
                     sh 'export KUBECONFIG=${KUBECONFIG}'
@@ -70,7 +70,7 @@ pipeline {
                                  [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                     container('dind') {
-                        git branch: 'release/2.2',
+                        git branch: 'release/2.1',
                                 url: 'https://github.com/oracle/weblogic-kubernetes-operator'
 
                         sh label: 'setup env', script: '''
