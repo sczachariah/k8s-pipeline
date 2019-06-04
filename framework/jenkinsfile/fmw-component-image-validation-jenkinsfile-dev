@@ -107,8 +107,20 @@ EOF
            script {
            	  currentBuild.displayName = this.env.PRODUCT_NAME
               currentBuild.description = "http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation-dev/detail/fmw-component-image-validation-dev/${BUILD_NUMBER}/pipeline"
-
            }
+           rtUpload (
+               serverId: "artifactory.oraclecorp.com",
+               spec:
+                   """{
+                     "files": [
+                       {
+                          "pattern": "test-output",
+                          "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/test-output"
+                       },
+                     ]
+                   }""",
+               failNoOp: true
+           )
         }
     }
 
