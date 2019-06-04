@@ -27,6 +27,19 @@ EOF
                     cat ${WORKSPACE}/test.props
                     '''
                 }
+                rtUpload (
+                    serverId: "artifactory-slc.oraclecorp.com",
+                    spec:
+                        """{
+                           "files": [
+                             {
+                                "pattern": "test.props",
+                                "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/test-output"
+                             }
+                           ]
+                        }""",
+                    failNoOp: true
+                )
             }
         }
 
