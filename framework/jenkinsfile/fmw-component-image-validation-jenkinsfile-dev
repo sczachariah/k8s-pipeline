@@ -116,7 +116,7 @@ EOF
                        {
                           "pattern": "test-output",
                           "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/test-output"
-                       },
+                       }
                      ]
                    }""",
                failNoOp: true
