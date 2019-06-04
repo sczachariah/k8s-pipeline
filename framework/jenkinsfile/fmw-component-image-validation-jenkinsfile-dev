@@ -109,7 +109,7 @@ EOF
               currentBuild.description = "http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation-dev/detail/fmw-component-image-validation-dev/${BUILD_NUMBER}/pipeline"
            }
            rtUpload (
-               serverId: "artifactory.oraclecorp.com",
+               serverId: "artifactory-slc.oraclecorp.com",
                spec:
                    """{
                      "files": [
