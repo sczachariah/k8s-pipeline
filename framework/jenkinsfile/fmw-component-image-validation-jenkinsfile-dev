@@ -115,7 +115,7 @@ EOF
                      "files": [
                        {
                           "pattern": "test-output/*.html",
-                          "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCTNAME}/test-output"
+                          "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/this.env.PRODUCTNAME/test-output"
                        }
                      ]
                    }""",
