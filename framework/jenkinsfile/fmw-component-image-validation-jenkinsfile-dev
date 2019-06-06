@@ -108,7 +108,7 @@ EOF
             steps {
                 echo "Reports directory: ${WORKSPACE}/test-output"
                 script {
-                      env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%SZ'").trim()
+                      env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%d%H:%M'").trim()
                 }
                 zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
                 rtUpload (
