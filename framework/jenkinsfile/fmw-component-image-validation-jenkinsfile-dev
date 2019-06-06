@@ -106,8 +106,22 @@ EOF
         }
         stage('Collect Reports') {
             steps {
-                echo "Reports directory: ${workspace}/test-output"
-                zip dir: "${workspace}/test-output", zipFile: "$reportZipFile" // Create a zip file of content in the workspace
+                echo "Reports directory: ${WORKSPACE}/test-output"
+                zip zipFile: "test-output-${BUILD_NUMBER}-.zip", archive: true, dir: "${WORKSPACE}/test-output"
+                rtUpload (
+                    serverId: "artifactory.oraclecorp.com",
+                    spec:
+                        """{
+                          "files": [
+                            {
+                                "pattern": "test-output*.zip",
+                                "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/test-reports/"
+                            }
+                          ]
+                        }""",
+                    failNoOp: true
+                )
+
             }
         }
     }
@@ -117,19 +131,7 @@ EOF
            	  currentBuild.displayName = this.env.PRODUCT_NAME
               currentBuild.description = "http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation-dev/detail/fmw-component-image-validation-dev/${BUILD_NUMBER}/pipeline"
            }
-           rtUpload (
-               serverId: "artifactory.oraclecorp.com",
-               spec:
-                   """{
-                     "files": [
-                       {
-                          "pattern": "*.zip",
-                          "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/WLS-GENERIC/test-output/"
-                       }
-                     ]
-                   }""",
-               failNoOp: true
-           )
+
         }
     }
 
