@@ -1,3 +1,6 @@
+def getReportZipFile() {
+    return "test-output_${BUILD_NUMBER}.zip"
+}
 pipeline {
     agent {
         kubernetes {
@@ -101,6 +104,12 @@ EOF
                 }
             }
         }
+        stage('Collect Reports') {
+            steps {
+                echo "Reports directory: ${workspace}/test-output"
+                zip dir: "${workspace}/test-output", zipFile: "$reportZipFile" // Create a zip file of content in the workspace
+            }
+        }
     }
     post {
         always {
@@ -114,7 +123,7 @@ EOF
                    """{
                      "files": [
                        {
-                          "pattern": "test-output/*.html",
+                          "pattern": "*.zip",
                           "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/WLS-GENERIC/test-output/"
                        }
                      ]
