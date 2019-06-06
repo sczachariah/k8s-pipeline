@@ -107,7 +107,7 @@ EOF
         stage('Collect Reports') {
             steps {
                 echo "Reports directory: ${WORKSPACE}/test-output"
-                zip zipFile: "test-output-${BUILD_NUMBER}-.zip", archive: true, dir: "${WORKSPACE}/test-output"
+                zip zipFile: "test-output-${BUILD_NUMBER}-${BUILD_ID}.zip", archive: true, dir: "${WORKSPACE}/test-output"
                 rtUpload (
                     serverId: "artifactory.oraclecorp.com",
                     spec:
