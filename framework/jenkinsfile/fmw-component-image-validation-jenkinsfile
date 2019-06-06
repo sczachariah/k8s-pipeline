@@ -99,7 +99,7 @@ EOF
                 }
             }
         }
-        stage('Collect Reports') {
+        stage('Collect and Upload Reports') {
             steps {
                 echo "Reports directory: ${WORKSPACE}/test-output"
                 script {
