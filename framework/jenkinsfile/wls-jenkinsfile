@@ -123,6 +123,22 @@ pipeline {
                         
                         kubectl get pods -n $WLS_DOMAIN_NS
                         kubectl get services -n $WLS_DOMAIN_NS
+                        '''
+
+                        sh label: 'expose weblogic to lb', script: '''
+                        helm upgrade \
+                            --reuse-values \
+                            --set "kubernetes.namespaces={traefik,$WLS_DOMAIN_NS}" \
+                            --wait \
+                            traefik-ingress-controller \
+                            stable/traefik
+                        
+                        helm install kubernetes/samples/charts/ingress-per-domain \
+                            --name ${WLS_DOMAIN_NAME}-ingress \
+                            --namespace ${WLS_DOMAIN_NS} \
+                            --set wlsDomain.domainUID=${WLS_DOMAIN_NAME} \
+                            --set traefik.hostname=fmwk8s.us.oracle.com
+                            
                         tail -f /dev/null
                         '''
                     }
