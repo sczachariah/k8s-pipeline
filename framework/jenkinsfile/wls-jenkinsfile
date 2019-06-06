@@ -126,6 +126,9 @@ pipeline {
                         '''
 
                         sh label: 'expose weblogic to lb', script: '''
+                        helm init
+                        helm repo update
+                        
                         helm upgrade \
                             --reuse-values \
                             --set "kubernetes.namespaces={traefik,$WLS_DOMAIN_NS}" \
