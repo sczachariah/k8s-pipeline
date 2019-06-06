@@ -99,6 +99,29 @@ EOF
                 }
             }
         }
+        stage('Collect Reports') {
+            steps {
+                echo "Reports directory: ${WORKSPACE}/test-output"
+                script {
+                    env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M'").trim()
+                }
+                zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
+                rtUpload (
+                    serverId: "artifactory.oraclecorp.com",
+                    spec:
+                        """{
+                           "files": [
+                             {
+                                "pattern": "test-output*.zip",
+                                "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/test-reports/"
+                             }
+                           ]
+                        }""",
+                    failNoOp: true
+                )
+
+            }
+        }
     }
     post {
         always {
