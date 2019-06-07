@@ -103,13 +103,13 @@ EOF
             steps {
                 echo "Reports directory: ${WORKSPACE}/test-output"
                 script {
-                    env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M'").trim()
+                    env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y%m%d%H%M'").trim()
                 }
                 zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
-                rtUpload (
-                    serverId: "artifactory.oraclecorp.com",
-                    spec:
-                        """{
+                rtUpload(
+                        serverId: "artifactory.oraclecorp.com",
+                        spec:
+                                """{
                            "files": [
                              {
                                 "pattern": "test-output*.zip",
@@ -117,7 +117,7 @@ EOF
                              }
                            ]
                         }""",
-                    failNoOp: true
+                        failNoOp: true
                 )
 
             }
@@ -126,7 +126,7 @@ EOF
     post {
         always {
             script {
-                currentBuild.displayName = this.env.PRODUCT_NAME
+                currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.PRODUCT_NAME
 
             }
         }
