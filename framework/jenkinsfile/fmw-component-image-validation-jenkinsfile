@@ -125,7 +125,6 @@ EOF
                                 "pattern": "buildlog*.txt",
                                 "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/logs/"
                              }
-                             }
                            ]
                         }""",
                         failNoOp: true
