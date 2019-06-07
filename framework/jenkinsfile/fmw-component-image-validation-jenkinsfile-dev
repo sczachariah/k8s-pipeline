@@ -129,7 +129,7 @@ EOF
                                 "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/test-reports/"
                             },
                             {
-                                "pattern": "buildlog.txt",
+                                "pattern": "buildlog*.txt",
                                 "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/logs/"
                             }
                           ]
