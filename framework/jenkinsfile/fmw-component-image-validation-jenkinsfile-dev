@@ -110,6 +110,10 @@ EOF
                 script {
                       env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M'").trim()
                 }
+                sh label: 'copy logs to workspace', script: '''
+                   cp /net/slciecf/scratch/msyseng/fmwk8s_jenkins_home/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log ${WORKSPACE}/log-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}
+                   ls
+                '''
                 zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
                 rtUpload (
                     serverId: "artifactory.oraclecorp.com",
@@ -119,6 +123,10 @@ EOF
                             {
                                 "pattern": "test-output*.zip",
                                 "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/test-reports/"
+                            },
+                            {
+                                "pattern": "log*",
+                                "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/logs/"
                             }
                           ]
                         }""",
@@ -132,21 +140,9 @@ EOF
         always {
            script {
            	  currentBuild.displayName = this.env.PRODUCT_NAME
-           	  def logContent = Jenkins.getInstance()
-                                              .getItemByFullName(this.env.JOB_NAME)
-                                              .getBuildByNumber(
-                                                  Integer.parseInt(this.env.BUILD_NUMBER))
-                                              .logFile.text
-              writeFile file: "buildlog.txt", text: logContent
-           }
-           sh label: 'execute tests', script: '''
-           echo "***********Moving to workspace******************"
-           cd ${WORKSPACE}
-           echo "***********Checking content of the workspace******************"
-           echo "blue_flag=true" >> ${WORKSPACE}/out.properties
-           ls
 
-           '''
+           }
+
         }
     }
 
