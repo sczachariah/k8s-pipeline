@@ -115,7 +115,7 @@ EOF
                                           Integer.parseInt(env.BUILD_NUMBER))
                                       .logFile.text
                       writeFile file: "buildlog.txt", text: logContent
-                      }
+
                 }
 
                 zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
