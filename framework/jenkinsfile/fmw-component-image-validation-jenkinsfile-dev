@@ -109,6 +109,13 @@ EOF
                 echo "Reports directory: ${WORKSPACE}/test-output"
                 script {
                       env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M'").trim()
+                      def logContent = Jenkins.getInstance()
+                                      .getItemByFullName(env.JOB_NAME)
+                                      .getBuildByNumber(
+                                          Integer.parseInt(env.BUILD_NUMBER))
+                                      .logFile.text
+                      writeFile file: "buildlog.txt", text: logContent
+                      }
                 }
 
                 zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
@@ -122,7 +129,7 @@ EOF
                                 "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/test-reports/"
                             },
                             {
-                                "pattern": "log*",
+                                "pattern": "buildlog.txt",
                                 "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/logs/"
                             }
                           ]
@@ -139,11 +146,7 @@ EOF
            	  currentBuild.displayName = this.env.PRODUCT_NAME
 
            }
-           sh label: 'copy logs to workspace', script: '''
-             echo "jenkins home is ${JENKINS_HOME}"
-             cp /net/slciecf/${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log ${WORKSPACE}/log-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}
-             ls
-           '''
+
 
         }
     }
