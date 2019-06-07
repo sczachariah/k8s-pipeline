@@ -112,7 +112,8 @@ EOF
                 }
                 sh label: 'copy logs to workspace', script: '''
                    echo "jenkins home is ${JENKINS_HOME}"
-                   cp /net/slciecf/scratch/msyseng/fmwk8s_jenkins_home/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log* ${WORKSPACE}/log-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}
+                   ls ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}
+                   cp ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log ${WORKSPACE}/log-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}
                    ls
                 '''
                 zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
