@@ -114,7 +114,7 @@ EOF
                                       .getBuildByNumber(
                                           Integer.parseInt(env.BUILD_NUMBER))
                                       .logFile.text
-                      writeFile file: "buildlog.txt", text: logContent
+                      writeFile file: "buildlog-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.txt", text: logContent
 
                 }
 
