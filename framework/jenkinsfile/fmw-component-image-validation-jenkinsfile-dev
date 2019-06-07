@@ -146,6 +146,7 @@ EOF
            echo "blue_flag=true" >> ${WORKSPACE}/out.properties
            ls
 
+           '''
         }
     }
 
