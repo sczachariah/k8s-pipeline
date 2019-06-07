@@ -108,7 +108,7 @@ EOF
             steps {
                 echo "Reports directory: ${WORKSPACE}/test-output"
                 script {
-                      env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%d%H:%M'").trim()
+                      env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M'").trim()
                 }
                 zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
                 rtUpload (
@@ -132,8 +132,19 @@ EOF
         always {
            script {
            	  currentBuild.displayName = this.env.PRODUCT_NAME
-              currentBuild.description = "http://hudsonci.oraclecorp.com/jenkins/fmwk8s/blue/organizations/jenkins/fmw-component-image-validation-dev/detail/fmw-component-image-validation-dev/${BUILD_NUMBER}/pipeline"
+           	  def logContent = Jenkins.getInstance()
+                                              .getItemByFullName(this.env.JOB_NAME)
+                                              .getBuildByNumber(
+                                                  Integer.parseInt(this.env.BUILD_NUMBER))
+                                              .logFile.text
+              writeFile file: "buildlog.txt", text: logContent
            }
+           sh label: 'execute tests', script: '''
+           echo "***********Moving to workspace******************"
+           cd ${WORKSPACE}
+           echo "***********Checking content of the workspace******************"
+           echo "blue_flag=true" >> ${WORKSPACE}/out.properties
+           ls
 
         }
     }
