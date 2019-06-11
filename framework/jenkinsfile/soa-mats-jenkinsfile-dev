@@ -73,8 +73,10 @@ pipeline {
                             }
                         }
 
-                        Operator.buildOperator this, "${DOCKER_USERNAME_CISYSTEM}", "${DOCKER_PASSWORD_CISYSTEM}"
-                        Operator.deployOperator this, "${SOA_OPERATOR_REL}","{$SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
+                        script {
+                            Operator.buildOperator this, "${DOCKER_USERNAME_CISYSTEM}", "${DOCKER_PASSWORD_CISYSTEM}"
+                            Operator.deployOperator this, "${SOA_OPERATOR_REL}","${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
+                        }
 
                         sh label: 'verify soa operator', script: '''
 						kubectl get pods -n ${SOA_OPERATOR_NS}
