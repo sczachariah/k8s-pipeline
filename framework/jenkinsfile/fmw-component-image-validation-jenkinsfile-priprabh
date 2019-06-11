@@ -3,7 +3,7 @@ environment {
         KUBECONFIG = credentials('admin.fmwk8s-v12.kubeconfig')
     }
     agent {
-        kubernetes12 {
+        kubernetes {
             label 'fmwk8s-test-infra-slave-pp'
             namespace 'fmwk8s-pp'
             inheritFrom 'fmwk8s-test-infra-slave-pp'
