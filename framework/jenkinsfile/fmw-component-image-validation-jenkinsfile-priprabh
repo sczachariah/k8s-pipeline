@@ -4,9 +4,9 @@ environment {
     }
     agent {
         kubernetes {
-            label 'fmwk8s-test-infra-slave-pp'
-            namespace 'fmwk8s-pp'
-            inheritFrom 'fmwk8s-test-infra-slave-pp'
+            label 'fmwk8s-test-infra-slave'
+            namespace 'fmwk8s'
+            inheritFrom 'fmwk8s-test-infra-slave'
         }
     }
     stages {
@@ -17,7 +17,7 @@ environment {
                             credentialsId: 'jaya.selvaraj.ssh',
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-                    sh 'kubectl apply -n fmwk8s-pp -f kubernetes/tools/selenium/'
+                    sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
 
                     sh label: 'generate test props', script: '''
                     cat <<EOF > ${WORKSPACE}/test.props
