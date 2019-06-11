@@ -38,7 +38,7 @@ class Operator {
 				              --reuse-values \
 				              --set domainNamespaces={$domainns} \
 				              --wait \
-				              ${SOA_OPERATOR_REL} \
+				              ${operator_rel} \
 				              kubernetes/charts/soa-kubernetes-operator"
             script.sh  "else"
                  script.sh	"helm install kubernetes/charts/soa-kubernetes-operator \
