@@ -41,7 +41,7 @@ pipeline {
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
 
                     script {
-                        Operator.buildOperator this,"${DOCKER_USERNAME_CISYSTEM}","${DOCKER_PASSWORD_CISYSTEM}","${https_proxy},"${KUBECONFIG}","${SOA_OPERATOR_NS}","${SOA_DOMAIN_NS}"
+                        Operator.buildOperator this,"${DOCKER_USERNAME_CISYSTEM}","${DOCKER_PASSWORD_CISYSTEM}","${https_proxy}","${KUBECONFIG}","${SOA_OPERATOR_NS}","${SOA_DOMAIN_NS}"
                         Operator.deployOperator this,"${SOA_OPERATOR_REL}","${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
                     }
 
