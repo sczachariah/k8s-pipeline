@@ -6,7 +6,7 @@ environment {
         kubernetes {
             label 'fmwk8s-test-infra-slave-pp'
             namespace 'fmwk8s-pp'
-            inheritFrom 'fmwk8s-oel7-slave-pp'
+            inheritFrom 'fmwk8s-test-infra-slave-pp'
         }
     }
     stages {
