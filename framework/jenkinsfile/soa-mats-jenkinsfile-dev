@@ -40,16 +40,15 @@ pipeline {
                                  [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
 
+                    script {
+                        Operator.buildOperator this,"${DOCKER_USERNAME_CISYSTEM}","${DOCKER_PASSWORD_CISYSTEM}","${https_proxy},"${KUBECONFIG}","${SOA_OPERATOR_NS}","${SOA_DOMAIN_NS}"
+                        Operator.deployOperator this,"${SOA_OPERATOR_REL}","${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
+                    }
 
-                        script {
-                            Operator.buildOperator this,"${DOCKER_USERNAME_CISYSTEM}","${DOCKER_PASSWORD_CISYSTEM}","${https_proxy},"${KUBECONFIG}","${SOA_OPERATOR_NS}","${SOA_DOMAIN_NS}"
-                            Operator.deployOperator this,"${SOA_OPERATOR_REL}","${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
-                        }
-
-                        sh label: 'verify soa operator', script: '''
-						kubectl get pods -n ${SOA_OPERATOR_NS}
-						#kubectl logs -n ${SOA_OPERATOR_NS} -c weblogic-operator deployments/weblogic-operator
-						'''
+                     sh label: 'verify soa operator', script: '''
+					 kubectl get pods -n ${SOA_OPERATOR_NS}
+					 #kubectl logs -n ${SOA_OPERATOR_NS} -c weblogic-operator deployments/weblogic-operator
+					 '''
 
 
                     container('jnlp') {
