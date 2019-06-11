@@ -15,7 +15,7 @@ class Operator {
             script.sh "docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1"
 
 
-            script.sh "docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true ."
+            script.sh "docker build --build-arg https_proxy=${https_proxy} -t soa-kubernetes-operator:2.1 --no-cache=true ."
 
             Log.info(script, "Push soa operator image!!!")
             script.sh "docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
