@@ -3,7 +3,7 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Log
 
 class Operator {
-    static buildOperator(script,docker_username,docker_password,https_proxy,KUBECONFIG,SOA_OPERATOR_NS,SOA_DOMAIN_NS) {
+    static buildOperator(script,docker_username,docker_password,https_proxy) {
         try {
             Log.info(script, "Build soa operator image!!!")
             withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
@@ -12,57 +12,25 @@ class Operator {
                               usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                 Log.info(script, "Build soa operator image11111")
 
-                container('dind') {
-                    git branch: 'master',
-                            credentialsId: 'sandeep.zachariah.ssh',
-                            url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
+                Log.info(script, env.DOCKER_USERNAME_CISYSTEM)
+                script.sh "docker login http://container-registry.oracle.com -u ${docker_username} -p ${docker_password}"
 
-                    script {
-                        try {
-                            script label: 'create operator namespace', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
-                                kubectl create ns ${SOA_OPERATOR_NS}
-                                #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS}
-                                '''
-                        }
-                        catch (exc) {
-                        }
-                    }
+                script.sh "docker pull container-registry.oracle.com/java/serverjre:latest"
+                script.sh "docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8"
 
-                    script {
-                        try {
-                            script label: 'create domain namespace', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
-                                kubectl create ns ${SOA_DOMAIN_NS}
-                                '''
-                        }
-                        catch (exc) {
-                        }
-                        finally {
-                            script label: 'initialize helm', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
-                                helm init
-                                '''
-                        }
-                    }
-                    script.sh "docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}"
-
-                    script.sh "docker pull container-registry.oracle.com/java/serverjre:latest"
-                    script.sh "docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8"
-
-                    script.sh "docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1"
-                    script.sh "docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1"
+                script.sh "docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1"
+                script.sh "docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1"
 
 
-                    script.sh "docker build --build-arg https_proxy=${https_proxy} -t soa-kubernetes-operator:2.1 --no-cache=true ."
+                script.sh "docker build --build-arg https_proxy=${https_proxy} -t soa-kubernetes-operator:2.1 --no-cache=true ."
 
-                    Log.info(script, "Push soa operator image!!!")
-                    script.sh "docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
-                    script.sh "docker login cisystem.docker.oraclecorp.com -u ${docker_username} -p ${docker_password}"
-                    script.sh "docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
-                }
+                Log.info(script, "Push soa operator image!!!")
+                script.sh "docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
+                script.sh "docker login cisystem.docker.oraclecorp.com -u ${docker_username} -p ${docker_password}"
+                script.sh "docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
             }
         }
+
         catch (exc) {
             Log.error(script, "Build operator failed!!.")
         }
