@@ -46,7 +46,7 @@ class Operator {
 					             --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 \
 					             --namespace ${operatorns} \
 					             --set serviceAccount=${operatorsa} \
-			    	             --set "domainNamespaces={}" \
+			    	             --set domainNamespaces={} \
 					             --wait"
             script.sh  "fi"
 
