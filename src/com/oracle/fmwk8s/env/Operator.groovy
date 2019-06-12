@@ -3,7 +3,7 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Log
 
 class Operator {
-    static buildOperator(script,docker_username,docker_password,https_proxy) {
+    static buildOperator(script,https_proxy) {
         try {
             Log.info(script, "Build soa operator image!!!")
 
