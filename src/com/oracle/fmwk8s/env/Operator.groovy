@@ -5,7 +5,7 @@ import com.oracle.fmwk8s.common.Log
 class Operator {
     static buildOperator(script,https_proxy) {
         try {
-            Log.info(script, "Build soa operator image!!!")
+            Log.info(script, "Build soa operator image!!")
 
             script.sh "docker pull container-registry.oracle.com/java/serverjre:latest"
             script.sh "docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8"
