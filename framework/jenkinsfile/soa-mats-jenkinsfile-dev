@@ -27,13 +27,7 @@ pipeline {
         FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
         NFS_DOMAIN_DIR = "${SOA_DOMAIN_NS}"
         NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
-        withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
-                                          usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
-                                         [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
-                                          usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
-            sh 'echo $DOCKER_USERNAME_CISYSTEM'
-            sh 'echo $DOCKER_PASSWORD_CISYSTEM'
-        }
+        REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
     }
 
 
@@ -77,10 +71,10 @@ pipeline {
                             }
                         }
                         sh label: 'build soa operator image', script: '''
-                        docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
+                        docker login http://container-registry.oracle.com -u ${REGISTRY_AUTH_USR} -p ${REGISTRY_AUTH_PSW}
                         '''
                         script {
-                            Operator.buildOperator this, "${https_proxy}"
+                            Operator.buildOperator this, "${REGISTRY_AUTH_USR}","${REGISTRY_AUTH_PSW}",${https_proxy}"
                             Operator.deployOperator this, "${SOA_OPERATOR_REL}", "${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
                         }
 
