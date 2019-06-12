@@ -3,7 +3,7 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Log
 
 class Operator {
-    static buildOperator(script,https_proxy) {
+    static buildOperator(script,DOCKER_USERNAME_CISYSTEM,DOCKER_PASSWORD_CISYSTEM,https_proxy) {
         try {
             Log.info(script, "Build soa operator image!!")
 
@@ -18,6 +18,8 @@ class Operator {
 
             Log.info(script, "Push soa operator image!!!")
             script.sh "docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
+            script.sh "docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}"
+            script.sh "docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
         }
         catch (exc) {
             Log.error(script, "Build operator failed!!.")
