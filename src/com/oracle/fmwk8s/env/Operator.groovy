@@ -6,10 +6,14 @@ class Operator {
     static buildOperator(script,docker_username,docker_password,https_proxy) {
         try {
             Log.info(script, "Build soa operator image!!!")
-            script.sh "echo ${docker_username} and ${docker_password}"
-            Log.info(script, "Build soa operator image11111")
+            withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
+                              usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
+                             [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
+                              usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
+                script.sh "echo this is ${env.DOCKER_USERNAME_CISYSTEM} and ${env.DOCKER_PASSWORD_CISYSTEM}"
+                script.sh "docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}"
+            }
 
-            script.sh "docker login http://container-registry.oracle.com -u ${docker_username} -p ${docker_password}"
 
             script.sh "docker pull container-registry.oracle.com/java/serverjre:latest"
             script.sh "docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8"
