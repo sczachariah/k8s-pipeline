@@ -77,7 +77,7 @@ pipeline {
                         '''
                         script {
                             Operator.buildOperator this, "${https_proxy}"
-                            Operator.deployOperator this, "${SOA_OPERATOR_REL}","${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
+                            Operator.deployOperator this, "${SOA_OPERATOR_REL}", "${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
                         }
 
                         sh label: 'verify soa operator', script: '''
