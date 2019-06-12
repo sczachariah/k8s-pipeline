@@ -6,7 +6,7 @@ class Operator {
     static buildOperator(script,docker_username,docker_password,https_proxy) {
         try {
             Log.info(script, "Build soa operator image!!!")
-
+            script.sh "echo ${docker_username} and ${docker_password}"
             Log.info(script, "Build soa operator image11111")
 
             script.sh "docker login http://container-registry.oracle.com -u ${docker_username} -p ${docker_password}"
