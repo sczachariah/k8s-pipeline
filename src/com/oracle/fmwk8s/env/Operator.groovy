@@ -18,7 +18,9 @@ class Operator {
 
             Log.info(script, "Push soa operator image!!!")
             script.sh "docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
-            script.sh "docker login cisystem.docker.oraclecorp.com -u "${DOCKER_USERNAME_CISYSTEM}" -p "${DOCKER_PASSWORD_CISYSTEM}""
+            def REGISTRY_AUTH
+            REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
+            script.sh "docker login cisystem.docker.oraclecorp.com -u ${REGISTRY_AUTH_USR} -p ${REGISTRY_AUTH_PSW}"
             script.sh "docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
         }
         catch (exc) {
