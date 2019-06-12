@@ -18,8 +18,6 @@ class Operator {
 
             Log.info(script, "Push soa operator image!!!")
             script.sh "docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
-            script.sh "docker login cisystem.docker.oraclecorp.com -u ${docker_username} -p ${docker_password}"
-            script.sh "docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
         }
         catch (exc) {
             Log.error(script, "Build operator failed!!.")
