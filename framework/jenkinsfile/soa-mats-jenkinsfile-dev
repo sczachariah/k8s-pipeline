@@ -27,6 +27,13 @@ pipeline {
         FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
         NFS_DOMAIN_DIR = "${SOA_DOMAIN_NS}"
         NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
+        withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
+                                          usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
+                                         [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
+                                          usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
+            sh 'echo $DOCKER_USERNAME_CISYSTEM'
+            sh 'echo $DOCKER_PASSWORD_CISYSTEM'
+        }
     }
 
 
@@ -35,10 +42,7 @@ pipeline {
             steps {
                 log('INFO', 'Starting SOA pipeline with unique runId ' + "${RUN_SUFFIX}")
 
-                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
-                                  usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
-                                 [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
-                                  usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
+
                     container('dind') {
                         git branch: 'master',
                                 credentialsId: 'sandeep.zachariah.ssh',
@@ -102,7 +106,7 @@ pipeline {
                         kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${SOA_DOMAIN_NS}
                         '''
                     }
-                }
+
             }
         }
     }
