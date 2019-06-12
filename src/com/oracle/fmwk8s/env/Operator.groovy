@@ -10,8 +10,6 @@ class Operator {
                               usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
                              [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
                               usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
-                Log.info(script,${DOCKER_USERNAME_CISYSTEM})
-                Log.info(script,${DOCKER_PASSWORD_CISYSTEM})
                 script.sh "docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}"
             }
 
