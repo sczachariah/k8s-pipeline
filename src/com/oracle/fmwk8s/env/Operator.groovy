@@ -18,7 +18,7 @@ class Operator {
 
             Log.info(script, "Push soa operator image!!!")
             script.sh "docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
-            def REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
+            //def REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
             //Log.info(script,REGISTRY_AUTH)
             script.sh "docker login cisystem.docker.oraclecorp.com -u ${REGISTRY_AUTH_USR} -p ${REGISTRY_AUTH_PSW}"
             //script.sh "docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
@@ -58,6 +58,17 @@ class Operator {
 
     static verifyOperator(script,operatorns) {
 
+    }
+
+    static createNamespace(script,KUBECONFIG,operatorns) {
+        try {
+            Log.info(script, "create operator namespace!!")
+            script.sh "export KUBECONFIG=${KUBECONFIG}"
+            script.sh "kubectl create ns ${operatorns}"
+        }
+        catch (exc) {
+            Log.error(script, "Create Operator namespace failed!!.")
+        }
     }
 
     static cleanOperator(script, release) {
