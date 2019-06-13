@@ -53,7 +53,10 @@ pipeline {
                         script {
                             Operator.buildOperator this, "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}", "${https_proxy}"
                         }
-
+                        sh label: 'build soa operator image', script: '''
+                        docker login cisystem.docker.oraclecorp.com -u ${REGISTRY_AUTH_USR} -p ${REGISTRY_AUTH_PSW}
+                        docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
+                        '''
 
                         script {
                             Operator.deployOperator this, "${SOA_OPERATOR_REL}", "${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
