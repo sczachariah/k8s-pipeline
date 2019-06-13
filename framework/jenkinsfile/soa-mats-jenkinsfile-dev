@@ -43,15 +43,7 @@ pipeline {
                                 url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
 
                         script {
-                            try {
-                                sh label: 'create operator namespace', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
-                                kubectl create ns ${SOA_OPERATOR_NS}
-                                #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS}
-                                '''
-                            }
-                            catch (exc) {
-                            }
+                             Operator.createNamespace this, "${KUBECONFIG}", "${SOA_OPERATOR_NS}"
                         }
 
                         script {
