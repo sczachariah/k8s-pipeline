@@ -20,9 +20,9 @@ class Operator {
             script.sh "docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
             //def REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
             //Log.info(script,REGISTRY_AUTH)
-            script.sh "export REGISTRY_AUTH_USR=${REGISTRY_AUTH_USR}"
-            script.sh "export REGISTRY_AUTH_PSW=${REGISTRY_AUTH_PSW}"
-            script.sh "docker login cisystem.docker.oraclecorp.com -u ${REGISTRY_AUTH_USR} -p ${REGISTRY_AUTH_PSW}"
+            //script.sh "export REGISTRY_AUTH_USR=${REGISTRY_AUTH_USR}"
+            //script.sh "export REGISTRY_AUTH_PSW=${REGISTRY_AUTH_PSW}"
+            //script.sh "docker login cisystem.docker.oraclecorp.com -u ${REGISTRY_AUTH_USR} -p ${REGISTRY_AUTH_PSW}"
             //script.sh "docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
         }
         catch (exc) {
