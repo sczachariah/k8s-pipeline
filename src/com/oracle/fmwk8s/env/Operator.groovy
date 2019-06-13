@@ -35,7 +35,7 @@ class Operator {
             Log.info(script, "Deploy operator !!!")
             script.sh "retVal=`echo \\`helm ls ${operator_rel}\\``"
 
-            script.sh "if [[ ! -z "$retVal" ]]; then && \
+            script.sh "if [ ! -z "$retVal" ]; then && \
                             helm upgrade --reuse-values --set domainNamespaces={$domainns} --wait ${operator_rel} kubernetes/charts/soa-kubernetes-operator && \
                        else && \
                             helm install kubernetes/charts/soa-kubernetes-operator --name ${operator_rel} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${operatorns} \
