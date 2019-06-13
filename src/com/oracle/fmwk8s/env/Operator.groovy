@@ -3,7 +3,7 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Log
 
 class Operator {
-    static buildOperator(script,REGISTRY_AUTH,https_proxy) {
+    static buildOperator(script,REGISTRY_AUTH,REGISTRY_AUTH_USR,REGISTRY_AUTH_PSW,https_proxy) {
         try {
             Log.info(script, "Build soa operator image!!")
             script.sh "export REGISTRY_AUTH=${REGISTRY_AUTH}"
