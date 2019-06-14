@@ -9,6 +9,7 @@ class Operator {
             Log.info(script, "Before pwd display!!")
             script.sh "echo '$REGISTRY_AUTH_USR'"
             script.sh "echo '$REGISTRY_AUTH_PSW'"
+            script.sh "docker login http://container-registry.oracle.com -u '${REGISTRY_AUTH_USR}' -p '${REGISTRY_AUTH_PSW}'"
             script.sh "docker pull container-registry.oracle.com/java/serverjre:latest"
             script.sh "docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8"
 
