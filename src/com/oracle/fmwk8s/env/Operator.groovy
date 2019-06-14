@@ -46,6 +46,11 @@ class Operator {
             if (!retVal?.trim()) {
                 Log.info(script, "retVal is empty !!!")
             }
+            script.sh "if [[ ${retVal} ]]; then"
+            script.sh "echo 'Has a value'"
+            script.sh "else"
+            script.sh "echo 'No value'"
+            script.sh "fi"
             Log.info(script, "Deploy operator Completed!!!")
 
         }
