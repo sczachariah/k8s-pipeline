@@ -41,8 +41,7 @@ class Operator {
                 Log.info(script, "val is not empty !!!")
             }
 
-            script.sh "if [ -z "$val" ]" +
-                       " then "+
+            script.sh "if [ -z "$val" ] then"+
                            "helm install kubernetes/charts/soa-kubernetes-operator --name ${operator_rel} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${operatorns} --set serviceAccount=${operatorsa} --set domainNamespaces={} --wait "+
                        "else" +
                             "helm upgrade --reuse-values --set domainNamespaces={$domainns} --wait ${operator_rel} kubernetes/charts/soa-kubernetes-operator" +
