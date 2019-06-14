@@ -6,7 +6,9 @@ class Operator {
     static buildOperator(script,REGISTRY_AUTH_USR,REGISTRY_AUTH_PSW,https_proxy) {
         try {
             Log.info(script, "Build soa operator image!!")
-
+            Log.info(script, "Before pwd display!!")
+            script.sh "echo '$REGISTRY_AUTH_USR'"
+            script.sh "echo '$REGISTRY_AUTH_PSW'"
             script.sh "docker pull container-registry.oracle.com/java/serverjre:latest"
             script.sh "docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8"
 
@@ -20,9 +22,7 @@ class Operator {
             script.sh "docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
             //def REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
             //Log.info(script,REGISTRY_AUTH)
-            Log.info(script, "Before pwd display!!")
 
-            script.sh "echo '\$REGISTRY_AUTH_PSW'"
             //script.sh "export REGISTRY_AUTH_USR=${REGISTRY_AUTH_USR}"
             //script.sh "export REGISTRY_AUTH_PSW=${REGISTRY_AUTH_PSW}"
             //script.sh "docker login cisystem.docker.oraclecorp.com -u ${REGISTRY_AUTH_USR} -p ${REGISTRY_AUTH_PSW}"
