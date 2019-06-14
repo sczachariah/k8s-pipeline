@@ -44,7 +44,7 @@ class Operator {
            // }
             script.sh "Val==`echo \\`helm ls ${operator_rel}\\``"
 
-            script.sh "if [[ Val ]]; then\n \
+            script.sh "if [[ ${Val} ]]; then\n \
                          echo 'Has a value'\n \
                        else\n \
                           echo 'No value'\n \
