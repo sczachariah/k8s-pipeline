@@ -33,7 +33,8 @@ class Operator {
     static deployOperator(script,operator_rel,domainns,operatorns,operatorsa) {
         try {
             Log.info(script, "Deploy operator !!!")
-            String retVal = script.sh "`echo \\`helm ls ${operator_rel}\\``"
+           // String retVal = script.sh "`echo \\`helm ls ${operator_rel}\\``"
+            String retVal = "";
             Log.info("The retVal is ****",retVal)
             if (!retVal?.trim()) {
                 Log.info(script, "retVal is empty !!!")
