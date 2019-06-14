@@ -33,11 +33,16 @@ class Operator {
     static deployOperator(script,operator_rel,domainns,operatorns,operatorsa) {
         try {
             Log.info(script, "Deploy operator !!!")
-            script.sh "retVal=`echo \\`helm ls ${operator_rel}\\``"
+            //script.sh "retVal=`echo \\`helm ls ${operator_rel}\\``"
            // script.sh "echo "$retVal""
 
                            // helm upgrade --reuse-values --set domainNamespaces={$domainns} --wait ${operator_rel} kubernetes/charts/soa-kubernetes-operator && \
                       // else && \
+            String retVal = script.sh "`echo \\`helm ls ${operator_rel}\\``"
+            if (!retVal?.trim()) {
+                print "retVal is empty or null"
+                script.sh "helm install kubernetes/charts/soa-kubernetes-operator --name ${operator_rel} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${operatorns} --set serviceAccount=${operatorsa} --set domainNamespaces={} --wait"
+            }
             Log.info(script, "Helm install !!!")
             script.sh "if [[ "$retVal" == '' ]]; then &&\
                            helm install kubernetes/charts/soa-kubernetes-operator --name ${operator_rel} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${operatorns} --set serviceAccount=${operatorsa} --set domainNamespaces={} --wait &&\
