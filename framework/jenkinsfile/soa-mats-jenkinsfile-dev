@@ -47,9 +47,7 @@ pipeline {
                              Domain.createNamespace this, "${KUBECONFIG}", "${SOA_DOMAIN_NS}"
                         }
 
-                        sh label: 'build soa operator image', script: '''
-                        docker login http://container-registry.oracle.com -u ${REGISTRY_AUTH_USR} -p ${REGISTRY_AUTH_PSW}
-                        '''
+
                         script {
                             Operator.buildOperator this, "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}", "${https_proxy}"
                         }
