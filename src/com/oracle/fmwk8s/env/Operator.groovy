@@ -33,20 +33,16 @@ class Operator {
     static deployOperator(script,operator_rel,domainns,operatorns,operatorsa) {
         try {
             Log.info(script, "Deploy operator !!!")
-            //script.sh "retVal=`echo \\`helm ls ${operator_rel}\\``"
-           // script.sh "echo "$retVal""
-
-                           // helm upgrade --reuse-values --set domainNamespaces={$domainns} --wait ${operator_rel} kubernetes/charts/soa-kubernetes-operator && \
-                      // else && \
             String retVal = script.sh "`echo \\`helm ls ${operator_rel}\\``"
+            Log.info("The retVal is ****",retVal)
             if (!retVal?.trim()) {
-                print "retVal is empty or null"
+                Log.info(script, "retVal is empty !!!")
                 script.sh "helm install kubernetes/charts/soa-kubernetes-operator --name ${operator_rel} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${operatorns} --set serviceAccount=${operatorsa} --set domainNamespaces={} --wait"
+            } else {
+                Log.info(script, "retVal is Not empty *****************")
+                script.sh "helm upgrade --reuse-values --set domainNamespaces={$domainns} --wait ${operator_rel} kubernetes/charts/soa-kubernetes-operator"
             }
-            Log.info(script, "Helm install !!!")
-            script.sh "if [[ "$retVal" == '' ]]; then &&\
-                           helm install kubernetes/charts/soa-kubernetes-operator --name ${operator_rel} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${operatorns} --set serviceAccount=${operatorsa} --set domainNamespaces={} --wait &&\
-                       fi"
+            Log.info(script, "Deploy operator Completed!!!")
 
         }
         catch (exc) {
