@@ -47,12 +47,8 @@ pipeline {
                              Domain.createNamespace this, "${KUBECONFIG}", "${SOA_DOMAIN_NS}"
                              Operator.buildOperator this, "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}", "${https_proxy}"
                              Operator.deployOperator this, "${SOA_OPERATOR_REL}", "${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
+                             Operator.verifyOperator this, "${SOA_OPERATOR_NS}"
                         }
-
-                        sh label: 'verify soa operator', script: '''
-						kubectl get pods -n ${SOA_OPERATOR_NS}
-						#kubectl logs -n ${SOA_OPERATOR_NS} -c weblogic-operator deployments/weblogic-operator
-						'''
                     }
 
                     container('jnlp') {
