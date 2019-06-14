@@ -42,11 +42,11 @@ class Operator {
                 Log.info(script, "retVal is not empty !!!")
                 script.sh "helm upgrade --reuse-values --set domainNamespaces={$domainns} --wait ${operator_rel} kubernetes/charts/soa-kubernetes-operator"
             }
-            script.sh "export val=`echo 'test'`"
+            script.sh "retVal=`echo 'test'`"
             if (!retVal?.trim()) {
                 Log.info(script, "retVal is empty !!!")
             }
-            script.sh "if [[ "$val" ]]; then\n \
+            script.sh "if [[ $retVal ]]; then\n \
                          echo 'Has a value'\n \
                        else\n \
                           echo 'No value'\n \
