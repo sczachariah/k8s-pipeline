@@ -48,7 +48,13 @@ class Operator {
     }
 
     static verifyOperator(script,operatorns) {
-
+        try {
+            Log.info(script, "Verify soa operator !!!")
+            script.sh "kubectl get pods -n ${operatorns}"
+        }
+        catch (exc) {
+            Log.error(script, "Verify operator failed!!.")
+        }
     }
 
     static createNamespace(script,KUBECONFIG,operatorns) {
