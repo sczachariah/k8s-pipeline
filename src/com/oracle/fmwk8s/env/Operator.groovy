@@ -35,7 +35,8 @@ class Operator {
             Log.info(script, "Deploy operator !!!")
            // String retVal = script.sh "`echo \\`helm ls ${operator_rel}\\``"
             String retVal = "";
-            Log.info("The retVal is ****",retVal)
+            //Log.info("The retVal is ****",retVal
+           // println("Return val is ",retVal);
             if (!retVal?.trim()) {
                 Log.info(script, "retVal is empty !!!")
                 script.sh "helm install kubernetes/charts/soa-kubernetes-operator --name ${operator_rel} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${operatorns} --set serviceAccount=${operatorsa} --set domainNamespaces={} --wait"
