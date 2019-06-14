@@ -33,27 +33,18 @@ class Operator {
     static deployOperator(script,operator_rel,domainns,operatorns,operatorsa) {
         try {
             Log.info(script, "Deploy operator !!!")
-            String val="";
-            script.sh "val=`echo \\`helm ls ${operator_rel}\\``"
-            if (!val?.trim()) {
-                Log.info(script, "val is empty !!!")
-            } else {
-                Log.info(script, "val is not empty !!!")
-            }
-
-            script.sh "if [ -z "$val" ] then"+
-                           "helm install kubernetes/charts/soa-kubernetes-operator --name ${operator_rel} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${operatorns} --set serviceAccount=${operatorsa} --set domainNamespaces={} --wait "+
-                       "else" +
-                            "helm upgrade --reuse-values --set domainNamespaces={$domainns} --wait ${operator_rel} kubernetes/charts/soa-kubernetes-operator" +
-                       "fi"
-
-            String retVal = "";
+            String retVal="";
+            script.sh "retVal=`echo \\`helm ls ${operator_rel}\\``"
             if (!retVal?.trim()) {
                 Log.info(script, "retVal is empty !!!")
                 script.sh "helm install kubernetes/charts/soa-kubernetes-operator --name ${operator_rel} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${operatorns} --set serviceAccount=${operatorsa} --set domainNamespaces={} --wait"
             } else {
-                Log.info(script, "retVal is Not empty *****************")
+                Log.info(script, "retVal is not empty !!!")
                 script.sh "helm upgrade --reuse-values --set domainNamespaces={$domainns} --wait ${operator_rel} kubernetes/charts/soa-kubernetes-operator"
+            }
+            script.sh "retVal=`echo \\test\\`"
+            if (!retVal?.trim()) {
+                Log.info(script, "retVal is empty !!!")
             }
             Log.info(script, "Deploy operator Completed!!!")
 
