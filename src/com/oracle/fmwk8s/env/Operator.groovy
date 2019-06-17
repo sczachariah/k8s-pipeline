@@ -7,9 +7,9 @@ class Operator {
         try {
             Log.info(script, "Build soa operator image!!")
             Log.info(script, "Before pwd display!!")
-            script.sh "echo '$REGISTRY_AUTH_USR'"
-            script.sh "echo '$REGISTRY_AUTH_PSW'"
-            script.sh "docker login http://container-registry.oracle.com -u '${REGISTRY_AUTH_USR}' -p '${REGISTRY_AUTH_PSW}'"
+            //script.sh "echo '$REGISTRY_AUTH_USR'"
+            //script.sh "echo '$REGISTRY_AUTH_PSW'"
+            script.sh "docker login http://container-registry.oracle.com -u '${script.env.REGISTRY_AUTH_USR}' -p '${script.env.REGISTRY_AUTH_PSW}'"
             script.sh "docker pull container-registry.oracle.com/java/serverjre:latest"
             script.sh "docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8"
 
@@ -47,21 +47,21 @@ class Operator {
         }
     }
 
-    static verifyOperator(script,operatorns) {
+    static verifyOperator(script,namespace) {
         try {
             Log.info(script, "Verify soa operator !!!")
-            script.sh "kubectl get pods -n ${operatorns}"
+            script.sh "kubectl get pods -n ${namespace}"
         }
         catch (exc) {
             Log.error(script, "Verify operator failed!!.")
         }
     }
 
-    static createNamespace(script,KUBECONFIG,operatorns) {
+    static createNamespace(script,namespace) {
         try {
             Log.info(script, "create operator namespace!!")
-            script.sh "export KUBECONFIG=${KUBECONFIG}"
-            script.sh "kubectl create ns ${operatorns}"
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
+            script.sh "kubectl create ns ${namespace}"
         }
         catch (exc) {
             Log.error(script, "Create Operator namespace failed!!.")
