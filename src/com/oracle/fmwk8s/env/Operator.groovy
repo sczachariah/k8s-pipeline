@@ -3,7 +3,7 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Log
 
 class Operator {
-    static buildOperator(script,REGISTRY_AUTH_USR,REGISTRY_AUTH_PSW,https_proxy) {
+    static buildOperator(script,https_proxy) {
         try {
             Log.info(script, "Build soa operator image!!")
             Log.info(script, "Before pwd display!!")
@@ -21,7 +21,7 @@ class Operator {
 
             Log.info(script, "Push soa operator image!!!")
             script.sh "docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
-            script.sh "docker login cisystem.docker.oraclecorp.com -u '${REGISTRY_AUTH_USR}' -p '${REGISTRY_AUTH_PSW}'"
+            script.sh "docker login cisystem.docker.oraclecorp.com -u '${script.env.REGISTRY_AUTH_USR}' -p '${script.env.REGISTRY_AUTH_PSW}'"
             script.sh "docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
     }
         catch (exc) {
@@ -29,15 +29,15 @@ class Operator {
         }
     }
 
-    static deployOperator(script,operator_rel,domainns,operatorns,operatorsa) {
+    static deployOperator(script) {
         try {
             Log.info(script, "Deploy operator !!!")
             script.sh "retVal==`echo \\`helm ls ${operator_rel}\\``"
 
             script.sh "if [[ \$retVal ]]; then\n \
-                          helm upgrade --reuse-values --set domainNamespaces={$domainns} --wait ${operator_rel} kubernetes/charts/soa-kubernetes-operator\n \
+                          helm upgrade --reuse-values --set domainNamespaces=${script.env.SOA_DOMAIN_NS} --wait ${script.env.SOA_OPERATOR_REL} kubernetes/charts/soa-kubernetes-operator\n \
                        else\n \
-                          helm install kubernetes/charts/soa-kubernetes-operator --name ${operator_rel} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${operatorns} --set serviceAccount=${operatorsa} --set domainNamespaces={} --wait\n \
+                          helm install kubernetes/charts/soa-kubernetes-operator --name ${script.env.SOA_OPERATOR_REL} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${script.env.SOA_OPERATOR_NS} --set serviceAccount=${script.env.SOA_OPERATOR_SA} --set domainNamespaces={} --wait\n \
                        fi"
             Log.info(script, "Deploy operator Completed!!!")
 
