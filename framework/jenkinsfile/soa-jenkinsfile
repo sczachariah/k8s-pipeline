@@ -56,7 +56,7 @@ pipeline {
 
                     container('jnlp') {
                         script {
-                            EnvironmentSetup.createNfsFolder this, "${SOA_DOMAIN_NS}"
+                            EnvironmentSetup.createNfsFolder this, "${SOA_DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}"
                         }
                     }
                 }
