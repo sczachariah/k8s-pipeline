@@ -20,7 +20,7 @@ class Domain {
             script.sh "kubectl create ns ${namespace}"
         }
         catch (exc) {
-            Log.error(script, "Create Operator namespace failed!!.")
+            Log.error(script, "Create Domain namespace failed!!.")
         }
         finally {
             Log.info(script, "initialize helm!!")

@@ -2,7 +2,7 @@ package com.oracle.fmwk8s.common
 
 class EnvironmentSetup {
 
-    static createNfsFolder(script, namespace) {
+    static createNfsFolder(script, namespace, nfsHomeDir, nfsDomainDir) {
         try {
 
             script.git branch: 'master',
@@ -11,14 +11,14 @@ class EnvironmentSetup {
 
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} \
                         cd kubernetes/framework \
-                        sed -i \"s#%FMWK8S_NFS_HOME%#${script.env.FMWK8S_NFS_HOME}#g\" fmwk8s-mkdir-pod.yaml \
-                        sed -i \"s#%NFS_DOMAIN_DIR%#${script.env.NFS_DOMAIN_DIR}#g\" fmwk8s-mkdir-pod.yaml \
+                        sed -i \"s#%FMWK8S_NFS_HOME%#${nfsHomeDir}#g\" fmwk8s-mkdir-pod.yaml \
+                        sed -i \"s#%NFS_DOMAIN_DIR%#${nfsDomainDir}#g\" fmwk8s-mkdir-pod.yaml \
                         cat fmwk8s-mkdir-pod.yaml \
                         kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${namespace}"  \
 
         }
         catch (exc) {
-            Log.error(script, "Create NFS folder failed!!")
+            Log.error(script, "Create NFS folder Failed!!")
         }
         finally {
         }
