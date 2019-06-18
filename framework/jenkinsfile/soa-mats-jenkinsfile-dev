@@ -45,8 +45,8 @@ pipeline {
                         script {
                              Operator.createNamespace this, "${SOA_OPERATOR_NS}"
                              Domain.createNamespace this, "${SOA_DOMAIN_NS}"
-                             Operator.buildOperator this, "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}", "${https_proxy}"
-                             Operator.deployOperator this, "${SOA_OPERATOR_REL}", "${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
+                             Operator.buildOperator this, "${https_proxy}"
+                             Operator.deployOperator this
                              Operator.verifyOperator this, "${SOA_OPERATOR_NS}"
                         }
                     }
