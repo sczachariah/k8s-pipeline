@@ -2,6 +2,7 @@
 
 
 import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.common.EnvironmentSetup
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Operator
 
@@ -118,20 +119,9 @@ pipeline {
                     }
 
                     container('jnlp') {
-                        git branch: 'master',
-                                credentialsId: 'sandeep.zachariah.ssh',
-                                url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
-
-                        sh label: 'create nfs folder', script: '''
-                        export KUBECONFIG=${KUBECONFIG}
-                        
-                        cd kubernetes/framework
-                        sed -i "s#%FMWK8S_NFS_HOME%#${FMWK8S_NFS_HOME}#g" fmwk8s-mkdir-pod.yaml
-                        sed -i "s#%NFS_DOMAIN_DIR%#${NFS_DOMAIN_DIR}#g" fmwk8s-mkdir-pod.yaml
-                        cat fmwk8s-mkdir-pod.yaml
-                        
-                        kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${SOA_DOMAIN_NS}
-                        '''
+                        script {
+                            EnvironmentSetup.createNfsFolder this, "${SOA_DOMAIN_NS}"
+                        }
                     }
                 }
             }
