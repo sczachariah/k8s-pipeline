@@ -32,7 +32,7 @@ class Operator {
     static deployOperator(script) {
         try {
             Log.info(script, "Deploy operator !!!")
-            script.sh "retVal==`echo \\`helm ls ${operator_rel}\\``"
+            script.sh "retVal==`echo \\`helm ls ${script.env.SOA_OPERATOR_REL}\\``"
 
             script.sh "if [[ \$retVal ]]; then\n \
                           helm upgrade --reuse-values --set domainNamespaces=${script.env.SOA_DOMAIN_NS} --wait ${script.env.SOA_OPERATOR_REL} kubernetes/charts/soa-kubernetes-operator\n \
