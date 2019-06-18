@@ -43,15 +43,13 @@ pipeline {
                         git branch: 'master',
                                 credentialsId: 'sandeep.zachariah.ssh',
                                 url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
-
                         script {
-                             Operator.createNamespace this, "${SOA_OPERATOR_NS}"
-                             Domain.createNamespace this, "${SOA_DOMAIN_NS}"
-                             Operator.buildOperator this, "${https_proxy}"
-                             Operator.deployOperator this
-                             Operator.verifyOperator this, "${SOA_OPERATOR_NS}"
+                            Operator.createNamespace this, "${SOA_OPERATOR_NS}"
+                            Domain.createNamespace this, "${SOA_DOMAIN_NS}"
+                            Operator.buildOperator this, "${https_proxy}"
+                            Operator.deployOperator this
+                            Operator.verifyOperator this, "${SOA_OPERATOR_NS}"
                         }
-
                     }
 
                     container('jnlp') {
