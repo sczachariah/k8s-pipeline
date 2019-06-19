@@ -29,6 +29,7 @@ SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
 SELENIUM_HUB_PORT=4444
 EOF
                     cat ${WORKSPACE}/test.props
+                    curl -X POST http://"${REGISTRY_AUTH_USR}":"${REGISTRY_AUTH_PSW}"@hudsonci.oraclecorp.com/jenkins/fmw_extended_pipeline/view/FMWDocker/job/Cleanup_FMW_Instances/buildWithParameters --data-urlencode json='{"parameter": [{"name":"PRODUCT_NAME", "value":"${PRODUCT_NAME}"},{"name":"VERSION_QUALIFIER", "value":"${VERSION_QUALIFIER}"},{"name":"DOCKER_IMAGE", "value":"${DOCKER_IMAGE}"},{"name":"PRODUCT_DOMAIN_TYPE", "value":"${PRODUCT_DOMAIN_TYPE}"},{"name":"NAMESPACE", "value":"${NAMESPACE}"}]}'
                     '''
                 }
             }
@@ -39,9 +40,9 @@ EOF
         always {
            script {
            	  currentBuild.displayName = this.env.PRODUCT_NAME
-           	  sh label: 'trigger build', script: '''
-           	  curl -X POST http://"${REGISTRY_AUTH_USR}":"${REGISTRY_AUTH_PSW}"@hudsonci.oraclecorp.com/jenkins/fmw_extended_pipeline/view/FMWDocker/job/Cleanup_FMW_Instances/buildWithParameters --data-urlencode json='{"parameter": [{"name":"PRODUCT_NAME", "value":"${PRODUCT_NAME}"},{"name":"VERSION_QUALIFIER", "value":"${VERSION_QUALIFIER}"},{"name":"DOCKER_IMAGE", "value":"${DOCKER_IMAGE}"},{"name":"PRODUCT_DOMAIN_TYPE", "value":"${PRODUCT_DOMAIN_TYPE}"},{"name":"NAMESPACE", "value":"${NAMESPACE}"}]}'
-           	  '''
+           	  //sh label: 'trigger build', script: '''
+           	  //curl -X POST http://"${REGISTRY_AUTH_USR}":"${REGISTRY_AUTH_PSW}"@hudsonci.oraclecorp.com/jenkins/fmw_extended_pipeline/view/FMWDocker/job/Cleanup_FMW_Instances/buildWithParameters --data-urlencode json='{"parameter": [{"name":"PRODUCT_NAME", "value":"${PRODUCT_NAME}"},{"name":"VERSION_QUALIFIER", "value":"${VERSION_QUALIFIER}"},{"name":"DOCKER_IMAGE", "value":"${DOCKER_IMAGE}"},{"name":"PRODUCT_DOMAIN_TYPE", "value":"${PRODUCT_DOMAIN_TYPE}"},{"name":"NAMESPACE", "value":"${NAMESPACE}"}]}'
+           	  //'''
 
            }
 
