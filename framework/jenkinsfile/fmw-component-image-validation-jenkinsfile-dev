@@ -38,7 +38,7 @@ EOF
         always {
            script {
            	  currentBuild.displayName = this.env.PRODUCT_NAME
-           	  curl -v -X POST http://hudsonci.oraclecorp.com/jenkins/fmw_extended_pipeline/view/FMWDocker/job/Cleanup_FMW_Instances/buildWithParameters?PRODUCT_NAME=this.env.PRODUCT_NAME&VERSION_QUALIFIER=this.env.VERSION_QUALIFIER&DOCKER_IMAGE=this.env.DOCKER_IMAGE&PRODUCT_DOMAIN_TYPE=this.env.PRODUCT_DOMAIN_TYPE&NAMESPACE=this.env.NAMESPACE
+           	  curl -X POST http://hudsonci.oraclecorp.com/jenkins/fmw_extended_pipeline/view/FMWDocker/job/Cleanup_FMW_Instances/buildWithParameters --data-urlencode json='{"parameter": [{"name":"PRODUCT_NAME", "value":this.env.PRODUCT_NAME},{"name":"VERSION_QUALIFIER", "value":this.env.VERSION_QUALIFIER},{"name":"DOCKER_IMAGE", "value":this.env.DOCKER_IMAGE},{"name":"PRODUCT_DOMAIN_TYPE", "value":this.env.PRODUCT_DOMAIN_TYPE},{"name":"NAMESPACE", "value":this.env.NAMESPACE}]}'
 
            }
 
