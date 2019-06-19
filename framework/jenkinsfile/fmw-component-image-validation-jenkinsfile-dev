@@ -29,6 +29,7 @@ SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
 SELENIUM_HUB_PORT=4444
 EOF
                     cat ${WORKSPACE}/test.props
+                    echo -e "\nPRODUCT_NAME : ${PRODUCT_NAME} \n PRODUCT_DOMAIN_TYPE : ${PRODUCT_DOMAIN_TYPE} \n ADMIN_USERNAME : ${ADMIN_USERNAME} \n ADMIN_PASSWORD : ${ADMIN_PASSWORD} \n K8S_IP : ${K8S_IP} \n ADMIN_NODE_PORT : ${ADMIN_NODE_PORT} \n MS_NODE_PORT : ${MS_NODE_PORT} \n BUILD_NUMBER : ${BUILD_NUMBER} \n BUILD_URL : ${BUILD_URL}"
                     curl -X POST http://"${REGISTRY_AUTH_USR}":"${REGISTRY_AUTH_PSW}"@hudsonci.oraclecorp.com/jenkins/fmw_extended_pipeline/view/FMWDocker/job/Cleanup_FMW_Instances/buildWithParameters --data-urlencode json='{"parameter": [{"name":"PRODUCT_NAME", "value":"${PRODUCT_NAME}"},{"name":"VERSION_QUALIFIER", "value":"${VERSION_QUALIFIER}"},{"name":"DOCKER_IMAGE", "value":"${DOCKER_IMAGE}"},{"name":"PRODUCT_DOMAIN_TYPE", "value":"${PRODUCT_DOMAIN_TYPE}"},{"name":"NAMESPACE", "value":"${NAMESPACE}"}]}'
                     '''
                 }
