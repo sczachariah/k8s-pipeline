@@ -8,7 +8,7 @@ pipeline {
         }
     }
     environment {
-        KUBECONFIG = credentials('admin.fmwk8s-v12.kubeconfig')
+        KUBECONFIG = credentials('admin-fmwk8s-v12.kubeconfig')
     }
     stages {
         stage('deploy Test tools') {
