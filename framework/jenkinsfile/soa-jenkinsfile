@@ -2,6 +2,7 @@
 
 
 import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.common.EnvironmentSetup
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Operator
 
@@ -25,6 +26,7 @@ pipeline {
         FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
         NFS_DOMAIN_DIR = "${SOA_DOMAIN_NS}"
         NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
+        REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
     }
 
 
@@ -41,97 +43,19 @@ pipeline {
                         git branch: 'master',
                                 credentialsId: 'sandeep.zachariah.ssh',
                                 url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
-
                         script {
-                            try {
-                                sh label: 'create operator namespace', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
-                                kubectl create ns ${SOA_OPERATOR_NS}
-                                #kubectl create sa ${SOA_OPERATOR_SA} -n ${SOA_OPERATOR_NS}
-                                '''
-                            }
-                            catch (exc) {
-                            }
+                            Operator.createNamespace this, "${SOA_OPERATOR_NS}"
+                            Domain.createNamespace this, "${SOA_DOMAIN_NS}"
+                            Operator.buildOperator this, "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}", "${https_proxy}"
+                            Operator.deployOperator this, "${SOA_OPERATOR_REL}", "${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
+                            Operator.verifyOperator this, "${SOA_OPERATOR_NS}"
                         }
-
-                        script {
-                            try {
-                                sh label: 'create domain namespace', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
-                                kubectl create ns ${SOA_DOMAIN_NS}
-                                '''
-                            }
-                            catch (exc) {
-                            }
-                            finally {
-                                sh label: 'initialize helm', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
-                                helm init
-                                '''
-                            }
-                        }
-
-                        sh label: 'build soa operator image', script: '''							
-                        docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
-						
-						docker pull container-registry.oracle.com/java/serverjre:latest
-						docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8
-						
-						docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1
-						docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
-						
-
-						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
-						'''
-
-                        sh label: 'push soa operator image', script: '''
-						docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
-						docker login cisystem.docker.oraclecorp.com -u ${DOCKER_USERNAME_CISYSTEM} -p ${DOCKER_PASSWORD_CISYSTEM}
-						docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1
-                        '''
-
-                        sh label: 'deploy soa operator', script: '''
-						retVal=`echo \\`helm ls ${SOA_OPERATOR_REL}\\``
-
-						if [[ !  -z  "$retVal" ]]; then
-						    helm upgrade \
-						        --reuse-values \
-						        --set "domainNamespaces={$SOA_DOMAIN_NS}" \
-						        --wait \
-						        ${SOA_OPERATOR_REL} \
-						        kubernetes/charts/soa-kubernetes-operator
-						else
-							helm install kubernetes/charts/soa-kubernetes-operator \
-								--name ${SOA_OPERATOR_REL} \
-								--set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 \
-								--namespace ${SOA_OPERATOR_NS} \
-								--set serviceAccount=${SOA_OPERATOR_SA} \
-								--set "domainNamespaces={}" \
-								--wait
-						fi
-						'''
-
-                        sh label: 'verify soa operator', script: '''
-						kubectl get pods -n ${SOA_OPERATOR_NS}
-						#kubectl logs -n ${SOA_OPERATOR_NS} -c weblogic-operator deployments/weblogic-operator
-						'''
                     }
 
                     container('jnlp') {
-                        git branch: 'master',
-                                credentialsId: 'sandeep.zachariah.ssh',
-                                url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
-
-                        sh label: 'create nfs folder', script: '''
-                        export KUBECONFIG=${KUBECONFIG}
-                        
-                        cd kubernetes/framework
-                        sed -i "s#%FMWK8S_NFS_HOME%#${FMWK8S_NFS_HOME}#g" fmwk8s-mkdir-pod.yaml
-                        sed -i "s#%NFS_DOMAIN_DIR%#${NFS_DOMAIN_DIR}#g" fmwk8s-mkdir-pod.yaml
-                        cat fmwk8s-mkdir-pod.yaml
-                        
-                        kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${SOA_DOMAIN_NS}
-                        '''
+                        script {
+                            EnvironmentSetup.createNfsFolder this, "${SOA_DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}"
+                        }
                     }
                 }
             }

@@ -13,18 +13,18 @@ class Domain {
 
     static isDomainReady(script) {}
 
-    static createNamespace(script,KUBECONFIG,domainns) {
+    static createNamespace(script, namespace) {
         try {
             Log.info(script, "create domain namespace!!")
-            script.sh "export KUBECONFIG=${KUBECONFIG}"
-            script.sh "kubectl create ns ${domainns}"
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
+            script.sh "kubectl create ns ${namespace}"
         }
         catch (exc) {
-            Log.error(script, "Create Operator namespace failed!!.")
+            Log.error(script, "Create Domain namespace failed!!.")
         }
         finally {
             Log.info(script, "initialize helm!!")
-            script.sh "export KUBECONFIG=${KUBECONFIG}"
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             script.sh "helm init"
         }
     }

@@ -11,6 +11,7 @@ pipeline {
     }
     environment {
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
+        REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
     }
     stages {
         stage('deploy Test tools') {
@@ -28,117 +29,13 @@ SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
 SELENIUM_HUB_PORT=4444
 EOF
                     cat ${WORKSPACE}/test.props
+                    echo -e "\nPRODUCT_NAME : ${PRODUCT_NAME} \n PRODUCT_DOMAIN_TYPE : ${PRODUCT_DOMAIN_TYPE} \n ADMIN_USERNAME : ${ADMIN_USERNAME} \n ADMIN_PASSWORD : ${ADMIN_PASSWORD} \n K8S_IP : ${K8S_IP} \n ADMIN_NODE_PORT : ${ADMIN_NODE_PORT} \n MS_NODE_PORT : ${MS_NODE_PORT} \n BUILD_NUMBER : ${BUILD_NUMBER} \n BUILD_URL : ${BUILD_URL}"
+                    #curl -X POST http://slciazu.us.oracle.com:8086/jenkins/fmw_extended_pipeline/view/FMWDocker/job/Cleanup_FMW_Instances/buildWithParameters --data-urlencode json='{"parameter": [{"name":"PRODUCT_NAME", "value":"${PRODUCT_NAME}"},{"name":"VERSION_QUALIFIER", "value":"${VERSION_QUALIFIER}"},{"name":"DOCKER_IMAGE", "value":"${DOCKER_IMAGE}"},{"name":"PRODUCT_DOMAIN_TYPE", "value":"${PRODUCT_DOMAIN_TYPE}"},{"name":"NAMESPACE", "value":"${NAMESPACE}"}]}'
                     '''
                 }
             }
         }
 
-        stage('execute tests') {
-            parallel {
-                stage('build and run maven test') {
-                    steps {
-                        container('jnlp') {
-                            git branch: 'master',
-                                    credentialsId: 'sandeep.zachariah.ssh',
-                                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-urltests.git'
-
-                            sh label: 'execute tests', script: '''
-							echo "***********Moving to workspace******************"
-							cd ${WORKSPACE}
-							echo "***********Checking content of the workspace******************"
-							echo "blue_flag=true" >> ${WORKSPACE}/out.properties
-							ls
-							echo "***********Checking is values passed properly*******************"
-							echo -e "\nPRODUCT_NAME : ${PRODUCT_NAME} \n PRODUCT_DOMAIN_TYPE : ${PRODUCT_DOMAIN_TYPE} \n ADMIN_USERNAME : ${ADMIN_USERNAME} \n ADMIN_PASSWORD : ${ADMIN_PASSWORD} \n K8S_IP : ${K8S_IP} \n ADMIN_NODE_PORT : ${ADMIN_NODE_PORT} \n MS_NODE_PORT : ${MS_NODE_PORT} \n BUILD_NUMBER : ${BUILD_NUMBER} \n BUILD_URL : ${BUILD_URL}"	
-
-							if [[ ${PRODUCT_NAME} == *"SOA"* ]]; then
-								sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
-								sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
-								sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
-								sed -i -e "s|UNAME|${ADMIN_USERNAME}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
-								sed -i -e "s|PWD|${ADMIN_PASSWORD}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
-								
-								if [[ ${PRODUCT_DOMAIN_TYPE} == *"SOA"* ]]; then
-									mvn test -Dtest=SOAsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
-								elif [[ ${PRODUCT_DOMAIN_TYPE} == *"OSB"* ]]; then
-									mvn test -Dtest=OSBsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
-								elif [[ ${PRODUCT_DOMAIN_TYPE} == *"BPM"* ]]; then
-									mvn test -Dtest=BPMsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
-								elif [[ ${PRODUCT_DOMAIN_TYPE} == *"WCS"* ]]; then
-                                	mvn test -Dtest=WCSsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
-								fi
-							fi
-
-							if [[ ${PRODUCT_NAME} == *"ODI"* ]]; then
-							    echo "ODI Testing*******"
-						        sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
-						        sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
-						        mvn test -Dtest=ODIsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
-                                if curl -s --head  --request GET http://${K8S_IP}:${ADMIN_NODE_PORT}/oraclediagent/ | grep "200 OK" > /dev/null; then
-                                    echo "ODI up***"
-                                else
-                                    echo "ODI down"
-                                fi
-
-							fi
-
-							if [[ ${PRODUCT_NAME} == *"WLS-INFRA"* ]]; then
-                                sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
-                            	sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
-                            	sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
-                            	sed -i -e "s|UNAME|${ADMIN_USERNAME}|g" config/${PRODUCT_NAME}/urlTemplate.properties
-                            	sed -i -e "s|PWD|${ADMIN_PASSWORD}|g" config/${PRODUCT_NAME}/urlTemplate.properties
-                            	mvn test -Dtest=WLSINFRAsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
-                            fi
-
-                            if [[ ${PRODUCT_NAME} == *"WLS-DEVELOPER"* || ${PRODUCT_NAME} == *"WLS-GENERIC"* ]]; then
-                                sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
-                                sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
-                                mvn test -Dtest=WLS_DEV_GENERICsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
-                            fi
-
-                            
-                            '''
-                        }
-                    }
-                }
-            }
-        }
-        stage('Collect Reports') {
-            steps {
-                echo "Reports directory: ${WORKSPACE}/test-output"
-                script {
-                      env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M'").trim()
-                      def logContent = Jenkins.getInstance()
-                                      .getItemByFullName(env.JOB_NAME)
-                                      .getBuildByNumber(
-                                          Integer.parseInt(env.BUILD_NUMBER))
-                                      .logFile.text
-                      writeFile file: "buildlog-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.txt", text: logContent
-
-                }
-
-                zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
-                rtUpload (
-                    serverId: "artifactory.oraclecorp.com",
-                    spec:
-                        """{
-                          "files": [
-                            {
-                                "pattern": "test-output*.zip",
-                                "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/test-reports/"
-                            },
-                            {
-                                "pattern": "buildlog*.txt",
-                                "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/logs/"
-                            }
-                          ]
-                        }""",
-                    failNoOp: true
-                )
-
-            }
-        }
     }
     post {
         always {
@@ -146,7 +43,10 @@ EOF
            	  currentBuild.displayName = this.env.PRODUCT_NAME
 
            }
-
+           sh label: 'trigger build', script: '''
+           #curl -X POST http://slciazu.us.oracle.com:8086/jenkins/fmw_extended_pipeline/view/FMWDocker/job/Cleanup_FMW_Instances/buildWithParameters --data-urlencode json='{"parameter": [{"name":"PRODUCT_NAME", "value":"${PRODUCT_NAME}"},{"name":"VERSION_QUALIFIER", "value":"${VERSION_QUALIFIER}"},{"name":"DOCKER_IMAGE", "value":"${DOCKER_IMAGE}"},{"name":"PRODUCT_DOMAIN_TYPE", "value":"${PRODUCT_DOMAIN_TYPE}"},{"name":"NAMESPACE", "value":"${NAMESPACE}"}]}'
+           curl -X POST "http://slciazu.us.oracle.com:8086/jenkins/fmw_extended_pipeline/view/FMWDocker/job/Cleanup_FMW_Instances/buildWithParameters?PRODUCT_NAME="${PRODUCT_NAME}"&VERSION_QUALIFIER="${VERSION_QUALIFIER}"&DOCKER_IMAGE="${DOCKER_IMAGE}"&PRODUCT_DOMAIN_TYPE="${PRODUCT_DOMAIN_TYPE}"&NAMESPACE="${NAMESPACE}""
+           '''
 
         }
     }
