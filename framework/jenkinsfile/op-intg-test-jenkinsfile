@@ -344,7 +344,7 @@ pipeline {
                             #mvn test -Dtest=BasicDomainTest -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80
                             echo "Maven command:"
                             echo "mvn clean test -DsuiteXmlFile=basictests.xml -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80"
-                            mvn clean test -DsuiteXmlFile=basictests.xml -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80
+                            mvn clean test -DsuiteXmlFile=basictests.xml -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80
                             #testStat='testStat'
                             #until `echo $testStat | grep -q Completed` > /dev/null
                             #do
