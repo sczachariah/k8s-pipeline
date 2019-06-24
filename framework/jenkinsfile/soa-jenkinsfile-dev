@@ -59,9 +59,7 @@ pipeline {
                 stage('setup database') {
                     steps {
                          container('jnlp') {
-                              git branch: 'master',
-                                        credentialsId: 'sandeep.zachariah.ssh',
-                                        url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
+
                               sh label: 'setup db starting', script: '''
                               '''
                               script {
