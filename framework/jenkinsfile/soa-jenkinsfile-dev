@@ -61,9 +61,11 @@ pipeline {
                               git branch: 'master',
                                         credentialsId: 'sandeep.zachariah.ssh',
                                         url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
-
+                              sh label: 'setup db starting', script: '''
+                              '''
                               script {
-                              Database.deployDatabase this, "${SOA_DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}"
+
+                                  Database.deployDatabase this, "${SOA_DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}"
                               }
                          }
                     }
