@@ -24,18 +24,18 @@ class Database {
                       cat soadb.yaml && \
                       kubectl apply -f soadb.yaml && \
                       dbstat='dbstat' && \
-                      i=0"
-            script.sh "until `echo \$dbstat | grep -q Running` > /dev/null\n \
-                       do \n \
-                       if [ \$i == 25 ]; then\n \
-                       echo \"Timeout waiting for DB. Exiting!!.\"\n \
-                       exit 1\n \
-                       fi\n \
-                       i=\$((i+1))\n \
-                       echo \"DB is not Running. Iteration \$i of 25. Sleeping\"\n \
-                       sleep 60\n \
-                       dbstat=`echo \\`kubectl get pods -n ${domainns} 2>&1 | grep soadb\\``\n \
-                       done"
+                      i=0 && \
+                      until `echo \$dbstat | grep -q Running` > /dev/null\n \
+                      do \n \
+                      if [ \$i == 25 ]; then\n \
+                      echo \"Timeout waiting for DB. Exiting!!.\"\n \
+                      exit 1\n \
+                      fi\n \
+                      i=\$((i+1))\n \
+                      echo \"DB is not Running. Iteration \$i of 25. Sleeping\"\n \
+                      sleep 60\n \
+                      dbstat=`echo \\`kubectl get pods -n ${domainns} 2>&1 | grep soadb\\``\n \
+                      done"
             Log.info(script, "DB container is Running.")
             script.sh "sleep 300 && \
                        kubectl get pods,svc -n ${domainns} | grep soadb"
