@@ -3,15 +3,15 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Log
 
 class Domain {
-    static configureDomainSecret(script) {}
+    static configureDomainSecret(script, domainName, namespace) {}
 
-    static preparePersistentVolume(script) {}
+    static preparePersistentVolume(script, domainName, namespace) {}
 
-    static prepareDomain(script) {}
+    static prepareDomain(script, domainName, namespace) {}
 
-    static createDomain(script) {}
+    static createDomain(script, domainName, namespace) {}
 
-    static isDomainReady(script) {}
+    static isDomainReady(script, domainName, namespace) {}
 
     static createNamespace(script, namespace) {
         try {

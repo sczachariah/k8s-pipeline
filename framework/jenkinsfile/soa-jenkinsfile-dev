@@ -3,9 +3,9 @@
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.EnvironmentSetup
+import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Operator
-import com.oracle.fmwk8s.env.Database
 
 pipeline {
     agent {
@@ -39,13 +39,13 @@ pipeline {
                     git branch: 'master',
                             credentialsId: 'sandeep.zachariah.ssh',
                             url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
-                        script {
-                            Operator.createNamespace this, "${SOA_OPERATOR_NS}"
-                            Domain.createNamespace this, "${SOA_DOMAIN_NS}"
-                            Operator.buildOperator this, "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}", "${https_proxy}"
-                            Operator.deployOperator this, "${SOA_OPERATOR_REL}", "${SOA_DOMAIN_NS}","${SOA_OPERATOR_NS}","${SOA_OPERATOR_SA}"
-                            Operator.verifyOperator this, "${SOA_OPERATOR_NS}"
-                        }
+                    script {
+                        Operator.createNamespace this, "${SOA_OPERATOR_NS}"
+                        Domain.createNamespace this, "${SOA_DOMAIN_NS}"
+                        Operator.buildOperator this, "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}", "${https_proxy}"
+                        Operator.deployOperator this, "${SOA_OPERATOR_REL}", "${SOA_DOMAIN_NS}", "${SOA_OPERATOR_NS}", "${SOA_OPERATOR_SA}"
+                        Operator.verifyOperator this, "${SOA_OPERATOR_NS}"
+                    }
                 }
                 container('jnlp') {
                     script {
@@ -54,21 +54,43 @@ pipeline {
                 }
             }
         }
+
         stage('prepare soa environment') {
             parallel {
                 stage('setup database') {
                     steps {
-                         container('jnlp') {
-                              script {
-                                  Database.deployDatabase this, "${SOA_DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}"
-                              }
-                         }
+                        container('jnlp') {
+                            script {
+                                Database.deployDatabase this, "${SOA_DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}"
+                            }
+                        }
                     }
+                }
+                stage('prepare soa domain in pv') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                Domain.configureDomainSecret this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
+                                Domain.preparePersistentVolume this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
+                                Domain.prepareDomain this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
+                            }
+                        }
+                    }
+
                 }
             }
         }
 
-
+        stage('deploy soa domain') {
+            steps {
+                container('jnlp') {
+                    script {
+                        Domain.createDomain this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
+                        Domain.isDomainReady this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
+                    }
+                }
+            }
+        }
     }
 
     post {
