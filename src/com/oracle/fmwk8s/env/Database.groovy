@@ -9,7 +9,7 @@ class Database {
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             Log.info(script, "setup db !!!")
             script.sh "retVal=`echo \\`kubectl get secret regcred -n ${domainns} 2>&1\\``"
-            script.sh "if echo \"\$retVal\" | grep -q \"not found\"; then\n \
+            script.sh "if echo \"\$retVal\" \\| grep -q \"not found\"; then\n \
                           kubectl create secret docker-registry regcred -n ${domainns} --docker-server=http://container-registry.oracle.com --docker-username='${REGISTRY_AUTH_USR}' --docker-password='${REGISTRY_AUTH_PSW}' --docker-email='${REGISTRY_AUTH_USR}'\n \
                        fi"
             script.sh "cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers"
