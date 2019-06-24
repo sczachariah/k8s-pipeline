@@ -3,7 +3,7 @@ pipeline {
         kubernetes {
             cloud 'kubernetes12'
             label 'fmwk8s-test-infra-slave-pp'
-            namespace 'fmwk8s-pp'
+            namespace 'fmwk8s'
             inheritFrom 'fmwk8s-test-infra-slave-pp'
         }
     }
