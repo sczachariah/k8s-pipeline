@@ -12,13 +12,13 @@ class Database {
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             Log.info(script, "setup db !!!")
             script.sh "retVal=`echo \\`kubectl get secret regcred -n ${domainns} 2>&1\\`` &&\
-                      if echo '\$retVal' | grep -q 'not found'; then\n \
+                      if echo \"\$retVal\" \\| grep -q 'not found'; then\n \
                           kubectl create secret docker-registry regcred -n ${domainns} --docker-server=http://container-registry.oracle.com --docker-username='${REGISTRY_AUTH_USR}' --docker-password='${REGISTRY_AUTH_PSW}' --docker-email='${REGISTRY_AUTH_USR}'\n \
                       fi && \
                       cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers && \
                       ls && \
                       cp soadb.yaml soadb.yaml.orig && \
-                      sed -i ""s#image: oracle/database:12.2.0.1#image: container-registry.oracle.com/database/enterprise:12.2.0.1-slim#g"" soadb.yaml &&\
+                      sed -i \"s#image: oracle/database:12.2.0.1#image: container-registry.oracle.com/database/enterprise:12.2.0.1-slim#g\" soadb.yaml &&\
                       sed -i \"s#namespace: soans#namespace: ${domainns}#g\" soadb.yaml &&\
                       sed -i \"s#terminationGracePeriodSeconds: 30#terminationGracePeriodSeconds: 30\\n      imagePullSecrets:\\n      - name: regcred#g\" soadb.yaml && \
                       cat soadb.yaml && \
