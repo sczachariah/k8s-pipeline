@@ -59,11 +59,7 @@ pipeline {
                 stage('setup database') {
                     steps {
                          container('jnlp') {
-
-                              sh label: 'setup db starting', script: '''
-                              '''
                               script {
-
                                   Database.deployDatabase this, "${SOA_DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}"
                               }
                          }
