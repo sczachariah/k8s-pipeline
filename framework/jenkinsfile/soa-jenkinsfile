@@ -65,55 +65,9 @@ pipeline {
             parallel {
                 stage('setup database') {
                     steps {
-                        withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub',
-                                          usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD'],
-                                         [$class          : 'UsernamePasswordMultiBinding', credentialsId: 'sandeep.zachariah.docker',
-                                          usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
-                            container('jnlp') {
-                                git branch: 'master',
-                                        credentialsId: 'sandeep.zachariah.ssh',
-                                        url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
-
-                                sh label: 'setup env', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
-                                '''
-
-                                sh label: 'setup db', script: '''
-                                retVal=`echo \\`kubectl get secret regcred -n ${SOA_DOMAIN_NS} 2>&1\\``
-                                if echo "$retVal" | grep -q "not found"; then
-                                    kubectl create secret docker-registry regcred -n ${SOA_DOMAIN_NS} --docker-server=http://container-registry.oracle.com \
-                                    --docker-username=${DOCKER_USERNAME_CISYSTEM} --docker-password=${DOCKER_PASSWORD_CISYSTEM} --docker-email=${DOCKER_USERNAME_CISYSTEM}
-                                fi
-                       
-                                cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers
-                                cp soadb.yaml soadb.yaml.orig
-
-						        sed -i "s#image: oracle/database:12.2.0.1#image: container-registry.oracle.com/database/enterprise:12.2.0.1-slim#g" soadb.yaml
-						        sed -i "s#namespace: soans#namespace: ${SOA_DOMAIN_NS}#g" soadb.yaml
-						        sed -i "s#terminationGracePeriodSeconds: 30#terminationGracePeriodSeconds: 30\\n      imagePullSecrets:\\n      - name: regcred#g" soadb.yaml
-						        cat soadb.yaml
-
-						        kubectl apply -f soadb.yaml
-						        
-						        dbstat='dbstat'
-						        i=0
-						        until `echo $dbstat | grep -q Running` > /dev/null
-						        do
-						            if [ $i == 25 ]; then
-						                echo "Timeout waiting for DB. Exiting!!."
-						                exit 1
-						            fi
-						            i=$((i+1))
-						            echo "DB is not Running. Iteration $i of 25. Sleeping"
-						            sleep 60
-						            dbstat=`echo \\`kubectl get pods -n ${SOA_DOMAIN_NS} 2>&1 | grep soadb\\``
-						        done
-						        echo "DB container is Running."
-						        sleep 300
-						        
-                                kubectl get pods,svc -n ${SOA_DOMAIN_NS} | grep soadb
-						        #kubectl logs soadb-0 -n ${SOA_DOMAIN_NS}
-                                '''
+                        container('jnlp') {
+                            script {
+                                   Database.deployDatabase this, "${SOA_DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}"
                             }
                         }
                     }
