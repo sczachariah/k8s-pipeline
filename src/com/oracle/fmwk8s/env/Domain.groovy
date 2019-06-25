@@ -3,7 +3,21 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Log
 
 class Domain {
-    static configureDomainSecret(script, domainName, namespace) {}
+    static configureDomainSecret(script, domainName, namespace) {
+        try {
+            Log.info(script, "configure domain secrets !!!")
+            script.sh "retVal=`echo \\`kubectl get secret ${domainName}-weblogic-credentials -n ${namespace} 2>&1\\`` &&\
+                       if echo \"\$retVal\" | grep -q \"not found\"; then \n \
+                          kubernetes/samples/scripts/create-soa-domain-credentials/create-domain-credentials.sh -u weblogic -p Welcome1 -n ${namespace} -d ${domainName} \n \
+                       fi"
+
+            Log.info(script, "Configure Domain secrets Completed!!!")
+
+        }
+        catch (exc) {
+            Log.error(script, "Configure Domain secrets failed!!.")
+        }
+    }
 
     static preparePersistentVolume(script, domainName, namespace) {}
 
