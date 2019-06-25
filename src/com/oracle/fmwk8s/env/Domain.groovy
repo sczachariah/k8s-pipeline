@@ -27,7 +27,7 @@ class Domain {
                        sed -i \"s#baseName: domain#baseName: ${namespace}#g\" create-pv-pvc-inputs.yaml && \
                        sed -i \"s#domainUID: soainfra#domainUID: ${domainName}#g\" create-pv-pvc-inputs.yaml && \
                        sed -i \"s#namespace: soans#namespace: ${namespace}#g\" create-pv-pvc-inputs.yaml && \
-                       sed -i \"s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: ${NFS_DOMAIN_PATH}#g\" create-pv-pvc-inputs.yaml && \
+                       sed -i \"s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: ${script.env.NFS_DOMAIN_PATH}#g\" create-pv-pvc-inputs.yaml && \
                        sed -i \"s#weblogicDomainStorageReclaimPolicy: Retain#weblogicDomainStorageReclaimPolicy: Recycle#g\" create-pv-pvc-inputs.yaml && \
                        cat create-pv-pvc-inputs.yaml && \
                        ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${script.env.WORKSPACE}/soa-operator-output-directory && \
@@ -78,11 +78,11 @@ class Domain {
         try {
             Log.info(script, "Create Domain !!!")
             script.sh "cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers && \
-                      ./create-domain.sh -i create-domain-inputs.yaml -o ${WORKSPACE}/soa-operator-output-directory && \
-                      cp ${WORKSPACE}/soa-operator-output-directory/soa-domains/${domainName}/domain.yaml ${WORKSPACE} && \
-                      cat ${WORKSPACE}/domain.yaml"
+                      ./create-domain.sh -i create-domain-inputs.yaml -o ${script.env.WORKSPACE}/soa-operator-output-directory && \
+                      cp ${script.env.WORKSPACE}/soa-operator-output-directory/soa-domains/${domainName}/domain.yaml ${script.env.WORKSPACE} && \
+                      cat ${script.env.WORKSPACE}/domain.yaml"
             Log.info(script, "Start Domain !!!")
-            script.sh "kubectl apply -f ${WORKSPACE}/domain.yaml && \
+            script.sh "kubectl apply -f ${script.env.WORKSPACE}/domain.yaml && \
                        sleep 360"
             Log.info(script, "Create Domain Completed!!!")
 
