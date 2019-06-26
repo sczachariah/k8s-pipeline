@@ -57,6 +57,22 @@ class Operator {
         }
     }
 
+    static setDomainNamespace(script,domainNamespace,operator_rel) {
+        try {
+            Log.info(script, "set domain namespace!!")
+            script.sh "helm upgrade \
+                          --reuse-values \
+                          --set \"domainNamespaces={$domainNamespace}\" \
+                          --wait \
+                          ${operator_rel} \
+                          kubernetes/charts/soa-kubernetes-operator"
+            Log.info(script, "Set domain namespace Completed!!")
+        }
+        catch (exc) {
+            Log.error(script, "Set domain namespace failed!!.")
+        }
+    }
+
     static createNamespace(script,namespace) {
         try {
             Log.info(script, "create operator namespace!!")
