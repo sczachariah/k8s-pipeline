@@ -140,11 +140,6 @@ EOF
             }
 
         }
-        success {
-            sh label: 'trigger cleanup build', script: '''
-            curl -X POST "http://slciazu.us.oracle.com:8086/jenkins/fmw_extended_pipeline/view/FMWDocker/job/Cleanup_FMW_Instances/buildWithParameters?PRODUCT_NAME="${PRODUCT_NAME}"&VERSION_QUALIFIER="${VERSION_QUALIFIER}"&DOCKER_IMAGE="${DOCKER_IMAGE}"&PRODUCT_DOMAIN_TYPE="${PRODUCT_DOMAIN_TYPE}"&NAMESPACE="${NAMESPACE}""
-            '''
-        }
     }
 
 }
