@@ -6,6 +6,8 @@ class Domain {
     static configureDomainSecret(script, domainName, namespace) {
         try {
             Log.info(script, "configure domain secrets !!!")
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
+                       sleep 120"
             script.sh "retVal=`echo \\`kubectl get secret ${domainName}-weblogic-credentials -n ${namespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
                           kubernetes/samples/scripts/create-soa-domain-credentials/create-domain-credentials.sh -u weblogic -p Welcome1 -n ${namespace} -d ${domainName} \n \
