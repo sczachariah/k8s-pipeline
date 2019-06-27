@@ -61,6 +61,7 @@ class Operator {
         try {
             Log.info(script, "set domain namespace!!")
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
+                       sleep 120 && \
                        helm upgrade \
                           --reuse-values \
                           --set \"domainNamespaces={$domainNamespace}\" \
