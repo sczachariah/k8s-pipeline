@@ -8,6 +8,7 @@ import com.oracle.fmwk8s.env.Operator
 pipeline {
     agent {
         kubernetes {
+            cloud 'kubernetes'
             label 'fmwk8s-test-mats-slave'
             namespace 'fmwk8s'
             inheritFrom 'fmwk8s-test-mats-slave'
