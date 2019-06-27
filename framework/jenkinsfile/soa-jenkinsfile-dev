@@ -71,9 +71,7 @@ pipeline {
                         container('jnlp') {
                             script {
                                 Operator.setDomainNamespace this, "${SOA_DOMAIN_NS}", "${SOA_OPERATOR_REL}"
-                                //Domain.configureDomainSecret this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
-                                //Domain.preparePersistentVolume this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
-                               // Domain.prepareDomain this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
+
                             }
                         }
                     }
@@ -82,16 +80,7 @@ pipeline {
             }
         }
 
-        stage('deploy soa domain') {
-            steps {
-                container('jnlp') {
-                    script {
-                        //Domain.createDomain this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
-                        //Domain.isDomainReady this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
-                    }
-                }
-            }
-        }
+
     }
 
     post {
