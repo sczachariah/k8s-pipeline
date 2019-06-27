@@ -60,7 +60,8 @@ class Operator {
     static setDomainNamespace(script,domainNamespace,operator_rel) {
         try {
             Log.info(script, "set domain namespace!!")
-            script.sh "helm upgrade \
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
+                       helm upgrade \
                           --reuse-values \
                           --set \"domainNamespaces={$domainNamespace}\" \
                           --wait \
