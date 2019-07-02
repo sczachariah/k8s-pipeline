@@ -76,7 +76,7 @@ class Domain {
                        sed -i \"s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${domainName}-${domainNamespace}-pvc#g\" create-domain-inputs.yaml && \
                        sed -i \"s#initialManagedServerReplicas: 2#initialManagedServerReplicas: 1#g\" create-domain-inputs.yaml && \
                        cat create-domain-inputs.yaml && \
-                       sed -i \"s#soadb:1521#${Database.dbName}.${domainNamespace}:1521#g\" create-domain-job-template.yaml && \
+                       sed -i \"s#soadb:1521/soapdb.us.oracle.com#${Database.dbName}.${domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com#g\" create-domain-job-template.yaml && \
                        cat create-domain-job-template.yaml"
 
             Log.info(script, "prepare domain success.")
