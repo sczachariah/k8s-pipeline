@@ -2,6 +2,8 @@
 
 
 import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.common.EnvironmentSetup
+import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Operator
 
@@ -42,8 +44,37 @@ pipeline {
                     }
                 }
 
+                container('jnlp') {
+                    script {
+                        Domain.createNamespace(this, "${DOMAIN_NS}")
+                        EnvironmentSetup.createNfsFolder(this, "${SOA_DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
+                    }
+                }
             }
+        }
 
+        stage('prepare fmw product environment') {
+            parallel {
+                stage('setup database') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                Database.deployDatabase(this, "${PRODUCT_NAME}", "${DATABASE_VERSION}", "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
+                            }
+                        }
+                    }
+                }
+                stage('prepare fmw domain in pv') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                sleep(600)
+                            }
+                        }
+                    }
+
+                }
+            }
         }
     }
 

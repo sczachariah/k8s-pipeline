@@ -20,8 +20,8 @@ class Operator {
                           helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
                                         --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} --wait\n \
                        fi"
-            Log.info(script, "deploy kubernetes operator success.")
 
+            Log.info(script, "deploy kubernetes operator success.")
         }
         catch (exc) {
             Log.error(script, "deploy kubernetes operator failed.")
@@ -31,7 +31,9 @@ class Operator {
     static verifyOperator(script, operatorNamespace) {
         try {
             Log.info(script, "begin verify kubernetes operator.")
+
             script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1"
+
             Log.info(script, "verify kubernetes operator success.")
         }
         catch (exc) {
@@ -42,6 +44,7 @@ class Operator {
     static setDomainNamespace(script, domainNamespace, operatorHelmRelease) {
         try {
             Log.info(script, "begin set domain namespace.")
+
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             script.sh "helm upgrade \
                        --reuse-values \
@@ -49,6 +52,7 @@ class Operator {
                        --wait \
                        ${operatorHelmRelease} \
                        kubernetes/charts/weblogic-operator"
+
             Log.info(script, "set domain namespace success.")
         }
         catch (exc) {
@@ -59,8 +63,10 @@ class Operator {
     static createNamespace(script, namespace) {
         try {
             Log.info(script, "begin create kubernetes operator namespace.")
+
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             script.sh "kubectl create ns ${namespace}"
+
             Log.info(script, "create kubernetes operator namespace success.")
         }
         catch (exc) {
@@ -71,7 +77,9 @@ class Operator {
     static cleanOperator(script, operatorHelmRelease) {
         try {
             Log.info(script, "begin clean kubernetes operator.")
+
             script.sh "helm delete --purge ${operatorHelmRelease}"
+
             Log.info(script, "clean kubernetes operator success.")
         }
         catch (exc) {
@@ -82,10 +90,12 @@ class Operator {
     static cleanOperatorNamespace(script, operatorNamespace) {
         try {
             Log.info(script, "begin clean kubernetes operator namespace.")
+
             script.sh "kubectl delete configmaps --all -n ${operatorNamespace}"
             script.sh "kubectl delete all --all -n ${operatorNamespace}"
             sleep 10
             script.sh "kubectl delete ns ${operatorNamespace}"
+
             Log.info(script, "clean kubernetes operator namespace success.")
         }
         catch (exc) {
