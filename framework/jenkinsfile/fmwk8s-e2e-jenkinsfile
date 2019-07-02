@@ -22,8 +22,8 @@ pipeline {
         OPERATOR_NS = 'operator-ns' + "-${RUN_SUFFIX}"
         OPERATOR_SA = 'default'
         OPERATOR_HELM_RELEASE = "${RUN_SUFFIX}"
-        DOMAIN_NAME = 'domain'
-        DOMAIN_NS = 'domain-ns' + "-${RUN_SUFFIX}"
+        DOMAIN_NAME = Common.getDomainName(${PRODUCT_NAME})
+        DOMAIN_NS = "${DOMAIN_NAME}-ns-${RUN_SUFFIX}"
         WEBLOGIC_USER = 'weblogic'
         ADMIN_PASSWORD = 'Welcome1'
         FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
@@ -47,7 +47,7 @@ pipeline {
                 container('jnlp') {
                     script {
                         Domain.createNamespace(this, "${DOMAIN_NS}")
-                        EnvironmentSetup.createNfsFolder(this, "${SOA_DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
+                        EnvironmentSetup.createNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
                     }
                 }
             }

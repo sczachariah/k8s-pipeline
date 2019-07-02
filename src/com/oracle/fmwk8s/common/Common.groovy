@@ -12,4 +12,37 @@ class Common {
 
         return uniqueId
     }
+
+    static def getDomainName(productName) {
+        def domainName
+
+        switch ("${productName}") {
+            case "SOA":
+                domainName = "soainfra"
+                break
+            case "WLS-INFRA":
+                domainName = "wls-infra"
+                break
+            default:
+                domainName = "unknown"
+                break
+        }
+
+        return domainName
+    }
+
+    static def getSampleRepo(productName) {
+        def repo
+
+        switch ("${productName}") {
+            case "SOA":
+                repo = "git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git"
+                break
+            default:
+                repo = "unknown"
+                break
+        }
+
+        return repo
+    }
 }
