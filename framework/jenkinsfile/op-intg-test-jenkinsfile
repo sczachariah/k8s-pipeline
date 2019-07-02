@@ -120,9 +120,9 @@ pipeline {
                     }
 
                     container('jnlp') {
-                        git branch: 'swati-develop',
+                        git branch: 'master',
                                 credentialsId: 'sandeep.zachariah.ssh',
-                                url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-operator-intg-tests.git'
+                                url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                         sh label: 'create nfs folder', script: '''
                         export KUBECONFIG=${KUBECONFIG}
@@ -327,7 +327,7 @@ pipeline {
                 stage('execute tests') {
                     steps {
                         container('jnlp') {
-                            git branch: 'simple-integration-test',
+                            git branch: 'swati-develop',
                                     credentialsId: 'sandeep.zachariah.ssh',
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-operator-intg-tests.git'
 
