@@ -15,7 +15,6 @@ pipeline {
     }
 
     environment {
-        #RUN_SUFFIX = Common.getUniqueId(this)
         RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT}")
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         SOA_OPERATOR_NS = 'soa-operator-ns' + "-${RUN_SUFFIX}"
@@ -337,7 +336,7 @@ pipeline {
                             sed -i "s#SOA_DOMAIN_NS#${SOA_DOMAIN_NS}#g" config/operatorTest.properties
                             sed -i "s#SOA_DOMAIN_NAME#${SOA_DOMAIN_NAME}#g" config/operatorTest.properties
                             sed -i "s#SOA_OPERATOR_SA#${SOA_OPERATOR_SA}#g" config/operatorTest.properties
-                            #sed -i "s#PRODUCT_NAME#${PRODUCT}#g" config/operatorTest.properties
+                            sed -i "s#PRODUCT_NAME#${PRODUCT}#g" config/operatorTest.properties
                             '''
 
 
