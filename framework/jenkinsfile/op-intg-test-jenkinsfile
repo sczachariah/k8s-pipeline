@@ -15,7 +15,8 @@ pipeline {
     }
 
     environment {
-        RUN_SUFFIX = Common.getUniqueId(this)
+        #RUN_SUFFIX = Common.getUniqueId(this)
+        RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT}")
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         SOA_OPERATOR_NS = 'soa-operator-ns' + "-${RUN_SUFFIX}"
         SOA_OPERATOR_SA = 'default'
