@@ -3,107 +3,93 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Log
 
 class Operator {
-    static buildOperator(script,REGISTRY_AUTH_USR,REGISTRY_AUTH_PSW,https_proxy) {
+    static deployOperator(script, operatorVersion, operatorHelmRelease, operatorNamespace, operatorServiceAccount) {
         try {
-            Log.info(script, "Build soa operator image!!")
-            Log.info(script, "Before pwd display!!")
-            //script.sh "echo '$REGISTRY_AUTH_USR'"
-            //script.sh "echo '$REGISTRY_AUTH_PSW'"
-            script.sh "docker login http://container-registry.oracle.com -u '${REGISTRY_AUTH_USR}' -p '${REGISTRY_AUTH_PSW}'"
-            script.sh "docker pull container-registry.oracle.com/java/serverjre:latest"
-            script.sh "docker tag container-registry.oracle.com/java/serverjre:latest store/oracle/serverjre:8"
+            Log.info(script, "begin deploy kubernetes operator.")
 
-            script.sh "docker pull fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1"
-            script.sh "docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1"
+            createNamespace(script, operatorNamespace)
 
+            script.git branch: 'release/' + "${operatorVersion}" + '',
+                    url: 'https://github.com/oracle/weblogic-kubernetes-operator'
 
-            script.sh "docker build --build-arg https_proxy=${https_proxy} -t soa-kubernetes-operator:2.1 --no-cache=true ."
-
-            Log.info(script, "Push soa operator image!!!")
-            script.sh "docker tag soa-kubernetes-operator:2.1 cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
-            script.sh "docker login cisystem.docker.oraclecorp.com -u '${REGISTRY_AUTH_USR}' -p '${REGISTRY_AUTH_PSW}'"
-            script.sh "docker push cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1"
-    }
-        catch (exc) {
-            Log.error(script, "Build operator failed!!.")
-        }
-    }
-
-    static deployOperator(script,operator_rel,domainns,operatorns,operatorsa) {
-        try {
-            Log.info(script, "Deploy operator !!!")
-            script.sh "retVal==`echo \\`helm ls ${operator_rel}\\``"
+            script.sh "retVal==`echo \\`helm ls ${operatorHelmRelease}\\``"
 
             script.sh "if [[ \$retVal ]]; then\n \
-                          helm upgrade --reuse-values --set domainNamespaces=${domainns} --wait ${operator_rel} kubernetes/charts/soa-kubernetes-operator\n \
+                          helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
                        else\n \
-                          helm install kubernetes/charts/soa-kubernetes-operator --name ${operator_rel} --set image=cisystem.docker.oraclecorp.com/soa-kubernetes-operator:2.1 --namespace ${operatorns} --set serviceAccount=${operatorsa} --set domainNamespaces={} --wait\n \
+                          helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
+                                        --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} --wait\n \
                        fi"
-            Log.info(script, "Deploy operator Completed!!!")
+            Log.info(script, "deploy kubernetes operator success.")
 
         }
         catch (exc) {
-            Log.error(script, "Deploy operator failed!!.")
+            Log.error(script, "deploy kubernetes operator failed.")
         }
     }
 
-    static verifyOperator(script,namespace) {
+    static verifyOperator(script, operatorNamespace) {
         try {
-            Log.info(script, "Verify soa operator !!!")
-            script.sh "kubectl get pods -n ${namespace}"
+            Log.info(script, "begin verify kubernetes operator.")
+            script.sh "kubectl get pods -n ${operatorNamespace}"
+            Log.info(script, "verify kubernetes operator success.")
         }
         catch (exc) {
-            Log.error(script, "Verify operator failed!!.")
+            Log.error(script, "verify kubernetes operator failed.")
         }
     }
 
-    static setDomainNamespace(script,domainNamespace,operator_rel) {
+    static setDomainNamespace(script, domainNamespace, operatorHelmRelease) {
         try {
-            Log.info(script, "set domain namespace!!")
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                       sleep 120 && \
-                       helm upgrade \
-                          --reuse-values \
-                          --set \"domainNamespaces={$domainNamespace}\" \
-                          --wait \
-                          ${operator_rel} \
-                          kubernetes/charts/soa-kubernetes-operator"
-            Log.info(script, "Set domain namespace Completed!!")
+            Log.info(script, "begin set domain namespace.")
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
+            script.sh "helm upgrade \
+                       --reuse-values \
+                       --set \"domainNamespaces={$domainNamespace}\" \
+                       --wait \
+                       ${operatorHelmRelease} \
+                       kubernetes/charts/weblogic-operator"
+            Log.info(script, "set domain namespace success.")
         }
         catch (exc) {
-            Log.error(script, "Set domain namespace failed!!.")
+            Log.error(script, "set domain namespace failed.")
         }
     }
 
-    static createNamespace(script,namespace) {
+    static createNamespace(script, namespace) {
         try {
-            Log.info(script, "create operator namespace!!")
+            Log.info(script, "begin create kubernetes operator namespace.")
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             script.sh "kubectl create ns ${namespace}"
+            Log.info(script, "create kubernetes operator namespace success.")
         }
         catch (exc) {
-            Log.error(script, "Create Operator namespace failed!!.")
+            Log.error(script, "create kubernetes operator namespace failed.")
         }
     }
 
-    static cleanOperator(script, release) {
+    static cleanOperator(script, operatorHelmRelease) {
         try {
-            script.sh "helm delete --purge ${release}"
+            Log.info(script, "begin clean kubernetes operator.")
+            script.sh "helm delete --purge ${operatorHelmRelease}"
+            Log.info(script, "clean kubernetes operator success.")
         }
         catch (exc) {
-            Log.error(script, "Cleanup operator failed!!.")
+            Log.info(script, "clean kubernetes operator failed.")
         }
     }
 
-    static cleanOperatorNamespace(script, namespace) {
+    static cleanOperatorNamespace(script, operatorNamespace) {
         try {
-            script.sh "kubectl delete configmaps --all -n ${namespace}"
-            script.sh "kubectl delete all --all -n ${namespace}"
+            Log.info(script, "begin clean kubernetes operator namespace.")
+            script.sh "kubectl delete configmaps --all -n ${operatorNamespace}"
+            script.sh "kubectl delete all --all -n ${operatorNamespace}"
             sleep 10
-            script.sh "kubectl delete ns ${namespace}"
+            script.sh "kubectl delete ns ${operatorNamespace}"
+            Log.info(script, "clean kubernetes operator namespace success.")
         }
         catch (exc) {
-            Log.error(script, "Cleanup operator namespace failed!!.")
+            Log.info(script, "clean kubernetes operator namespace failed.")
         }
     }
 }

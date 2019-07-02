@@ -1,0 +1,65 @@
+@Library('fmwk8s-pipeline-library') _
+
+
+import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.env.Domain
+import com.oracle.fmwk8s.env.Operator
+
+pipeline {
+    agent {
+        kubernetes {
+            label 'fmwk8s-test-mats-slave'
+            namespace 'fmwk8s'
+            inheritFrom 'fmwk8s-test-mats-slave'
+        }
+    }
+
+    environment {
+        RUN_SUFFIX = Common.getUniqueId(this)
+        KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
+        OPERATOR_NS = 'operator-ns' + "-${RUN_SUFFIX}"
+        OPERATOR_SA = 'default'
+        OPERATOR_HELM_RELEASE = "${RUN_SUFFIX}"
+        DOMAIN_NAME = 'domain'
+        DOMAIN_NS = 'domain-ns' + "-${RUN_SUFFIX}"
+        WEBLOGIC_USER = 'weblogic'
+        ADMIN_PASSWORD = 'Welcome1'
+        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
+        NFS_DOMAIN_DIR = "${DOMAIN_NS}"
+        NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
+    }
+
+
+    stages {
+        stage('deploy kubernetes operator') {
+            steps {
+                log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
+
+                container('jnlp') {
+                    script {
+                        Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}")
+                        Operator.verifyOperator(this, "${OPERATOR_NS}")
+                    }
+                }
+
+            }
+
+        }
+    }
+
+    post {
+        always {
+            container(name: 'jnlp') {
+                script {
+                    Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
+
+                    Domain.cleanDomain this, "${DOMAIN_NAME}", "${DOMAIN_NS}"
+                    Domain.cleanDomainNamespace this, "${DOMAIN_NS}"
+
+                    Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
+                    Operator.cleanOperatorNamespace this, "${OPERATOR_NS}"
+                }
+            }
+        }
+    }
+}
