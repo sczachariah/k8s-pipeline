@@ -1,23 +1,30 @@
 package com.oracle.fmwk8s.env
 
+import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 
 class Domain {
-    static configureDomainSecret(script, domainName, namespace) {
+    static pullSampleScripts(script) {
+        script.git branch: 'master',
+                url: '' + Common.samplesRepo
+    }
+
+    static configureDomainSecret(script, domainName, domainNamespace) {
         try {
-            Log.info(script, "configure domain secrets !!!")
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                       sleep 120"
-            script.sh "retVal=`echo \\`kubectl get secret ${domainName}-weblogic-credentials -n ${namespace} 2>&1\\`` &&\
+            Log.info(script, "begin configure domain secrets.")
+
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
+
+            script.sh "retVal=`echo \\`kubectl get secret ${domainName}-weblogic-credentials -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
-                          kubernetes/samples/scripts/create-soa-domain-credentials/create-domain-credentials.sh -u weblogic -p Welcome1 -n ${namespace} -d ${domainName} \n \
+                          kubernetes/samples/scripts/create-" + Common.productId + "-domain-credentials/create-domain-credentials.sh -u weblogic -p Welcome1 -n ${domainNamespace} -d ${domainName} \n \
                        fi"
 
-            Log.info(script, "Configure Domain secrets Completed!!!")
+            Log.info(script, "configure domain secrets success.")
 
         }
         catch (exc) {
-            Log.error(script, "Configure Domain secrets failed!!.")
+            Log.error(script, "configure domain secrets failed.")
         }
     }
 
@@ -110,15 +117,19 @@ class Domain {
 
     static createNamespace(script, namespace) {
         try {
-            Log.info(script, "create domain namespace!!")
+            Log.info(script, "begin create domain namespace.")
+
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             script.sh "kubectl create ns ${namespace}"
+
+            Log.info(script, "create domain namespace success.")
         }
         catch (exc) {
-            Log.error(script, "Create Domain namespace failed!!.")
+            Log.error(script, "create domain namespace failed.")
         }
         finally {
-            Log.info(script, "initialize helm!!")
+            Log.info(script, "initialize helm.")
+
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             script.sh "helm init"
         }
@@ -131,7 +142,7 @@ class Domain {
                        kubectl delete pods --all -n ${namespace}"
         }
         catch (exc) {
-            Log.error(script, "Cleanup domain pods and services failed!!")
+            Log.error(script, "cleanup domain pods and services failed.")
         }
         finally {
             sleep 10
@@ -142,7 +153,7 @@ class Domain {
             script.sh "kubectl delete statefulsets --all -n ${namespace}"
         }
         catch (exc) {
-            Log.error(script, "Cleanup domain configmap and stateful sets failed!!")
+            Log.error(script, "cleanup domain configmap and stateful sets failed.")
         }
         finally {
             sleep 30
@@ -152,7 +163,7 @@ class Domain {
             script.sh "kubectl delete domain ${domainName} -n ${namespace}"
         }
         catch (exc) {
-            Log.error(script, "Cleanup domain resource failed!!")
+            Log.error(script, "cleanup domain resource failed.")
         }
         finally {
             sleep 30
@@ -164,7 +175,7 @@ class Domain {
             script.sh "kubectl delete pv ${domainName}-${namespace}-pv -n ${namespace}"
         }
         catch (exc) {
-            Log.error(script, "Cleanup domain persistent volume failed!!")
+            Log.error(script, "cleanup domain persistent volume failed.")
         }
         finally {
             sleep 10
@@ -176,7 +187,7 @@ class Domain {
             script.sh "kubectl delete ns ${namespace}"
         }
         catch (exc) {
-            Log.error(script, "Cleanup domain namespace failed!!")
+            Log.error(script, "cleanup domain namespace failed.")
         }
     }
 }

@@ -41,7 +41,7 @@ class Operator {
         }
     }
 
-    static setDomainNamespace(script, domainNamespace, operatorHelmRelease) {
+    static setDomainNamespace(script, operatorHelmRelease, domainNamespace) {
         try {
             Log.info(script, "begin set domain namespace.")
 
