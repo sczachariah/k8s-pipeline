@@ -1,32 +1,66 @@
 package com.oracle.fmwk8s.env
 
+import com.oracle.fmwk8s.common.Log
+
 class IngressController {
 
-    static deployLoadBalancer(script, lbType, domainNamespace) {
+    static lbPort
+
+    static deployLoadBalancer(script, lbType, lbHelmRelease, domainNamespace) {
         switch ("${lbType}") {
             case "TRAEFIK":
-                deployTraefik(domainNamespace)
+                deployTraefik(script, lbHelmRelease, domainNamespace)
                 break
             case "APACHE":
-                deployApache(domainNamespace)
+                deployApache(script, lbHelmRelease, domainNamespace)
                 break
             case "VOYAGER":
-                deployVoyager(domainNamespace)
+                deployVoyager(script, lbHelmRelease, domainNamespace)
                 break
             case "NGINX":
-                deployNginx(domainNamespace)
+                deployNginx(script, lbHelmRelease, domainNamespace)
                 break
             default:
-                deployTraefik(domainNamespace)
+                deployTraefik(script, lbHelmRelease, domainNamespace)
                 break
         }
+
+        getLoadBalancerPort(script)
     }
 
-    static deployTraefik(script, domainNamespace) {}
+    static deployTraefik(script, lbHelmRelease, domainNamespace) {
+        try {
+            Log.info(script, "begin deploy traefik ingress controller.")
+            script.sh "helm init && \
+                   helm repo update && \
+                   helm install stable/traefik --name ${lbHelmRelease} --namespace ${domainNamespace} --set kubernetes.namespaces={${domainNamespace}} --wait"
+            Log.info(script, "deploy traefik ingress controller success.")
+        }
+        catch (exc) {
+            Log.error(script, "deploy traefik ingress controller failed.")
+        }
+    }
 
     static deployApache(script, domainNamespace) {}
 
     static deployVoyager(script, domainNamespace) {}
 
     static deployNginx(script, domainNamespace) {}
+
+    static getLoadBalancerPort(script) {
+        script.sh ""
+    }
+
+    static undeployLoadBalancer(script, lbHelmRelease) {
+        try {
+            Log.info(script, "begin clean kubernetes ingress controller.")
+
+            script.sh "helm delete --purge ${lbHelmRelease}"
+
+            Log.info(script, "clean kubernetes ingress controller success.")
+        }
+        catch (exc) {
+            Log.error(script, "clean kubernetes ingress controller failed.")
+        }
+    }
 }

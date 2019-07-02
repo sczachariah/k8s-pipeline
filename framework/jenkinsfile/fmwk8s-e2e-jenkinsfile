@@ -5,6 +5,7 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.EnvironmentSetup
 import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.Domain
+import com.oracle.fmwk8s.env.IngressController
 import com.oracle.fmwk8s.env.Operator
 
 pipeline {
@@ -30,6 +31,7 @@ pipeline {
         FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
         NFS_DOMAIN_DIR = "${DOMAIN_NS}"
         NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
+        LB_HELM_RELEASE = "lb-" + "${RUN_SUFFIX}"
     }
 
 
@@ -84,12 +86,28 @@ pipeline {
         }
 
         stage('deploy fmw domain') {
-            steps {
-                script {
-                    Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                    Domain.isDomainReady(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+            parallel {
+                stage('create fmw domain') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                Domain.isDomainReady(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
 
-                    sleep(300)
+                                sleep(300)
+                            }
+                        }
+                    }
+                }
+                stage('configure domain loadbalancer') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
+                                Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -100,6 +118,8 @@ pipeline {
             container(name: 'jnlp') {
                 script {
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
+
+                    IngressController.undeployLoadBalancer this, $ { LB_HELM_RELEASE }
 
                     Domain.cleanDomain this, "${DOMAIN_NAME}", "${DOMAIN_NS}"
                     Domain.cleanDomainNamespace this, "${DOMAIN_NS}"
