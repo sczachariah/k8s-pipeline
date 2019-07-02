@@ -3,11 +3,13 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Log
 
 class Database {
+    static dbName
+    
     static deployDatabase(script, productName, databaseVersion, dbNamespace, registryUsername, registryPass) {
         try {
             Log.info(script, "begin deploy database.")
 
-            def dbName = "${productName}".toLowerCase() + "db"
+            dbName = "${productName}".toLowerCase() + "db"
             def dbSecret = "regcred"
 
             script.git branch: 'master',
