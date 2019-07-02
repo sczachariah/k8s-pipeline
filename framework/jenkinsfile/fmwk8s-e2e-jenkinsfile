@@ -19,6 +19,7 @@ pipeline {
     environment {
         RUN_SUFFIX = Common.getUniqueId(this)
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
+        REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
         OPERATOR_NS = 'operator-ns' + "-${RUN_SUFFIX}"
         OPERATOR_SA = 'default'
         OPERATOR_HELM_RELEASE = "${RUN_SUFFIX}"
@@ -68,7 +69,7 @@ pipeline {
                     steps {
                         container('jnlp') {
                             script {
-                                sleep(600)
+                                sleep(300)
                             }
                         }
                     }
