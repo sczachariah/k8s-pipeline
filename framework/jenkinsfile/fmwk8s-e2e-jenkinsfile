@@ -22,7 +22,7 @@ pipeline {
         OPERATOR_NS = 'operator-ns' + "-${RUN_SUFFIX}"
         OPERATOR_SA = 'default'
         OPERATOR_HELM_RELEASE = "${RUN_SUFFIX}"
-        DOMAIN_NAME = Common.getDomainName(${PRODUCT_NAME})
+        DOMAIN_NAME = Common.getDomainName("${PRODUCT_NAME}")
         DOMAIN_NS = "${DOMAIN_NAME}-ns-${RUN_SUFFIX}"
         WEBLOGIC_USER = 'weblogic'
         ADMIN_PASSWORD = 'Welcome1'
