@@ -31,7 +31,7 @@ class Operator {
     static verifyOperator(script, operatorNamespace) {
         try {
             Log.info(script, "begin verify kubernetes operator.")
-            script.sh "kubectl get pods -n ${operatorNamespace}"
+            script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1"
             Log.info(script, "verify kubernetes operator success.")
         }
         catch (exc) {
