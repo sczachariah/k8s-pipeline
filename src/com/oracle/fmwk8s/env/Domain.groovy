@@ -28,84 +28,91 @@ class Domain {
         }
     }
 
-    static preparePersistentVolume(script, domainName, namespace) {
+    static preparePersistentVolume(script, domainName, domainNamespace, nfsDomainPath) {
         try {
-            Log.info(script, "Prepare persisitent volume !!!")
-            script.sh "cd kubernetes/samples/scripts/create-soa-domain-pv-pvc &&\
-                       cp create-pv-pvc-inputs.yaml create-pv-pvc-inputs.yaml.orig &&\
-                       sed -i \"s#baseName: domain#baseName: ${namespace}#g\" create-pv-pvc-inputs.yaml && \
+            Log.info(script, "begin prepare persistent volume.")
+
+            script.sh "cd kubernetes/samples/scripts/create-" + Common.productId + "-domain-pv-pvc &&\
+                       sed -i \"s#baseName: domain#baseName: ${domainNamespace}#g\" create-pv-pvc-inputs.yaml && \
                        sed -i \"s#domainUID: soainfra#domainUID: ${domainName}#g\" create-pv-pvc-inputs.yaml && \
-                       sed -i \"s#namespace: soans#namespace: ${namespace}#g\" create-pv-pvc-inputs.yaml && \
-                       sed -i \"s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: ${script.env.NFS_DOMAIN_PATH}#g\" create-pv-pvc-inputs.yaml && \
+                       sed -i \"s#namespace: soans#namespace: ${domainNamespace}#g\" create-pv-pvc-inputs.yaml && \
+                       sed -i \"s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: ${nfsDomainPath}#g\" create-pv-pvc-inputs.yaml && \
                        sed -i \"s#weblogicDomainStorageReclaimPolicy: Retain#weblogicDomainStorageReclaimPolicy: Recycle#g\" create-pv-pvc-inputs.yaml && \
                        cat create-pv-pvc-inputs.yaml && \
-                       ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${script.env.WORKSPACE}/soa-operator-output-directory && \
-                       cp ${script.env.WORKSPACE}/soa-operator-output-directory/pv-pvcs/${domainName}-${namespace}-pv.yaml ${script.env.WORKSPACE} && \
-                       cp ${script.env.WORKSPACE}/soa-operator-output-directory/pv-pvcs/${domainName}-${namespace}-pvc.yaml ${script.env.WORKSPACE} && \
-                       cat ${script.env.WORKSPACE}/${domainName}-${namespace}-pv.yaml && \
-                       cat ${script.env.WORKSPACE}/${domainName}-${namespace}-pvc.yaml && \
-                       kubectl apply -f ${script.env.WORKSPACE}/${domainName}-${namespace}-pv.yaml -n ${namespace} && \
-                       kubectl apply -f ${script.env.WORKSPACE}/${domainName}-${namespace}-pvc.yaml -n ${namespace} && \
-                       kubectl describe pv ${domainName}-${namespace}-pv -n ${namespace} && \
-                       kubectl describe pvc ${domainName}-${namespace}-pvc -n ${namespace}"
+                       ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${script.env.WORKSPACE}/script-output-directory"
 
-            Log.info(script, "Prepare persistent volume Completed!!!")
+            script.sh "cp ${script.env.WORKSPACE}/script-output-directory/pv-pvcs/${domainName}-${domainNamespace}-pv.yaml ${script.env.WORKSPACE} && \
+                       cp ${script.env.WORKSPACE}/script-output-directory/pv-pvcs/${domainName}-${domainNamespace}-pvc.yaml ${script.env.WORKSPACE} && \
+                       cat ${script.env.WORKSPACE}/${domainName}-${domainNamespace}-pv.yaml && \
+                       cat ${script.env.WORKSPACE}/${domainName}-${domainNamespace}-pvc.yaml"
+
+            script.sh "kubectl apply -f ${script.env.WORKSPACE}/${domainName}-${domainNamespace}-pv.yaml -n ${domainNamespace} && \
+                       kubectl apply -f ${script.env.WORKSPACE}/${domainName}-${domainNamespace}-pvc.yaml -n ${domainNamespace} && \
+                       kubectl describe pv ${domainName}-${domainNamespace}-pv -n ${domainNamespace} && \
+                       kubectl describe pvc ${domainName}-${domainNamespace}-pvc -n ${domainNamespace}"
+
+            Log.info(script, "prepare persistent volume success.")
 
         }
         catch (exc) {
-            Log.error(script, "Prepare persistent volume failed!!.")
+            Log.error(script, "prepare persistent volume failed.")
         }
     }
 
-    static prepareDomain(script, domainName, namespace) {
+    static prepareDomain(script, domainName, domainNamespace, productImage) {
         try {
-            Log.info(script, "Prepare Domain !!!")
-            script.sh "cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers && \
+            Log.info(script, "begin prepare domain.")
+
+            script.sh "cd kubernetes/samples/scripts/create-" + Common.productId + "-domain/domain-home-on-pv/multiple-Managed-servers && \
                        cp create-domain-inputs.yaml create-domain-inputs.yaml.orig && \
                        cp create-domain-job-template.yaml create-domain-job-template.yaml.orig && \
                        sed -i \"s#domainUID: soainfra#domainUID: ${domainName}#g\" create-domain-inputs.yaml && \
                        sed -i \"s#domainHome: /u01/oracle/user_projects/domains/soainfra#domainHome: /u01/oracle/user_projects/domains/${domainName}#g\" create-domain-inputs.yaml && \
                        sed -i \"s#weblogicCredentialsSecretName: soainfra-domain-credentials#weblogicCredentialsSecretName: ${domainName}-weblogic-credentials#g\" create-domain-inputs.yaml && \
-                       sed -i \"s#image: oracle/soa:12.2.1.3#image: container-registry.oracle.com/middleware/soasuite:12.2.1.3#g\" create-domain-inputs.yaml && \
-                       sed -i \"s/#imagePullSecretName:/imagePullSecretName: regcred/g\" create-domain-inputs.yaml && \
+                       sed -i \"s#image: oracle/soa:12.2.1.3#image: ${productImage}#g\" create-domain-inputs.yaml && \
+                       sed -i \"s/#imagePullSecretName:/imagePullSecretName: ${Database.dbSecret}/g\" create-domain-inputs.yaml && \
                        sed -i \"s#logHome: /u01/oracle/user_projects/domains/logs/soainfra#logHome: /u01/oracle/user_projects/domains/logs/${domainName}#g\" create-domain-inputs.yaml && \
-                       sed -i \"s#namespace: soans#namespace: ${namespace}#g\" create-domain-inputs.yaml && \
-                       sed -i \"s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${domainName}-${namespace}-pvc#g\" create-domain-inputs.yaml && \
+                       sed -i \"s#namespace: soans#namespace: ${domainNamespace}#g\" create-domain-inputs.yaml && \
+                       sed -i \"s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${domainName}-${domainNamespace}-pvc#g\" create-domain-inputs.yaml && \
                        sed -i \"s#initialManagedServerReplicas: 2#initialManagedServerReplicas: 1#g\" create-domain-inputs.yaml && \
                        cat create-domain-inputs.yaml && \
-                       sed -i \"s#soadb:1521#soadb.${namespace}:1521#g\" create-domain-job-template.yaml && \
+                       sed -i \"s#soadb:1521#${Database.dbName}.${domainNamespace}:1521#g\" create-domain-job-template.yaml && \
                        cat create-domain-job-template.yaml"
-            Log.info(script, "Prepare Domain Completed!!!")
+
+            Log.info(script, "prepare domain success.")
 
         }
         catch (exc) {
-            Log.error(script, "Prepare Domain failed!!.")
+            Log.error(script, "prepare domain failed.")
         }
     }
 
-    static createDomain(script, domainName, namespace) {
+    static createDomain(script, domainName, domainNamespace) {
         try {
-            Log.info(script, "Create Domain !!!")
-            script.sh "cd kubernetes/samples/scripts/create-soa-domain/domain-home-on-pv/multiple-Managed-servers && \
-                      ./create-domain.sh -i create-domain-inputs.yaml -o ${script.env.WORKSPACE}/soa-operator-output-directory && \
-                      cp ${script.env.WORKSPACE}/soa-operator-output-directory/soa-domains/${domainName}/domain.yaml ${script.env.WORKSPACE} && \
-                      cat ${script.env.WORKSPACE}/domain.yaml"
-            Log.info(script, "Start Domain !!!")
-            script.sh "kubectl apply -f ${script.env.WORKSPACE}/domain.yaml && \
+            Log.info(script, "begin create " + Common.productId + " domain.")
+            script.sh "cd kubernetes/samples/scripts/create-" + Common.productId + "-domain/domain-home-on-pv/multiple-Managed-servers && \
+                      ./create-domain.sh -i create-domain-inputs.yaml -o ${script.env.WORKSPACE}/script-output-directory"
+            script.sh "cp ${script.env.WORKSPACE}/script-output-directory/" + Common.productId + "-domains/${domainName}/domain.yaml ${script.env.WORKSPACE} && \
+                       cat ${script.env.WORKSPACE}/domain.yaml"
+            Log.info(script, "create " + Common.productId + " domain success.")
+
+            Log.info(script, "begin start " + Common.productId + " domain")
+            script.sh "kubectl apply -f ${script.env.WORKSPACE}/domain.yaml -n ${domainNamespace} && \
                        sleep 360"
-            Log.info(script, "Create Domain Completed!!!")
+            Log.info(script, "start " + Common.productId + " domain success.")
 
         }
         catch (exc) {
-            Log.error(script, "Create Domain failed!!.")
+            Log.error(script, "create/start " + Common.productId + " domain failed.")
         }
     }
 
-    static isDomainReady(script, domainName, namespace) {
+    static isDomainReady(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin domain readiness check.")
 
-            script.sh "kubectl get all,domains -n ${namespace}"
+            script.sh "kubectl get all,domains -n ${domainNamespace}"
+            script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
 
             Log.info(script, "domain readiness check success.")
 

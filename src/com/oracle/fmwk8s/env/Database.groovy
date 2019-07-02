@@ -4,13 +4,14 @@ import com.oracle.fmwk8s.common.Log
 
 class Database {
     static dbName
+    static dbSecret
 
     static deployDatabase(script, productName, databaseVersion, dbNamespace, registryUsername, registryPass) {
         try {
             Log.info(script, "begin deploy database.")
 
             dbName = "${productName}".toLowerCase() + "db"
-            def dbSecret = "regcred"
+            dbSecret = "regcred"
 
             script.git branch: 'master',
                     credentialsId: 'sandeep.zachariah.ssh',
