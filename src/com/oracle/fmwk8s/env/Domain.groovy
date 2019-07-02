@@ -96,13 +96,15 @@ class Domain {
 
     static isDomainReady(script, domainName, namespace) {
         try {
-            Log.info(script, "isDomainReady Start !!!")
+            Log.info(script, "begin domain readiness check.")
+
             script.sh "kubectl get all,domains -n ${namespace}"
-            Log.info(script, "isDomainReady Completed!!!")
+
+            Log.info(script, "domain readiness check success.")
 
         }
         catch (exc) {
-            Log.error(script, "isDomainReady failed!!.")
+            Log.error(script, "domain readiness check failed.")
         }
     }
 

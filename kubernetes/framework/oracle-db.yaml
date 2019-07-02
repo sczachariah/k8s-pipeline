@@ -29,7 +29,8 @@ spec:
         app: %DB_NAME%
     spec:
       terminationGracePeriodSeconds: 30
-      imagePullSecrets: %DB_SECRET%
+      imagePullSecrets:
+        - name: %DB_SECRET%
       containers:
         - name: %DB_NAME%
           image: %DB_IMAGE%

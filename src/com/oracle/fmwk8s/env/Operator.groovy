@@ -83,7 +83,7 @@ class Operator {
             Log.info(script, "clean kubernetes operator success.")
         }
         catch (exc) {
-            Log.info(script, "clean kubernetes operator failed.")
+            Log.error(script, "clean kubernetes operator failed.")
         }
     }
 
@@ -99,7 +99,7 @@ class Operator {
             Log.info(script, "clean kubernetes operator namespace success.")
         }
         catch (exc) {
-            Log.info(script, "clean kubernetes operator namespace failed.")
+            Log.error(script, "clean kubernetes operator namespace failed.")
         }
     }
 }

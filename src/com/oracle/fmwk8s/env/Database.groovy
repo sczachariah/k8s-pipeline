@@ -49,7 +49,7 @@ class Database {
             Log.info(script, "deploy database success.")
         }
         catch (exc) {
-            Log.info(script, "deploy database failed.")
+            Log.error(script, "deploy database failed.")
         }
     }
 
