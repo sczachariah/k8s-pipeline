@@ -24,7 +24,7 @@ class Database {
                         sed -i \"s#%DB_NAME%#${dbName}#g\" oracle-db.yaml && \
                         sed -i \"s#%DB_NAMESPACE%#${dbNamespace}#g\" oracle-db.yaml && \
                         sed -i \"s#%DB_IMAGE%#container-registry.oracle.com/database/enterprise:${databaseVersion}-slim#g\" oracle-db.yaml && \
-                        sed -i \"s#DB_SECRET#${dbSecret}#g\" oracle-db.yaml && \
+                        sed -i \"s#%DB_SECRET%#${dbSecret}#g\" oracle-db.yaml && \
                         cat oracle-db.yaml && \
                         kubectl apply -f oracle-db.yaml -n ${dbNamespace}"
 
