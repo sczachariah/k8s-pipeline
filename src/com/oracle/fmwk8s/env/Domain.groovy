@@ -55,8 +55,8 @@ class Domain {
                            cat fmwk8s-rcu-pod.yaml"
 
                 script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                        kubectl apply -f kubernetes/framework/db/rcu/${Common.productId}-rcu-configmap.yaml -n ${domainNamespace} && \
-                        kubectl apply -f kubernetes/framework/db/rcu/fmwk8s-rcu-pod.yaml -n ${domainNamespace}"
+                           kubectl apply -f kubernetes/framework/db/rcu/${Common.productId}-rcu-configmap.yaml -n ${domainNamespace} && \
+                           kubectl apply -f kubernetes/framework/db/rcu/fmwk8s-rcu-pod.yaml -n ${domainNamespace}"
 
                 script.sh "rcustat='rcustat' && \
                            i=0 && \
