@@ -26,5 +26,20 @@ class EnvironmentSetup {
         }
     }
 
-    static deleteNfsFolder(script) {}
+    static deleteNfsFolder(script, namespace, nfsHomeDir, nfsDomainDir) {
+        try {
+            Log.info(script, "begin delete nfs folder.")
+
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
+                       cd ${nfsHomeDir} && \
+                       rm -rf ${nfsDomainDir}"
+
+            Log.info(script, "delete nfs folder success.")
+        }
+        catch (exc) {
+            Log.error(script, "delete nfs folder failed.")
+        }
+        finally {
+        }
+    }
 }
