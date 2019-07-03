@@ -140,7 +140,7 @@ pipeline {
         always {
             container(name: 'jnlp') {
                 script {
-                    currentBuild.displayName = this.env.PRODUCT_NAME + "-" + this.env.OPERATOR_VERSION
+                    currentBuild.displayName = this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME
 
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
 
