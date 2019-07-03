@@ -6,11 +6,12 @@ class Database {
     static dbName
     static dbSecret
 
-    static deployDatabase(script, productName, databaseVersion, dbNamespace, registryUsername, registryPass) {
+    static deployDatabase(script, databaseVersion, dbNamespace, registryUsername, registryPass) {
         try {
             Log.info(script, "begin deploy database.")
 
-            dbName = "${productName}".toLowerCase() + "db"
+            //dbname can only be 8 character in length
+            dbName = "oracledb"
             dbSecret = "regcred"
 
             script.git branch: 'master',
