@@ -58,6 +58,20 @@ class Domain {
                         kubectl apply -f kubernetes/framework/db/rcu/${Common.productId}-rcu-configmap.yaml -n ${domainNamespace} && \
                         kubectl apply -f kubernetes/framework/db/rcu/fmwk8s-rcu-pod.yaml -n ${domainNamespace}"
 
+                script.sh "rcustat='rcustat' && \
+                           i=0 && \
+                           until `echo \$rcustat | grep -q Completed` > /dev/null\n \
+                           do \n \
+                               if [ \$i == 25 ]; then\n \
+                                   echo \"Timeout waiting for RCU. Exiting!!.\"\n \
+                                   exit 1\n \
+                               fi\n \
+                           i=\$((i+1))\n \
+                           echo \"RCU in progress. Iteration \$i of 25. Sleeping\"\n \
+                           sleep 60\n \
+                           rcustat=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep fmwk8s-rcu\\``\n \
+                           done"
+
                 Log.info(script, "prepare rcu success.")
             }
         }
