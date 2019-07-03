@@ -18,7 +18,7 @@ pipeline {
                             credentialsId: 'sandeep.zachariah.ssh',
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-                    sh 'echo $KUBECONFIG && kubectl get nodes && kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
+                    sh 'echo $KUBECONFIG && cat $KUBECONFIG && kubectl get nodes && kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
 
                     sh label: 'generate test props', script: '''
                     cat <<EOF > ${WORKSPACE}/test.props
