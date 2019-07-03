@@ -42,11 +42,11 @@ class Domain {
                         url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                 script.sh "cd kubernetes/framework/db/rcu && \
-                           sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com|g\" " + Common.productId + "-rcu-configmap.yaml && \
-                           sed -i \"s|%RCUPREFIX%|${domainName}|g\" " + Common.productId + "-rcu-configmap.yaml && \
-                           sed -i \"s|%SYS_PASSWORD%|Oradoc_db1|g\" " + Common.productId + "-rcu-configmap.yaml && \
-                           sed -i \"s|%PASSWORD%|Welcome1|g\" " + Common.productId + "-rcu-configmap.yaml && \
-                           cat " + Common.productId + "-rcu-configmap.yaml && "
+                           sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com|g\" ${Common.productId}-rcu-configmap.yaml && \
+                           sed -i \"s|%RCUPREFIX%|${domainName}|g\" ${Common.productId}-rcu-configmap.yaml && \
+                           sed -i \"s|%SYS_PASSWORD%|Oradoc_db1|g\" ${Common.productId}-rcu-configmap.yaml && \
+                           sed -i \"s|%PASSWORD%|Welcome1|g\" ${Common.productId}-rcu-configmap.yaml && \
+                           cat ${Common.productId}-rcu-configmap.yaml && "
 
                 script.sh "cd kubernetes/framework/db/rcu && \
                            sed -i \"s|%DB_SECRET%|${Database.dbSecret}|g\" fmwk8s-rcu-pod.yaml && \
@@ -55,7 +55,7 @@ class Domain {
                            cat fmwk8s-rcu-pod.yaml && "
 
                 script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                        kubectl apply -f kubernetes/framework/db/rcu/" + Common.productId + "-rcu-configmap.yaml -n ${domainNamespace} && \
+                        kubectl apply -f kubernetes/framework/db/rcu/${Common.productId}-rcu-configmap.yaml -n ${domainNamespace} && \
                         kubectl apply -f kubernetes/framework/db/rcu/fmwk8s-rcu-pod.yaml -n ${domainNamespace}"
 
                 Log.info(script, "prepare rcu success.")
@@ -121,13 +121,13 @@ class Domain {
         try {
             Log.info(script, "begin prepare domain.")
 
-            script.sh "cd kubernetes/samples/scripts/create-" + Common.productId + "-domain/" + Common.samplesDirectory + " && \
+            script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
                         cp create-domain-inputs.yaml create-domain-inputs.yaml.orig && \
                         cp create-domain-job-template.yaml create-domain-job-template.yaml.orig && \
                         sed -i \"s|domainUID: domain1|domainUID: ${domainName}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|domainHome: /shared/domains/domain1|domainHome: /u01/oracle/user_projects/domains/${domainName}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|initialManagedServerReplicas: 2|initialManagedServerReplicas: 1|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|image: " + Common.defaultProductImage + "|image: ${productImage}|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|image: ${Common.defaultProductImage}|image: ${productImage}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|#imagePullSecretName:|imagePullSecretName: ${Database.dbSecret}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|weblogicCredentialsSecretName: domain1-weblogic-credentials|weblogicCredentialsSecretName: ${domainName}-weblogic-credentials|g\" create-domain-inputs.yaml && \
                         sed -i \"s|logHome: /shared/logs/domain1|logHome: /u01/oracle/user_projects/domains/logs/${domainName}|g\" create-domain-inputs.yaml && \
