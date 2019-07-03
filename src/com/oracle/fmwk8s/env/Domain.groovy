@@ -62,12 +62,12 @@ class Domain {
                            i=0 && \
                            until `echo \$rcustat | grep -q Completed` > /dev/null\n \
                            do \n \
-                               if [ \$i == 25 ]; then\n \
+                               if [ \$i == 10 ]; then\n \
                                    echo \"Timeout waiting for RCU. Exiting!!.\"\n \
                                    exit 1\n \
                                fi\n \
                            i=\$((i+1))\n \
-                           echo \"RCU in progress. Iteration \$i of 25. Sleeping\"\n \
+                           echo \"RCU in progress. Iteration \$i of 10. Sleeping\"\n \
                            sleep 60\n \
                            rcustat=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep fmwk8s-rcu\\``\n \
                            done"
