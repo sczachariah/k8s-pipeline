@@ -16,8 +16,8 @@ spec:
       imagePullPolicy: IfNotPresent
       image: %PRODUCT_IMAGE%
       command: ["/bin/sh"]
-      args: ["-c", "/fmwk8s/run-rcu.sh"]
+      args: ["-c", "chmod 777 /u01/oracle/run-rcu.sh && /u01/oracle/run-rcu.sh"]
       volumeMounts:
-        - mountPath: "/fmwk8s"
+        - mountPath: "/u01/oracle/"
           name: fmw-rcu-configmap
 ---
