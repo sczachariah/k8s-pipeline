@@ -3,13 +3,18 @@ package com.oracle.fmwk8s.common
 import java.text.SimpleDateFormat
 
 class Common {
-    static def domainName
+    static def operatorVersion
+    static def operatorBranch
+    static def operatorImageVersion
+
     static def productId
     static def defaultProductImage
-
     static def registrySecret
 
+    static def domainName
+
     static def samplesRepo
+    static def samplesBranch
     static def samplesDirectory
 
     static def getUniqueId(def script, productName) {
@@ -24,6 +29,35 @@ class Common {
         getSamplesRepo(productName)
 
         return uniqueId
+    }
+
+    static def getOperatorVersions(operatorVersion) {
+        switch ("${operatorVersion}") {
+            case "2.1":
+                this.operatorVersion = "2.1"
+                operatorBranch = "release/2.1"
+                operatorImageVersion = "2.1"
+                samplesBranch = "release/2.1"
+                break
+            case "2.2":
+                this.operatorVersion = "2.2"
+                operatorBranch = "release/2.2"
+                operatorImageVersion = "2.2.0"
+                samplesBranch = "release/2.2"
+                break
+            case "2.2.1":
+                this.operatorVersion = "2.2.1"
+                operatorBranch = "release/2.2.1"
+                operatorImageVersion = "2.2.1"
+                samplesBranch = "release/2.2.1"
+                break
+            default:
+                this.operatorVersion = "develop"
+                operatorBranch = "develop"
+                operatorImageVersion = "develop"
+                samplesBranch = "develop"
+                break
+        }
     }
 
     static def getDomainName(productName) {

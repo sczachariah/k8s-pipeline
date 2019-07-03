@@ -1,18 +1,16 @@
 package com.oracle.fmwk8s.env
 
+import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 
 class Operator {
-    static def operatorVersion
-
-    static deployOperator(script, operatorVersion, operatorHelmRelease, operatorNamespace, operatorServiceAccount) {
+    static deployOperator(script, operatorHelmRelease, operatorNamespace, operatorServiceAccount) {
         try {
             Log.info(script, "begin deploy kubernetes operator.")
 
-            this.operatorVersion = operatorVersion
             createNamespace(script, operatorNamespace)
 
-            script.git branch: 'release/' + "${operatorVersion}" + '',
+            script.git branch: "${Common.operatorBranch}",
                     url: 'https://github.com/oracle/weblogic-kubernetes-operator'
 
             script.sh "retVal==`echo \\`helm ls ${operatorHelmRelease}\\``"
@@ -21,7 +19,8 @@ class Operator {
                           helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
                        else\n \
                           helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
-                                        --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} --wait\n \
+                                        --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} \
+                                        --set image=oracle/weblogic-kubernetes-operator:${Common.operatorImageVersion} --wait\n \
                        fi"
 
             Log.info(script, "deploy kubernetes operator success.")

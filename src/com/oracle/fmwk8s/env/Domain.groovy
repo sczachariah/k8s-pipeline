@@ -5,8 +5,8 @@ import com.oracle.fmwk8s.common.Log
 
 class Domain {
     static pullSampleScripts(script) {
-        script.git branch: 'release/' + "${Operator.operatorVersion}" + '',
-                url: '' + Common.samplesRepo
+        script.git branch: "${Common.samplesBranch}",
+                url: "${Common.samplesRepo}"
     }
 
     static configureRcuSecret(script, domainName, domainNamespace) {
@@ -36,7 +36,7 @@ class Domain {
                 productImage = Common.defaultProductImage
             }
 
-            if (Common.productId != "weblogic" && Operator.operatorVersion != "2.1") {
+            if (Common.productId != "weblogic" && Common.operatorVersion != "2.1") {
                 Log.info(script, "begin prepare rcu.")
 
                 script.git branch: 'master',
