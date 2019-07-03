@@ -71,7 +71,7 @@ pipeline {
             parallel {
                 stage('setup database') {
                     steps {
-                        container('jnlp') {
+                        container('dind') {
                             script {
                                 Database.deployDatabase(this, "${DATABASE_VERSION}", "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
                                 Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
