@@ -22,7 +22,7 @@ pipeline {
         RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT_NAME}")
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
-        OPERATOR_NS = 'operator-ns' + "-${RUN_SUFFIX}"
+        OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
         OPERATOR_SA = 'default'
         OPERATOR_HELM_RELEASE = "${RUN_SUFFIX}"
         DOMAIN_NAME = Common.getDomainName("${PRODUCT_NAME}")
