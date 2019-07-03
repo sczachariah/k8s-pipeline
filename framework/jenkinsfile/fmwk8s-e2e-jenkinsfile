@@ -53,7 +53,6 @@ pipeline {
             steps {
                 container('jnlp') {
                     script {
-                        Common.getOperatorVersions("${OPERATOR_VERSION}")
                         Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}")
                         Operator.verifyOperator(this, "${OPERATOR_NS}")
                     }

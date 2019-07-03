@@ -75,8 +75,6 @@ class Common {
                 domainName = "unknown"
                 break
         }
-
-        return domainName
     }
 
     static def getProductIdentifier(productName) {
@@ -97,8 +95,6 @@ class Common {
                 productId = "unknown"
                 break
         }
-
-        return productId
     }
 
     static def getSamplesRepo(productName) {
@@ -120,8 +116,6 @@ class Common {
                 samplesDirectory = "unknown"
                 break
         }
-
-        return samplesRepo
     }
 
     static configureRegistrySecret(script, namespace, registryUsername, registryPass) {

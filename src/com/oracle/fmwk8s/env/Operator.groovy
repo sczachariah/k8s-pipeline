@@ -4,7 +4,8 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 
 class Operator {
-    static deployOperator(script, operatorHelmRelease, operatorNamespace, operatorServiceAccount) {
+    static deployOperator(script, operatorVersion, operatorHelmRelease, operatorNamespace, operatorServiceAccount) {
+        Common.getOperatorVersions(operatorVersion)
         try {
             Log.info(script, "begin deploy kubernetes operator.")
 
