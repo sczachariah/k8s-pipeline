@@ -110,11 +110,10 @@ pipeline {
                         container('jnlp') {
                             dir('fmwsamples') {
                                 script {
-                                    sleep 10
                                     Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                     Domain.isDomainReady(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
 
-                                    sleep(300)
+                                    sleep(120)
                                 }
                             }
                         }
