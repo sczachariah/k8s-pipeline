@@ -29,7 +29,7 @@ class Common {
                 domainName = "weblogic"
                 break
             case "WLS-INFRA":
-                domainName = "wls-infra"
+                domainName = "wlsinfra"
                 break
             case "SOA":
                 domainName = "soainfra"
