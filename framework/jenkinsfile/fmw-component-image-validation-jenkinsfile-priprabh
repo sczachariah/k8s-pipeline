@@ -20,11 +20,11 @@ pipeline {
 
                     sh 'echo $KUBECONFIG && cat $KUBECONFIG && kubectl get nodes && kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
 
-                    sh label: 'generate test props', script: '''
-                    cat <<EOF > ${WORKSPACE}/test.props
-SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
-SELENIUM_HUB_PORT=4444
-EOF
+                    //sh label: 'generate test props', script: '''
+                    //cat <<EOF > ${WORKSPACE}/test.props
+//SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
+//SELENIUM_HUB_PORT=4444
+//EOF
                     cat ${WORKSPACE}/test.props
                     '''
                 }
