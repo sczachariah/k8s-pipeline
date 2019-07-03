@@ -73,7 +73,7 @@ pipeline {
                     steps {
                         container('jnlp') {
                             script {
-//                                Database.deployDatabase(this, "${PRODUCT_NAME}", "${DATABASE_VERSION}", "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
+                                Database.deployDatabase(this, "${PRODUCT_NAME}", "${DATABASE_VERSION}", "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
                                 Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
 
                                 sleep 180
