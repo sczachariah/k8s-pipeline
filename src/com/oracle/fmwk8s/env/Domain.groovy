@@ -131,9 +131,13 @@ class Domain {
         }
     }
 
-    static prepareDomain(script, domainName, domainNamespace, productImage) {
+    static prepareDomain(script, productImage, domainName, domainNamespace) {
         try {
             Log.info(script, "begin prepare domain.")
+
+            if (!productImage?.trim()) {
+                productImage = Common.defaultProductImage
+            }
 
             script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
                         cp create-domain-inputs.yaml create-domain-inputs.yaml.orig && \
@@ -150,9 +154,7 @@ class Domain {
                         sed -i \"s|rcuSchemaPrefix: domain1|rcuSchemaPrefix: ${domainName}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|rcuDatabaseURL: database:1521/service|rcuDatabaseURL: ${Database.dbName}.${domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com|g\" create-domain-inputs.yaml && \
                         sed -i \"s|rcuCredentialsSecret: domain1-rcu-credentials|rcuCredentialsSecret: ${domainName}-rcu-credentials|g\" create-domain-inputs.yaml && \
-                        cat create-domain-inputs.yaml && \
-                        sed -i \"s#soadb:1521/soapdb.us.oracle.com#${Database.dbName}.${domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com#g\" create-domain-job-template.yaml && \
-                        cat create-domain-job-template.yaml"
+                        cat create-domain-inputs.yaml"
 
             Log.info(script, "prepare domain success.")
 
