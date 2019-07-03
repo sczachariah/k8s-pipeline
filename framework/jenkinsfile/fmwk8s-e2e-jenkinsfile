@@ -72,7 +72,7 @@ pipeline {
                         container('jnlp') {
                             script {
                                 Database.deployDatabase(this, "${PRODUCT_NAME}", "${DATABASE_VERSION}", "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
-                                Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NS}")
+                                Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
 
                                 sleep 300
                             }
@@ -135,7 +135,7 @@ pipeline {
                 script {
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
 
-                    IngressController.undeployLoadBalancer this, $ { LB_HELM_RELEASE }
+                    IngressController.undeployLoadBalancer this, "${LB_HELM_RELEASE}"
 
                     Domain.cleanDomain this, "${DOMAIN_NAME}", "${DOMAIN_NS}"
                     Domain.cleanDomainNamespace this, "${DOMAIN_NS}"
