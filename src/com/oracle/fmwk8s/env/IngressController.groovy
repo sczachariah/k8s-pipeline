@@ -33,7 +33,13 @@ class IngressController {
             Log.info(script, "begin deploy traefik ingress controller.")
             script.sh "helm init && \
                    helm repo update && \
-                   helm install stable/traefik --name ${lbHelmRelease} --namespace ${domainNamespace} --set kubernetes.namespaces={${domainNamespace}} --wait"
+                   helm install stable/traefik --name ${lbHelmRelease} --namespace ${domainNamespace} \
+                    --set kubernetes.namespaces={${domainNamespace}} \
+                    --set serviceType=NodePort \
+                    --set ssl.enabled=true \
+                    --set ssl.insecureSkipVerify=true \
+                    --set ssl.tlsMinVersion=VersionTLS12 \
+                    --wait"
             Log.info(script, "deploy traefik ingress controller success.")
         }
         catch (exc) {
