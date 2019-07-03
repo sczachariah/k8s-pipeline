@@ -37,13 +37,14 @@ pipeline {
 
 
     stages {
-        stage('validate input parameters') {
+        stage('validate and configure input parameters') {
             steps {
                 log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
 
                 container('jnlp') {
                     script {
                         Validation.validateInputs(this)
+                        Common.configureRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
                     }
                 }
             }
@@ -74,7 +75,7 @@ pipeline {
                         container('jnlp') {
                             dir('fmwk8s') {
                                 script {
-                                    Database.deployDatabase(this, "${DATABASE_VERSION}", "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
+                                    Database.deployDatabase(this, "${DATABASE_VERSION}", "${DOMAIN_NS}")
                                     Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                 }
                             }

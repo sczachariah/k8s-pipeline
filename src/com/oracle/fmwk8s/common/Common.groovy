@@ -7,6 +7,8 @@ class Common {
     static def productId
     static def defaultProductImage
 
+    static def registrySecret
+
     static def samplesRepo
     static def samplesDirectory
 
@@ -86,5 +88,24 @@ class Common {
         }
 
         return samplesRepo
+    }
+
+    static configureRegistrySecret(script, namespace, registryUsername, registryPass) {
+        try {
+            Log.info(script, "begin configure registry secret.")
+
+            registrySecret = "regcred"
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
+                       retVal=`echo \\`kubectl get secret ${registrySecret} -n ${namespace} 2>&1\\`` &&\
+                       if echo \"\$retVal\" \\| grep -q 'not found'; then\n \
+                          kubectl create secret docker-registry ${registrySecret} -n ${namespace} --docker-server=http://container-registry.oracle.com --docker-username='${registryUsername}' --docker-password='${registryPass}' --docker-email='${registryUsername}'\n \
+                       fi"
+
+            Log.info(script, "configure registry secret success.")
+        }
+        catch (exc) {
+            Log.error(script, "configure registry secret failed.")
+            throw exc
+        }
     }
 }
