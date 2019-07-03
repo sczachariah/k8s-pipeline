@@ -37,14 +37,13 @@ pipeline {
 
 
     stages {
-        stage('validate and configure input parameters') {
+        stage('validate input parameters') {
             steps {
                 log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
 
                 container('jnlp') {
                     script {
                         Validation.validateInputs(this)
-                        Common.configureRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
                     }
                 }
             }
@@ -62,6 +61,7 @@ pipeline {
                 container('jnlp') {
                     script {
                         Domain.createNamespace(this, "${DOMAIN_NS}")
+                        Common.configureRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
                         EnvironmentSetup.createNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
                     }
                 }
