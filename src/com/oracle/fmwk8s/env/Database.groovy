@@ -34,7 +34,7 @@ class Database {
 
             script.sh "dbstat='dbstat' && \
                         i=0 && \
-                        until `echo \$dbstat | grep -q 1/1 Running` > /dev/null\n \
+                        until `echo \$dbstat | grep -q 1/1` > /dev/null\n \
                         do \n \
                             if [ \$i == 25 ]; then\n \
                                 echo \"Timeout waiting for DB. Exiting!!.\"\n \
