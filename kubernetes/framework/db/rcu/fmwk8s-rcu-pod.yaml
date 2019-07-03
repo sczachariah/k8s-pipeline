@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: fmwk8s-rcu-pod
+  name: fmwk8s-rcu
 spec:
   imagePullSecrets:
     - name: %DB_SECRET%
@@ -12,7 +12,7 @@ spec:
       configMap:
         name: %PRODUCT_ID%-rcu-configmap
   containers:
-    - name: fmwk8s-rcu-pod
+    - name: fmwk8s-rcu
       imagePullPolicy: IfNotPresent
       image: %PRODUCT_IMAGE%
       command: ["/bin/sh"]
