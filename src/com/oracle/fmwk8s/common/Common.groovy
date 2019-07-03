@@ -75,6 +75,8 @@ class Common {
                 domainName = "unknown"
                 break
         }
+
+        return domainName
     }
 
     static def getProductIdentifier(productName) {
