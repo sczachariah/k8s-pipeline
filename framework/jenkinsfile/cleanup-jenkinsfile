@@ -29,7 +29,7 @@ pipeline {
     stages {
         stage('cleanup namespace') {
             steps {
-                log('INFO', 'Cleaning namespace for ' + "${DOMAIN_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
+                log('INFO', 'Cleaning namespaces for ' + "${DOMAIN_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
             }
         }
     }
