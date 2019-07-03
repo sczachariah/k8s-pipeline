@@ -6,6 +6,9 @@ metadata:
 spec:
   imagePullSecrets:
     - name: %DB_SECRET%
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
   restartPolicy: Never
   volumes:
     - name: fmw-rcu-configmap
@@ -16,7 +19,10 @@ spec:
       imagePullPolicy: IfNotPresent
       image: %PRODUCT_IMAGE%
       command: ["/bin/sh"]
-      args: ["-c", "chmod 777 /u01/oracle/run-rcu.sh && /u01/oracle/run-rcu.sh"]
+      args: ["-c", "/u01/oracle/run-rcu.sh"]
+      securityContext:
+        runAsUser: 1000
+        allowPrivilegeEscalation: true
       volumeMounts:
         - mountPath: "/u01/oracle/"
           name: fmw-rcu-configmap
