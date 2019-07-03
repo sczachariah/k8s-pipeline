@@ -34,7 +34,7 @@ class Database {
 
             script.sh "dbstat='dbstat' && \
                         i=0 && \
-                        until `echo \$dbstat | grep -q Running` > /dev/null\n \
+                        until `echo \$dbstat | grep -q Running | grep 1/1` > /dev/null\n \
                         do \n \
                             if [ \$i == 25 ]; then\n \
                                 echo \"Timeout waiting for DB. Exiting!!.\"\n \
@@ -47,8 +47,7 @@ class Database {
                         done"
 
             Log.info(script, "DB container is Running.")
-            script.sh "sleep 300 && \
-                       kubectl get pods,svc -n ${dbNamespace} | grep ${dbName}"
+            script.sh "kubectl get pods,svc -n ${dbNamespace} | grep ${dbName}"
 
             Log.info(script, "deploy database success.")
         }
