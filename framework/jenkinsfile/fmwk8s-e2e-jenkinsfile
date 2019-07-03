@@ -107,12 +107,14 @@ pipeline {
                 stage('create fmw domain') {
                     steps {
                         container('jnlp') {
-                            script {
-                                sleep 10
-                                Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                Domain.isDomainReady(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                            dir('fmwsamples') {
+                                script {
+                                    sleep 10
+                                    Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.isDomainReady(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
 
-                                sleep(300)
+                                    sleep(300)
+                                }
                             }
                         }
                     }
@@ -120,9 +122,11 @@ pipeline {
                 stage('configure domain loadbalancer') {
                     steps {
                         container('jnlp') {
-                            script {
-                                IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
-                                Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                            dir('fmwsamples') {
+                                script {
+                                    IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
+                                    Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                }
                             }
                         }
                     }

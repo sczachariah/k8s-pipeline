@@ -167,7 +167,7 @@ class Domain {
     static createDomain(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin create " + Common.productId + " domain.")
-            script.sh "cd kubernetes/samples/scripts/create-" + Common.productId + "-domain/domain-home-on-pv/multiple-Managed-servers && \
+            script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
                       ./create-domain.sh -i create-domain-inputs.yaml -o ${script.env.WORKSPACE}/script-output-directory"
             script.sh "cp ${script.env.WORKSPACE}/script-output-directory/" + Common.productId + "-domains/${domainName}/domain.yaml ${script.env.WORKSPACE} && \
                        cat ${script.env.WORKSPACE}/domain.yaml"
