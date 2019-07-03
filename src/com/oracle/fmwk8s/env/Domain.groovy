@@ -34,7 +34,7 @@ class Domain {
                 productImage = Common.defaultProductImage
             }
 
-            if (Common.productId != "weblogic") {
+            if (Common.productId != "weblogic" && Operator.operatorVersion != "2.1") {
                 Log.info(script, "begin prepare rcu.")
 
                 script.git branch: 'master',

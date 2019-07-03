@@ -3,10 +3,13 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Log
 
 class Operator {
+    static def operatorVersion
+
     static deployOperator(script, operatorVersion, operatorHelmRelease, operatorNamespace, operatorServiceAccount) {
         try {
             Log.info(script, "begin deploy kubernetes operator.")
 
+            this.operatorVersion = operatorVersion
             createNamespace(script, operatorNamespace)
 
             script.git branch: 'release/' + "${operatorVersion}" + '',
