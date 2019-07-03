@@ -5,7 +5,7 @@ import com.oracle.fmwk8s.common.Log
 
 class Domain {
     static pullSampleScripts(script) {
-        script.git branch: 'master',
+        script.git branch: 'release/' + "${Operator.operatorVersion}" + '',
                 url: '' + Common.samplesRepo
     }
 
