@@ -6,6 +6,7 @@ metadata:
 spec:
   imagePullSecrets:
     - name: %DB_SECRET%
+  restartPolicy: Never
   volumes:
     - name: fmw-rcu-configmap
       configMap:
@@ -15,7 +16,7 @@ spec:
       imagePullPolicy: IfNotPresent
       image: %PRODUCT_IMAGE%
       command: ["/bin/sh"]
-      args: ["-c", "chmod -R 777 /fmwk8s && /fmwk8s/run-rcu.sh"]
+      args: ["-c", "/fmwk8s/run-rcu.sh"]
       volumeMounts:
         - mountPath: "/fmwk8s"
           name: fmw-rcu-configmap
