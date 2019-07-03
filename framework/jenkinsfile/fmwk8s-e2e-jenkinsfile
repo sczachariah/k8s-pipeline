@@ -24,7 +24,7 @@ pipeline {
         REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
         OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
         OPERATOR_SA = 'default'
-        OPERATOR_HELM_RELEASE = "${RUN_SUFFIX}"
+        OPERATOR_HELM_RELEASE = "op-${RUN_SUFFIX}"
         DOMAIN_NAME = Common.getDomainName("${PRODUCT_NAME}")
         DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${RUN_SUFFIX}"
         WEBLOGIC_USER = 'weblogic'
@@ -32,7 +32,7 @@ pipeline {
         FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
         NFS_DOMAIN_DIR = "${DOMAIN_NS}"
         NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
-        LB_HELM_RELEASE = "lb-" + "${RUN_SUFFIX}"
+        LB_HELM_RELEASE = "lb-${RUN_SUFFIX}"
     }
 
 
