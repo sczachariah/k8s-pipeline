@@ -10,7 +10,7 @@ data:
     export CONNECTION_STRING=%CONNECTION_STRING%
     export RCUPREFIX=%RCUPREFIX%
 
-    echo -e %PASSWORD%"\n"%SYS_PASSWORD% > /tmp/pwd.txt
+    echo -e %SYS_PASSWORD%"\n"%PASSWORD% > /tmp/pwd.txt
 
     /u01/oracle/oracle_common/bin/rcu -silent -createRepository -databaseType ORACLE -connectString $CONNECTION_STRING -dbUser sys -dbRole sysdba \
     -useSamePasswordForAllSchemaUsers true -selectDependentsForComponents true \

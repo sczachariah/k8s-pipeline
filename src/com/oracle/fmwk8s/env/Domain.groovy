@@ -28,7 +28,7 @@ class Domain {
         }
     }
 
-    static preparRcu(script, productImage, namespace) {
+    static preparRcu(script, productImage, domainName, domainNamespace) {
         try {
             if (!$ { productImage }?.trim()) {
                 productImage = Common.defaultProductImage
@@ -41,13 +41,22 @@ class Domain {
                         credentialsId: 'sandeep.zachariah.ssh',
                         url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
+                script.sh "cd kubernetes/framework/db/rcu && \
+                           sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com|g\" " + Common.productId + "-rcu-configmap.yaml && \
+                           sed -i \"s|%RCUPREFIX%|${domainName}|g\" " + Common.productId + "-rcu-configmap.yaml && \
+                           sed -i \"s|%SYS_PASSWORD%|Oradoc_db1|g\" " + Common.productId + "-rcu-configmap.yaml && \
+                           sed -i \"s|%PASSWORD%|Welcome1|g\" " + Common.productId + "-rcu-configmap.yaml && \
+                           cat " + Common.productId + "-rcu-configmap.yaml && "
+
+                script.sh "cd kubernetes/framework/db/rcu && \
+                           sed -i \"s|%DB_SECRET%|${Database.dbSecret}|g\" fmwk8s-rcu-pod.yaml && \
+                           sed -i \"s|%PRODUCT_ID%|${Common.productId}|g\" fmwk8s-rcu-pod.yaml && \
+                           sed -i \"s|%PRODUCT_IMAGE%|${productImage}|g\" fmwk8s-rcu-pod.yaml && \
+                           cat fmwk8s-rcu-pod.yaml && "
+
                 script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                        cd kubernetes/framework/db/rcu && \
-                        sed -i \"s|%DB_SECRET%|${Database.dbSecret}|g\" fmwk8s-rcu-pod.yaml && \
-                        sed -i \"s|%PRODUCT_ID%|${Common.productId}|g\" fmwk8s-rcu-pod.yaml && \
-                        sed -i \"s|%PRODUCT_IMAGE%|${productImage}|g\" fmwk8s-rcu-pod.yaml && \
-                        cat fmwk8s-rcu-pod.yaml && \
-                        kubectl apply -f fmwk8s-rcu-pod.yaml -n ${namespace}"
+                        kubectl apply -f kubernetes/framework/db/rcu/" + Common.productId + "-rcu-configmap.yaml -n ${domainNamespace} && \
+                        kubectl apply -f kubernetes/framework/db/rcu/fmwk8s-rcu-pod.yaml -n ${domainNamespace}"
 
                 Log.info(script, "prepare rcu success.")
             }
