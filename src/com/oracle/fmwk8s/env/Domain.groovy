@@ -169,12 +169,12 @@ class Domain {
             Log.info(script, "begin create " + Common.productId + " domain.")
             script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
                       ./create-domain.sh -i create-domain-inputs.yaml -o ${script.env.WORKSPACE}/script-output-directory"
-            script.sh "cp ${script.env.WORKSPACE}/script-output-directory/" + Common.productId + "-domains/${domainName}/domain.yaml ${script.env.WORKSPACE} && \
-                       cat ${script.env.WORKSPACE}/domain.yaml"
+            script.sh "cp ${script.env.WORKSPACE}/script-output-directory/weblogic-domains/${domainName}/domain.yaml ${script.env.WORKSPACE}/${domainName}-${domainNamespace}-domain.yaml && \
+                       cat ${script.env.WORKSPACE}/${domainName}-${domainNamespace}-domain.yaml"
             Log.info(script, "create " + Common.productId + " domain success.")
 
             Log.info(script, "begin start " + Common.productId + " domain")
-            script.sh "kubectl apply -f ${script.env.WORKSPACE}/domain.yaml -n ${domainNamespace} && \
+            script.sh "kubectl apply -f ${script.env.WORKSPACE}/${domainName}-${domainNamespace}-domain.yaml -n ${domainNamespace} && \
                        sleep 360"
             Log.info(script, "start " + Common.productId + " domain success.")
 
