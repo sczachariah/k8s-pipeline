@@ -30,11 +30,11 @@ class Domain {
 
     static preparRcu(script, productImage, domainName, domainNamespace) {
         try {
-            if (!$ { productImage }?.trim()) {
+            if (!productImage?.trim()) {
                 productImage = Common.defaultProductImage
             }
 
-            if ($ { Common.productId } != "weblogic") {
+            if (Common.productId != "weblogic") {
                 Log.info(script, "begin prepare rcu.")
 
                 script.git branch: 'master',
