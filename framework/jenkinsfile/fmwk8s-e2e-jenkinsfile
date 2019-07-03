@@ -3,6 +3,7 @@
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.EnvironmentSetup
+import com.oracle.fmwk8s.common.Validation
 import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.IngressController
@@ -36,10 +37,18 @@ pipeline {
 
 
     stages {
-        stage('deploy kubernetes operator') {
+        stage('validate input parameters') {
             steps {
                 log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
 
+                container('jnlp') {
+                    Validation.validateInputs(this)
+                }
+            }
+        }
+
+        stage('deploy kubernetes operator') {
+            steps {
                 container('jnlp') {
                     script {
                         Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}")
@@ -63,8 +72,6 @@ pipeline {
                         container('jnlp') {
                             script {
                                 Database.deployDatabase(this, "${PRODUCT_NAME}", "${DATABASE_VERSION}", "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
-
-                                Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                 Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NS}")
 
                                 sleep 300
@@ -81,6 +88,7 @@ pipeline {
 //                                Domain.pullSampleScripts(this)
 //
 //                                Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+//                                Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
 //                                Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
 //                                Domain.prepareDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${PRODUCT_IMAGE_TAG}")
                             }
