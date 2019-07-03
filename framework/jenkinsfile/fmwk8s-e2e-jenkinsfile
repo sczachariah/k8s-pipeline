@@ -42,7 +42,9 @@ pipeline {
                 log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
 
                 container('jnlp') {
-                    Validation.validateInputs(this)
+                    script {
+                        Validation.validateInputs(this)
+                    }
                 }
             }
         }
