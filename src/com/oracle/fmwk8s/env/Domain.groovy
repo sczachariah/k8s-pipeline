@@ -143,12 +143,12 @@ class Domain {
                         cp create-domain-inputs.yaml create-domain-inputs.yaml.orig && \
                         cp create-domain-job-template.yaml create-domain-job-template.yaml.orig && \
                         sed -i \"s|domainUID: domain1|domainUID: ${domainName}|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|domainHome: /shared/domains/domain1|domainHome: /u01/oracle/user_projects/domains/${domainName}|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|domainHome: /shared/domains/domain1|domainHome: /shared/domains/${domainName}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|initialManagedServerReplicas: 2|initialManagedServerReplicas: 1|g\" create-domain-inputs.yaml && \
                         sed -i \"s|image: ${Common.defaultProductImage}|image: ${productImage}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|#imagePullSecretName:|imagePullSecretName: ${Database.dbSecret}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|weblogicCredentialsSecretName: domain1-weblogic-credentials|weblogicCredentialsSecretName: ${domainName}-weblogic-credentials|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|logHome: /shared/logs/domain1|logHome: /u01/oracle/user_projects/domains/logs/${domainName}|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|logHome: /shared/logs/domain1|logHome: /shared/logs/${domainName}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|namespace: default|namespace: ${domainNamespace}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|persistentVolumeClaimName: domain1-weblogic-sample-pvc|persistentVolumeClaimName: ${domainName}-${domainNamespace}-pvc|g\" create-domain-inputs.yaml && \
                         sed -i \"s|rcuSchemaPrefix: domain1|rcuSchemaPrefix: ${domainName}|g\" create-domain-inputs.yaml && \
