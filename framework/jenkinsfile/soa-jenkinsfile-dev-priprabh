@@ -9,13 +9,13 @@ import com.oracle.fmwk8s.env.Operator
 
 pipeline {
     agent {
-            kubernetes {
-                cloud 'kubernetes12'
-                label 'fmwk8s-test-mats-slave-pp'
-                namespace 'fmwk8s'
-                inheritFrom 'fmwk8s-test-mats-slave-pp'
-            }
+        kubernetes {
+            cloud 'kubernetes12'
+            label 'fmwk8s-test-mats-slave-pp'
+            namespace 'fmwk8s'
+            inheritFrom 'fmwk8s-test-mats-slave-pp'
         }
+    }
 
     environment {
         RUN_SUFFIX = Common.getUniqueId(this)
@@ -90,7 +90,6 @@ pipeline {
                 }
             }
         }
-
 
     }
 
