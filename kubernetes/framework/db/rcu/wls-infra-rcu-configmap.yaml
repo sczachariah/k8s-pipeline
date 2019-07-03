@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wls-infra-rcu-configmap
+data:
+  run-rcu.sh: |-
+    #!/bin/bash
+
+    export CONNECTION_STRING=%CONNECTION_STRING%
+    export RCUPREFIX=%RCUPREFIX%
+
+    echo -e %PASSWORD%"\n"%SYS_PASSWORD% > /tmp/pwd.txt
+
+    /u01/oracle/oracle_common/bin/rcu -silent -createRepository -databaseType ORACLE -connectString $CONNECTION_STRING -dbUser sys -dbRole sysdba \
+    -useSamePasswordForAllSchemaUsers true -selectDependentsForComponents true \
+    -schemaPrefix $RCUPREFIX \
+    -component MDS \
+    -component IAU \
+    -component IAU_APPEND \
+    -component IAU_VIEWER \
+    -component OPSS \
+    -component WLS \
+    -component STB \
+    -component SOAINFRA -f < /tmp/pwd.txt
+---

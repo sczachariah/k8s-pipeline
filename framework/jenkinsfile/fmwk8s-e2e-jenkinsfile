@@ -63,6 +63,11 @@ pipeline {
                         container('jnlp') {
                             script {
                                 Database.deployDatabase(this, "${PRODUCT_NAME}", "${DATABASE_VERSION}", "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
+
+                                Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NS}")
+
+                                sleep 300
                             }
                         }
                     }
@@ -71,12 +76,12 @@ pipeline {
                     steps {
                         container('jnlp') {
                             script {
-                                Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
-                                Domain.pullSampleScripts(this)
-
-                                Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
-                                Domain.prepareDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${PRODUCT_IMAGE_TAG}")
+//                                Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
+//                                Domain.pullSampleScripts(this)
+//
+//                                Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+//                                Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
+//                                Domain.prepareDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${PRODUCT_IMAGE_TAG}")
                             }
                         }
                     }
@@ -91,10 +96,10 @@ pipeline {
                     steps {
                         container('jnlp') {
                             script {
-                                Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                Domain.isDomainReady(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-
-                                sleep(300)
+//                                Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+//                                Domain.isDomainReady(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+//
+//                                sleep(300)
                             }
                         }
                     }
@@ -103,8 +108,8 @@ pipeline {
                     steps {
                         container('jnlp') {
                             script {
-                                IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
-                                Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+//                                IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
+//                                Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                             }
                         }
                     }

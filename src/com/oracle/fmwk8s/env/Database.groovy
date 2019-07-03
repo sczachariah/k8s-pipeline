@@ -23,7 +23,7 @@ class Database {
                           kubectl create secret docker-registry ${dbSecret} -n ${dbNamespace} --docker-server=http://container-registry.oracle.com --docker-username='${registryUsername}' --docker-password='${registryPass}' --docker-email='${registryUsername}'\n \
                        fi"
 
-            script.sh "cd kubernetes/framework && \
+            script.sh "cd kubernetes/framework/db && \
                         sed -i \"s#%DB_NAME%#${dbName}#g\" oracle-db.yaml && \
                         sed -i \"s#%DB_NAMESPACE%#${dbNamespace}#g\" oracle-db.yaml && \
                         sed -i \"s#%DB_IMAGE%#container-registry.oracle.com/database/enterprise:${databaseVersion}-slim#g\" oracle-db.yaml && \

@@ -9,6 +9,54 @@ class Domain {
                 url: '' + Common.samplesRepo
     }
 
+    static configureRcuSecret(script, domainName, domainNamespace) {
+        try {
+            Log.info(script, "begin configure rcu secrets.")
+
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
+
+            script.sh "retVal=`echo \\`kubectl get secret ${domainName}-rcu-credentials -n ${domainNamespace} 2>&1\\`` &&\
+                       if echo \"\$retVal\" | grep -q \"not found\"; then \n \
+                          kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${domainName} -p Welcome1 -a sys -q Oradoc_db1 -d ${domainName} -n ${domainNamespace} \n \
+                       fi"
+
+            Log.info(script, "configure rcu secrets success.")
+
+        }
+        catch (exc) {
+            Log.error(script, "configure rcu secrets failed.")
+        }
+    }
+
+    static preparRcu(script, productImage, namespace) {
+        try {
+            if (!$ { productImage }?.trim()) {
+                productImage = Common.defaultProductImage
+            }
+
+            if ($ { Common.productId } != "weblogic") {
+                Log.info(script, "begin prepare rcu.")
+
+                script.git branch: 'master',
+                        credentialsId: 'sandeep.zachariah.ssh',
+                        url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
+
+                script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
+                        cd kubernetes/framework/db/rcu && \
+                        sed -i \"s|%DB_SECRET%|${Database.dbSecret}|g\" fmwk8s-rcu-pod.yaml && \
+                        sed -i \"s|%PRODUCT_ID%|${Common.productId}|g\" fmwk8s-rcu-pod.yaml && \
+                        sed -i \"s|%PRODUCT_IMAGE%|${productImage}|g\" fmwk8s-rcu-pod.yaml && \
+                        cat fmwk8s-rcu-pod.yaml && \
+                        kubectl apply -f fmwk8s-rcu-pod.yaml -n ${namespace}"
+
+                Log.info(script, "prepare rcu success.")
+            }
+        }
+        catch (exc) {
+            Log.error(script, "prepare rcu failed.")
+        }
+    }
+
     static configureDomainSecret(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin configure domain secrets.")
@@ -17,7 +65,7 @@ class Domain {
 
             script.sh "retVal=`echo \\`kubectl get secret ${domainName}-weblogic-credentials -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
-                          kubernetes/samples/scripts/create-" + Common.productId + "-domain-credentials/create-domain-credentials.sh -u weblogic -p Welcome1 -n ${domainNamespace} -d ${domainName} \n \
+                          kubernetes/samples/scripts/create-weblogic-domain-credentials/create-domain-credentials.sh -u weblogic -p Welcome1 -n ${domainNamespace} -d ${domainName} \n \
                        fi"
 
             Log.info(script, "configure domain secrets success.")
@@ -32,12 +80,12 @@ class Domain {
         try {
             Log.info(script, "begin prepare persistent volume.")
 
-            script.sh "cd kubernetes/samples/scripts/create-" + Common.productId + "-domain-pv-pvc &&\
-                       sed -i \"s#baseName: domain#baseName: ${domainNamespace}#g\" create-pv-pvc-inputs.yaml && \
-                       sed -i \"s#domainUID: soainfra#domainUID: ${domainName}#g\" create-pv-pvc-inputs.yaml && \
-                       sed -i \"s#namespace: soans#namespace: ${domainNamespace}#g\" create-pv-pvc-inputs.yaml && \
-                       sed -i \"s#weblogicDomainStoragePath: /scratch/DockerVolume/SOA#weblogicDomainStoragePath: ${nfsDomainPath}#g\" create-pv-pvc-inputs.yaml && \
-                       sed -i \"s#weblogicDomainStorageReclaimPolicy: Retain#weblogicDomainStorageReclaimPolicy: Recycle#g\" create-pv-pvc-inputs.yaml && \
+            script.sh "cd kubernetes/samples/scripts/create-weblogic-domain-pv-pvc &&\
+                       sed -i \"s|baseName: weblogic-sample|baseName: ${domainNamespace}|g\" create-pv-pvc-inputs.yaml && \
+                       sed -i \"s|domainUID:|domainUID: ${domainName}|g\" create-pv-pvc-inputs.yaml && \
+                       sed -i \"s|namespace: default|namespace: ${domainNamespace}|g\" create-pv-pvc-inputs.yaml && \
+                       sed -i \"s|#weblogicDomainStoragePath: /scratch/k8s_dir|weblogicDomainStoragePath: ${nfsDomainPath}|g\" create-pv-pvc-inputs.yaml && \
+                       sed -i \"s|weblogicDomainStorageReclaimPolicy: Retain|weblogicDomainStorageReclaimPolicy: Recycle|g\" create-pv-pvc-inputs.yaml && \
                        cat create-pv-pvc-inputs.yaml && \
                        ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${script.env.WORKSPACE}/script-output-directory"
 
@@ -63,21 +111,24 @@ class Domain {
         try {
             Log.info(script, "begin prepare domain.")
 
-            script.sh "cd kubernetes/samples/scripts/create-" + Common.productId + "-domain/domain-home-on-pv/multiple-Managed-servers && \
-                       cp create-domain-inputs.yaml create-domain-inputs.yaml.orig && \
-                       cp create-domain-job-template.yaml create-domain-job-template.yaml.orig && \
-                       sed -i \"s#domainUID: soainfra#domainUID: ${domainName}#g\" create-domain-inputs.yaml && \
-                       sed -i \"s#domainHome: /u01/oracle/user_projects/domains/soainfra#domainHome: /u01/oracle/user_projects/domains/${domainName}#g\" create-domain-inputs.yaml && \
-                       sed -i \"s#weblogicCredentialsSecretName: soainfra-domain-credentials#weblogicCredentialsSecretName: ${domainName}-weblogic-credentials#g\" create-domain-inputs.yaml && \
-                       sed -i \"s#image: oracle/soa:12.2.1.3#image: ${productImage}#g\" create-domain-inputs.yaml && \
-                       sed -i \"s/#imagePullSecretName:/imagePullSecretName: ${Database.dbSecret}/g\" create-domain-inputs.yaml && \
-                       sed -i \"s#logHome: /u01/oracle/user_projects/domains/logs/soainfra#logHome: /u01/oracle/user_projects/domains/logs/${domainName}#g\" create-domain-inputs.yaml && \
-                       sed -i \"s#namespace: soans#namespace: ${domainNamespace}#g\" create-domain-inputs.yaml && \
-                       sed -i \"s#persistentVolumeClaimName: soainfra-domain-pvc#persistentVolumeClaimName: ${domainName}-${domainNamespace}-pvc#g\" create-domain-inputs.yaml && \
-                       sed -i \"s#initialManagedServerReplicas: 2#initialManagedServerReplicas: 1#g\" create-domain-inputs.yaml && \
-                       cat create-domain-inputs.yaml && \
-                       sed -i \"s#soadb:1521/soapdb.us.oracle.com#${Database.dbName}.${domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com#g\" create-domain-job-template.yaml && \
-                       cat create-domain-job-template.yaml"
+            script.sh "cd kubernetes/samples/scripts/create-" + Common.productId + "-domain/" + Common.samplesDirectory + " && \
+                        cp create-domain-inputs.yaml create-domain-inputs.yaml.orig && \
+                        cp create-domain-job-template.yaml create-domain-job-template.yaml.orig && \
+                        sed -i \"s|domainUID: domain1|domainUID: ${domainName}|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|domainHome: /shared/domains/domain1|domainHome: /u01/oracle/user_projects/domains/${domainName}|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|initialManagedServerReplicas: 2|initialManagedServerReplicas: 1|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|image: " + Common.defaultProductImage + "|image: ${productImage}|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|#imagePullSecretName:|imagePullSecretName: ${Database.dbSecret}|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|weblogicCredentialsSecretName: domain1-weblogic-credentials|weblogicCredentialsSecretName: ${domainName}-weblogic-credentials|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|logHome: /shared/logs/domain1|logHome: /u01/oracle/user_projects/domains/logs/${domainName}|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|namespace: default|namespace: ${domainNamespace}|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|persistentVolumeClaimName: domain1-weblogic-sample-pvc|persistentVolumeClaimName: ${domainName}-${domainNamespace}-pvc|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|rcuSchemaPrefix: domain1|rcuSchemaPrefix: ${domainName}|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|rcuDatabaseURL: database:1521/service|rcuDatabaseURL: ${Database.dbName}.${domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|rcuCredentialsSecret: domain1-rcu-credentials|rcuCredentialsSecret: ${domainName}-rcu-credentials|g\" create-domain-inputs.yaml && \
+                        cat create-domain-inputs.yaml && \
+                        sed -i \"s#soadb:1521/soapdb.us.oracle.com#${Database.dbName}.${domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com#g\" create-domain-job-template.yaml && \
+                        cat create-domain-job-template.yaml"
 
             Log.info(script, "prepare domain success.")
 
