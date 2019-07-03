@@ -6,6 +6,7 @@ class Common {
     static def domainName
     static def productId
     static def defaultProductImage
+
     static def samplesRepo
     static def samplesDirectory
 
@@ -54,7 +55,7 @@ class Common {
                 break
             case "SOA":
                 productId = "soa"
-                defaultProductImage = "oracle/soa:12.2.1.3"
+                defaultProductImage = "container-registry.oracle.com/middleware/soasuite:12.2.1.3"
                 break
             default:
                 productId = "unknown"
@@ -80,6 +81,7 @@ class Common {
                 break
             default:
                 samplesRepo = "unknown"
+                samplesDirectory = "unknown"
                 break
         }
 
