@@ -86,9 +86,9 @@ pipeline {
                         container('jnlp') {
                             dir('fmwsamples') {
                                 script {
-                                    Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
                                     Domain.pullSampleScripts(this)
 
+                                    Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
                                     Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                     Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                     Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")

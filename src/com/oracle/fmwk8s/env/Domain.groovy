@@ -89,7 +89,7 @@ class Domain {
 
             script.sh "retVal=`echo \\`kubectl get secret ${domainName}-weblogic-credentials -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
-                          kubernetes/samples/scripts/create-weblogic-domain-credentials/create-domain-credentials.sh -u weblogic -p Welcome1 -n ${domainNamespace} -d ${domainName} \n \
+                          kubernetes/samples/scripts/create-weblogic-domain-credentials/create-weblogic-credentials.sh -u weblogic -p Welcome1 -n ${domainNamespace} -d ${domainName} \n \
                        fi"
 
             Log.info(script, "configure domain secrets success.")
