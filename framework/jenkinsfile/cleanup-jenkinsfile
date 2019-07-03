@@ -1,0 +1,54 @@
+@Library('fmwk8s-pipeline-library') _
+
+
+import com.oracle.fmwk8s.env.Domain
+import com.oracle.fmwk8s.env.IngressController
+import com.oracle.fmwk8s.env.Operator
+
+pipeline {
+    agent {
+        kubernetes {
+            label 'fmwk8s-test-mats-slave'
+            namespace 'fmwk8s'
+            inheritFrom 'fmwk8s-test-mats-slave'
+        }
+    }
+
+    environment {
+        KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
+        OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
+        OPERATOR_HELM_RELEASE = "op-${RUN_SUFFIX}"
+        DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${RUN_SUFFIX}"
+        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
+        NFS_DOMAIN_DIR = "${DOMAIN_NS}"
+        NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
+        LB_HELM_RELEASE = "lb-${RUN_SUFFIX}"
+    }
+
+
+    stages {
+        stage('cleanup namespace') {
+            steps {
+                log('INFO', 'Cleaning namespace for ' + "${DOMAIN_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
+            }
+        }
+    }
+
+    post {
+        always {
+            container(name: 'jnlp') {
+                script {
+                    Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
+
+                    IngressController.undeployLoadBalancer this, "${LB_HELM_RELEASE}"
+
+                    Domain.cleanDomain this, "${DOMAIN_NAME}", "${DOMAIN_NS}"
+                    Domain.cleanDomainNamespace this, "${DOMAIN_NS}"
+
+                    Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
+                    Operator.cleanOperatorNamespace this, "${OPERATOR_NS}"
+                }
+            }
+        }
+    }
+}
