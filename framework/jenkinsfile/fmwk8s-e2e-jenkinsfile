@@ -71,10 +71,12 @@ pipeline {
             parallel {
                 stage('setup database') {
                     steps {
-                        container('dind') {
-                            script {
-                                Database.deployDatabase(this, "${DATABASE_VERSION}", "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
-                                Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                        container('jnlp') {
+                            dir('fmwk8s') {
+                                script {
+                                    Database.deployDatabase(this, "${DATABASE_VERSION}", "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
+                                    Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                }
                             }
                         }
                     }
@@ -82,14 +84,16 @@ pipeline {
                 stage('prepare fmw domain in pv') {
                     steps {
                         container('jnlp') {
-                            script {
-                                Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
-                                Domain.pullSampleScripts(this)
+                            dir('fmwsamples') {
+                                script {
+                                    Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
+                                    Domain.pullSampleScripts(this)
 
-                                Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
-                                Domain.prepareDomain(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
+                                    Domain.prepareDomain(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                }
                             }
                         }
                     }
