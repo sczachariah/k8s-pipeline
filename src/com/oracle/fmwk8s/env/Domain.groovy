@@ -11,17 +11,18 @@ class Domain {
 
     static configureRcuSecret(script, domainName, domainNamespace) {
         try {
-            Log.info(script, "begin configure rcu secrets.")
+            if (Common.productId != "weblogic") {
+                Log.info(script, "begin configure rcu secrets.")
 
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
+                script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
 
-            script.sh "retVal=`echo \\`kubectl get secret ${domainName}-rcu-credentials -n ${domainNamespace} 2>&1\\`` &&\
+                script.sh "retVal=`echo \\`kubectl get secret ${domainName}-rcu-credentials -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
                           kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${domainName} -p Welcome1 -a sys -q Oradoc_db1 -d ${domainName} -n ${domainNamespace} \n \
                        fi"
 
-            Log.info(script, "configure rcu secrets success.")
-
+                Log.info(script, "configure rcu secrets success.")
+            }
         }
         catch (exc) {
             Log.error(script, "configure rcu secrets failed.")
