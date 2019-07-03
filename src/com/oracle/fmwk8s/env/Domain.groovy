@@ -63,6 +63,7 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "prepare rcu failed.")
+            throw exc
         }
     }
 
