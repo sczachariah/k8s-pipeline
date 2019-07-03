@@ -46,13 +46,13 @@ class Domain {
                            sed -i \"s|%RCUPREFIX%|${domainName}|g\" ${Common.productId}-rcu-configmap.yaml && \
                            sed -i \"s|%SYS_PASSWORD%|Oradoc_db1|g\" ${Common.productId}-rcu-configmap.yaml && \
                            sed -i \"s|%PASSWORD%|Welcome1|g\" ${Common.productId}-rcu-configmap.yaml && \
-                           cat ${Common.productId}-rcu-configmap.yaml && "
+                           cat ${Common.productId}-rcu-configmap.yaml"
 
                 script.sh "cd kubernetes/framework/db/rcu && \
                            sed -i \"s|%DB_SECRET%|${Database.dbSecret}|g\" fmwk8s-rcu-pod.yaml && \
                            sed -i \"s|%PRODUCT_ID%|${Common.productId}|g\" fmwk8s-rcu-pod.yaml && \
                            sed -i \"s|%PRODUCT_IMAGE%|${productImage}|g\" fmwk8s-rcu-pod.yaml && \
-                           cat fmwk8s-rcu-pod.yaml && "
+                           cat fmwk8s-rcu-pod.yaml"
 
                 script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
                         kubectl apply -f kubernetes/framework/db/rcu/${Common.productId}-rcu-configmap.yaml -n ${domainNamespace} && \
