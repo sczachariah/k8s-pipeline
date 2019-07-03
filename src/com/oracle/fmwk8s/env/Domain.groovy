@@ -25,6 +25,7 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "configure rcu secrets failed.")
+            throw exc
         }
     }
 
@@ -97,6 +98,7 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "configure domain secrets failed.")
+            throw exc
         }
     }
 
@@ -128,6 +130,7 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "prepare persistent volume failed.")
+            throw exc
         }
     }
 
@@ -161,6 +164,7 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "prepare domain failed.")
+            throw exc
         }
     }
 
@@ -181,6 +185,7 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "create/start " + Common.productId + " domain failed.")
+            throw exc
         }
     }
 
@@ -197,6 +202,7 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
+            throw exc
         }
     }
 
@@ -209,6 +215,7 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "configure domain loadbalancer failed.")
+            throw exc
         }
     }
 
@@ -223,6 +230,7 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "create domain namespace failed.")
+            throw exc
         }
         finally {
             Log.info(script, "initialize helm.")

@@ -28,6 +28,7 @@ class Operator {
         }
         catch (exc) {
             Log.error(script, "deploy kubernetes operator failed.")
+            throw exc
         }
     }
 
@@ -41,6 +42,7 @@ class Operator {
         }
         catch (exc) {
             Log.error(script, "verify kubernetes operator failed.")
+            throw exc
         }
     }
 
@@ -60,6 +62,7 @@ class Operator {
         }
         catch (exc) {
             Log.error(script, "set domain namespace failed.")
+            throw exc
         }
     }
 
@@ -74,6 +77,7 @@ class Operator {
         }
         catch (exc) {
             Log.error(script, "create kubernetes operator namespace failed.")
+            throw exc
         }
     }
 

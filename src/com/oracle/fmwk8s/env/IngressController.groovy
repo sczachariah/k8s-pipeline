@@ -44,6 +44,7 @@ class IngressController {
         }
         catch (exc) {
             Log.error(script, "deploy traefik ingress controller failed.")
+            throw exc
         }
     }
 

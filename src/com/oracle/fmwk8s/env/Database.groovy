@@ -53,6 +53,7 @@ class Database {
         }
         catch (exc) {
             Log.error(script, "deploy database failed.")
+            throw exc
         }
     }
 

@@ -21,6 +21,7 @@ class EnvironmentSetup {
         }
         catch (exc) {
             Log.error(script, "create nfs folder failed.")
+            throw exc
         }
         finally {
         }
