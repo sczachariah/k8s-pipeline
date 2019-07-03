@@ -19,8 +19,7 @@ data:
     -component IAU \
     -component IAU_APPEND \
     -component IAU_VIEWER \
-    -component OPSS \
-    -component WLS \
-    -component STB \
-    -component SOAINFRA -f < /tmp/pwd.txt
+    -component OPSS  \
+    -component WLS  \
+    -component STB -f < /tmp/pwd.txt
 ---
