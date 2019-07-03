@@ -25,8 +25,8 @@ pipeline {
 //SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
 //SELENIUM_HUB_PORT=4444
 //EOF
-                    cat ${WORKSPACE}/test.props
-                    '''
+                    //cat ${WORKSPACE}/test.props
+                    //'''
                 }
             }
         }
