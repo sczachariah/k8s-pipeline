@@ -186,7 +186,7 @@ class Domain {
     static configureDomainLoadBalancer(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin configure domain loadbalancer.")
-            script.sh "helm install kubernetes/samples/charts/ingress-per-domain --name ${domainName}-ingress --namespace ${domainNamespace} \
+            script.sh "helm install kubernetes/samples/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
                     --set wlsDomain.domainUID=${domainName} --set traefik.hostname=fmwk8s.us.oracle.com"
             Log.info(script, "configure domain loadbalancer success.")
         }
