@@ -15,7 +15,7 @@ pipeline {
     }
 
     environment {
-        RUN_SUFFIX = Common.getUniqueId(this)
+        RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT}")
         KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         SOA_OPERATOR_NS = 'soa-operator-ns' + "-${RUN_SUFFIX}"
         SOA_OPERATOR_SA = 'default'
@@ -120,9 +120,9 @@ pipeline {
                     }
 
                     container('jnlp') {
-                        git branch: 'simple-integration-test',
+                        git branch: 'master',
                                 credentialsId: 'sandeep.zachariah.ssh',
-                                url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-operator-intg-tests.git'
+                                url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                         sh label: 'create nfs folder', script: '''
                         export KUBECONFIG=${KUBECONFIG}
@@ -327,7 +327,7 @@ pipeline {
                 stage('execute tests') {
                     steps {
                         container('jnlp') {
-                            git branch: 'simple-integration-test',
+                            git branch: 'swati-develop',
                                     credentialsId: 'sandeep.zachariah.ssh',
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-operator-intg-tests.git'
 
@@ -336,14 +336,17 @@ pipeline {
                             sed -i "s#SOA_DOMAIN_NS#${SOA_DOMAIN_NS}#g" config/operatorTest.properties
                             sed -i "s#SOA_DOMAIN_NAME#${SOA_DOMAIN_NAME}#g" config/operatorTest.properties
                             sed -i "s#SOA_OPERATOR_SA#${SOA_OPERATOR_SA}#g" config/operatorTest.properties
+                            sed -i "s#PRODUCT_NAME#${PRODUCT}#g" config/operatorTest.properties
                             '''
 
 
                             sh label: 'run test', script: '''
                             cp config/operatorTest.properties ${WORKSPACE}
                             #mvn clean install test -DsuiteXmlFile=testngSuite.xml
-                            mvn clean test -P basic-operator-tests -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80
-                            #mvn clean test -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80
+                            #mvn test -Dtest=BasicDomainTest -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80
+                            echo "Maven command:"
+                            echo "mvn clean test -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80"
+                            mvn clean test -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80
                             #testStat='testStat'
                             #until `echo $testStat | grep -q Completed` > /dev/null
                             #do
