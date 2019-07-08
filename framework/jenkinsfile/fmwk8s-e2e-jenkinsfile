@@ -145,12 +145,13 @@ pipeline {
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
 
                     IngressController.undeployLoadBalancer this, "${LB_HELM_RELEASE}"
-
                     Domain.cleanDomain this, "${DOMAIN_NAME}", "${DOMAIN_NS}"
                     Domain.cleanDomainNamespace this, "${DOMAIN_NS}"
 
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
                     Operator.cleanOperatorNamespace this, "${OPERATOR_NS}"
+
+                    EnvironmentSetup.deleteNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
                 }
             }
         }
