@@ -40,7 +40,8 @@ class EnvironmentSetup {
                         sed -i \"s#%FMWK8S_NFS_HOME%#${nfsHomeDir}#g\" fmwk8s-rmdir-pod.yaml && \
                         sed -i \"s#%NFS_DOMAIN_DIR%#${nfsDomainDir}#g\" fmwk8s-rmdir-pod.yaml && \
                         cat fmwk8s-rmdir-pod.yaml && \
-                        kubectl apply -f fmwk8s-rmdir-pod.yaml -n ${namespace}"
+                        kubectl apply -f fmwk8s-rmdir-pod.yaml -n ${namespace} && \
+                        sleep 60"
 
             Log.info(script, "delete nfs folder success.")
         }
