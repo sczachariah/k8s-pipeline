@@ -132,7 +132,7 @@ pipeline {
                         sed -i "s#%NFS_DOMAIN_DIR%#${NFS_DOMAIN_DIR}#g" fmwk8s-mkdir-pod.yaml
                         cat fmwk8s-mkdir-pod.yaml
 
-                        kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${SOA_DOMAIN_NS}
+                        kubectl apply -f kubernetes/framework/fmwk8s-mkdir-pod.yaml -n ${SOA_DOMAIN_NS}
                         '''
                     }
                 }
