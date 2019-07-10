@@ -58,11 +58,6 @@ class IngressController {
             script.sh "helm init && \
                    helm repo update && \
                    helm install stable/nginx-ingress --name ${lbHelmRelease} --namespace ${domainNamespace} \
-                    --set kubernetes.namespaces={${domainNamespace}} \
-                    --set serviceType=NodePort \
-                    --set ssl.enabled=true \
-                    --set ssl.insecureSkipVerify=true \
-                    --set ssl.tlsMinVersion=VersionTLS12 \
                     --wait"
             Log.info(script, "deploy nginx ingress controller success.")
         }
