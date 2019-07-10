@@ -52,7 +52,25 @@ class IngressController {
 
     static deployVoyager(script, domainNamespace) {}
 
-    static deployNginx(script, domainNamespace) {}
+    static deployNginx(script, lbHelmRelease, domainNamespace) {
+        try {
+            Log.info(script, "begin deploy nginx ingress controller.")
+            script.sh "helm init && \
+                   helm repo update && \
+                   helm install stable/nginx-ingress --name ${lbHelmRelease} --namespace ${domainNamespace} \
+                    --set kubernetes.namespaces={${domainNamespace}} \
+                    --set serviceType=NodePort \
+                    --set ssl.enabled=true \
+                    --set ssl.insecureSkipVerify=true \
+                    --set ssl.tlsMinVersion=VersionTLS12 \
+                    --wait"
+            Log.info(script, "deploy nginx ingress controller success.")
+        }
+        catch (exc) {
+            Log.error(script, "deploy nginx ingress controller failed.")
+            throw exc
+        }
+    }
 
     static getLoadBalancerPort(script) {
         script.sh ""
