@@ -53,8 +53,7 @@ class IngressController {
             Log.info(script, "begin deploy apache ingress controller.")
             script.sh "helm init && \
                    helm repo update && \
-                   helm install bitnami/apache --name ${lbHelmRelease} --namespace ${domainNamespace} \
-                    --wait"
+                   helm install bitnami/apache --name ${lbHelmRelease} --namespace ${domainNamespace}"
             Log.info(script, "deploy apache ingress controller success.")
         }
         catch (exc) {
@@ -68,8 +67,7 @@ class IngressController {
             Log.info(script, "begin deploy apache ingress controller.")
             script.sh "helm init && \
                    helm repo update && \
-                   helm install stable/voyager --name ${lbHelmRelease} --namespace ${domainNamespace} \
-                    --wait"
+                   helm install stable/voyager --name ${lbHelmRelease} --namespace ${domainNamespace}"
             Log.info(script, "deploy apache ingress controller success.")
         }
         catch (exc) {
