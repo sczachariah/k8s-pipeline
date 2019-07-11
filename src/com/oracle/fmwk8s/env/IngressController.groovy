@@ -67,7 +67,8 @@ class IngressController {
             Log.info(script, "begin deploy apache ingress controller.")
             script.sh "helm init && \
                    helm repo update && \
-                   helm install stable/voyager --name ${lbHelmRelease} --namespace ${domainNamespace}"
+                   helm install stable/voyager --name ${lbHelmRelease} --namespace ${domainNamespace} \
+                   --set ingressClass={${domainNamespace}}"
             Log.info(script, "deploy apache ingress controller success.")
         }
         catch (exc) {
