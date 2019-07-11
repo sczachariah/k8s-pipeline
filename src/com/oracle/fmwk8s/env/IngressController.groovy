@@ -83,7 +83,7 @@ class IngressController {
             Log.info(script, "begin deploy nginx ingress controller.")
             script.sh "helm init && \
                    helm repo update && \
-                   helm install stable/nginx-ingress --name ${lbHelmRelease} --namespace ${domainNamespace} "
+                   helm install stable/nginx-ingress --name ${lbHelmRelease} --namespace ${domainNamespace}"
             Log.info(script, "deploy nginx ingress controller success.")
         }
         catch (exc) {
