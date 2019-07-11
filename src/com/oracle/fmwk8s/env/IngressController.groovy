@@ -48,9 +48,35 @@ class IngressController {
         }
     }
 
-    static deployApache(script, domainNamespace) {}
+    static deployApache(script, lbHelmRelease, domainNamespace) {
+        try {
+            Log.info(script, "begin deploy apache ingress controller.")
+            script.sh "helm init && \
+                   helm repo update && \
+                   helm install bitnami/apache --name ${lbHelmRelease} --namespace ${domainNamespace} \
+                    --wait"
+            Log.info(script, "deploy apache ingress controller success.")
+        }
+        catch (exc) {
+            Log.error(script, "deploy apache ingress controller failed.")
+            throw exc
+        }
+    }
 
-    static deployVoyager(script, domainNamespace) {}
+    static deployVoyager(script, lbHelmRelease, domainNamespace) {
+        try {
+            Log.info(script, "begin deploy apache ingress controller.")
+            script.sh "helm init && \
+                   helm repo update && \
+                   helm install stable/voyager --name ${lbHelmRelease} --namespace ${domainNamespace} \
+                    --wait"
+            Log.info(script, "deploy apache ingress controller success.")
+        }
+        catch (exc) {
+            Log.error(script, "deploy apache ingress controller failed.")
+            throw exc
+        }
+    }
 
     static deployNginx(script, lbHelmRelease, domainNamespace) {
         try {
