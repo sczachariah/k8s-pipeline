@@ -380,10 +380,12 @@ pipeline {
                     Operator.cleanOperator this, "${SOA_OPERATOR_REL}"
 
                     Domain.cleanDomain this, "${SOA_DOMAIN_NAME}", "${SOA_DOMAIN_NS}"
-                    Domain.cleanDomainNamespace this, "${SOA_DOMAIN_NS}"
 
                     Operator.cleanOperator this, "${SOA_OPERATOR_REL}"
                     Operator.cleanOperatorNamespace this, "${SOA_OPERATOR_NS}"
+
+					EnvironmentSetup.deleteNfsFolder(this, "${SOA_DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
+					Domain.cleanDomainNamespace this, "${SOA_DOMAIN_NS}"
                 }
             }
         }
