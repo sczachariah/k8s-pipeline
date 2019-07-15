@@ -55,7 +55,7 @@ class EnvironmentSetup {
     }
 
     static waitHoursAfter(script, hoursAfter) {
-        if (hoursAfter == true) {
+        if (hoursAfter == "true") {
             if (isWaiting)
                 Log.warning(script, "already in wait loop.")
             else {
