@@ -8,6 +8,7 @@ class Common {
     static def operatorImageVersion
 
     static def productId
+    static def productName
     static def defaultProductImage
     static def registrySecret
 
@@ -24,6 +25,7 @@ class Common {
         def buildNumber = "${script.env.BUILD_NUMBER}"
         def uniqueId = buildNumber + "-" + sdf.format(date)
 
+        this.productName = productName
         getDomainName(productName)
         getProductIdentifier(productName)
         getSamplesRepo(productName)
