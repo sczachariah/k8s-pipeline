@@ -21,6 +21,4 @@ class Functional {
                 break
         }
     }
-
-
 }
