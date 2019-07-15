@@ -8,6 +8,7 @@ import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.IngressController
 import com.oracle.fmwk8s.env.Operator
+import com.oracle.fmwk8s.test.Functional
 
 pipeline {
     agent {
@@ -134,6 +135,38 @@ pipeline {
                 }
             }
         }
+
+        stage('deploy test tools') {
+            steps {
+                container('jnlp') {
+                    dir('fmwk8s') {
+                        script {
+                            Functional.deployTestTools(this, "${TEST_TYPE}", "${DOMAIN_NS}")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('run tests') {
+            parallel {
+                stage('wait for completion') {
+                    steps {
+                        container('jnlp') {
+                            EnvironmentSetup.waitHoursAfter(this, "${HOURS_AFTER}")
+                        }
+                    }
+                }
+
+                stage('execute tests') {
+                    steps {
+                        container('jnlp') {
+                            Functional.invokeTest(this, "${TEST_TYPE}", "${DOMAIN_NS}")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     post {
@@ -146,7 +179,7 @@ pipeline {
 
                     IngressController.undeployLoadBalancer this, "${LB_HELM_RELEASE}"
                     Domain.cleanDomain this, "${DOMAIN_NAME}", "${DOMAIN_NS}"
-                    
+
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
                     Operator.cleanOperatorNamespace this, "${OPERATOR_NS}"
 

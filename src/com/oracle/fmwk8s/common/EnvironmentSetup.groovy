@@ -2,6 +2,8 @@ package com.oracle.fmwk8s.common
 
 class EnvironmentSetup {
 
+    static def isWaiting = false
+
     static createNfsFolder(script, namespace, nfsHomeDir, nfsDomainDir) {
         try {
             Log.info(script, "begin create nfs folder.")
@@ -50,5 +52,19 @@ class EnvironmentSetup {
         }
         finally {
         }
+    }
+
+    static waitHoursAfter(script, hoursAfter) {
+        if (hoursAfter == true) {
+            if (isWaiting)
+                Log.warning(script, "already in wait loop.")
+            else {
+                Log.info(script, "begin wait loop.")
+                isWaiting = true
+                sleep 14400
+                Log.info(script, "end wait loop.")
+            }
+        }
+        Log.info(script, "skipping wait loop.")
     }
 }
