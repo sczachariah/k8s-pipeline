@@ -1,6 +1,7 @@
 package com.oracle.fmwk8s.common
 
 import java.text.SimpleDateFormat
+import jenkins.model.Jenkins
 
 class Common {
     static def operatorVersion
@@ -143,7 +144,7 @@ class Common {
         script.echo "Reports directory: ${script.env.WORKSPACE}/test-output"
 
         script.env.DEPLOY_BUILD_DATE = script.sh(returnStdout: true, script: "date -u +'%Y-%m-%d-%H%M'").trim()
-        def logContent = script.Jenkins.getInstance()
+        def logContent = Jenkins.getInstance()
                 .getItemByFullName(script.env.JOB_NAME)
                 .getBuildByNumber(Integer.parseInt(script.env.BUILD_NUMBER))
                 .logFile.text
