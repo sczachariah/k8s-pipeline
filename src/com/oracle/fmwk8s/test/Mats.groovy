@@ -103,7 +103,6 @@ class Mats {
     }
 
     static publishResults(script) {
-        Common.publishLogs(script)
     }
 
     static cleanTests(script) {}

@@ -155,6 +155,16 @@ pipeline {
                 }
             }
         }
+
+        stage('publish results') {
+            steps {
+                container('jnlp') {
+                    script {
+                        Common.publishLogs(this, jenkins.model.Jenkins.getInstance())
+                    }
+                }
+            }
+        }
     }
 
     post {
