@@ -138,4 +138,34 @@ class Common {
             throw exc
         }
     }
+
+    static publishLogs(script) {
+        script.echo "Reports directory: ${script.env.WORKSPACE}/test-output"
+
+        script.env.DEPLOY_BUILD_DATE = script.sh(returnStdout: true, script: "date -u +'%Y-%m-%d-%H%M'").trim()
+        def logContent = script.Jenkins.getInstance()
+                .getItemByFullName(script.env.JOB_NAME)
+                .getBuildByNumber(Integer.parseInt(script.env.BUILD_NUMBER))
+                .logFile.text
+        script.writeFile file: "buildlog-${script.env.BUILD_NUMBER}-${script.env.DEPLOY_BUILD_DATE}.txt", text: logContent
+
+        script.zip zipFile: "test-output-${script.env.BUILD_NUMBER}-${script.env.DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${script.env.WORKSPACE}/test-output"
+        script.rtUpload(
+                serverId: "artifactory.oraclecorp.com",
+                spec:
+                        """{
+                           "files": [
+                             {
+                                "pattern": "test-output*.zip",
+                                "target": "cisystem-dev-local/com/oracle/fmwk8s/e2e/${this.productId}/test-reports/"
+                             },
+                             {
+                                "pattern": "buildlog*.txt",
+                                "target": "cisystem-dev-local/com/oracle/fmwk8s/e2e/${this.productId}/logs/"
+                             }
+                           ]
+                        }""",
+                failNoOp: true
+        )
+    }
 }

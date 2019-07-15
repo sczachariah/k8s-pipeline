@@ -149,7 +149,7 @@ pipeline {
                 stage('execute tests') {
                     steps {
                         container('jnlp') {
-                            Functional.invokeTest(this, "${TEST_TYPE}", "${DOMAIN_NS}")
+                            Functional.invokeTest(this, "${TEST_TYPE}", "${TEST_IMAGE_TAG}")
                         }
                     }
                 }

@@ -352,7 +352,7 @@ pipeline {
                             sed -i "s#%MDS_USER%#SOA1_MDS#g" fmwk8s-soa-env-configmap.yaml
                             cat fmwk8s-soa-env-configmap.yaml
                             
-                            sed -i "s#%SOA_MATS_IMAGE%#${TEST_IMAGE_TAG}#g" fmwk8s-soa-mats-pod.yaml
+                            sed -i "s#%TEST_IMAGE%#${TEST_IMAGE_TAG}#g" fmwk8s-soa-mats-pod.yaml
                             cat fmwk8s-soa-mats-pod.yaml
                             '''
 

@@ -6,7 +6,7 @@ metadata:
 spec:
   containers:
     - name: fmwk8s-soa-mats
-      image: "%SOA_MATS_IMAGE%"
+      image: "%TEST_IMAGE%"
       imagePullPolicy: Always
       envFrom:
         - configMapRef:

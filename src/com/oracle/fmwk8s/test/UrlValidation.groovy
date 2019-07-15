@@ -1,11 +1,12 @@
 package com.oracle.fmwk8s.test
 
 import com.oracle.fmwk8s.common.Log
+import com.oracle.fmwk8s.env.Domain
 
 class UrlValidation {
-    static runTests(script, testNamespace) {
-        deployTestTools(script, testNamespace)
-        createTestProps(script, testNamespace)
+    static invokeTest(script, testImage) {
+        deployTestTools(script, Domain.domainNamespace)
+        createTestProps(script, Domain.domainNamespace)
     }
 
     static deployTestTools(script, testNamespace) {

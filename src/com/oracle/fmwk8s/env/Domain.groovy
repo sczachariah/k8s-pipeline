@@ -4,6 +4,11 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 
 class Domain {
+    static def weblogicUser = "weblogic"
+    static def weblogicPass = "Welcome1"
+    static def domainName
+    static def domainNamespace
+
     static pullSampleScripts(script) {
         script.git branch: "${Common.samplesBranch}",
                 url: "${Common.samplesRepo}"
@@ -91,7 +96,7 @@ class Domain {
 
             script.sh "retVal=`echo \\`kubectl get secret ${domainName}-weblogic-credentials -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
-                          kubernetes/samples/scripts/create-weblogic-domain-credentials/create-weblogic-credentials.sh -u weblogic -p Welcome1 -n ${domainNamespace} -d ${domainName} \n \
+                          kubernetes/samples/scripts/create-weblogic-domain-credentials/create-weblogic-credentials.sh -u ${this.weblogicUser} -p ${this.weblogicPass} -n ${domainNamespace} -d ${domainName} \n \
                        fi"
 
             Log.info(script, "configure domain secrets success.")
@@ -172,6 +177,9 @@ class Domain {
 
     static createDomain(script, domainName, domainNamespace) {
         try {
+            this.domainName = domainName
+            this.domainNamespace = domainNamespace
+
             Log.info(script, "begin create " + Common.productId + " domain.")
             script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
                       ./create-domain.sh -i create-domain-inputs.yaml -o ${script.env.WORKSPACE}/script-output-directory"
