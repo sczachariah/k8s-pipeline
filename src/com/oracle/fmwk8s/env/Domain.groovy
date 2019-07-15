@@ -153,7 +153,7 @@ class Domain {
                         cp create-domain-job-template.yaml create-domain-job-template.yaml.orig && \
                         sed -i \"s|domainUID: domain1|domainUID: ${domainName}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|domainHome: /shared/domains/domain1|domainHome: /shared/domains/${domainName}|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|initialManagedServerReplicas: 2|initialManagedServerReplicas: 1|g\" create-domain-inputs.yaml && \
+                        sed -i \"s|initialManagedServerReplicas: 2|initialManagedServerReplicas: 2|g\" create-domain-inputs.yaml && \
                         sed -i \"s|image: ${Common.defaultProductImage}|image: ${productImage}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|image: store/oracle/weblogic:12.2.1.3|image: ${productImage}|g\" create-domain-inputs.yaml && \
                         sed -i \"s|#imagePullSecretName:|imagePullSecretName: ${Common.registrySecret}|g\" create-domain-inputs.yaml && \
