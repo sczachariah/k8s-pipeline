@@ -39,7 +39,7 @@ class Mats {
                         sed -i \"s|%MDS_USER%|" + "${Common.productId}".toUpperCase() + "1_MDS|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         cat fmwk8s-${Common.productId}-env-configmap.yaml"
 
-            script.sh "kubectl apply -f fmwk8s-${Common.productId}-env-configmap.yaml -n ${Domain.domainNamespace}"
+            script.sh "kubectl apply -f kubernetes/framework/${Common.productId}/fmwk8s-${Common.productId}-env-configmap.yaml -n ${Domain.domainNamespace}"
 
             Log.info(script, "create env configmap success.")
         }
@@ -62,7 +62,7 @@ class Mats {
                         sed -i \"s#%TEST_IMAGE%#${testImage}#g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
                         cat fmwk8s-${Common.productId}-mats-pod.yaml"
 
-            script.sh "kubectl apply -f fmwk8s-${Common.productId}-mats-pod.yaml -n ${Domain.domainNamespace} && \
+            script.sh "kubectl apply -f kubernetes/framework/${Common.productId}/fmwk8s-${Common.productId}-mats-pod.yaml -n ${Domain.domainNamespace} && \
                        kubectl get all -n ${Domain.domainNamespace}"
 
             waitForTests(script)
