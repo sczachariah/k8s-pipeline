@@ -141,7 +141,9 @@ pipeline {
                 stage('wait for completion') {
                     steps {
                         container('jnlp') {
-                            EnvironmentSetup.waitHoursAfter(this, "${HOURS_AFTER}")
+                            script {
+                                EnvironmentSetup.waitHoursAfter(this, "${HOURS_AFTER}")
+                            }
                         }
                     }
                 }
@@ -149,7 +151,9 @@ pipeline {
                 stage('execute tests') {
                     steps {
                         container('jnlp') {
-                            Functional.invokeTest(this, "${TEST_TYPE}", "${TEST_IMAGE_TAG}")
+                            script {
+                                Functional.invokeTest(this, "${TEST_TYPE}", "${TEST_IMAGE_TAG}")
+                            }
                         }
                     }
                 }
