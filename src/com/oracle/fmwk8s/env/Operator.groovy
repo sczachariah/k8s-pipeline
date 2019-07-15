@@ -105,7 +105,7 @@ class Operator {
 
             script.sh "kubectl delete configmaps --all -n ${operatorNamespace}"
             script.sh "kubectl delete all --all -n ${operatorNamespace}"
-            sleep 10
+            sleep 30
             script.sh "kubectl delete ns ${operatorNamespace}"
 
             Log.info(script, "clean kubernetes operator namespace success.")

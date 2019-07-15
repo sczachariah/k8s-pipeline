@@ -260,7 +260,7 @@ class Domain {
             Log.error(script, "cleanup domain pods and services failed.")
         }
         finally {
-            sleep 10
+            sleep 30
         }
 
         try {
@@ -286,14 +286,14 @@ class Domain {
 
         try {
             script.sh "kubectl delete pvc ${domainName}-${namespace}-pvc -n ${namespace}"
-            sleep 10
+            sleep 30
             script.sh "kubectl delete pv ${domainName}-${namespace}-pv -n ${namespace}"
         }
         catch (exc) {
             Log.error(script, "cleanup domain persistent volume failed.")
         }
         finally {
-            sleep 10
+            sleep 30
         }
     }
 
