@@ -43,7 +43,7 @@ pipeline {
 
                 container('jnlp') {
                     script {
-                        Common.publishLogs(this, jenkins.model.Jenkins.getInstance())
+                        Common.publishLogs(this)
                     }
                 }
             }

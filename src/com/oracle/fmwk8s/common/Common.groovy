@@ -139,14 +139,14 @@ class Common {
         }
     }
 
-    static publishLogs(script, jenkinsInstance) {
+    static publishLogs(script) {
         try {
             Log.info(script, "begin publish logs.")
 
             script.echo "Reports directory: ${script.env.WORKSPACE}/test-output"
             script.env.DEPLOY_BUILD_DATE = script.sh(returnStdout: true, script: "date -u +'%Y-%m-%d-%H%M'").trim()
 
-            def logContent = jenkinsInstance
+            def logContent = jenkins.model.Jenkins.getInstance()
                     .getItemByFullName(script.env.JOB_NAME)
                     .getBuildByNumber(Integer.parseInt(script.env.BUILD_NUMBER))
                     .logFile.text
