@@ -22,7 +22,7 @@ class UrlValidation {
 SELENIUM_HUB_HOST=selenium-standalone-firefox.${testNamespace} \
 SELENIUM_HUB_PORT=4444 \
 EOF && \
-            cat ${WORKSPACE}/test.props"
+            cat ${script.env.WORKSPACE}/test.props"
 
             Log.info(script, "create test props success.")
         }
