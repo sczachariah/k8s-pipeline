@@ -43,93 +43,7 @@ pipeline {
 
                 container('jnlp') {
                     script {
-                        Validation.validateInputs(this)
-                    }
-                }
-            }
-        }
-
-        stage('deploy kubernetes operator') {
-            steps {
-                container('jnlp') {
-                    script {
-                        Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}")
-                        Operator.verifyOperator(this, "${OPERATOR_NS}")
-                    }
-                }
-
-                container('jnlp') {
-                    script {
-                        Domain.createNamespace(this, "${DOMAIN_NS}")
-                        Common.configureRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
-                        EnvironmentSetup.createNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
-                    }
-                }
-            }
-        }
-
-        stage('prepare fmw product environment') {
-            parallel {
-                stage('setup database') {
-                    steps {
-                        container('jnlp') {
-                            dir('fmwk8s') {
-                                script {
-                                    Database.deployDatabase(this, "${DATABASE_VERSION}", "${DOMAIN_NS}")
-                                    Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                }
-                            }
-                        }
-                    }
-                }
-                stage('prepare fmw domain in pv') {
-                    steps {
-                        container('jnlp') {
-                            dir('fmwsamples') {
-                                script {
-                                    Domain.pullSampleScripts(this)
-
-                                    Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
-                                    Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                    Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                    Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
-                                    Domain.prepareDomain(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
-
-        stage('deploy fmw domain') {
-            parallel {
-                stage('create fmw domain') {
-                    steps {
-                        container('jnlp') {
-                            dir('fmwsamples') {
-                                script {
-                                    Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                    Domain.isDomainReady(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-
-                                    sleep(120)
-                                }
-                            }
-                        }
-                    }
-                }
-                stage('configure domain loadbalancer') {
-                    steps {
-                        container('jnlp') {
-                            dir('fmwsamples') {
-                                script {
-                                    IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
-                                    sleep(60)
-                                    Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                }
-                            }
-                        }
+                        Common.publishLogs(this)
                     }
                 }
             }
@@ -153,7 +67,6 @@ pipeline {
 
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
                     Operator.cleanOperatorNamespace this, "${OPERATOR_NS}"
-
                 }
             }
         }
