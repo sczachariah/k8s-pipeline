@@ -136,18 +136,6 @@ pipeline {
             }
         }
 
-        stage('deploy test tools') {
-            steps {
-                container('jnlp') {
-                    dir('fmwk8s') {
-                        script {
-                            Functional.deployTestTools(this, "${TEST_TYPE}", "${DOMAIN_NS}")
-                        }
-                    }
-                }
-            }
-        }
-
         stage('run tests') {
             parallel {
                 stage('wait for completion') {

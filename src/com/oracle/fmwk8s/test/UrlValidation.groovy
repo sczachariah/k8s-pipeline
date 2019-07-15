@@ -4,8 +4,14 @@ import com.oracle.fmwk8s.common.Log
 
 class UrlValidation {
     static runTests(script, testNamespace) {
+        deployTestTools(script, testNamespace)
         createTestProps(script, testNamespace)
     }
+
+    static deployTestTools(script, testNamespace) {
+        Tools.deploySelenium(script, testNamespace)
+    }
+
 
     static createTestProps(script, testNamespace) {
         try {
@@ -31,4 +37,5 @@ EOF && \
     static publishResults(script) {}
 
     static cleanTests(script) {}
+
 }
