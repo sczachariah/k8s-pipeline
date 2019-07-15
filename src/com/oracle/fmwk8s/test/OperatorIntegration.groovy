@@ -8,6 +8,8 @@ class OperatorIntegration {
     static invokeTest(script, testImage) {
         fetchSource(script)
         createTestProps(script)
+        runTests(script)
+        publishResults(script)
     }
 
     static fetchSource(script) {
@@ -24,7 +26,7 @@ class OperatorIntegration {
                    sed - i \"s#PRODUCT_NAME#${Common.productName}#g\" config / operatorTest.properties"
     }
 
-    static runTests(script, testNamespace) {}
+    static runTests(script) {}
 
     static waitForTests(script) {}
 
