@@ -34,7 +34,7 @@ class Mats {
                         sed -i \"s|%DB_SCHEMA_PASSWORD%|Welcome1|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%DB_SID%|${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%JDBC_URL%|jdbc:oracle:thin:@${Database.dbName}.${Domain.domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${Database.dbName}_server|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
+                        sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${Common.productId}_server|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%MANAGED_SERVER_PORT%|8001|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%MDS_USER%|" + "${Common.productId}".toUpperCase() + "1_MDS|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         cat fmwk8s-${Common.productId}-env-configmap.yaml"

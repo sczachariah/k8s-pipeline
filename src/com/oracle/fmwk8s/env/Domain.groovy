@@ -8,6 +8,7 @@ class Domain {
     static def weblogicPass = "Welcome1"
     static def domainName
     static def domainNamespace
+    static def weblogicCredentialsSecretName
 
     static pullSampleScripts(script) {
         script.git branch: "${Common.samplesBranch}",
@@ -92,9 +93,11 @@ class Domain {
         try {
             Log.info(script, "begin configure domain secrets.")
 
+            this.weblogicCredentialsSecretName = "${domainName}-weblogic-credentials"
+
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
 
-            script.sh "retVal=`echo \\`kubectl get secret ${domainName}-weblogic-credentials -n ${domainNamespace} 2>&1\\`` &&\
+            script.sh "retVal=`echo \\`kubectl get secret ${this.weblogicCredentialsSecretName} -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
                           kubernetes/samples/scripts/create-weblogic-domain-credentials/create-weblogic-credentials.sh -u ${this.weblogicUser} -p ${this.weblogicPass} -n ${domainNamespace} -d ${domainName} \n \
                        fi"

@@ -6,8 +6,11 @@ class Functional {
             case "URL_VALIDATION":
                 UrlValidation.invokeTest(script, testImage)
                 break
-            case "OPERATOR_INTEGRATION":
-                OperatorIntegration.invokeTest(script, testImage)
+            case "OPERATOR_INTEGRATION_BASIC":
+                OperatorIntegration.invokeTest(script, "basic-operator-tests")
+                break
+            case "OPERATOR_INTEGRATION_ADVANCED":
+                OperatorIntegration.invokeTest(script, "advanced-operator-tests")
                 break
             case "MATS":
                 Mats.invokeTest(script, testImage)

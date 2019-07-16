@@ -6,6 +6,7 @@ import com.oracle.fmwk8s.common.Log
 class Operator {
     static def operatorNamespace
     static def operatorServiceAccount
+    static def operatorHelmRelease
 
     static deployOperator(script, operatorVersion, operatorHelmRelease, operatorNamespace, operatorServiceAccount) {
         Common.getOperatorVersions(operatorVersion)
@@ -15,6 +16,7 @@ class Operator {
             createNamespace(script, operatorNamespace)
             this.operatorNamespace = operatorNamespace
             this.operatorServiceAccount = operatorServiceAccount
+            this.operatorHelmRelease = operatorHelmRelease
 
             script.git branch: "${Common.operatorBranch}",
                     url: 'https://github.com/oracle/weblogic-kubernetes-operator'

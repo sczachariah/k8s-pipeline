@@ -1,14 +1,15 @@
 package com.oracle.fmwk8s.test
 
 import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Operator
 
 class OperatorIntegration {
-    static invokeTest(script, testImage) {
+    static invokeTest(script, mavenProfile) {
         fetchSource(script)
         createTestProps(script)
-        runTests(script)
+        runTests(script, mavenProfile)
         publishResults(script)
     }
 
@@ -19,14 +20,47 @@ class OperatorIntegration {
     }
 
     static createTestProps(script) {
-        script.sh "sed -i \"s|SOA_OPERATOR_NS|${Operator.operatorNamespace}|g\" config/operatorTest.properties && \
-                   sed - i \"s#SOA_DOMAIN_NS#${Domain.domainNamespace}#g\" config / operatorTest.properties && \
-                   sed - i \"s#SOA_DOMAIN_NAME#${Domain.domainName}#g\" config / operatorTest.properties && \
-                   sed - i \"s#SOA_OPERATOR_SA#${Operator.operatorServiceAccount}#g\" config / operatorTest.properties && \
-                   sed - i \"s#PRODUCT_NAME#${Common.productName}#g\" config / operatorTest.properties"
+        try {
+            Log.info(script, "begin create test properties.")
+
+            script.sh "cd config && \
+                       sed -i \"s|\${PRODUCT_NAME}|${Common.productName}|g\" operatorTest.properties && \
+                       sed -i \"s|\${OPERATOR_NS}|${Operator.operatorNamespace}|g\" operatorTest.properties && \
+                       sed -i \"s|\${OPERATOR_SA}|${Operator.operatorServiceAccount}|g\" operatorTest.properties && \
+                       sed -i \"s|\${DOMAIN_NAME}|${Domain.domainName}|g\" operatorTest.properties && \
+                       sed -i \"s|\${DOMAIN_NS}|${Domain.domainNamespace}|g\" operatorTest.properties && \
+                       sed -i \"s|\${CLUSTER_NAME}|${Common.productId}_cluster|g\" operatorTest.properties && \
+                       sed -i \"s|\${MANAGED_SERVER_NAME_BASE}|${Common.productId}_server|g\" operatorTest.properties && \
+                       sed -i \"s|\${ADMIN_SERVER_NAME}|admin-server|g\" operatorTest.properties && \
+                       sed -i \"s|\${WEBLOGIC_CREDENTIALS_SECRET_NAME}|${Domain.weblogicCredentialsSecretName}|g\" operatorTest.properties && \
+                       cat operatorTest.properties"
+
+            Log.info(script, "create test properties success.")
+        }
+        catch (exc) {
+            Log.error(script, "create test properties failed.")
+        }
+        finally {
+        }
     }
 
-    static runTests(script) {}
+
+    static runTests(script, mavenProfile) {
+        try {
+            Log.info(script, "begin run operator integration tests.")
+
+            script.sh "echo Maven command:  && \
+                       echo \"mvn clean verify -P ${mavenProfile} -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80\" && \
+                       mvn clean verify -P ${mavenProfile} -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80"
+
+            Log.info(script, "run operator integration tests success.")
+        }
+        catch (exc) {
+            Log.error(script, "run operator integration tests failed.")
+        }
+        finally {
+        }
+    }
 
     static waitForTests(script) {}
 
