@@ -98,8 +98,8 @@ class IngressController {
             Log.info(script, "begin get load balancer port.")
             script.sh "${this.httplbPort}=kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace} | grep -i nodeport | grep 'http '| awk -F/ '{print \$1}'| awk -F' ' '{print \$3}'"
             script.sh "${this.httpslbPort}=kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace} | grep -i nodeport | grep 'https'| awk -F/ '{print \$1}'| awk -F' ' '{print \$3}'"
-            Log.info(script, this.httplbPort)
-            Log.info(script, this.httpslbPort)
+            Log.info(script, ${this.httplbPort})
+            Log.info(script, ${this.httpslbPort})
             Log.info(script, "get load balancer port success.")
         }
         catch (exc) {
