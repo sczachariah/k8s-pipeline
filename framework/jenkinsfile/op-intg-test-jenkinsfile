@@ -359,6 +359,7 @@ pipeline {
                             echo "Maven command:"
                             echo "mvn clean verify -P ${MAVEN_PROFILE} -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80"
                             mvn clean verify -P ${MAVEN_PROFILE} -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80
+                            '''
                         }
                     }
                 }
