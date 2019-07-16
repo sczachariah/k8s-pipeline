@@ -348,15 +348,15 @@ pipeline {
 
                             sh label: 'prepare properties file', script: '''
                             cd config
-                            sed -i \\"s|\\${PRODUCT_NAME}|${PRODUCT}|g\\" operatorTest.properties
-                            sed -i \\"s|\\${OPERATOR_NS}|${OPERATOR_NS}|g\\" operatorTest.properties
-                            sed -i \\"s|\\${OPERATOR_SA}|${OPERATOR_SA}|g\\" operatorTest.properties
-                            sed -i \\"s|\\${DOMAIN_NAME}|${DOMAIN_NAME}|g\\" operatorTest.properties
-                            sed -i \\"s|\\${DOMAIN_NS}|${DOMAIN_NS}|g\\" operatorTest.properties
-                            sed -i \\"s|\\${CLUSTER_NAME}|${PRODUCT}_cluster|g\\" operatorTest.properties
-                            sed -i \\"s|\\${MANAGED_SERVER_NAME_BASE}|${PRODUCT}_server|g\\" operatorTest.properties
-                            sed -i \\"s|\\${ADMIN_SERVER_NAME}|admin-server|g\\" operatorTest.properties
-                            sed -i \\"s|\\${WEBLOGIC_CREDENTIALS_SECRET_NAME}|${DOMAIN_NAME}-weblogic-credentials|g\\" operatorTest.properties
+                            sed -i "s|\${PRODUCT_NAME}|${PRODUCT}|g" operatorTest.properties
+                            sed -i "s|\${OPERATOR_NS}|${OPERATOR_NS}|g" operatorTest.properties
+                            sed -i "s|\${OPERATOR_SA}|${OPERATOR_SA}|g" operatorTest.properties
+                            sed -i "s|\${DOMAIN_NAME}|${DOMAIN_NAME}|g" operatorTest.properties
+                            sed -i "s|\${DOMAIN_NS}|${DOMAIN_NS}|g" operatorTest.properties
+                            sed -i "s|\${CLUSTER_NAME}|${PRODUCT}_cluster|g" operatorTest.properties
+                            sed -i "s|\${MANAGED_SERVER_NAME_BASE}|${PRODUCT}_server|g" operatorTest.properties
+                            sed -i "s|\${ADMIN_SERVER_NAME}|admin-server|g" operatorTest.properties
+                            sed -i "s|\${WEBLOGIC_CREDENTIALS_SECRET_NAME}|${DOMAIN_NAME}-weblogic-credentials|g" operatorTest.properties
                             cat operatorTest.properties
                             '''
 
