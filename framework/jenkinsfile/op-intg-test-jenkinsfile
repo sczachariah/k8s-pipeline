@@ -329,6 +329,16 @@ pipeline {
                     }
                 }
 
+                stage('wait for completion') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                EnvironmentSetup.waitHoursAfter(this, "${HOURS_AFTER}")
+                            }
+                        }
+                    }
+                }
+
                 stage('execute tests') {
                     steps {
                         container('jnlp') {
@@ -346,32 +356,10 @@ pipeline {
 
 
                             sh label: 'run test', script: '''
-                            cp config/operatorTest.properties ${WORKSPACE}
-                            #mvn clean install test -DsuiteXmlFile=testngSuite.xml
-                            #mvn test -Dtest=BasicDomainTest -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80
                             echo "Maven command:"
                             echo "mvn clean verify -P ${MAVEN_PROFILE} -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80"
                             mvn clean verify -P ${MAVEN_PROFILE} -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80
-                            #testStat='testStat'
-                            #until `echo $testStat | grep -q Completed` > /dev/null
-                            #do
-                            #    echo "Test is Running. Sleeping"
-                            #    sleep 60
-                            #    testStat=`echo \\`kubectl get pods -n ${DOMAIN_NS} 2>&1 | grep fmwk8s-soa-mats\\``
-                            #done
-                            echo "Test Execution Finished."
-                            '''
-
-                            sh label: 'publish results', script: '''
-                            '''
-
-                            sh label: 'clean tests', script: '''
-                            #kubectl delete pod fmwk8s-soa-mats -n ${DOMAIN_NS}
-                            #kubectl delete configmap fmwk8s-soa-env-configmap -n ${DOMAIN_NS}
-                            '''
                         }
-
-
                     }
                 }
             }
