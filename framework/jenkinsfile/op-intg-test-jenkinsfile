@@ -332,7 +332,7 @@ pipeline {
                 stage('execute tests') {
                     steps {
                         container('jnlp') {
-                            git branch: 'swati-develop',
+                            git branch: 'master',
                                     credentialsId: 'sandeep.zachariah.ssh',
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-operator-intg-tests.git'
 
