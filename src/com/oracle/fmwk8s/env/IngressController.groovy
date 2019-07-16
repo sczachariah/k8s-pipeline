@@ -26,7 +26,7 @@ class IngressController {
                 break
         }
 
-        getLoadBalancerPort(script)
+        getLoadBalancerPort(script, lbHelmRelease, domainNamespace)
     }
 
     static deployTraefik(script, lbHelmRelease, domainNamespace) {
