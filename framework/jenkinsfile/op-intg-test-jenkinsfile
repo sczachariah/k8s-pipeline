@@ -347,11 +347,11 @@ pipeline {
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-operator-intg-tests.git'
 
                             sh label: 'prepare properties file', script: '''
-                            sed -i "s#${OPERATOR_NS}#${OPERATOR_NS}#g" config/operatorTest.properties
-                            sed -i "s#${DOMAIN_NS}#${DOMAIN_NS}#g" config/operatorTest.properties
-                            sed -i "s#${DOMAIN_NAME}#${DOMAIN_NAME}#g" config/operatorTest.properties
-                            sed -i "s#${OPERATOR_SA}#${OPERATOR_SA}#g" config/operatorTest.properties
-                            sed -i "s#${PRODUCT_NAME}#${PRODUCT}#g" config/operatorTest.properties
+                            sed -i "s#\${OPERATOR_NS}#${OPERATOR_NS}#g" config/operatorTest.properties
+                            sed -i "s#\${DOMAIN_NS}#${DOMAIN_NS}#g" config/operatorTest.properties
+                            sed -i "s#\${DOMAIN_NAME}#${DOMAIN_NAME}#g" config/operatorTest.properties
+                            sed -i "s#\${OPERATOR_SA}#${OPERATOR_SA}#g" config/operatorTest.properties
+                            sed -i "s#\${PRODUCT_NAME}#${PRODUCT}#g" config/operatorTest.properties
                             '''
 
 
