@@ -45,7 +45,7 @@ pipeline {
                     script {
                        // Common.publishLogs(this)
                        // IngressController.getLoadBalancerPort(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
-                        IngressController.getLoadBalancerPort(this, "${K8S_LOADBALANCER}", "traefik-ingress", "srsanaga-ns")
+                        IngressController.getLoadBalancerPort(this, "traefik-ingress", "srsanaga-ns")
                         sleep(60)
                        // Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                     }
