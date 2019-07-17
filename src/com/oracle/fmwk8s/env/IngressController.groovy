@@ -4,8 +4,8 @@ import com.oracle.fmwk8s.common.Log
 
 class IngressController {
 
-    static httplbPort
-    static httpslbPort
+    static def httplbPort
+    static def httpslbPort
 
     static deployLoadBalancer(script, lbType, lbHelmRelease, domainNamespace) {
         switch ("${lbType}") {
@@ -96,10 +96,13 @@ class IngressController {
     static getLoadBalancerPort(script, lbHelmRelease, domainNamespace) {
         try {
             Log.info(script, "begin get load balancer port.")
-            script.sh "${this.httplbPort}=kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace} | grep -i nodeport | grep 'http '| awk -F/ '{print \$1}'| awk -F' ' '{print \$3}'"
-            script.sh "${this.httpslbPort}=kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace} | grep -i nodeport | grep 'https'| awk -F/ '{print \$1}'| awk -F' ' '{print \$3}'"
-            Log.info(script, ${this.httplbPort})
-            Log.info(script, ${this.httpslbPort})
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
+            script.sh "http=`kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep 'http ' | awk -F/ '{print \$1}' | awk -F' ' '{print \$3}'` &&\
+                       $this.httplbPort=\$http"
+            script.sh "https=`kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep 'https' | awk -F/ '{print \$1}' | awk -F' ' '{print \$3}'` &&\
+                       $this.httpslbPort=\${https}"
+            Log.info(script, this.httplbPort)
+            Log.info(script, this.httpslbPort)
             Log.info(script, "get load balancer port success.")
         }
         catch (exc) {
