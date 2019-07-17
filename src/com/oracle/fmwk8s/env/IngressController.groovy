@@ -4,8 +4,8 @@ import com.oracle.fmwk8s.common.Log
 
 class IngressController {
 
-    static httplbPort
-    static httpslbPort
+    static def httplbPort
+    static def httpslbPort
 
     static deployLoadBalancer(script, lbType, lbHelmRelease, domainNamespace) {
         switch ("${lbType}") {
