@@ -3,10 +3,7 @@
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.EnvironmentSetup
-import com.oracle.fmwk8s.common.Validation
-import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.Domain
-import com.oracle.fmwk8s.env.IngressController
 import com.oracle.fmwk8s.env.Operator
 
 
