@@ -99,12 +99,12 @@ class IngressController {
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
 
             this.httplbPort = script.sh(
-                    script: 'kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \\$1}\' | awk -F\' \' \'{print \\$3}\'',
+                    script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
                     returnStdout: true
             ).trim()
 
             this.httpslbPort = script.sh(
-                    script: 'kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'https\' | awk -F/ \'{print \\$1}\' | awk -F\' \' \'{print \\$3}\'',
+                    script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'https\' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
                     returnStdout: true
             ).trim()
 
