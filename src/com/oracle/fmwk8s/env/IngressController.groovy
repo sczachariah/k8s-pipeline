@@ -98,12 +98,12 @@ class IngressController {
             Log.info(script, "begin get load balancer port.")
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
 
-            this.httplbPort = sh(
+            this.httplbPort = script.sh(
                     script: 'kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \\$1}\' | awk -F\' \' \'{print \\$3}\'',
                     returnStdout: true
             ).trim()
 
-            this.httpslbPort = sh(
+            this.httpslbPort = script.sh(
                     script: 'kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'https\' | awk -F/ \'{print \\$1}\' | awk -F\' \' \'{print \\$3}\'',
                     returnStdout: true
             ).trim()
