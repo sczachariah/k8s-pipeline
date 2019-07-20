@@ -359,17 +359,6 @@ pipeline {
                             cat operatorTest.properties
                             '''
 
-                            sh label: 'prepare security context yaml files', script: '''
-                            cd src/main/resources/securitycontext
-                            sed -i "s|\\${RUN_ID}|${RUN_SUFFIX}|g" cont_domain.yaml
-                            sed -i "s|\\${RUN_ID}|${RUN_SUFFIX}|g" pod_domain.yaml
-                            sed -i "s|\\${RUN_ID}|${RUN_SUFFIX}|g" resource_domain.yaml
-                            cat cont_domain.yaml
-                            cat pod_domain.yaml
-                            cat resource_domain.yaml
-                            '''
-
-
                             sh label: 'run test', script: '''
                             echo "Maven command:"
                             echo "mvn clean verify -P ${MAVEN_PROFILE} -DoperatorTest.properties=config/operatorTest.properties -DproxySet=true -DproxyHost=www-proxy.us.oracle.com -DproxyPort=80"
