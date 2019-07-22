@@ -61,10 +61,11 @@ class EnvironmentSetup {
             else {
                 Log.info(script, "begin wait loop.")
                 isWaiting = true
-                sleep 14400
+                script.sh "sleep 14400"
                 Log.info(script, "end wait loop.")
             }
+        } else {
+            Log.info(script, "skipping wait loop.")
         }
-        Log.info(script, "skipping wait loop.")
     }
 }
