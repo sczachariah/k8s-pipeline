@@ -363,7 +363,8 @@ pipeline {
                             sed -i "s|\\${MANAGED_SERVER_NAME_BASE}|${PRODUCT_ID}-server|g" operatorTest.properties
                             sed -i "s|\\${ADMIN_SERVER_NAME}|adminserver|g" operatorTest.properties
                             sed -i "s|\\${WEBLOGIC_CREDENTIALS_SECRET_NAME}|${DOMAIN_NAME}-weblogic-credentials|g" operatorTest.properties
-							sed -i "s|\\${OPERATOR_HELM_RELEASE}|${OPERATOR_HELM_RELEASE}-weblogic-credentials|g" operatorTest.properties
+							sed -i "s|\\${OPERATOR_HELM_RELEASE}|${OPERATOR_HELM_RELEASE}|g" operatorTest.properties
+							sed -i "s|\\${NFS_DOMAIN_PATH}|${NFS_DOMAIN_PATH}|g" operatorTest.properties
                             cat operatorTest.properties
                             '''
 
