@@ -145,7 +145,7 @@ class Common {
         try {
             Log.info(script, "begin configure registry secret.")
 
-            registrySecret = "regcred"
+            registrySecret = "denregcred"
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
                        retVal=`echo \\`kubectl get secret ${registrySecret} -n ${namespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" \\| grep -q 'not found'; then\n \
