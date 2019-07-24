@@ -1,6 +1,8 @@
 package com.oracle.fmwk8s.env
 
 import com.oracle.fmwk8s.common.Log
+import com.oracle.fmwk8s.common.Common
+
 
 class IngressController {
 
@@ -52,10 +54,10 @@ class IngressController {
     static deployApache(script, lbHelmRelease, domainNamespace) {
         try {
             Log.info(script, "begin deploy apache ingress controller.")
+            script.git branch: "${Common.operatorBranch}",
+                    url: 'https://github.com/oracle/weblogic-kubernetes-operator'
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                   helm init && \
-                   helm repo update && \
-                   helm install kubernetes/charts/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set httpNodePort=30306,httpsNodePort=30444"
+                   helm install kubernetes/charts/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set image=fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3,httpNodePort=30306,httpsNodePort=30444"
 
             Log.info(script, "deploy apache ingress controller success.")
         }
