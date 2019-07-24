@@ -236,6 +236,7 @@ pipeline {
                                 '''
 
                                 sh label: 'prepare persistent volume', script: '''
+								cp -R kubernetes ${WORKSPACE}
                                 cd kubernetes/samples/scripts/create-soa-domain-pv-pvc
                                 cp create-pv-pvc-inputs.yaml create-pv-pvc-inputs.yaml.orig
 
