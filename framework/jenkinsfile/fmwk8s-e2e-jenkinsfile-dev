@@ -45,7 +45,7 @@ pipeline {
                         Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}")
                         Operator.verifyOperator(this, "${OPERATOR_NS}")
                         Domain.createNamespace(this, "${DOMAIN_NS}")
-                        Common.configureDenverRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
+                        Common.configureRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
                     }
                 }
                 container('jnlp') {
