@@ -253,6 +253,16 @@ class Domain {
     }
 
     static cleanDomain(script, domainName, namespace) {
+        try{
+            script.sh "helm delete --purge ${namespace}"
+        }
+        catch (exc) {
+            Log.error(script, "cleanup domain ingress failed.")
+        }
+        finally {
+            sleep 30
+        }
+
         try {
             script.sh "kubectl delete jobs --all -n ${namespace} && \
                        kubectl delete services --all -n ${namespace} && \
