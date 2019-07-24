@@ -45,6 +45,7 @@ pipeline {
                     dir('fmwsamples') {
                          script {
                             // Common.publishLogs(this)
+                             Domain.createNamespace(this, "${DOMAIN_NS}")
                              Common.configureDenverRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
                              IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
                              sleep(60)
