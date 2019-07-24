@@ -42,12 +42,13 @@ pipeline {
                 log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
 
                 container('jnlp') {
-                    script {
-                       // Common.publishLogs(this)
-                        IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
-                       // IngressController.getLoadBalancerPort(this, "traefik-ingress", "srsanaga-ns")
-                        sleep(60)
-                       // Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                    dir('fmwsamples') {
+                         script {
+                            // Common.publishLogs(this)
+                             Common.configureDenverRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
+                             IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
+                             sleep(60)
+                         }
                     }
                 }
             }
