@@ -248,7 +248,7 @@ class Domain {
             Log.info(script, "initialize helm.")
 
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
-            script.sh "helm init"
+            script.sh "helm init --client-only --skip-refresh --wait"
         }
     }
 

@@ -34,7 +34,7 @@ class IngressController {
     static deployTraefik(script, lbHelmRelease, domainNamespace) {
         try {
             Log.info(script, "begin deploy traefik ingress controller.")
-            script.sh "helm init && \
+            script.sh "helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
                    helm install stable/traefik --name ${lbHelmRelease} --namespace ${domainNamespace} \
                     --set kubernetes.namespaces={${domainNamespace}} \
@@ -70,7 +70,7 @@ class IngressController {
     static deployVoyager(script, lbHelmRelease, domainNamespace) {
         try {
             Log.info(script, "begin deploy apache ingress controller.")
-            script.sh "helm init && \
+            script.sh "helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
                    helm install stable/voyager --name ${lbHelmRelease} --namespace ${domainNamespace} \
                    --set ingressClass={${domainNamespace}}"
@@ -85,7 +85,7 @@ class IngressController {
     static deployNginx(script, lbHelmRelease, domainNamespace) {
         try {
             Log.info(script, "begin deploy nginx ingress controller.")
-            script.sh "helm init && \
+            script.sh "helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
                    helm install stable/nginx-ingress --name ${lbHelmRelease} --namespace ${domainNamespace} \
                    --set controller.scope.namespace={${domainNamespace}}"

@@ -74,7 +74,7 @@ pipeline {
                             finally {
                                 sh label: 'initialize helm', script: '''
                                 export KUBECONFIG=${KUBECONFIG}
-                                helm init
+                                helm init --client-only --skip-refresh --wait
                                 '''
                             }
                         }
