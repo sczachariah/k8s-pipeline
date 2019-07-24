@@ -215,7 +215,6 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
-            throw exc
         }
     }
 
