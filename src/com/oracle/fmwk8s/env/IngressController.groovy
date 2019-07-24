@@ -53,10 +53,9 @@ class IngressController {
         try {
             Log.info(script, "begin deploy apache ingress controller.")
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                   cd kubernetes/samples/charts && \
                    helm init && \
                    helm repo update && \
-                   helm install --name ${lbHelmRelease} apache-webtier --namespace ${domainNamespace} --set httpNodePort=30306,httpsNodePort=30444"
+                   helm install kubernetes/charts/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set httpNodePort=30306,httpsNodePort=30444"
 
             Log.info(script, "deploy apache ingress controller success.")
         }
