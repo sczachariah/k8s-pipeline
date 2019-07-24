@@ -302,6 +302,10 @@ class Domain {
     static cleanDomainNamespace(script, namespace) {
         try {
             script.sh "kubectl delete ns ${namespace}"
+            sleep 30
+            script.sh "kubectl get ns ${namespace} -o json | jq '.spec.finalizers=[]' > ns-without-finalizers.json && \
+                       curl -k -X PUT https://fmwk8s.us.oracle.com:6443/api/v1/namespaces/${namespace}/finalize \
+                               -H \"Content-Type: application/json\" --data-binary @ns-without-finalizers.json"
         }
         catch (exc) {
             Log.error(script, "cleanup domain namespace failed.")
