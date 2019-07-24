@@ -10,7 +10,9 @@ class Common {
     static def productId
     static def productName
     static def defaultProductImage
-    static def registrySecret
+    static def registrySecret = "regcred"
+    static def denRegistrySecret = "denregcred"
+
 
     static def domainName
 
@@ -126,30 +128,15 @@ class Common {
         try {
             Log.info(script, "begin configure registry secret.")
 
-            registrySecret = "regcred"
+
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
                        retVal=`echo \\`kubectl get secret ${registrySecret} -n ${namespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" \\| grep -q 'not found'; then\n \
                           kubectl create secret docker-registry ${registrySecret} -n ${namespace} --docker-server=http://container-registry.oracle.com --docker-username='${registryUsername}' --docker-password='${registryPass}' --docker-email='${registryUsername}'\n \
                        fi"
-
-            Log.info(script, "configure registry secret success.")
-        }
-        catch (exc) {
-            Log.error(script, "configure registry secret failed.")
-            throw exc
-        }
-    }
-
-    static configureDenverRegistrySecret(script, namespace, registryUsername, registryPass) {
-        try {
-            Log.info(script, "begin configure registry secret.")
-
-            registrySecret = "denregcred"
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                       retVal=`echo \\`kubectl get secret ${registrySecret} -n ${namespace} 2>&1\\`` &&\
-                       if echo \"\$retVal\" \\| grep -q 'not found'; then\n \
-                          kubectl create secret docker-registry ${registrySecret} -n ${namespace} --docker-server=http://fmwk8s-dev.dockerhub-den.oraclecorp.com --docker-username='${registryUsername}' --docker-password='${registryPass}' --docker-email='${registryUsername}'\n \
+            script.sh "denRetVal=`echo \\`kubectl get secret ${denRegistrySecret} -n ${namespace} 2>&1\\`` &&\
+                       if echo \"\$denRetVal\" \\| grep -q 'not found'; then\n \
+                          kubectl create secret docker-registry ${denRegistrySecret} -n ${namespace} --docker-server=http://fmwk8s-dev.dockerhub-den.oraclecorp.com --docker-username='${registryUsername}' --docker-password='${registryPass}' --docker-email='${registryUsername}'\n \
                        fi"
 
             Log.info(script, "configure registry secret success.")
