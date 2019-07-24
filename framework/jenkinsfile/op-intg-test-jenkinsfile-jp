@@ -352,6 +352,9 @@ pipeline {
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-operator-intg-tests.git'
 
                             sh label: 'prepare properties file', script: '''
+							echo "jayatest getting current path and files in workspace"
+							pwd
+							ls							
                             cd config
                             sed -i "s|\\${PRODUCT_NAME}|${PRODUCT}|g" operatorTest.properties
                             sed -i "s|\\${OPERATOR_NS}|${OPERATOR_NS}|g" operatorTest.properties
