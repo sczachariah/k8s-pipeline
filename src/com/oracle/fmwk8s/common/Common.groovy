@@ -141,6 +141,25 @@ class Common {
         }
     }
 
+    static configureDenverRegistrySecret(script, namespace, registryUsername, registryPass) {
+        try {
+            Log.info(script, "begin configure registry secret.")
+
+            registrySecret = "regcred"
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
+                       retVal=`echo \\`kubectl get secret ${registrySecret} -n ${namespace} 2>&1\\`` &&\
+                       if echo \"\$retVal\" \\| grep -q 'not found'; then\n \
+                          kubectl create secret docker-registry ${registrySecret} -n ${namespace} --docker-server=http://fmwk8s-dev.dockerhub-den.oraclecorp.com --docker-username='${registryUsername}' --docker-password='${registryPass}' --docker-email='${registryUsername}'\n \
+                       fi"
+
+            Log.info(script, "configure registry secret success.")
+        }
+        catch (exc) {
+            Log.error(script, "configure registry secret failed.")
+            throw exc
+        }
+    }
+
     static publishLogs(script) {
         try {
             Log.info(script, "begin publish logs.")
