@@ -338,7 +338,7 @@ pipeline {
                     steps {
                         container('jnlp') {
                             script {
-                                EnvironmentSetup.waitHoursAfter(this, "false")
+                                EnvironmentSetup.waitHoursAfter(this, "true")
                             }
                         }
                     }
