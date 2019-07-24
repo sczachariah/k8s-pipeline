@@ -52,9 +52,12 @@ class IngressController {
     static deployApache(script, lbHelmRelease, domainNamespace) {
         try {
             Log.info(script, "begin deploy apache ingress controller.")
-            script.sh "helm init && \
+            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
+                   cd kubernetes/samples/charts && \
+                   helm init && \
                    helm repo update && \
-                   helm install bitnami/apache --name ${lbHelmRelease} --namespace ${domainNamespace}"
+                   helm install --name ${lbHelmRelease} apache-webtier --namespace ${domainNamespace} --set httpNodePort=30306,httpsNodePort=30444"
+
             Log.info(script, "deploy apache ingress controller success.")
         }
         catch (exc) {
