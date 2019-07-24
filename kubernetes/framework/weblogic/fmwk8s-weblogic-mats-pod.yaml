@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fmwk8s-weblogic-mats
+spec:
+  containers:
+    - name: fmwk8s-weblogic-mats
+      image: "%TEST_IMAGE%"
+      imagePullPolicy: Always
+      envFrom:
+        - configMapRef:
+            name: fmwk8s-weblogic-env-configmap
+  restartPolicy: Never
+---
+---
