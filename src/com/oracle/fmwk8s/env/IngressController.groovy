@@ -54,12 +54,14 @@ class IngressController {
     static deployApache(script, lbHelmRelease, domainNamespace) {
         try {
             Log.info(script, "begin deploy apache ingress controller.")
-            script.git branch: "${Common.operatorBranch}",
+            Log.info(script,Common.operatorBranch)
+            script.git branch: "master",
                     url: 'https://github.com/oracle/weblogic-kubernetes-operator'
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
                    helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
-                   helm install kubernetes/charts/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set image=fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3,httpNodePort=30306,httpsNodePort=30444"
+                   cd weblogic-kubernetes-operator/kubernetes/charts && \
+                   helm install apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set image=fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3,httpNodePort=30306,httpsNodePort=30444"
 
             Log.info(script, "deploy apache ingress controller success.")
         }
