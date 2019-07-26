@@ -43,6 +43,8 @@ spec:
           env:
             - name: DB_SID
               value: %DB_NAME%
+            - name: DB_PASSWD
+              value: %DB_PASSWORD%
             - name: DB_PDB
               value: %DB_NAME%pdb
             - name: DB_DOMAIN

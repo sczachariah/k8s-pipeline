@@ -24,7 +24,7 @@ class Domain {
 
                 script.sh "retVal=`echo \\`kubectl get secret ${domainName}-rcu-credentials -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
-                          kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${domainName} -p Welcome1 -a sys -q Oradoc_db1 -d ${domainName} -n ${domainNamespace} \n \
+                          kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${domainName} -p Welcome1 -a sys -q ${Database.dbPassword} -d ${domainName} -n ${domainNamespace} \n \
                        fi"
 
                 Log.info(script, "configure rcu secrets success.")
@@ -52,7 +52,7 @@ class Domain {
                 script.sh "cd kubernetes/framework/db/rcu && \
                            sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com|g\" ${Common.productId}-rcu-configmap.yaml && \
                            sed -i \"s|%RCUPREFIX%|${domainName}|g\" ${Common.productId}-rcu-configmap.yaml && \
-                           sed -i \"s|%SYS_PASSWORD%|Oradoc_db1|g\" ${Common.productId}-rcu-configmap.yaml && \
+                           sed -i \"s|%SYS_PASSWORD%|${Database.dbPassword}|g\" ${Common.productId}-rcu-configmap.yaml && \
                            sed -i \"s|%PASSWORD%|Welcome1|g\" ${Common.productId}-rcu-configmap.yaml && \
                            cat ${Common.productId}-rcu-configmap.yaml"
 
