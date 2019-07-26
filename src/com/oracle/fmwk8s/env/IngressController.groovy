@@ -58,7 +58,7 @@ class IngressController {
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
                    helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
-                   helm install kubernetes/samples/charts/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set image=fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3,imagePullSecrets=${Common.denRegistrySecret},httpNodePort=30306,httpsNodePort=30444"
+                   helm install kubernetes/samples/charts/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set image=fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3,imagePullSecrets=${Common.denRegistrySecret}"
 
             Log.info(script, "deploy apache ingress controller success.")
         }
