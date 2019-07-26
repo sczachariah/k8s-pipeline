@@ -49,12 +49,12 @@ pipeline {
                     }
                 }
                 container('jnlp') {
-
-                    script {
+                    dir('fmwsamples') {
+                        script {
                             // Common.publishLogs(this)
                              IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
                              sleep(60)
-
+                        }
                     }
                 }
             }
