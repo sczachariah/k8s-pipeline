@@ -8,6 +8,7 @@ import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.IngressController
 import com.oracle.fmwk8s.env.Operator
+import com.oracle.fmwk8s.test.Functional
 
 pipeline {
     agent {
@@ -40,21 +41,154 @@ pipeline {
         stage('validate input parameters') {
             steps {
                 log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
+
+                container('jnlp') {
+                    script {
+                        Validation.validateInputs(this)
+                    }
+                }
+            }
+        }
+
+        stage('deploy kubernetes operator') {
+            steps {
                 container('jnlp') {
                     script {
                         Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}")
                         Operator.verifyOperator(this, "${OPERATOR_NS}")
-                        Domain.createNamespace(this, "${DOMAIN_NS}")
-                        Common.configureRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
                     }
                 }
+
                 container('jnlp') {
-                    dir('fmwsamples') {
-                        script {
-                            // Common.publishLogs(this)
-                             IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
-                             sleep(60)
+                    script {
+                        Domain.createNamespace(this, "${DOMAIN_NS}")
+                        Common.configureRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
+                        EnvironmentSetup.createNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
+                    }
+                }
+            }
+        }
+
+        stage('prepare fmw product environment') {
+            parallel {
+                stage('setup database') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwk8s') {
+                                script {
+                                    Database.deployDatabase(this, "${DATABASE_VERSION}", "${DOMAIN_NS}")
+                                    Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                }
+                            }
                         }
+                    }
+                }
+                stage('prepare fmw domain in pv') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwsamples') {
+                                script {
+                                    Domain.pullSampleScripts(this)
+
+                                    Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
+                                    Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
+                                    Domain.prepareDomain(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        stage('deploy fmw domain') {
+            parallel {
+                stage('create fmw domain') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwsamples') {
+                                script {
+                                    Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.isDomainReady(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+
+                                    sleep(120)
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('configure domain loadbalancer') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwsamples') {
+                                script {
+                                    IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
+                                    sleep(60)
+                                    Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('verify domain ready') {
+            steps {
+                container('jnlp') {
+                    sh label: 'verify weblogic ready', script: '''
+                            curl -v "http://${DOMAIN_NAME}-admin-server.${DOMAIN_NS}.svc.cluster.local:7001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            '''
+                }
+            }
+        }
+
+        stage('run tests') {
+            parallel {
+                stage('wait for completion') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                EnvironmentSetup.waitHoursAfter(this, "${HOURS_AFTER}")
+                            }
+                        }
+                    }
+                }
+
+                stage('execute tests') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                Functional.invokeTest(this, "${TEST_TYPE}", "${TEST_IMAGE_TAG}")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('publish results') {
+            steps {
+                container('jnlp') {
+                    script {
+                        Common.publishLogs(this)
                     }
                 }
             }
@@ -70,10 +204,8 @@ pipeline {
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
 
                     IngressController.undeployLoadBalancer this, "${LB_HELM_RELEASE}"
-
-                    EnvironmentSetup.deleteNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
-
                     Domain.cleanDomain this, "${DOMAIN_NAME}", "${DOMAIN_NS}"
+                    EnvironmentSetup.deleteNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
                     Domain.cleanDomainNamespace this, "${DOMAIN_NS}"
 
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
