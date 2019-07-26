@@ -75,6 +75,8 @@ class Common {
             case "SOA":
                 domainName = "soainfra"
                 break
+            case "OIG":
+                domainName = "oim"
             default:
                 domainName = "unknown"
                 break
@@ -97,6 +99,9 @@ class Common {
                 productId = "soa"
                 defaultProductImage = "container-registry.oracle.com/middleware/soasuite:12.2.1.3"
                 break
+            case "OIG":
+                productId = "oim"
+                defaultProductImage = " fmw-paas-sandbox-cert-docker/oracle/oig:12.2.1.4.0-190725.1317.317"
             default:
                 productId = "unknown"
                 break
@@ -117,6 +122,9 @@ class Common {
                 samplesRepo = "git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git"
                 samplesDirectory = "domain-home-on-pv/multiple-Managed-servers"
                 break
+            case "OIG":
+                samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
+                samplesDirectory = "domain-home-on-pv/single-Managed-server"
             default:
                 samplesRepo = "unknown"
                 samplesDirectory = "unknown"
