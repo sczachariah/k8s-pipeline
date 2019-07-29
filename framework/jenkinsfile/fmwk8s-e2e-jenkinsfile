@@ -54,8 +54,8 @@ pipeline {
             steps {
                 container('jnlp') {
                     script {
-                        Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}")
-                        Operator.verifyOperator(this, "${OPERATOR_NS}")
+                        Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}","${ELK_ENABLE}")
+                        Operator.verifyOperator(this, "${OPERATOR_NS}","${ELK_ENABLE}")
                     }
                 }
 
