@@ -40,6 +40,7 @@ class Database {
                         echo \"DB is not Running. Iteration \$i of 25. Sleeping\"\n \
                         sleep 60\n \
                         dbstat=`echo \\`kubectl get pods -n ${dbNamespace} 2>&1 | grep ${dbName}\\``\n \
+                        `echo \\`kubectl get events --namespace=${dbNamespace}\\`` \n \
                         done"
 
                 Log.info(script, "DB container is Running.")
