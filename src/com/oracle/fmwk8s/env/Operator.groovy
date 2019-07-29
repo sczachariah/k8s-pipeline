@@ -8,10 +8,11 @@ class Operator {
     static def operatorServiceAccount
     static def operatorHelmRelease
 
-    static deployOperator(script, operatorVersion, operatorHelmRelease, operatorNamespace, operatorServiceAccount) {
+    static deployOperator(script, operatorVersion, operatorHelmRelease, operatorNamespace, operatorServiceAccount , elkEnable) {
         Common.getOperatorVersions(operatorVersion)
         try {
             Log.info(script, "begin deploy kubernetes operator.")
+            Log.info(script, ${elkEnable})
 
             createNamespace(script, operatorNamespace)
             this.operatorNamespace = operatorNamespace
@@ -23,13 +24,28 @@ class Operator {
 
             script.sh "retVal==`echo \\`helm ls ${operatorHelmRelease}\\``"
 
-            script.sh "if [[ \$retVal ]]; then\n \
-                          helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
-                       else\n \
-                          helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
+
+
+            script.sh "if [[ ${elkEnable} == \"FALSE\" ]]; then\n \
+                           if [[ \$retVal ]]; then\n \
+                               helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
+                           else\n \
+                               helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
                                         --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} \
                                         --set image=oracle/weblogic-kubernetes-operator:${Common.operatorImageVersion} --wait\n \
+                           fi \n \
+                       else \n \
+                           echo \"True elkEnable\" \n \
+                           if [[ \$retVal ]]; then\n \
+                               helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
+                           else\n \
+                               helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
+                                        --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} \
+                                        --set image=oracle/weblogic-kubernetes-operator:${Common.operatorImageVersion} \
+                                        --set elkIntegrationEnabled=true --set elasticSearchHost=elasticsearch.logging.svc.cluster.local --set elasticSearchPort=9200 --wait\n \
+                           fi \n \
                        fi"
+
 
             Log.info(script, "deploy kubernetes operator success.")
         }
