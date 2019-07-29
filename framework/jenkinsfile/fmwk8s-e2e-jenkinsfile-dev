@@ -56,7 +56,7 @@ pipeline {
                     script {
                         echo "Elastic search enable flag is :::${ELK_ENABLE}"
                         Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}" ,"${ELK_ENABLE}" )
-                        Operator.verifyOperator(this, "${OPERATOR_NS}")
+                        Operator.verifyOperator(this, "${OPERATOR_NS}" ,"${ELK_ENABLE}" )
                     }
                 }
 

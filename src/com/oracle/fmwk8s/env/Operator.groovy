@@ -55,11 +55,15 @@ class Operator {
         }
     }
 
-    static verifyOperator(script, operatorNamespace) {
+    static verifyOperator(script, operatorNamespace, elkEnable) {
         try {
             Log.info(script, "begin verify kubernetes operator.")
 
-            script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1"
+            script.sh "if [[ ${elkEnable} == \\\"FALSE\\\" ]]; then\\n \
+                            kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1 \n  \
+                       else\n \
+                            kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 2/2\n \
+                       fi"
 
             Log.info(script, "verify kubernetes operator success.")
         }
