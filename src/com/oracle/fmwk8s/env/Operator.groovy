@@ -8,11 +8,11 @@ class Operator {
     static def operatorServiceAccount
     static def operatorHelmRelease
 
-    static deployOperator(script, operatorVersion, operatorHelmRelease, operatorNamespace, operatorServiceAccount , elkEnable) {
+    static deployOperator(script, operatorVersion, operatorHelmRelease, operatorNamespace, operatorServiceAccount, elkEnable) {
         Common.getOperatorVersions(operatorVersion)
         try {
             Log.info(script, "begin deploy kubernetes operator.")
-            Log.info(script, ${elkEnable})
+            Log.info(script, elkEnable)
 
             createNamespace(script, operatorNamespace)
             this.operatorNamespace = operatorNamespace
