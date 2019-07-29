@@ -24,28 +24,23 @@ class Operator {
 
             script.sh "retVal==`echo \\`helm ls ${operatorHelmRelease}\\``"
 
-
-
-            script.sh "if [[ ${elkEnable} == \"FALSE\" ]]; then\n \
-                           if [[ \$retVal ]]; then\n \
+            if (elkEnable.equals("FALSE")) {
+                script.sh "if [[ \$retVal ]]; then\n \
                                helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
                            else\n \
                                helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
                                         --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} \
-                                        --set image=oracle/weblogic-kubernetes-operator:${Common.operatorImageVersion} --wait\n \
-                           fi \n \
-                       else \n \
-                           echo \"True elkEnable\" \n \
-                           if [[ \$retVal ]]; then\n \
+                                        --set image=oracle/weblogic-kubernetes-operator:${Common.operatorImageVersion} --wait"
+            } else {
+                Log.info(script, "elk is enabled")
+                script.sh "if [[ \$retVal ]]; then\n \
                                helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
                            else\n \
                                helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
                                         --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} \
                                         --set image=oracle/weblogic-kubernetes-operator:${Common.operatorImageVersion} \
-                                        --set elkIntegrationEnabled=true --set elasticSearchHost=${Common.elasticSearchHost} --set elasticSearchPort=${Common.elasticSearchPort} --wait\n \
-                           fi \n \
-                       fi"
-
+                                        --set elkIntegrationEnabled=true --set elasticSearchHost=${Common.elasticSearchHost} --set elasticSearchPort=${Common.elasticSearchPort} --wait"
+            }
 
             Log.info(script, "deploy kubernetes operator success.")
         }
@@ -59,11 +54,11 @@ class Operator {
         try {
             Log.info(script, "begin verify kubernetes operator.")
 
-            script.sh "if [[ ${elkEnable} == \\\"FALSE\\\" ]]; then\n \
-                            kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1\n \
-                       else\n \
-                            kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 2/2\n \
-                       fi"
+            if (elkEnable.equals("FALSE")) {
+                script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1"
+            } else {
+                script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 2/2"
+            }
 
             Log.info(script, "verify kubernetes operator success.")
         }
