@@ -20,6 +20,9 @@ class Common {
     static def samplesBranch
     static def samplesDirectory
 
+    static def elasticSearchHost = "elasticsearch.logging.svc.cluster.local"
+    static def elasticSearchPort = "9200"
+
     static def getUniqueId(def script, productName) {
         def date = new Date()
         def sdf = new SimpleDateFormat("MMddHHmm")

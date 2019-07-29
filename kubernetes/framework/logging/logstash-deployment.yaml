@@ -1,0 +1,31 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: logstash-%DOMAIN_NAME%
+  namespace: %DOMAIN_NAMESPACE%
+spec:
+  template: # create pods using pod definition in this template
+    metadata:
+      labels:
+        k8s-app: logstash-%DOMAIN_NAME%
+    spec:
+      volumes:
+        - name: domain-storage-volume
+          persistentVolumeClaim:
+            claimName: %DOMAIN_PVC%
+        - name: shared-logs
+          emptyDir: {}
+      containers:
+        - name: logstash
+          image: logstash:6.6.0
+          command: ["/bin/sh"]
+          args: ["/usr/share/logstash/bin/logstash", "-f", "/shared/domains/logstash/logstash.conf"]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: domain-storage-volume
+              mountPath: /shared/domains
+            - name: shared-logs
+              mountPath: /shared-logs
+          ports:
+            - containerPort: 5044
+              name: logstash

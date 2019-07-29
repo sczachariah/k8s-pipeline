@@ -42,7 +42,7 @@ class Operator {
                                helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
                                         --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} \
                                         --set image=oracle/weblogic-kubernetes-operator:${Common.operatorImageVersion} \
-                                        --set elkIntegrationEnabled=true --set elasticSearchHost=elasticsearch.logging.svc.cluster.local --set elasticSearchPort=9200 --wait\n \
+                                        --set elkIntegrationEnabled=true --set elasticSearchHost=${Common.elasticSearchHost} --set elasticSearchPort=${Common.elasticSearchPort} --wait\n \
                            fi \n \
                        fi"
 

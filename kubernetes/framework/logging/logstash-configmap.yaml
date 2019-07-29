@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: %DOMAIN_NAME%-logstash-configmap
+data:
+  logstash.conf: |-
+    input {
+      file {
+        path => "/shared/logs/%DOMAIN_NAME%/AdminServer.log"
+        start_position => beginning
+      }
+      file {
+        path => "/shared/logs/%DOMAIN_NAME%/soa_server1.log"
+        start_position => beginning
+      }
+    }
+    filter {
+      grok {
+        match => [ "message", "<%{DATA:log_timestamp}> <%{WORD:log_level}> <%{WORD:thread}> <%{HOSTNAME:hostname}> <%{HOSTNAME:servername}> <%{DATA:timer}> <<%{DATA:kernel}>> <> <%{DATA:uuid}> <%{NUMBER:timestamp}> <%{DATA:misc}> <%{DATA:log_number}> <%{DATA:log_message}>" ]
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => ["%ELASTICSEARCH_HOST%"]
+      }
+    }
+---
