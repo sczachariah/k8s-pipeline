@@ -8,7 +8,7 @@ class Logging {
     static configureLogstash(script, domainName, domainNamespace){
     }
 
-    static deployLogstash(script){
+    static deployLogstash(script, domainName, domainNamespace){
         configureLogstashConfigmap()
         configureLogstash()
 
