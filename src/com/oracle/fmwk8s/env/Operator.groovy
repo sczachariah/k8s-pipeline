@@ -43,6 +43,8 @@ class Operator {
             }
 
             Log.info(script, "deploy kubernetes operator success.")
+
+            verifyOperator(script, operatorNamespace, elkEnable)
         }
         catch (exc) {
             Log.error(script, "deploy kubernetes operator failed.")

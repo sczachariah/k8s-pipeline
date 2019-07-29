@@ -1,8 +1,7 @@
 package com.oracle.fmwk8s.env
 
-import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.common.Common
-
+import com.oracle.fmwk8s.common.Log
 
 class IngressController {
 
@@ -54,7 +53,7 @@ class IngressController {
     static deployApache(script, lbHelmRelease, domainNamespace) {
         try {
             Log.info(script, "begin deploy apache ingress controller.")
-            Log.info(script,Common.operatorBranch)
+            Log.info(script, Common.operatorBranch)
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
                    helm init --client-only --skip-refresh --wait && \
                    helm repo update && \

@@ -55,7 +55,6 @@ pipeline {
                 container('jnlp') {
                     script {
                         Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}","${ELK_ENABLE}")
-                        Operator.verifyOperator(this, "${OPERATOR_NS}","${ELK_ENABLE}")
                     }
                 }
 
@@ -112,7 +111,6 @@ pipeline {
                             dir('fmwsamples') {
                                 script {
                                     Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                    Domain.isDomainReady(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
 
                                     sleep(120)
                                 }

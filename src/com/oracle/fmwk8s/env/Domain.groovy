@@ -195,6 +195,8 @@ class Domain {
                        sleep 360"
             Log.info(script, "start " + Common.productId + " domain success.")
 
+            isDomainReady(script, domainName, domainNamespace)
+
         }
         catch (exc) {
             Log.error(script, "create/start " + Common.productId + " domain failed.")
@@ -253,7 +255,7 @@ class Domain {
     }
 
     static cleanDomain(script, domainName, namespace) {
-        try{
+        try {
             script.sh "helm delete --purge ${namespace}"
         }
         catch (exc) {
