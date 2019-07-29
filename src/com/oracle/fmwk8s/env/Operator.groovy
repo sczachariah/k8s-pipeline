@@ -59,8 +59,8 @@ class Operator {
         try {
             Log.info(script, "begin verify kubernetes operator.")
 
-            script.sh "if [[ ${elkEnable} == \\\"FALSE\\\" ]]; then\\n \
-                            kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1 \n  \
+            script.sh "if [[ ${elkEnable} == \\\"FALSE\\\" ]]; then\n \
+                            kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1\n \
                        else\n \
                             kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 2/2\n \
                        fi"
