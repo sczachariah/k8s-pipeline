@@ -30,7 +30,8 @@ class Operator {
                            else\n \
                                helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
                                         --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} \
-                                        --set image=oracle/weblogic-kubernetes-operator:${Common.operatorImageVersion} --wait"
+                                        --set image=oracle/weblogic-kubernetes-operator:${Common.operatorImageVersion} --wait\n \
+                           fi"
             } else {
                 Log.info(script, "elk is enabled")
                 script.sh "if [[ \$retVal ]]; then\n \
@@ -39,7 +40,8 @@ class Operator {
                                helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
                                         --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} \
                                         --set image=oracle/weblogic-kubernetes-operator:${Common.operatorImageVersion} \
-                                        --set elkIntegrationEnabled=true --set elasticSearchHost=${Common.elasticSearchHost} --set elasticSearchPort=${Common.elasticSearchPort} --wait"
+                                        --set elkIntegrationEnabled=true --set elasticSearchHost=${Common.elasticSearchHost} --set elasticSearchPort=${Common.elasticSearchPort} --wait\n \
+                           fi"
             }
 
             Log.info(script, "deploy kubernetes operator success.")
