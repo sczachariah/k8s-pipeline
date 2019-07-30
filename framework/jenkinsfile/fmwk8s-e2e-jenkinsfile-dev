@@ -160,39 +160,6 @@ pipeline {
             }
         }
 
-        stage('run tests') {
-            parallel {
-                stage('wait for completion') {
-                    steps {
-                        container('jnlp') {
-                            script {
-                                EnvironmentSetup.waitHoursAfter(this, "${HOURS_AFTER}")
-                            }
-                        }
-                    }
-                }
-
-                stage('execute tests') {
-                    steps {
-                        container('jnlp') {
-                            script {
-                                Functional.invokeTest(this, "${TEST_TYPE}", "${TEST_IMAGE_TAG}")
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('publish results') {
-            steps {
-                container('jnlp') {
-                    script {
-                        Common.publishLogs(this)
-                    }
-                }
-            }
-        }
     }
 
     post {
