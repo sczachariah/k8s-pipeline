@@ -85,7 +85,7 @@ pipeline {
 						#docker tag fmw-cert-docker.dockerhub-den.oraclecorp.com/soaoperatorpoc/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
 						
 						docker pull oracle/weblogic-kubernetes-operator:2.1
-\t\t                    docker tag oracle/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
+						docker tag oracle/weblogic-kubernetes-operator:2.1 weblogic-kubernetes-operator:2.1
 
 
 						docker build --build-arg https_proxy=$https_proxy -t soa-kubernetes-operator:2.1 --no-cache=true .
