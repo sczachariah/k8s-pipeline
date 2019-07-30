@@ -47,7 +47,7 @@ class Logging {
 
     static updateLogstashDeployment(script, domainName, domainNamespace) {
         try {
-            Log.info(script, "begin configure logstash.")
+            Log.info(script, "begin update and deploy logstash.")
 
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
                        cd ../fmwk8s/kubernetes/framework/logging && \
@@ -55,12 +55,13 @@ class Logging {
                        sed -i \"s#%DOMAIN_NAMESPACE%#${domainNamespace}#g\" logstash-deployment.yaml && \
                        sed -i \"s#%DOMAIN_PVC%#${domainName}-${domainNamespace}-pvc#g\" logstash-deployment.yaml && \
                        cat logstash-deployment.yaml && \
+                       kubectl apply -f logstash-deployment.yaml -n ${domainNamespace} && \
                        sleep 60"
 
-            Log.info(script, "configure logstash success.")
+            Log.info(script, "update and deploy logstash success.")
         }
         catch (exc) {
-            Log.error(script, "configure logstash failed.")
+            Log.error(script, "update and deploy logstash failed.")
             throw exc
         }
 
@@ -91,7 +92,7 @@ class Logging {
             configureLogstashConfigmap(script, domainName)
             configureLogstash(script, domainName, domainNamespace)
             updateLogstashDeployment(script, domainName, domainNamespace)
-            deployLogstashDeployment(script, domainNamespace)
+            //deployLogstashDeployment(script, domainNamespace)
 
             Log.info(script, "deploy logstash success.")
         }
