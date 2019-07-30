@@ -20,8 +20,7 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "configure logstash configmap failed.")
-        }
-        finally {
+            throw exc
         }
     }
 
@@ -41,9 +40,9 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "configure logstash failed.")
+            throw exc
         }
-        finally {
-        }
+
     }
 
     static updateLogstashDeployment(script, domainName, domainNamespace) {
@@ -62,9 +61,9 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "configure logstash failed.")
+            throw exc
         }
-        finally {
-        }
+
     }
 
     static deployLogstashDeployment(script, domainNamespace) {
@@ -80,9 +79,9 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "logstash deployment failed.")
+            throw exc
         }
-        finally {
-        }
+
     }
 
     static deployLogstash(script, domainName, domainNamespace) {
@@ -98,8 +97,7 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "deploy logstash failed.")
-        }
-        finally {
+            throw exc
         }
 
 
