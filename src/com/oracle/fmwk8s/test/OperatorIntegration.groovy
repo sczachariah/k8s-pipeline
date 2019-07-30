@@ -24,7 +24,7 @@ class OperatorIntegration {
             Log.info(script, "begin create test properties.")
 
             script.sh "cd config && \
-                       sed -i \"s|\\${PRODUCT_NAME}|${Common.productName}|g\" operatorTest.properties && \
+                       sed -i \"s|/\\${PRODUCT_NAME}/|${Common.productName}|g\" operatorTest.properties && \
                        sed -i \"s|\\${OPERATOR_NS}|${Operator.operatorNamespace}|g\" operatorTest.properties && \
                        sed -i \"s|\\${OPERATOR_SA}|${Operator.operatorServiceAccount}|g\" operatorTest.properties && \
                        sed -i \"s|\\${DOMAIN_NAME}|${Domain.domainName}|g\" operatorTest.properties && \
