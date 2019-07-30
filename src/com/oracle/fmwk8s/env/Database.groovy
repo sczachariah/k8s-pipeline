@@ -23,7 +23,7 @@ class Database {
                         sed -i \"s#%DB_NAME%#${dbName}#g\" oracle-db.yaml && \
                         sed -i \"s#%DB_PASSWORD%#${dbPassword}#g\" oracle-db.yaml && \
                         sed -i \"s#%DB_NAMESPACE%#${dbNamespace}#g\" oracle-db.yaml && \
-                        sed -i \"s#%DB_IMAGE%#container-registry.oracle.com/database/enterprise:${databaseVersion}#g\" oracle-db.yaml && \
+                        sed -i \"s#%DB_IMAGE%#container-registry.oracle.com/database/enterprise:${databaseVersion}-slim#g\" oracle-db.yaml && \
                         sed -i \"s#%DB_SECRET%#${Common.registrySecret}#g\" oracle-db.yaml && \
                         cat oracle-db.yaml && \
                         kubectl apply -f oracle-db.yaml -n ${dbNamespace}"
@@ -40,6 +40,7 @@ class Database {
                         echo \"DB is not Running. Iteration \$i of 25. Sleeping\"\n \
                         sleep 60\n \
                         dbstat=`echo \\`kubectl get pods -n ${dbNamespace} 2>&1 | grep ${dbName}\\``\n \
+                        `echo \\`kubectl get events --namespace=${dbNamespace}\\``\n \
                         done"
 
                 Log.info(script, "DB container is Running.")
