@@ -201,7 +201,7 @@ class Domain {
 
             script.sh "kubectl get all,domains -n ${domainNamespace}"
             script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
-            script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-admin-server.${domainNamespace}.svc.cluster.local:7001/weblogic/ready\" | grep 200"
+            script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
 
             Log.info(script, "domain readiness check success.")
 
