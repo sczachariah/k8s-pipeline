@@ -121,7 +121,9 @@ class Domain {
                        cp -r create-pv-pvc-inputs.yaml ${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml && \
                        ls -ltr ${script.env.WORKSPACE}/ && cat ${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml"
 
-            yamlUtility.generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, "${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml")
+            String fileContents = new File('${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml').getText('UTF-8')
+
+            yamlUtility.generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, fileContents)
 
             script.sh "cd kubernetes/samples/scripts/create-weblogic-domain-pv-pvc && \
                        cat ${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml && \

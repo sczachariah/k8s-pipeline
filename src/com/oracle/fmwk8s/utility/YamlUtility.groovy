@@ -11,27 +11,21 @@ class YamlUtility {
     static domainInputsMap
 
     static generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, pvInputsYaml) {
-        println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
-        println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
-        println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
-        println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
-        println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
+        Map<Object, Object> map = readYaml(pvInputsYaml)
+        println("Original Yaml")
+        printMap(map)
 
-//        Map<Object, Object> map = readYaml(pvInputsYaml)
-//        println("Original Yaml")
-//        printMap(map)
-//
-//        map.put("baseName", domainNamespace.toString())
-//        map.put("domainUID", domainName.toString())
-//        map.put("namespace", domainNamespace.toString())
-//        map.put("weblogicDomainStoragePath", nfsDomainPath.toString())
-//        map.put("weblogicDomainStorageReclaimPolicy", "Recycle")
-//
-//        println("Modified Yaml")
-//        printMap(map)
-//        pvInputsMap = map
-//
-//        writeYaml(map, pvInputsYaml)
+        map.put("baseName", domainNamespace.toString())
+        map.put("domainUID", domainName.toString())
+        map.put("namespace", domainNamespace.toString())
+        map.put("weblogicDomainStoragePath", nfsDomainPath.toString())
+        map.put("weblogicDomainStorageReclaimPolicy", "Recycle")
+
+        println("Modified Yaml")
+        printMap(map)
+        pvInputsMap = map
+
+        writeYaml(map, pvInputsYaml)
     }
 
     static generateDomainInputsYaml(domainName, domainNamespace, domainInputsYaml) {
@@ -65,10 +59,10 @@ class YamlUtility {
     }
 
     static readYaml(yamlFilePath) {
-        def inputStream = new File(yamlFilePath).newInputStream()
+//        def inputStream = new File(yamlFilePath).newInputStream()
         Yaml yamlReader = new Yaml()
-        Map<Object, Object> map = yamlReader.load(inputStream)
-        inputStream.close()
+        Map<Object, Object> map = yamlReader.load(yamlFilePath)
+//        inputStream.close()
 
         return map
     }
