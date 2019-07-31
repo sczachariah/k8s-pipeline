@@ -10,9 +10,8 @@ class YamlUtility {
     static pvInputsMap
     static domainInputsMap
 
-    static generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, pvInputsYaml) {
-        println pvInputsYaml
-        Map<Object, Object> map = readYaml(pvInputsYaml)
+    static generatePeristentVolumeInputsYaml(script, domainName, domainNamespace, nfsDomainPath, pvInputsYamlFile) {
+        Map<Object, Object> map = readYaml(script, pvInputsYamlFile)
         println "Original Yaml"
         printMap(map)
 
@@ -26,11 +25,11 @@ class YamlUtility {
         printMap(map)
         pvInputsMap = map
 
-        writeYaml(map, pvInputsYaml)
+        writeYaml(script, map, pvInputsYamlFile)
     }
 
-    static generateDomainInputsYaml(domainName, domainNamespace, domainInputsYaml) {
-        Map<Object, Object> map = readYaml(domainInputsYaml)
+    static generateDomainInputsYaml(script, domainName, domainNamespace, domainInputsYamlFile) {
+        Map<Object, Object> map = readYaml(script, domainInputsYamlFile)
         println "Original Yaml"
         printMap(map)
 
@@ -56,26 +55,27 @@ class YamlUtility {
         printMap(map)
         domainInputsMap = map
 
-        writeYaml(map, domainInputsYaml)
+        writeYaml(script, map, domainInputsYamlFile)
     }
 
-    static readYaml(yamlFilePath) {
-//        def inputStream = new File(yamlFilePath).newInputStream()
-        Yaml yamlReader = new Yaml()
-        Map<Object, Object> map = yamlReader.load(yamlFilePath)
-//        inputStream.close()
+    static readYaml(script, yamlFile) {
+        def yamlFileContents = script.readFile yamlFile
 
+        Yaml yamlReader = new Yaml()
+        Map<Object, Object> map = yamlReader.load(yamlFileContents)
         return map
     }
 
-    static writeYaml(map, yamlFilePath) {
+    static writeYaml(script, map, yamlFile) {
         DumperOptions options = new DumperOptions()
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
         options.setPrettyFlow(true)
 
-        FileWriter writer = new FileWriter(yamlFilePath)
+        StringWriter yamlFileContents = new StringWriter()
         Yaml yamlWriter = new Yaml(options)
-        yamlWriter.dump(map, writer)
+        yamlWriter.dump(map, yamlFileContents)
+
+        script.writeFile yamlFile, yamlFileContents
     }
 
     static printMap(map) {

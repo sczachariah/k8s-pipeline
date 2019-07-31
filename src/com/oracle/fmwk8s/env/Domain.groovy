@@ -120,9 +120,7 @@ class Domain {
             script.sh "cp -r kubernetes/samples/scripts/create-weblogic-domain-pv-pvc/create-pv-pvc-inputs.yaml . && \
                        ls -ltr . && cat create-pv-pvc-inputs.yaml"
 
-            def pvInputsYaml = script.readFile "create-pv-pvc-inputs.yaml"
-
-            yamlUtility.generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, pvInputsYaml)
+            yamlUtility.generatePeristentVolumeInputsYaml(script, domainName, domainNamespace, nfsDomainPath, "create-pv-pvc-inputs.yaml")
 
             script.sh "cat create-pv-pvc-inputs.yaml && \
                        ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o script-output-directory"
@@ -159,9 +157,7 @@ class Domain {
                        cp -r kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-job-template.yaml . && \
                        cat create-domain-inputs.yaml"
 
-            def domainInputsYaml = script.readFile "create-domain-inputs.yaml"
-
-            yamlUtility.generateDomainInputsYaml(domainName, domainNamespace, domainInputsYaml)
+            yamlUtility.generateDomainInputsYaml(script, domainName, domainNamespace, "create-domain-inputs.yaml")
 
             script.sh "cat create-domain-inputs.yaml"
 
