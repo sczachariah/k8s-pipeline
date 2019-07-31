@@ -53,8 +53,10 @@ pipeline {
         stage('deploy kubernetes operator') {
             steps {
                 container('jnlp') {
-                    script {
-                        Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}","${ELK_ENABLE}")
+                    dir('weblogic-operator') {
+                        script {
+                            Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}", "${ELK_ENABLE}")
+                        }
                     }
                 }
 
