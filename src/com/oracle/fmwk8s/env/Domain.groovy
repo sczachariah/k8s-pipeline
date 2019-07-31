@@ -118,8 +118,8 @@ class Domain {
             Log.info(script, "begin prepare persistent volume.")
 
             script.sh "cd kubernetes/samples/scripts/create-weblogic-domain-pv-pvc && \
-                       cp create-pv-pvc-inputs.yaml ${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml && \
-                       cat create-pv-pvc-inputs.yaml"
+                       cp -r create-pv-pvc-inputs.yaml ${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml && \
+                       ls -ltr ${script.env.WORKSPACE}/ && cat ${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml"
 
             yamlUtility.generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, "${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml")
 
@@ -154,9 +154,9 @@ class Domain {
             }
 
             script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
-                        cp create-domain-inputs.yaml ${script.env.WORKSPACE}/create-domain-inputs.yaml && \
-                        cp create-domain-job-template.yaml ${script.env.WORKSPACE}/create-domain-job-template.yaml && \
-                        cat create-domain-inputs.yaml"
+                       cp -r create-domain-inputs.yaml ${script.env.WORKSPACE}/create-domain-inputs.yaml && \
+                       cp -r create-domain-job-template.yaml ${script.env.WORKSPACE}/create-domain-job-template.yaml && \
+                       cat ${script.env.WORKSPACE}/create-domain-inputs.yaml"
 
             yamlUtility.generateDomainInputsYaml(domainName, domainNamespace, "${script.env.WORKSPACE}/create-domain-inputs.yaml")
 
