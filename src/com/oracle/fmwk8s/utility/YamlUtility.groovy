@@ -2,7 +2,6 @@ package com.oracle.fmwk8s.utility
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.env.Database
-@GrabConfig(systemClassLoader = true)
 @GrabResolver(name = 'fmw-virtual', root = 'http://artifactory-slc-prod1.oraclecorp.com/artifactory/fmw-virtual/')
 @Grab('org.yaml:snakeyaml:1.24')
 import org.yaml.snakeyaml.*
