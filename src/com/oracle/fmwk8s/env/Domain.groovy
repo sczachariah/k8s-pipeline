@@ -2,6 +2,7 @@ package com.oracle.fmwk8s.env
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
+import com.oracle.fmwk8s.utility.YamlUtility
 
 class Domain {
     static def weblogicUser = "weblogic"
@@ -115,12 +116,13 @@ class Domain {
         try {
             Log.info(script, "begin prepare persistent volume.")
 
-            script.sh "cd kubernetes/samples/scripts/create-weblogic-domain-pv-pvc &&\
-                       sed -i \"s|baseName: weblogic-sample|baseName: ${domainNamespace}|g\" create-pv-pvc-inputs.yaml && \
-                       sed -i \"s|domainUID:|domainUID: ${domainName}|g\" create-pv-pvc-inputs.yaml && \
-                       sed -i \"s|namespace: default|namespace: ${domainNamespace}|g\" create-pv-pvc-inputs.yaml && \
-                       sed -i \"s|#weblogicDomainStoragePath: /scratch/k8s_dir|weblogicDomainStoragePath: ${nfsDomainPath}|g\" create-pv-pvc-inputs.yaml && \
-                       sed -i \"s|weblogicDomainStorageReclaimPolicy: Retain|weblogicDomainStorageReclaimPolicy: Recycle|g\" create-pv-pvc-inputs.yaml && \
+            script.sh "cd kubernetes/samples/scripts/create-weblogic-domain-pv-pvc && \
+                       cp create-pv-pvc-inputs.yaml create-pv-pvc-inputs.yaml.orig && \
+                       cat create-pv-pvc-inputs.yaml"
+
+            YamlUtility.generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, "kubernetes/samples/scripts/create-weblogic-domain-pv-pvc/create-pv-pvc-inputs.yaml")
+
+            script.sh "cd kubernetes/samples/scripts/create-weblogic-domain-pv-pvc && \
                        cat create-pv-pvc-inputs.yaml && \
                        ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${script.env.WORKSPACE}/script-output-directory"
 
@@ -148,26 +150,20 @@ class Domain {
             Log.info(script, "begin prepare domain.")
 
             if (!productImage?.trim()) {
-                productImage = Common.defaultProductImage
+                productImage = Common.productImage
+            } else {
+                Common.productImage = productImage
             }
 
             script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
                         cp create-domain-inputs.yaml create-domain-inputs.yaml.orig && \
                         cp create-domain-job-template.yaml create-domain-job-template.yaml.orig && \
-                        sed -i \"s|domainUID: domain1|domainUID: ${domainName}|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|domainHome: /shared/domains/domain1|domainHome: /shared/domains/${domainName}|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|initialManagedServerReplicas: 2|initialManagedServerReplicas: 2|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|image: ${Common.defaultProductImage}|image: ${productImage}|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|image: store/oracle/weblogic:12.2.1.3|image: ${productImage}|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|#imagePullSecretName:|imagePullSecretName: ${Common.registrySecret}|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|weblogicCredentialsSecretName: domain1-weblogic-credentials|weblogicCredentialsSecretName: ${domainName}-weblogic-credentials|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|logHome: /shared/logs/domain1|logHome: /shared/logs/${domainName}|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|namespace: default|namespace: ${domainNamespace}|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|persistentVolumeClaimName: domain1-weblogic-sample-pvc|persistentVolumeClaimName: ${domainName}-${domainNamespace}-pvc|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|rcuSchemaPrefix: domain1|rcuSchemaPrefix: ${domainName}|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|rcuDatabaseURL: database:1521/service|rcuDatabaseURL: ${Database.dbName}.${domainNamespace}:1521/${Database.dbName}pdb.us.oracle.com|g\" create-domain-inputs.yaml && \
-                        sed -i \"s|rcuCredentialsSecret: domain1-rcu-credentials|rcuCredentialsSecret: ${domainName}-rcu-credentials|g\" create-domain-inputs.yaml && \
-                        cat create-domain-inputs.yaml"
+                        cat create-domain-inputs.yaml.orig"
+
+            YamlUtility.generateDomainInputsYaml(domainName, domainNamespace, "kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-inputs.yaml")
+
+            script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
+                       cat create-domain-inputs.yaml"
 
             Log.info(script, "prepare domain success.")
 

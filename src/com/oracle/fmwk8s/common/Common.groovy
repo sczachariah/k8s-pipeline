@@ -9,7 +9,7 @@ class Common {
 
     static def productId
     static def productName
-    static def defaultProductImage
+    static def productImage
     static def registrySecret = "regcred"
     static def denRegistrySecret = "denregcred"
 
@@ -92,19 +92,19 @@ class Common {
         switch ("${productName}") {
             case "WLS":
                 productId = "weblogic"
-                defaultProductImage = "container-registry.oracle.com/middleware/weblogic:12.2.1.3"
+                productImage = "container-registry.oracle.com/middleware/weblogic:12.2.1.3"
                 break
             case "WLS-INFRA":
                 productId = "fmw-infrastructure"
-                defaultProductImage = "container-registry.oracle.com/middleware/fmw-infrastructure:12.2.1.3"
+                productImage = "container-registry.oracle.com/middleware/fmw-infrastructure:12.2.1.3"
                 break
             case "SOA":
                 productId = "soa"
-                defaultProductImage = "container-registry.oracle.com/middleware/soasuite:12.2.1.3"
+                productImage = "container-registry.oracle.com/middleware/soasuite:12.2.1.3"
                 break
             case "OIG":
                 productId = "oim"
-                defaultProductImage = " fmw-paas-sandbox-cert-docker/oracle/oig:12.2.1.4.0-190725.1317.317"
+                productImage = " fmw-paas-sandbox-cert-docker/oracle/oig:12.2.1.4.0-190725.1317.317"
             default:
                 productId = "unknown"
                 break
