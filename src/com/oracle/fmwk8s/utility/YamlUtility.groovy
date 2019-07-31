@@ -71,9 +71,11 @@ class YamlUtility {
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
         options.setPrettyFlow(true)
 
-        FileWriter yamlFileContents = new FileWriter(yamlFile)
+//        FileWriter yamlFileContents = new FileWriter(yamlFile)
         Yaml yamlWriter = new Yaml(options)
-        yamlWriter.dump(map, yamlFileContents)
+        def yamlFileContents = yamlWriter.dump(map)
+
+        script.writeFile file: yamlFile, text: yamlFileContents
 
 //        script.writeFile file: yamlFile, text: yamlFileContents.toString()
     }
