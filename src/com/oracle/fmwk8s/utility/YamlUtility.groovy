@@ -80,7 +80,6 @@ class YamlUtility implements Serializable {
         script.writeFile file: yamlFile + ".yaml", text: yamlFileContents.toString()
 
 //        script.writeYaml file: yamlFile + ".yaml", data: map
-
     }
 
 
