@@ -5,7 +5,7 @@ import com.oracle.fmwk8s.common.Common
 
 class Logging {
 
-    static configureLogstashConfigmap(script, domainName) {
+    static configureLogstashConfigmap(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin configure logstash configmap.")
 
@@ -14,6 +14,7 @@ class Logging {
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-configmap.yaml && \
                        sed -i \"s#%ELASTICSEARCH_HOST%#${Common.elasticSearchHost}:${Common.elasticSearchPort}#g\" logstash-configmap.yaml && \
                        cat logstash-configmap.yaml && \
+                       kubectl apply -f logstash-configmap.yaml -n ${domainNamespace} && \
                        sleep 60"
 
             Log.info(script, "configure logstash configmap success.")
@@ -67,23 +68,6 @@ class Logging {
 
     }
 
-    static deployLogstashDeployment(script, domainNamespace) {
-        try {
-            Log.info(script, "begin logstash deployment.")
-
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                       cd ../fmwk8s/kubernetes/framework/logging && \
-                       kubectl apply -f logstash-deployment.yaml -n ${domainNamespace} && \
-                       sleep 60"
-
-            Log.info(script, "logstash deployment success.")
-        }
-        catch (exc) {
-            Log.error(script, "logstash deployment failed.")
-            throw exc
-        }
-
-    }
 
     static deployLogstash(script, domainName, domainNamespace) {
         try {
@@ -92,7 +76,6 @@ class Logging {
             configureLogstashConfigmap(script, domainName)
             configureLogstash(script, domainName, domainNamespace)
             updateLogstashDeployment(script, domainName, domainNamespace)
-            //deployLogstashDeployment(script, domainNamespace)
 
             Log.info(script, "deploy logstash success.")
         }
