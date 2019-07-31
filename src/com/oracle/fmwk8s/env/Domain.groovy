@@ -118,14 +118,13 @@ class Domain {
             Log.info(script, "begin prepare persistent volume.")
 
             script.sh "cd kubernetes/samples/scripts/create-weblogic-domain-pv-pvc && \
-                       cp create-pv-pvc-inputs.yaml create-pv-pvc-inputs.yaml.orig && \
+                       cp create-pv-pvc-inputs.yaml ${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml && \
                        cat create-pv-pvc-inputs.yaml"
 
-            yamlUtility.generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, "kubernetes/samples/scripts/create-weblogic-domain-pv-pvc/create-pv-pvc-inputs.yaml")
+            yamlUtility.generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, "${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml")
 
-            script.sh "cd kubernetes/samples/scripts/create-weblogic-domain-pv-pvc && \
-                       cat create-pv-pvc-inputs.yaml && \
-                       ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o ${script.env.WORKSPACE}/script-output-directory"
+            script.sh "cat ${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml && \
+                       ./create-pv-pvc.sh -i ${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml -o ${script.env.WORKSPACE}/script-output-directory"
 
             script.sh "cp ${script.env.WORKSPACE}/script-output-directory/pv-pvcs/${domainName}-${domainNamespace}-pv.yaml ${script.env.WORKSPACE} && \
                        cp ${script.env.WORKSPACE}/script-output-directory/pv-pvcs/${domainName}-${domainNamespace}-pvc.yaml ${script.env.WORKSPACE} && \
@@ -155,14 +154,13 @@ class Domain {
             }
 
             script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
-                        cp create-domain-inputs.yaml create-domain-inputs.yaml.orig && \
-                        cp create-domain-job-template.yaml create-domain-job-template.yaml.orig && \
-                        cat create-domain-inputs.yaml.orig"
+                        cp create-domain-inputs.yaml ${script.env.WORKSPACE}/create-domain-inputs.yaml && \
+                        cp create-domain-job-template.yaml ${script.env.WORKSPACE}/create-domain-job-template.yaml && \
+                        cat create-domain-inputs.yaml"
 
-            yamlUtility.generateDomainInputsYaml(domainName, domainNamespace, "kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-inputs.yaml")
+            yamlUtility.generateDomainInputsYaml(domainName, domainNamespace, "${script.env.WORKSPACE}/create-domain-inputs.yaml")
 
-            script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
-                       cat create-domain-inputs.yaml"
+            script.sh "cat ${script.env.WORKSPACE}/create-domain-inputs.yaml"
 
             Log.info(script, "prepare domain success.")
 
@@ -180,13 +178,14 @@ class Domain {
 
             Log.info(script, "begin create " + Common.productId + " domain.")
             script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
-                      ./create-domain.sh -i create-domain-inputs.yaml -o ${script.env.WORKSPACE}/script-output-directory"
-            script.sh "cp ${script.env.WORKSPACE}/script-output-directory/weblogic-domains/${domainName}/domain.yaml ${script.env.WORKSPACE}/${domainName}-${domainNamespace}-domain.yaml && \
-                       cat ${script.env.WORKSPACE}/${domainName}-${domainNamespace}-domain.yaml"
+                      ./create-domain.sh -i ${script.env.WORKSPACE}/create-domain-inputs.yaml -o ${script.env.WORKSPACE}/script-output-directory"
+            script.sh "cp -r ${script.env.WORKSPACE}/script-output-directory/weblogic-domains/${domainName}/*.yaml ${script.env.WORKSPACE}/${domainName}-${domainNamespace}/ && \
+                       ls -ltr ${script.env.WORKSPACE}/${domainName}-${domainNamespace}/ && \
+                       cd ${script.env.WORKSPACE}/${domainName}-${domainNamespace}/ && cat * */*"
             Log.info(script, "create " + Common.productId + " domain success.")
 
             Log.info(script, "begin start " + Common.productId + " domain")
-            script.sh "kubectl apply -f ${script.env.WORKSPACE}/${domainName}-${domainNamespace}-domain.yaml -n ${domainNamespace} && \
+            script.sh "kubectl apply -f ${script.env.WORKSPACE}/${domainName}-${domainNamespace}/ -n ${domainNamespace} && \
                        sleep 360"
             Log.info(script, "start " + Common.productId + " domain success.")
 
