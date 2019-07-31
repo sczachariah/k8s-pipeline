@@ -4,7 +4,7 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 
 class Database {
-    static dbName
+    static dbName = "oracledb"
     static dbPassword = "Oradoc_db1"
     static dbPort = "1521"
 
@@ -12,9 +12,6 @@ class Database {
         try {
             if (Common.productId != "weblogic") {
                 Log.info(script, "begin deploy database.")
-
-                //dbname can only be 8 character in length
-                dbName = "oracledb"
 
                 script.git branch: 'master',
                         credentialsId: 'sandeep.zachariah.ssh',
