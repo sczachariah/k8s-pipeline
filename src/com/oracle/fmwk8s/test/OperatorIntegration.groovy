@@ -24,15 +24,16 @@ class OperatorIntegration {
             Log.info(script, "begin create test properties.")
 
             script.sh "cd config && \
-                       sed -i \"s|\${PRODUCT_NAME}|${Common.productName}|g\" operatorTest.properties && \
-                       sed -i \"s|\${OPERATOR_NS}|${Operator.operatorNamespace}|g\" operatorTest.properties && \
-                       sed -i \"s|\${OPERATOR_SA}|${Operator.operatorServiceAccount}|g\" operatorTest.properties && \
-                       sed -i \"s|\${DOMAIN_NAME}|${Domain.domainName}|g\" operatorTest.properties && \
-                       sed -i \"s|\${DOMAIN_NS}|${Domain.domainNamespace}|g\" operatorTest.properties && \
-                       sed -i \"s|\${CLUSTER_NAME}|${Common.productId}_cluster|g\" operatorTest.properties && \
-                       sed -i \"s|\${MANAGED_SERVER_NAME_BASE}|${Common.productId}_server|g\" operatorTest.properties && \
-                       sed -i \"s|\${ADMIN_SERVER_NAME}|admin-server|g\" operatorTest.properties && \
-                       sed -i \"s|\${WEBLOGIC_CREDENTIALS_SECRET_NAME}|${Domain.weblogicCredentialsSecretName}|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${PRODUCT_NAME}|${Common.productName}|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${OPERATOR_NS}|${Operator.operatorNamespace}|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${OPERATOR_SA}|${Operator.operatorServiceAccount}|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${DOMAIN_NAME}|${Domain.domainName}|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${DOMAIN_NS}|${Domain.domainNamespace}|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${CLUSTER_NAME}|cluster-1|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${MANAGED_SERVER_NAME_BASE}|managed-server|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${ADMIN_SERVER_NAME}|admin-server|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${WEBLOGIC_CREDENTIALS_SECRET_NAME}|${Domain.weblogicCredentialsSecretName}|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${OPERATOR_HELM_RELEASE}|${Operator.operatorHelmRelease}|g\" operatorTest.properties && \
                        cat operatorTest.properties"
 
             Log.info(script, "create test properties success.")

@@ -9,26 +9,26 @@ spec:
     fsGroup: 8500
   restartPolicy: Never
   volumes:
-    - name: domain-storage-volume
-        persistentVolumeClaim:
-          claimName: %DOMAIN_PVC%
-    - name: fmwk8s-logstash-configmap
-      configMap:
-        name: %DOMAIN_NAME%-logstash-configmap
-        defaultMode: 0777
+  - name: domain-storage-volume
+    persistentVolumeClaim:
+      claimName: %DOMAIN_PVC%
+  - name: fmwk8s-logstash-configmap
+    configMap:
+      name: %DOMAIN_NAME%-logstash-configmap
+      defaultMode: 0777
   containers:
-    - name: fmwk8s-logstash-config
-      image: k8s.gcr.io/busybox
-      command: ["/bin/sh"]
-      args: ["-c", "ls -ltr /shared/domains/logstash/"]
-      securityContext:
-        runAsUser: 756208
-        allowPrivilegeEscalation: true
-      volumeMounts:
-        - name: domain-storage-volume
-          mountPath: /shared/domains
-        - name: fmwk8s-logstash-configmap
-          mountPath: /shared/domains/logstash/logstash.conf
-          subPath: logstash.conf
+  - name: fmwk8s-logstash-config
+    image: k8s.gcr.io/busybox
+    command: ["/bin/sh"]
+    args: ["-c", "ls -ltr /shared/domains/logstash/"]
+    securityContext:
+      runAsUser: 756208
+      allowPrivilegeEscalation: true
+    volumeMounts:
+    - name: domain-storage-volume
+      mountPath: /shared/domains
+    - name: fmwk8s-logstash-configmap
+      mountPath: /shared/domains/logstash/logstash.conf
+      subPath: logstash.conf
 ---
 ---

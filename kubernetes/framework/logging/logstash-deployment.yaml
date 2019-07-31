@@ -17,7 +17,7 @@ spec:
           emptyDir: {}
       containers:
         - name: logstash
-          image: logstash:6.6.0
+          image: logstash:6.4.3
           command: ["/bin/sh"]
           args: ["/usr/share/logstash/bin/logstash", "-f", "/shared/domains/logstash/logstash.conf"]
           imagePullPolicy: IfNotPresent
