@@ -70,12 +70,17 @@ class YamlUtility implements Serializable {
         DumperOptions options = new DumperOptions()
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
         options.setPrettyFlow(true)
+        options.setIndent(2)
+        options.setExplicitStart(true)
+
+        Yaml yamlWriter = new Yaml(options)
 
 //        FileWriter yamlFileContents = new FileWriter(yamlFile)
-        Yaml yamlWriter = new Yaml(options)
-        def yamlFileContents = yamlWriter.dump(map)
+        Writer writer = new OutputStreamWriter(new FileOutputStream(yamlFile), "UTF-8")
+        yamlWriter.dump(map, writer)
+//        String yamlFileContents = yamlWriter.dump(map)
 
-        script.writeFile file: yamlFile, text: yamlFileContents
+//        script.writeFile file: yamlFile, text: yamlFileContents
 
 //        script.writeFile file: yamlFile, text: yamlFileContents.toString()
     }
