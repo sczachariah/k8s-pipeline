@@ -11,8 +11,9 @@ class YamlUtility {
     static domainInputsMap
 
     static generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, pvInputsYaml) {
+        println pvInputsYaml
         Map<Object, Object> map = readYaml(pvInputsYaml)
-        println("Original Yaml")
+        println "Original Yaml"
         printMap(map)
 
         map.put("baseName", domainNamespace.toString())
@@ -21,7 +22,7 @@ class YamlUtility {
         map.put("weblogicDomainStoragePath", nfsDomainPath.toString())
         map.put("weblogicDomainStorageReclaimPolicy", "Recycle")
 
-        println("Modified Yaml")
+        println "Modified Yaml"
         printMap(map)
         pvInputsMap = map
 
@@ -30,7 +31,7 @@ class YamlUtility {
 
     static generateDomainInputsYaml(domainName, domainNamespace, domainInputsYaml) {
         Map<Object, Object> map = readYaml(domainInputsYaml)
-        println("Original Yaml")
+        println "Original Yaml"
         printMap(map)
 
         map.put("adminPort", 7001)
@@ -51,7 +52,7 @@ class YamlUtility {
         map.put("rcuDatabaseURL", Database.dbName.toString() + "." + domainNamespace.toString() + ":1521/" + Database.dbName.toString() + "pdb.us.oracle.com")
         map.put("rcuCredentialsSecret", domainName.toString() + "-rcu-credentials")
 
-        println("Modified Yaml")
+        println "Modified Yaml"
         printMap(map)
         domainInputsMap = map
 
