@@ -71,7 +71,7 @@ class YamlUtility {
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
         options.setPrettyFlow(true)
 
-        FileWriter yamlFileContents = new FileWriter(yamlFile)
+        FileWriter yamlFileContents = new FileWriter("modified-" + yamlFile)
         Yaml yamlWriter = new Yaml(options)
         yamlWriter.dump(map, yamlFileContents)
 

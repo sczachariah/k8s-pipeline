@@ -122,8 +122,8 @@ class Domain {
 
             yamlUtility.generatePeristentVolumeInputsYaml(script, domainName, domainNamespace, nfsDomainPath, "create-pv-pvc-inputs.yaml")
 
-            script.sh "cat create-pv-pvc-inputs.yaml && \
-                       ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o script-output-directory"
+            script.sh "cat modified-create-pv-pvc-inputs.yaml && \
+                       ./create-pv-pvc.sh -i modified-create-pv-pvc-inputs.yaml -o script-output-directory"
 
             script.sh "cp script-output-directory/pv-pvcs/${domainName}-${domainNamespace}-pv.yaml . && \
                        cp script-output-directory/pv-pvcs/${domainName}-${domainNamespace}-pvc.yaml . && \
@@ -159,7 +159,7 @@ class Domain {
 
             yamlUtility.generateDomainInputsYaml(script, domainName, domainNamespace, "create-domain-inputs.yaml")
 
-            script.sh "cat create-domain-inputs.yaml"
+            script.sh "cat modified-create-domain-inputs.yaml"
 
             Log.info(script, "prepare domain success.")
 
@@ -176,7 +176,7 @@ class Domain {
             this.domainNamespace = domainNamespace
 
             Log.info(script, "begin create " + Common.productId + " domain.")
-            script.sh "./kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain.sh -i create-domain-inputs.yaml -o script-output-directory"
+            script.sh "./kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain.sh -i modified-create-domain-inputs.yaml -o script-output-directory"
             script.sh "cp -r script-output-directory/weblogic-domains/${domainName}/*.yaml ${domainName}-${domainNamespace}/ && \
                        ls -ltr ${domainName}-${domainNamespace}/ && \
                        cd ${domainName}-${domainNamespace}/ && cat * */*"
