@@ -121,7 +121,7 @@ class Domain {
                        cp -r create-pv-pvc-inputs.yaml ${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml && \
                        ls -ltr ${script.env.WORKSPACE}/ && cat ${script.env.WORKSPACE}/create-pv-pvc-inputs.yaml"
 
-            def pvInputsYaml = readFile "create-pv-pvc-inputs.yaml"
+            def pvInputsYaml = script.readFile "create-pv-pvc-inputs.yaml"
 
             yamlUtility.generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, pvInputsYaml)
 
