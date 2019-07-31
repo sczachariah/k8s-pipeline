@@ -13,8 +13,6 @@ class YamlUtility implements Serializable {
 
     static generatePeristentVolumeInputsYaml(script, domainName, domainNamespace, nfsDomainPath, pvInputsYamlFile) {
         Map<Object, Object> map = readYaml(script, pvInputsYamlFile)
-        println "Original Yaml"
-        printMap(map)
 
         map.put("baseName", domainNamespace.toString())
         map.put("domainUID", domainName.toString())
@@ -22,17 +20,12 @@ class YamlUtility implements Serializable {
         map.put("weblogicDomainStoragePath", nfsDomainPath.toString())
         map.put("weblogicDomainStorageReclaimPolicy", "Recycle")
 
-        println "Modified Yaml"
-        printMap(map)
         pvInputsMap = map
-
         writeYaml(script, map, pvInputsYamlFile)
     }
 
     static generateDomainInputsYaml(script, domainName, domainNamespace, domainInputsYamlFile) {
         Map<Object, Object> map = readYaml(script, domainInputsYamlFile)
-        println "Original Yaml"
-        printMap(map)
 
         map.put("adminPort", 7001)
         map.put("adminServerName", "admin-server")
@@ -52,10 +45,7 @@ class YamlUtility implements Serializable {
         map.put("rcuDatabaseURL", Database.dbName.toString() + "." + domainNamespace.toString() + ":" + Database.dbPort.toString() + "/" + Database.dbName.toString() + "pdb.us.oracle.com")
         map.put("rcuCredentialsSecret", domainName.toString() + "-rcu-credentials")
 
-        println "Modified Yaml"
-        printMap(map)
         domainInputsMap = map
-
         writeYaml(script, map, domainInputsYamlFile)
     }
 
@@ -85,7 +75,6 @@ class YamlUtility implements Serializable {
 
         return yamlFileContents
     }
-
 
     static printMap(map) {
         map.each { k, v -> println "${k}:${v}" }

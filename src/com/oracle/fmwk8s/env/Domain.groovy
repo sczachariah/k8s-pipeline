@@ -152,8 +152,7 @@ class Domain {
                 Common.productImage = productImage
             }
 
-            script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
-                       cp -r kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-inputs.yaml create-domain-inputs && \
+            script.sh "cp -r kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-inputs.yaml create-domain-inputs && \
                        cp -r kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-job-template.yaml create-domain-job-template && \
                        ls -ltr . && cat create-domain-inputs"
 
