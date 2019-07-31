@@ -71,11 +71,11 @@ class YamlUtility {
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
         options.setPrettyFlow(true)
 
-        StringWriter yamlFileContents = new StringWriter()
+        FileWriter yamlFileContents = new FileWriter(yamlFile)
         Yaml yamlWriter = new Yaml(options)
         yamlWriter.dump(map, yamlFileContents)
 
-        script.writeFile file: yamlFile, text: yamlFileContents.toString()
+//        script.writeFile file: yamlFile, text: yamlFileContents.toString()
     }
 
     static printMap(map) {
