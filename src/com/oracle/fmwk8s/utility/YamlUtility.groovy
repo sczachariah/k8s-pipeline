@@ -72,7 +72,7 @@ class YamlUtility {
         options.setPrettyFlow(true)
 
 //        FileWriter yamlFileContents = new FileWriter(yamlFile)
-        Yaml yamlWriter = new Yaml(options)
+        Yaml yamlWriter = new Yaml()
         def yamlFileContents = yamlWriter.dump(map)
 
         script.writeFile file: yamlFile, text: yamlFileContents
