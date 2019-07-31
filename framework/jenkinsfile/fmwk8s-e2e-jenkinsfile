@@ -54,7 +54,8 @@ pipeline {
             steps {
                 container('jnlp') {
                     script {
-                        Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}","${ELK_ENABLE}")
+//                        Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}","${ELK_ENABLE}")
+                        sleep 1
                     }
                 }
 
@@ -77,7 +78,7 @@ pipeline {
                                 script {
 //                                    Database.deployDatabase(this, "${DATABASE_VERSION}", "${DOMAIN_NS}")
 //                                    Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                    sleep 10
+                                    sleep 1
                                 }
                             }
                         }
@@ -90,7 +91,7 @@ pipeline {
                                 script {
                                     Domain.pullSampleScripts(this)
 
-                                    Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
+//                                    Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
                                     Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                     Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                     Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
@@ -111,7 +112,7 @@ pipeline {
                         container('jnlp') {
                             dir('fmwsamples') {
                                 script {
-                                    Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+//                                    Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
 
                                     sleep(120)
                                 }
@@ -124,9 +125,9 @@ pipeline {
                         container('jnlp') {
                             dir('fmwsamples') {
                                 script {
-                                    IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
+//                                    IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
                                     sleep(60)
-                                    Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+//                                    Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                 }
                             }
                         }
@@ -139,21 +140,7 @@ pipeline {
             steps {
                 container('jnlp') {
                     sh label: 'verify weblogic ready', script: '''
-                            curl -v "http://${DOMAIN_NAME}-admin-server.${DOMAIN_NS}.svc.cluster.local:7001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
-                            curl -v "http://${DOMAIN_NAME}-cluster-cluster-1.${DOMAIN_NS}.svc.cluster.local:8001/weblogic/ready"
+                            echo "TODO WEBLOGIC READY"
                             '''
                 }
             }
