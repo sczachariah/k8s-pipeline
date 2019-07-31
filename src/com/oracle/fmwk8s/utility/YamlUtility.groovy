@@ -75,7 +75,7 @@ class YamlUtility {
         Yaml yamlWriter = new Yaml(options)
         yamlWriter.dump(map, yamlFileContents)
 
-        script.writeFile yamlFile, yamlFileContents
+        script.writeFile file: yamlFile, text: yamlFileContents
     }
 
     static printMap(map) {
