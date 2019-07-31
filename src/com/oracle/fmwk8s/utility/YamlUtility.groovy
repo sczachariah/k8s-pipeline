@@ -73,16 +73,17 @@ class YamlUtility implements Serializable {
         options.setIndent(2)
         options.setExplicitStart(true)
 
-        Yaml yamlWriter = new Yaml(options)
+//        Yaml yamlWriter = new Yaml(options)
 
 //        FileWriter yamlFileContents = new FileWriter(yamlFile)
-        Writer writer = new OutputStreamWriter(new FileOutputStream(yamlFile), "UTF-8")
-        yamlWriter.dump(map, writer)
+//        Writer writer = new OutputStreamWriter(new FileOutputStream(yamlFile), "UTF-8")
+//        yamlWriter.dump(map, writer)
 //        String yamlFileContents = yamlWriter.dump(map)
 
 //        script.writeFile file: yamlFile, text: yamlFileContents
 
-//        script.writeFile file: yamlFile, text: yamlFileContents.toString()
+        script.writeYaml file: "modified-" + yamlFile, data: map
+
     }
 
     static printMap(map) {
