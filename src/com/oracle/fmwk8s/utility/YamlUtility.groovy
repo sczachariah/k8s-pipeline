@@ -16,22 +16,22 @@ class YamlUtility {
         println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
         println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
         println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
-        
-        Map<Object, Object> map = readYaml(pvInputsYaml)
-        println("Original Yaml")
-        printMap(map)
 
-        map.put("baseName", domainNamespace.toString())
-        map.put("domainUID", domainName.toString())
-        map.put("namespace", domainNamespace.toString())
-        map.put("weblogicDomainStoragePath", nfsDomainPath.toString())
-        map.put("weblogicDomainStorageReclaimPolicy", "Recycle")
-
-        println("Modified Yaml")
-        printMap(map)
-        pvInputsMap = map
-
-        writeYaml(map, pvInputsYaml)
+//        Map<Object, Object> map = readYaml(pvInputsYaml)
+//        println("Original Yaml")
+//        printMap(map)
+//
+//        map.put("baseName", domainNamespace.toString())
+//        map.put("domainUID", domainName.toString())
+//        map.put("namespace", domainNamespace.toString())
+//        map.put("weblogicDomainStoragePath", nfsDomainPath.toString())
+//        map.put("weblogicDomainStorageReclaimPolicy", "Recycle")
+//
+//        println("Modified Yaml")
+//        printMap(map)
+//        pvInputsMap = map
+//
+//        writeYaml(map, pvInputsYaml)
     }
 
     static generateDomainInputsYaml(domainName, domainNamespace, domainInputsYaml) {
