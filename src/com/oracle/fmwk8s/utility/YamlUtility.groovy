@@ -1,6 +1,6 @@
 package com.oracle.fmwk8s.utility
 
-
+import com.cloudbees.groovy.cps.NonCPS
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.env.Database
 @GrabResolver(name = 'fmw-virtual', root = 'http://artifactory-slc-prod1.oraclecorp.com/artifactory/fmw-virtual/')
@@ -49,7 +49,7 @@ class YamlUtility implements Serializable {
         map.put("namespace", domainNamespace.toString())
         map.put("persistentVolumeClaimName", domainName.toString() + "-" + domainNamespace.toString() + "-pvc")
         map.put("rcuSchemaPrefix", domainName.toString())
-        map.put("rcuDatabaseURL", Database.dbName.toString() + "." + domainNamespace.toString() + ":1521/" + Database.dbName.toString() + "pdb.us.oracle.com")
+        map.put("rcuDatabaseURL", Database.dbName.toString() + "." + domainNamespace.toString() + ":" + Database.dbPort.toString() + "/" + Database.dbName.toString() + "pdb.us.oracle.com")
         map.put("rcuCredentialsSecret", domainName.toString() + "-rcu-credentials")
 
         println "Modified Yaml"
@@ -67,19 +67,23 @@ class YamlUtility implements Serializable {
         return map
     }
 
-//    @NonCPS
     static writeYaml(script, map, yamlFile) {
-//        DumperOptions options = new DumperOptions()
-//        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
-//        options.setPrettyFlow(true)
-//        options.setIndent(2)
-//        options.setExplicitStart(true)
-
-        Yaml yamlWriter = new Yaml()
-        String yamlFileContents = yamlWriter.dump(map)
-        script.writeFile file: yamlFile + ".yaml", text: yamlFileContents.toString()
-
+        script.writeFile file: yamlFile + ".yaml", text: getYamlContent(map)
 //        script.writeYaml file: yamlFile + ".yaml", data: map
+    }
+
+    @NonCPS
+    static String getYamlContent(map) {
+        DumperOptions options = new DumperOptions()
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
+        options.setPrettyFlow(true)
+        options.setIndent(2)
+        options.setExplicitStart(true)
+
+        Yaml yamlWriter = new Yaml(options)
+        String yamlFileContents = yamlWriter.dump(map)
+
+        return yamlFileContents
     }
 
 

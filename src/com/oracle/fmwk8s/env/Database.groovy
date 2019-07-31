@@ -6,6 +6,7 @@ import com.oracle.fmwk8s.common.Log
 class Database {
     static dbName
     static dbPassword = "Oradoc_db1"
+    static dbPort = "1521"
 
     static deployDatabase(script, databaseVersion, dbNamespace) {
         try {
