@@ -5,6 +5,7 @@ import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.YamlUtility
 
 class Domain {
+    static def yamlUtility = new YamlUtility()
     static def weblogicUser = "weblogic"
     static def weblogicPass = "Welcome1"
     static def domainName
@@ -120,7 +121,7 @@ class Domain {
                        cp create-pv-pvc-inputs.yaml create-pv-pvc-inputs.yaml.orig && \
                        cat create-pv-pvc-inputs.yaml"
 
-            YamlUtility.generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, "kubernetes/samples/scripts/create-weblogic-domain-pv-pvc/create-pv-pvc-inputs.yaml")
+            yamlUtility.generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, "kubernetes/samples/scripts/create-weblogic-domain-pv-pvc/create-pv-pvc-inputs.yaml")
 
             script.sh "cd kubernetes/samples/scripts/create-weblogic-domain-pv-pvc && \
                        cat create-pv-pvc-inputs.yaml && \
@@ -158,7 +159,7 @@ class Domain {
                         cp create-domain-job-template.yaml create-domain-job-template.yaml.orig && \
                         cat create-domain-inputs.yaml.orig"
 
-            YamlUtility.generateDomainInputsYaml(domainName, domainNamespace, "kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-inputs.yaml")
+            yamlUtility.generateDomainInputsYaml(domainName, domainNamespace, "kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-inputs.yaml")
 
             script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
                        cat create-domain-inputs.yaml"
