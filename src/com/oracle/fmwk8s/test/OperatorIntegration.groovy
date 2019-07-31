@@ -4,8 +4,11 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Operator
+import com.oracle.fmwk8s.utility.YamlUtility
 
 class OperatorIntegration {
+    static def yamlUtility = new YamlUtility()
+
     static invokeTest(script, mavenProfile) {
         fetchSource(script)
         createTestProps(script)
@@ -29,9 +32,9 @@ class OperatorIntegration {
                        sed -i \"s|\\\${OPERATOR_SA}|${Operator.operatorServiceAccount}|g\" operatorTest.properties && \
                        sed -i \"s|\\\${DOMAIN_NAME}|${Domain.domainName}|g\" operatorTest.properties && \
                        sed -i \"s|\\\${DOMAIN_NS}|${Domain.domainNamespace}|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${CLUSTER_NAME}|cluster-1|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${MANAGED_SERVER_NAME_BASE}|managed-server|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${ADMIN_SERVER_NAME}|admin-server|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${CLUSTER_NAME}|${yamlUtility.domainInputsMap.get("clusterName")}|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${MANAGED_SERVER_NAME_BASE}|${yamlUtility.domainInputsMap.get("managedServerNameBase")}|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${ADMIN_SERVER_NAME}|${yamlUtility.domainInputsMap.get("adminServerName")}|g\" operatorTest.properties && \
                        sed -i \"s|\\\${WEBLOGIC_CREDENTIALS_SECRET_NAME}|${Domain.weblogicCredentialsSecretName}|g\" operatorTest.properties && \
                        sed -i \"s|\\\${OPERATOR_HELM_RELEASE}|${Operator.operatorHelmRelease}|g\" operatorTest.properties && \
                        cat operatorTest.properties"
