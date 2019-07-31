@@ -177,7 +177,7 @@ class Domain {
             Log.info(script, "begin create " + Common.productId + " domain.")
             script.sh "./kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain.sh -i create-domain-inputs.yaml -o script-output-directory"
             script.sh "mkdir -p ${domainName}-${domainNamespace} && \
-                       tree script-output-directory/weblogic-domains/ && \
+                       ls -ltr script-output-directory/weblogic-domains/ && \
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml ${domainName}-${domainNamespace}/domain.yaml && \
                        cd ${domainName}-${domainNamespace} && cat * */*"
             Log.info(script, "create " + Common.productId + " domain success.")
