@@ -6,6 +6,9 @@ import com.oracle.fmwk8s.env.Database
 import org.yaml.snakeyaml.*
 
 class YamlUtility {
+    static pvInputsMap
+    static domainInputsMap
+
     static generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, pvInputsYaml) {
         Map<Object, Object> map = readYaml(pvInputsYaml)
         println("Original Yaml")
@@ -19,6 +22,7 @@ class YamlUtility {
 
         println("Modified Yaml")
         printMap(map)
+        pvInputsMap = map
 
         writeYaml(map, pvInputsYaml)
     }
@@ -48,6 +52,7 @@ class YamlUtility {
 
         println("Modified Yaml")
         printMap(map)
+        domainInputsMap = map
 
         writeYaml(map, domainInputsYaml)
     }

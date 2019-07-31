@@ -127,7 +127,7 @@ class Common {
                 break
             case "OIG":
                 samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
-                samplesDirectory = "domain-home-on-pv/single-Managed-server"
+                samplesDirectory = ""
             default:
                 samplesRepo = "unknown"
                 samplesDirectory = "unknown"
