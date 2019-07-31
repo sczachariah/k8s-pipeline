@@ -12,6 +12,11 @@ class YamlUtility {
 
     static generatePeristentVolumeInputsYaml(domainName, domainNamespace, nfsDomainPath, pvInputsYaml) {
         println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
+        println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
+        println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
+        println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
+        println("WORKING DIRECTORY : " + new File(".").getCanonicalPath())
+        
         Map<Object, Object> map = readYaml(pvInputsYaml)
         println("Original Yaml")
         printMap(map)
