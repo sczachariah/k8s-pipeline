@@ -39,8 +39,8 @@ class Domain {
 
     static preparRcu(script, productImage, domainName, domainNamespace) {
         try {
-            if (!productImage?.trim()) {
-                productImage = Common.defaultProductImage
+            if (productImage?.trim()) {
+                Common.productImage = productImage
             }
 
             if (Common.productId != "weblogic" && Common.operatorVersion != "2.1") {
@@ -60,7 +60,7 @@ class Domain {
                 script.sh "cd kubernetes/framework/db/rcu && \
                            sed -i \"s|%DB_SECRET%|${Common.registrySecret}|g\" fmwk8s-rcu-pod.yaml && \
                            sed -i \"s|%PRODUCT_ID%|${Common.productId}|g\" fmwk8s-rcu-pod.yaml && \
-                           sed -i \"s|%PRODUCT_IMAGE%|${productImage}|g\" fmwk8s-rcu-pod.yaml && \
+                           sed -i \"s|%PRODUCT_IMAGE%|${Common.productImage}|g\" fmwk8s-rcu-pod.yaml && \
                            cat fmwk8s-rcu-pod.yaml"
 
                 script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
@@ -149,9 +149,7 @@ class Domain {
         try {
             Log.info(script, "begin prepare domain.")
 
-            if (!productImage?.trim()) {
-                productImage = Common.productImage
-            } else {
+            if (productImage?.trim()) {
                 Common.productImage = productImage
             }
 
