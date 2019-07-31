@@ -29,6 +29,6 @@ spec:
       mountPath: /shared/domains
     - name: fmwk8s-logstash-configmap
       mountPath: /shared/domains/logstash/logstash.conf
-    subPath: logstash.conf
+      subPath: logstash.conf
 ---
 ---
