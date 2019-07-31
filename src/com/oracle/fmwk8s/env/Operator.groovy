@@ -24,7 +24,7 @@ class Operator {
 
             script.sh "retVal==`echo \\`helm ls ${operatorHelmRelease}\\``"
 
-            if (elkEnable.equals("FALSE")) {
+            if ("${elkEnable}" == "false") {
                 script.sh "if [[ \$retVal ]]; then\n \
                                helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
                            else\n \
@@ -58,7 +58,7 @@ class Operator {
         try {
             Log.info(script, "begin verify kubernetes operator.")
 
-            if (elkEnable.equals("FALSE")) {
+            if ("${elkEnable}" == "false") {
                 script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1"
             } else {
                 script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 2/2"
