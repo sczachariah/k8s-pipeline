@@ -117,10 +117,10 @@ class Domain {
         try {
             Log.info(script, "begin prepare persistent volume.")
 
-            script.sh "cp -r kubernetes/samples/scripts/create-weblogic-domain-pv-pvc/create-pv-pvc-inputs.yaml . && \
-                       chmod 777 create-pv-pvc-inputs.yaml && ls -ltr . && cat create-pv-pvc-inputs.yaml"
+            script.sh "cp -r kubernetes/samples/scripts/create-weblogic-domain-pv-pvc/create-pv-pvc-inputs.yaml create-pv-pvc-inputs && \
+                       ls -ltr . && cat create-pv-pvc-inputs"
 
-            yamlUtility.generatePeristentVolumeInputsYaml(script, domainName, domainNamespace, nfsDomainPath, "create-pv-pvc-inputs.yaml")
+            yamlUtility.generatePeristentVolumeInputsYaml(script, domainName, domainNamespace, nfsDomainPath, "create-pv-pvc-inputs")
 
             script.sh "cat create-pv-pvc-inputs.yaml && \
                        ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o script-output-directory"
@@ -153,11 +153,11 @@ class Domain {
             }
 
             script.sh "cd kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory} && \
-                       cp -r kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-inputs.yaml . && \
-                       cp -r kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-job-template.yaml . && \
-                       chmod 777 create-domain-inputs.yaml && ls -ltr . && cat create-domain-inputs.yaml"
+                       cp -r kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-inputs.yaml create-domain-inputs && \
+                       cp -r kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-job-template.yaml create-domain-job-template && \
+                       ls -ltr . && cat create-domain-inputs"
 
-            yamlUtility.generateDomainInputsYaml(script, domainName, domainNamespace, "create-domain-inputs.yaml")
+            yamlUtility.generateDomainInputsYaml(script, domainName, domainNamespace, "create-domain-inputs")
 
             script.sh "cat create-domain-inputs.yaml"
 
