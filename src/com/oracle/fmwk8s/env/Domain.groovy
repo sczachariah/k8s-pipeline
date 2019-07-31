@@ -123,7 +123,7 @@ class Domain {
             yamlUtility.generatePeristentVolumeInputsYaml(script, domainName, domainNamespace, nfsDomainPath, "create-pv-pvc-inputs")
 
             script.sh "cat create-pv-pvc-inputs.yaml && \
-                       ./create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o script-output-directory"
+                       ./kubernetes/samples/scripts/create-weblogic-domain-pv-pvc/create-pv-pvc.sh -i create-pv-pvc-inputs.yaml -o script-output-directory"
 
             script.sh "cp script-output-directory/pv-pvcs/${domainName}-${domainNamespace}-pv.yaml . && \
                        cp script-output-directory/pv-pvcs/${domainName}-${domainNamespace}-pvc.yaml . && \

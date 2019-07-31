@@ -1,6 +1,6 @@
 package com.oracle.fmwk8s.utility
 
-import com.cloudbees.groovy.cps.NonCPS
+
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.env.Database
 @GrabResolver(name = 'fmw-virtual', root = 'http://artifactory-slc-prod1.oraclecorp.com/artifactory/fmw-virtual/')
@@ -75,19 +75,11 @@ class YamlUtility implements Serializable {
 //        options.setIndent(2)
 //        options.setExplicitStart(true)
 
-//        Yaml yamlWriter = new Yaml(options)
+        Yaml yamlWriter = new Yaml()
+        String yamlFileContents = yamlWriter.dump(map)
+        script.writeFile file: yamlFile + ".yaml", text: yamlFileContents.toString()
 
-//        StringWriter yamlFileContents = new StringWriter()
-//        yamlWriter.dump(map, yamlFileContents)
-
-//        FileWriter yamlFileContents = new FileWriter(yamlFile)
-//        Writer writer = new OutputStreamWriter(new FileOutputStream(yamlFile), "UTF-8")
-//        yamlWriter.dump(map, writer)
-//        String yamlFileContents = yamlWriter.dump(map)
-
-//        script.writeFile file: yamlFile+".yaml", text: yamlFileContents.toString()
-
-        script.writeYaml file: yamlFile + ".yaml", data: map
+//        script.writeYaml file: yamlFile + ".yaml", data: map
 
     }
 
