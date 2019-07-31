@@ -6,7 +6,7 @@ import com.oracle.fmwk8s.env.Database
 @Grab('org.yaml:snakeyaml:1.24')
 import org.yaml.snakeyaml.*
 
-class YamlUtility {
+class YamlUtility implements Serializable {
     static pvInputsMap
     static domainInputsMap
 
@@ -72,7 +72,7 @@ class YamlUtility {
         options.setPrettyFlow(true)
 
 //        FileWriter yamlFileContents = new FileWriter(yamlFile)
-        Yaml yamlWriter = new Yaml()
+        Yaml yamlWriter = new Yaml(options)
         def yamlFileContents = yamlWriter.dump(map)
 
         script.writeFile file: yamlFile, text: yamlFileContents
