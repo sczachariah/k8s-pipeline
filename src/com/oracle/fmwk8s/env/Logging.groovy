@@ -73,7 +73,7 @@ class Logging {
         try {
             Log.info(script, "begin deploy logstash.")
 
-            configureLogstashConfigmap(script, domainName)
+            configureLogstashConfigmap(script, domainName, domainNamespace)
             configureLogstash(script, domainName, domainNamespace)
             updateLogstashDeployment(script, domainName, domainNamespace)
 
