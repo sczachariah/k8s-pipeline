@@ -179,7 +179,7 @@ class Domain {
             script.sh "mkdir -p ${domainName}-${domainNamespace} && \
                        ls -ltr script-output-directory/weblogic-domains/ && \
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml ${domainName}-${domainNamespace}/domain.yaml && \
-                       cd ${domainName}-${domainNamespace} && cat * */*"
+                       cd ${domainName}-${domainNamespace} && ls -ltr && cat *"
             Log.info(script, "create " + Common.productId + " domain success.")
 
             Log.info(script, "begin start " + Common.productId + " domain")
