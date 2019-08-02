@@ -184,7 +184,7 @@ class Domain {
 
             Log.info(script, "begin start " + Common.productId + " domain")
             script.sh "kubectl apply -f ${domainName}-${domainNamespace}/ -n ${domainNamespace} && \
-                       sleep 360"
+                       sleep 480"
             Log.info(script, "start " + Common.productId + " domain success.")
 
             isDomainReady(script, domainName, domainNamespace)
