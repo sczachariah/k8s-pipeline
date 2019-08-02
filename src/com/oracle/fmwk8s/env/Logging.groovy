@@ -69,13 +69,18 @@ class Logging {
     }
 
 
-    static deployLogstash(script, domainName, domainNamespace) {
+    static deployLogstash(script, elkEnable, domainName, domainNamespace) {
         try {
             Log.info(script, "begin deploy logstash.")
 
-            configureLogstashConfigmap(script, domainName, domainNamespace)
-            configureLogstash(script, domainName, domainNamespace)
-            updateLogstashDeployment(script, domainName, domainNamespace)
+            if ("${elkEnable}" == "true") {
+                Log.info(script, "elk is enabled.")
+                configureLogstashConfigmap(script, domainName, domainNamespace)
+                configureLogstash(script, domainName, domainNamespace)
+                updateLogstashDeployment(script, domainName, domainNamespace)
+            } else {
+                Log.info(script, "elk is disabled.")
+            }
 
             Log.info(script, "deploy logstash success.")
         }
