@@ -112,9 +112,8 @@ pipeline {
                             dir('fmwsamples') {
                                 script {
                                     Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-
                                     sleep(120)
-                                    Logging.deployLogstash(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Logging.deployLogstash(this, "${ELK_ENABLE}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                 }
                             }
                         }
