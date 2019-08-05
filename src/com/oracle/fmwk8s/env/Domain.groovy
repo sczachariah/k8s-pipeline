@@ -178,13 +178,19 @@ class Domain {
             script.sh "./kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain.sh -i create-domain-inputs.yaml -o script-output-directory"
             script.sh "mkdir -p ${domainName}-${domainNamespace} && \
                        ls -ltr script-output-directory/weblogic-domains/ && \
-                       cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml ${domainName}-${domainNamespace}/domain.yaml && \
+                       cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml ${domainName}-${domainNamespace}/domain && \
+                       cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml ${domainName}-${domainNamespace}/domain" + Common.productId + " && \
                        cd ${domainName}-${domainNamespace} && ls -ltr && cat *"
             Log.info(script, "create " + Common.productId + " domain success.")
 
             Log.info(script, "begin start " + Common.productId + " domain")
-            script.sh "kubectl apply -f ${domainName}-${domainNamespace}/ -n ${domainNamespace} && \
+            yamlUtility.generateDomainYaml(script, Common.productId, "${domainName}-${domainNamespace}/domain")
+            script.sh "kubectl apply -f ${domainName}-${domainNamespace}/domain.yaml -n ${domainNamespace} && \
                        sleep 480"
+            if ("${Common.productId}" == "oim") {
+                script.sh "kubectl apply -f ${domainName}-${domainNamespace}/domain" + Common.productId + ".yaml -n ${domainNamespace} && \
+                           sleep 480"
+            }
             Log.info(script, "start " + Common.productId + " domain success.")
 
             isDomainReady(script, domainName, domainNamespace)
