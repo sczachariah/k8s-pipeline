@@ -37,6 +37,7 @@ class OperatorIntegration {
                        sed -i \"s|\\\${ADMIN_SERVER_NAME}|${yamlUtility.domainInputsMap.get("adminServerName")}|g\" operatorTest.properties && \
                        sed -i \"s|\\\${WEBLOGIC_CREDENTIALS_SECRET_NAME}|${Domain.weblogicCredentialsSecretName}|g\" operatorTest.properties && \
                        sed -i \"s|\\\${OPERATOR_HELM_RELEASE}|${Operator.operatorHelmRelease}|g\" operatorTest.properties && \
+                       sed -i \"s|\\\${IMAGE_NAME}|${Common.productImage}|g\" && \
                        cat operatorTest.properties"
 
             Log.info(script, "create test properties success.")
