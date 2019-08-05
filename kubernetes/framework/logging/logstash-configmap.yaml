@@ -7,11 +7,11 @@ data:
   logstash.conf: |-
     input {
       file {
-        path => "/shared/logs/%DOMAIN_NAME%/AdminServer.log"
+        path => "/shared/domains/logs/%DOMAIN_NAME%/admin-server.log"
         start_position => beginning
       }
       file {
-        path => "/shared/logs/%DOMAIN_NAME%/soa_server1.log"
+        path => "/shared/domains/logs/%DOMAIN_NAME%/soa_server1.log"
         start_position => beginning
       }
     }
