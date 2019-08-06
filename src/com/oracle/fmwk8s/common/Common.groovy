@@ -57,6 +57,11 @@ class Common {
                 operatorBranch = "release/2.2.1"
                 operatorImageVersion = "2.2.1"
                 samplesBranch = "release/2.2.1"
+                switch (productName) {
+                    case "SOA":
+                        samplesBranch = "soa-2.2.1"
+                }
+
                 break
             default:
                 this.operatorVersion = "develop"
