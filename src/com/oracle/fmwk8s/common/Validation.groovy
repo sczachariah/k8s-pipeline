@@ -7,6 +7,7 @@ class Validation {
             Log.info(script, "begin validate inputs.")
             if ("${operatorVersion}" == "2.1" && "${productName}" == "WLS-INFRA" ) {
                 Log.error(script, "Operator version 2.1 is not applicable for the product ${productName} .")
+                return false
             }
         }
         catch (exc) {
