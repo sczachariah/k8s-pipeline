@@ -14,6 +14,7 @@ class Domain {
 
     static pullSampleScripts(script) {
         script.git branch: "${Common.samplesBranch}",
+                credentialsId: 'sandeep.zachariah.ssh',
                 url: "${Common.samplesRepo}"
     }
 
