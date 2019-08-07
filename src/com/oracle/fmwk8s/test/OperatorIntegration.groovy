@@ -55,7 +55,7 @@ class OperatorIntegration {
                     credentialsId: 'sandeep.zachariah.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh "cd kubernetes/framework/test/operator-integration && \
+            script.sh "cd kubernetes/framework/test/${testId} && \
                         sed -i \"s|%ADMIN_SERVER_NAME_SVC%|${Domain.domainName}-adminserver.${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%MANAGED_SERVER_NAME_SVC%|${Domain.domainName}-cluster-${Common.productId}-cluster.${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%WEBLOGIC_USER%|${Domain.weblogicUser}|g\" fmwk8s-${testId}-env-configmap.yaml && \
@@ -93,7 +93,7 @@ class OperatorIntegration {
                     credentialsId: 'sandeep.zachariah.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh "cd kubernetes/framework/${testId} && \
+            script.sh "cd kubernetes/framework/test/${testId} && \
                         sed -i \"s#%TEST_IMAGE%#${testImage}#g\" fmwk8s-${testId}-mats-pod.yaml && \
                         cat fmwk8s-${testId}-mats-pod.yaml"
 
