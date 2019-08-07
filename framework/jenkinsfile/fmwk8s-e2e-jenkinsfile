@@ -45,7 +45,8 @@ pipeline {
 
                 container('jnlp') {
                     script {
-                        Validation.validateInputs(this)
+//                        Validation.validateInputs(this)
+                        sleep 1
                     }
                 }
             }
