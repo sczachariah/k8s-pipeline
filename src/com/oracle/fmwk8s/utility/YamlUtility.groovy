@@ -56,9 +56,9 @@ class YamlUtility implements Serializable {
     }
 
     static generateDomainYaml(script, productId, domainYaml) {
-        if ("${productId}" == "oim") {
-            Map<Object, Object> map = readYaml(script, domainYaml)
+        Map<Object, Object> map = readYaml(script, domainYaml)
 
+        if ("${productId}" == "oim") {
             for (Object key : map.keySet()) {
                 if (key.equals("spec")) {
                     LinkedHashMap specs = map.get("spec")
@@ -98,6 +98,8 @@ class YamlUtility implements Serializable {
             }
 
             writeYaml(script, map, domainYaml + productId)
+        } else {
+            writeYaml(script, map, domainYaml)
         }
     }
 

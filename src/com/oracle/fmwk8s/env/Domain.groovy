@@ -184,7 +184,7 @@ class Domain {
 
             Log.info(script, "begin start " + Common.productId + " domain")
             yamlUtility.generateDomainYaml(script, Common.productId, "domain")
-            script.sh "ls -ltr"
+            script.sh "ls -ltr && cat domain*"
             script.sh "kubectl apply -f domain.yaml -n ${domainNamespace} && \
                        sleep 480"
             if ("${Common.productId}" == "oim") {
