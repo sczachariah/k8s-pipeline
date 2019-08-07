@@ -2,12 +2,16 @@ package com.oracle.fmwk8s.common
 
 class Validation {
 
-    static def validateInputs(script, operatorVersion, productName) {
+    static def validateInputs(script, operatorVersion, productName, domainType) {
         try {
             Log.info(script, "begin validate inputs.")
             if ("${operatorVersion}" == "2.1" && "${productName}" == "WLS-INFRA" ) {
                 Log.error(script, "Operator version 2.1 is not applicable for the product ${productName} .")
-                System.exit(1)
+                throw new Excception("input validation for operator failed")
+            }
+            if ("${domainType}" == "N/A" && "${productName}" == "SOA" ) {
+                Log.error(script, "Operator version 2.1 is not applicable for the product ${productName} .")
+                throw new Excception("domain type validation failed")
             }
         }
         catch (exc) {

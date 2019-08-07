@@ -45,7 +45,7 @@ pipeline {
 
                 container('jnlp') {
                     script {
-                        Validation.validateInputs(this, "${OPERATOR_VERSION}", "${PRODUCT_NAME}")
+                        Validation.validateInputs(this, "${OPERATOR_VERSION}", "${PRODUCT_NAME}", "${DOMAIN_TYPE}")
                     }
                 }
             }
