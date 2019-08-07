@@ -127,8 +127,8 @@ class Common {
                 samplesDirectory = ""
                 break
             case "SOA":
-                samplesRepo = "git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git"
-                samplesDirectory = "domain-home-on-pv/multiple-Managed-servers"
+                samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
+                samplesDirectory = ""
                 break
             case "OIG":
                 samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
