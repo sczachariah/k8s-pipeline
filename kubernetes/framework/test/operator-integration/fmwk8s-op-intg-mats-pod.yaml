@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fmwk8s-op-intg-test
+spec:
+  containers:
+    - name: fmwk8s-op-intg-test
+      image: "%TEST_IMAGE%"
+      imagePullPolicy: Always
+      envFrom:
+        - configMapRef:
+            name: fmwk8s-op-intg-env-configmap
+  restartPolicy: Never
+---
+---
