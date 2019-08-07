@@ -7,11 +7,11 @@ class Validation {
             Log.info(script, "begin validate inputs.")
             if ("${operatorVersion}" == "2.1" && "${productName}" == "WLS-INFRA" ) {
                 Log.error(script, "Operator version 2.1 is not applicable for the product ${productName} .")
-                throw new Excception("input validation for operator failed")
+                throw new Exception("input validation for operator failed")
             }
             if ("${domainType}" == "N/A" && "${productName}" == "SOA" ) {
                 Log.error(script, "Operator version 2.1 is not applicable for the product ${productName} .")
-                throw new Excception("domain type validation failed")
+                throw new Exception("domain type validation failed")
             }
         }
         catch (exc) {
