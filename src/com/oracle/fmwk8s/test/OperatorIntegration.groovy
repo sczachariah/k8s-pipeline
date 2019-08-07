@@ -10,6 +10,7 @@ import com.oracle.fmwk8s.utility.YamlUtility
 class OperatorIntegration {
     static def yamlUtility = new YamlUtility()
     static def testId = "op-intg"
+    static def mavenProfile
 
     static createTestProps(script) {
         try {
@@ -39,7 +40,8 @@ class OperatorIntegration {
     }
 
 
-    static invokeTest(script, testImage) {
+    static invokeTest(script, testImage, mavenProfile) {
+        this.mavenProfile = mavenProfile
         createEnvConfigMap(script)
         runTests(script, testImage)
         publishResults(script)
