@@ -109,7 +109,7 @@ class Common {
                 break
             case "OIG":
                 productId = "oim"
-                productImage = "fmw-paas-sandbox-cert-docker/oracle/oig:12.2.1.4.0-190725.1317.317"
+                productImage = "fmw-paas-sandbox-cert-docker.dockerhub-den.oraclecorp.com/oracle/oig:12.2.1.4.0-190725.1317.317"
             default:
                 productId = "unknown"
                 break
