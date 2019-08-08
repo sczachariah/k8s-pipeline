@@ -83,6 +83,20 @@ class OperatorIntegration {
         try {
             Log.info(script, "begin wait for test completion.")
 
+            script.sh "testInit='testInit' && \
+                        i=0 && \
+                        until `echo \$testInit | grep -q 1/1` > /dev/null\n \
+                        do \n \
+                            if [ \$i == 5 ]; then\n \
+                                echo \"Timeout waiting for Test Initialization. Exiting!!.\"\n \
+                                exit 1\n \
+                            fi\n \
+                        i=\$((i+1))\n \
+                        echo \"Waiting for Test Initialization. Iteration \$i of 5. Sleeping\"\n \
+                        sleep 60\n \
+                        testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-mats\\``\n \
+                        done"
+
             script.sh "testStat='testStat' && \
                         i=0 && \
                         until `echo \$testStat | grep -q Completed` > /dev/null\n \
