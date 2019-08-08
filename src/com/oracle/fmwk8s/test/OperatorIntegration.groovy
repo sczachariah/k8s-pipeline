@@ -41,7 +41,7 @@ class OperatorIntegration {
                         sed -i \"s|%MAVEN_PROFILE%|${this.mavenProfile}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"
 
-            script.sh "kubectl apply -f kubernetes/framework/${testId}/fmwk8s-${testId}-env-configmap.yaml -n ${Domain.domainNamespace}"
+            script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-env-configmap.yaml -n ${Domain.domainNamespace}"
 
             Log.info(script, "create env configmap success.")
         }
