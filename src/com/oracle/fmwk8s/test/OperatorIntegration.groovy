@@ -62,10 +62,10 @@ class OperatorIntegration {
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh "cd kubernetes/framework/test/${testId} && \
-                        sed -i \"s#%TEST_IMAGE%#${testImage}#g\" fmwk8s-${testId}-mats-pod.yaml && \
-                        cat fmwk8s-${testId}-mats-pod.yaml"
+                        sed -i \"s#%TEST_IMAGE%#${testImage}#g\" fmwk8s-${testId}-test-pod.yaml && \
+                        cat fmwk8s-${testId}-test-pod.yaml"
 
-            script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-mats-pod.yaml -n ${Domain.domainNamespace} && \
+            script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} && \
                        kubectl get all -n ${Domain.domainNamespace}"
 
             waitForTests(script)
@@ -95,7 +95,7 @@ class OperatorIntegration {
                         i=\$((i+1))\n \
                         echo \"Waiting for Test Initialization. Iteration \$i of 10. Sleeping\"\n \
                         sleep 60\n \
-                        testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-mats\\``\n \
+                        testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
 
             script.sh "testStat='testStat' && \
@@ -109,7 +109,7 @@ class OperatorIntegration {
                         i=\$((i+1))\n \
                         echo \"Test is Running. Iteration \$i of 50. Sleeping\"\n \
                         sleep 120\n \
-                        testStat=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-mats\\``\n \
+                        testStat=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
 
             Log.info(script, "wait for test completion success.")
