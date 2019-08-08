@@ -93,7 +93,7 @@ class OperatorIntegration {
                             fi\n \
                         i=\$((i+1))\n \
                         echo \"Test is Running. Iteration \$i of 50. Sleeping\"\n \
-                        sleep 300\n \
+                        sleep 120\n \
                         testStat=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-mats\\``\n \
                         done"
 
