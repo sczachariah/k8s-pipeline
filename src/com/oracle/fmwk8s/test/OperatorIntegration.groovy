@@ -48,6 +48,7 @@ class OperatorIntegration {
         }
         catch (exc) {
             Log.error(script, "create env configmap failed.")
+            throw exc
         }
         finally {
         }
@@ -74,6 +75,7 @@ class OperatorIntegration {
         }
         catch (exc) {
             Log.error(script, "run test failed.")
+            throw exc
         }
         finally {
         }
