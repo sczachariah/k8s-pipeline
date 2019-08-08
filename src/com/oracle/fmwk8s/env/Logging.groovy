@@ -1,7 +1,7 @@
 package com.oracle.fmwk8s.env
 
-import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.common.Log
 
 class Logging {
 
@@ -78,11 +78,10 @@ class Logging {
                 configureLogstashConfigmap(script, domainName, domainNamespace)
                 configureLogstash(script, domainName, domainNamespace)
                 updateLogstashDeployment(script, domainName, domainNamespace)
+                Log.info(script, "deploy logstash success.")
             } else {
                 Log.info(script, "elk is disabled.")
             }
-
-            Log.info(script, "deploy logstash success.")
         }
         catch (exc) {
             Log.error(script, "deploy logstash failed.")
