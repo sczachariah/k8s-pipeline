@@ -36,28 +36,14 @@ class EnvironmentSetup {
         try {
             Log.info(script, "begin mount kubeconfig.")
 
-            script.git branch: 'master',
-                    credentialsId: 'sandeep.zachariah.ssh',
-                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
-
-            this.kubeconfig = script.sh(
-                    script: "cat ${script.env.KUBECONFIG}",
-                    returnStdout: true
-            ).trim()
-
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                        cd kubernetes/framework && \
-                        sed -i \"s#%KUBECONFIG%#${this.kubeconfig}#g\" fmwk8s-kubeconfig-configmap.yaml && \
-                        cat fmwk8s-kubeconfig-configmap.yaml && \
-                        kubectl apply -f fmwk8s-kubeconfig-configmap.yaml -n ${namespace}"
+                       kubectl create configmap fmwk8s-kubeconfig-configmap --from-file=kubeconfig=${script.env.KUBECONFIG} -n ${namespace}"
 
             Log.info(script, "mount kubeconfig success.")
         }
         catch (exc) {
             Log.error(script, "mount kubeconfig failed.")
             throw exc
-        }
-        finally {
         }
     }
 
