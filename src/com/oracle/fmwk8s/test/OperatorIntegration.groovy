@@ -2,7 +2,6 @@ package com.oracle.fmwk8s.test
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
-import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Operator
 import com.oracle.fmwk8s.utility.YamlUtility
@@ -11,34 +10,6 @@ class OperatorIntegration {
     static def yamlUtility = new YamlUtility()
     static def testId = "op-intg"
     static def mavenProfile
-
-    static createTestProps(script) {
-        try {
-            Log.info(script, "begin create test properties.")
-
-            script.sh "cd config && \
-                       sed -i \"s|\\\${PRODUCT_NAME}|${Common.productName}|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${OPERATOR_NS}|${Operator.operatorNamespace}|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${OPERATOR_SA}|${Operator.operatorServiceAccount}|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${DOMAIN_NAME}|${Domain.domainName}|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${DOMAIN_NS}|${Domain.domainNamespace}|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${CLUSTER_NAME}|${yamlUtility.domainInputsMap.get("clusterName")}|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${MANAGED_SERVER_NAME_BASE}|${yamlUtility.domainInputsMap.get("managedServerNameBase")}|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${ADMIN_SERVER_NAME}|${yamlUtility.domainInputsMap.get("adminServerName")}|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${WEBLOGIC_CREDENTIALS_SECRET_NAME}|${Domain.weblogicCredentialsSecretName}|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${OPERATOR_HELM_RELEASE}|${Operator.operatorHelmRelease}|g\" operatorTest.properties && \
-                       sed -i \"s|\\\${IMAGE_NAME}|${Common.productImage}|g\" && \
-                       cat operatorTest.properties"
-
-            Log.info(script, "create test properties success.")
-        }
-        catch (exc) {
-            Log.error(script, "create test properties failed.")
-        }
-        finally {
-        }
-    }
-
 
     static invokeTest(script, testImage, mavenProfile) {
         this.mavenProfile = mavenProfile
@@ -56,22 +27,19 @@ class OperatorIntegration {
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh "cd kubernetes/framework/test/${testId} && \
-                        sed -i \"s|%ADMIN_SERVER_NAME_SVC%|${Domain.domainName}-adminserver.${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MANAGED_SERVER_NAME_SVC%|${Domain.domainName}-cluster-${Common.productId}-cluster.${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%WEBLOGIC_USER%|${Domain.weblogicUser}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_PASSWORD%|${Domain.weblogicPass}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_PORT%|7001|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_SERVER_NAME%|admin-server|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_SSL_PORT%||g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_HOST%|${Database.dbName}.${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_PORT%|${Database.dbPort}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SCHEMA_PASSWORD%|Welcome1|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SID%|${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%JDBC_URL%|jdbc:oracle:thin:@${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${Common.productId}_server|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MANAGED_SERVER_PORT%|8001|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MDS_USER%|" + "${Common.productId}".toUpperCase() + "1_MDS|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%PRODUCT_NAME%|${Common.productName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%OPERATOR_NS%|${Operator.operatorNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%OPERATOR_SA%|${Operator.operatorServiceAccount}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%OPERATOR_HELM_RELEASE%|${Operator.operatorHelmRelease}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%DOMAIN_NAME%|${Domain.domainName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%DOMAIN_NS%|${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%ADMIN_SERVER_NAME%|${yamlUtility.domainInputsMap.get("adminServerName")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%ADMIN_PORT%|${yamlUtility.domainInputsMap.get("adminPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${yamlUtility.domainInputsMap.get("managedServerNameBase")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%MANAGED_SERVER_PORT%|${yamlUtility.domainInputsMap.get("managedServerPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%CLUSTER_NAME%|${yamlUtility.domainYaml.get("spec").get("clusters").get("clusterName")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%WEBLOGIC_CREDENTIALS_SECRET_NAME%|${Domain.weblogicCredentialsSecretName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%MAVEN_PROFILE%|${this.mavenProfile}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"
 
             script.sh "kubectl apply -f kubernetes/framework/${testId}/fmwk8s-${testId}-env-configmap.yaml -n ${Domain.domainNamespace}"
@@ -97,7 +65,7 @@ class OperatorIntegration {
                         sed -i \"s#%TEST_IMAGE%#${testImage}#g\" fmwk8s-${testId}-mats-pod.yaml && \
                         cat fmwk8s-${testId}-mats-pod.yaml"
 
-            script.sh "kubectl apply -f kubernetes/framework/${testId}/fmwk8s-${testId}-mats-pod.yaml -n ${Domain.domainNamespace} && \
+            script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-mats-pod.yaml -n ${Domain.domainNamespace} && \
                        kubectl get all -n ${Domain.domainNamespace}"
 
             waitForTests(script)

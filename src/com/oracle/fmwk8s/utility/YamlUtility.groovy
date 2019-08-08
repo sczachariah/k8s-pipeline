@@ -10,7 +10,7 @@ import org.yaml.snakeyaml.*
 class YamlUtility implements Serializable {
     static pvInputsMap
     static domainInputsMap
-    static Object[] domainYaml
+    static domainYaml
 
     static void main(String[] args) {
         YamlUtility yamlUtility = new YamlUtility();
@@ -26,7 +26,7 @@ class YamlUtility implements Serializable {
         map.put("weblogicDomainStoragePath", nfsDomainPath.toString())
         map.put("weblogicDomainStorageReclaimPolicy", "Recycle")
 
-        pvInputsMap = map
+        this.pvInputsMap = map
         writeYaml(script, map, pvInputsYamlFile)
     }
 
@@ -51,12 +51,13 @@ class YamlUtility implements Serializable {
         map.put("rcuDatabaseURL", Database.dbName.toString() + "." + domainNamespace.toString() + ":" + Database.dbPort.toString() + "/" + Database.dbName.toString() + "pdb.us.oracle.com")
         map.put("rcuCredentialsSecret", domainName.toString() + "-rcu-credentials")
 
-        domainInputsMap = map
+        this.domainInputsMap = map
         writeYaml(script, map, domainInputsYamlFile)
     }
 
     static generateDomainYaml(script, productId, domainYaml) {
         Map<Object, Object> map = readYaml(script, domainYaml)
+        this.domainYaml = map
 
         if ("${productId}" == "oim") {
             for (Object key : map.keySet()) {
