@@ -87,12 +87,12 @@ class OperatorIntegration {
                         i=0 && \
                         until `echo \$testInit | grep -q 1/1` > /dev/null\n \
                         do \n \
-                            if [ \$i == 5 ]; then\n \
+                            if [ \$i == 10 ]; then\n \
                                 echo \"Timeout waiting for Test Initialization. Exiting!!.\"\n \
                                 exit 1\n \
                             fi\n \
                         i=\$((i+1))\n \
-                        echo \"Waiting for Test Initialization. Iteration \$i of 5. Sleeping\"\n \
+                        echo \"Waiting for Test Initialization. Iteration \$i of 10. Sleeping\"\n \
                         sleep 60\n \
                         testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-mats\\``\n \
                         done"
