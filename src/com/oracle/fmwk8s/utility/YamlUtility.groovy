@@ -43,6 +43,7 @@ class YamlUtility implements Serializable {
         map.put("imagePullSecretName", Common.registrySecret.toString())
         map.put("weblogicCredentialsSecretName", domainName.toString() + "-weblogic-credentials")
         map.put("logHome", "/shared/logs/" + domainName.toString())
+        map.put("t3ChannelPort", 30012)
         map.put("exposeAdminT3Channel", false)
         map.put("t3PublicAddress", "fmwk8s.us.oracle.com")
         map.put("namespace", domainNamespace.toString())
