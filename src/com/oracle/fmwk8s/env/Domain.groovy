@@ -53,7 +53,7 @@ class Domain {
                         url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                 script.sh "cd kubernetes/framework/db/rcu && \
-                           sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${domainNamespace}:${Database.dbPort}/${Database.dbName}.us.oracle.com|g\" ${Common.productId}-rcu-configmap.yaml && \
+                           sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" ${Common.productId}-rcu-configmap.yaml && \
                            sed -i \"s|%RCUPREFIX%|${domainName}|g\" ${Common.productId}-rcu-configmap.yaml && \
                            sed -i \"s|%SYS_PASSWORD%|${Database.dbPassword}|g\" ${Common.productId}-rcu-configmap.yaml && \
                            sed -i \"s|%PASSWORD%|Welcome1|g\" ${Common.productId}-rcu-configmap.yaml && \
