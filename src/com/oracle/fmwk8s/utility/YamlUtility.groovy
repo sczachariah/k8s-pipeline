@@ -73,6 +73,7 @@ class YamlUtility implements Serializable {
 
                             for (LinkedHashMap cluster : clusters) {
                                 cluster.put("clusterName", "soa_cluster")
+                                cluster.put("replicas", 1)
                             }
                         }
                     }
@@ -94,8 +95,8 @@ class YamlUtility implements Serializable {
                             LinkedHashMap cluster = new LinkedHashMap()
                             cluster.put("clusterName", "oim_cluster")
                             cluster.put("serverStartState", "RUNNING")
-                            cluster.put("replicas", 2)
-                            clusters.add(cluster)
+                            cluster.put("replicas", 1)
+                            clusters.add(0, cluster)
                         }
                     }
                 }
