@@ -7,6 +7,7 @@ class Database {
     static dbName = "oracledb"
     static dbPassword = "Oradoc_db1"
     static dbPort = "1521"
+    static dbPodName
 
     static deployDatabase(script, databaseVersion, dbNamespace) {
         try {
@@ -42,6 +43,14 @@ class Database {
 
                 Log.info(script, "DB container is Running.")
                 script.sh "kubectl get pods,svc -n ${dbNamespace} | grep ${dbName}"
+
+                Log.info(script, "begin xaview setup for database.")
+                this.dbPodName = script.sh(
+                        script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${dbNamespace} | grep ${dbName}",
+                        returnStdout: true
+                ).trim()
+                script.sh "kubectl exec -it ${this.dbPodName} bash -c \"source /home/oracle/.bashrc; sqlplus sys/Oradoc_db1@ORCLCDB as sysdba <<EOF @\\\$ORACLE_HOME/rdbms/admin/xaview.sql / exit EOF\""
+                Log.info(script, "xaview setup for database success.")
 
                 Log.info(script, "deploy database success.")
             }
