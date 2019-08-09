@@ -49,7 +49,7 @@ class Database {
                         script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${dbNamespace} | grep ${dbName}",
                         returnStdout: true
                 ).trim()
-                script.sh "kubectl exec -it ${this.dbPodName} -n ${dbNamespace} -- bash -c \"source /home/oracle/.bashrc; sqlplus sys/${this.dbPassword}@${this.dbName} as sysdba <<EOF @\\\$ORACLE_HOME/rdbms/admin/xaview.sql / exit EOF\""
+                script.sh "kubectl exec -it ${this.dbPodName} -n ${dbNamespace} -- bash -c \"source /home/oracle/.bashrc; sqlplus sys/${this.dbPassword}@${this.dbName}pdb as sysdba <<EOF @\\\$ORACLE_HOME/rdbms/admin/xaview.sql / exit EOF\""
                 Log.info(script, "xaview setup for database success.")
 
                 Log.info(script, "deploy database success.")
