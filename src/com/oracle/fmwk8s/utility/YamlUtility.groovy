@@ -34,7 +34,7 @@ class YamlUtility implements Serializable {
         Map<Object, Object> map = readYaml(script, domainInputsYamlFile)
 
         map.put("adminPort", 7001)
-        map.put("adminServerName", "admin-server")
+        map.put("adminServerName", "AdminServer")
         map.put("domainUID", domainName.toString())
         map.put("domainHome", "/shared/domains/" + domainName.toString())
         map.put("configuredManagedServerCount", 5)

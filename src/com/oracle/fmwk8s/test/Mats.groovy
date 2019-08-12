@@ -4,8 +4,11 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.Domain
+import com.oracle.fmwk8s.utility.YamlUtility
 
 class Mats {
+    static def yamlUtility = new YamlUtility()
+
     static invokeTest(script, testImage) {
         createEnvConfigMap(script)
         runTests(script, testImage)
@@ -26,7 +29,7 @@ class Mats {
                         sed -i \"s|%WEBLOGIC_USER%|${Domain.weblogicUser}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_PASSWORD%|${Domain.weblogicPass}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_PORT%|7001|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_SERVER_NAME%|admin-server|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
+                        sed -i \"s|%ADMIN_SERVER_NAME%|${yamlUtility.domainInputsMap.get("adminServerName")}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_SSL_PORT%||g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%DB_HOST%|${Database.dbName}.${Domain.domainNamespace}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
