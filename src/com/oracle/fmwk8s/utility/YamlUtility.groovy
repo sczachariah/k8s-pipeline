@@ -33,13 +33,13 @@ class YamlUtility implements Serializable {
     static generateDomainInputsYaml(script, domainName, domainNamespace, domainInputsYamlFile) {
         Map<Object, Object> map = readYaml(script, domainInputsYamlFile)
 
-        map.put("adminPort", 7001)
+        map.put("adminPort", 17001)
         map.put("adminServerName", "AdminServer")
         map.put("domainUID", domainName.toString())
         map.put("domainHome", "/shared/domains/" + domainName.toString())
         map.put("configuredManagedServerCount", 5)
         map.put("initialManagedServerReplicas", 2)
-        map.put("managedServerPort", 8001)
+        map.put("managedServerPort", 18001)
         map.put("image", Common.productImage.toString())
         map.put("imagePullSecretName", Common.registrySecret.toString())
         map.put("weblogicCredentialsSecretName", domainName.toString() + "-weblogic-credentials")
