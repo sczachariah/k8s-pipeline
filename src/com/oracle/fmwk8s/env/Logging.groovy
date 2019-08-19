@@ -90,4 +90,22 @@ class Logging {
 
 
     }
+    
+    static getEventLogs(script, namespace) {
+        try {
+            Log.info(script, "begin get event logs.")
+            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
+                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
+                       kubectl get events --namespace=${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/${namespace}-event.txt && \
+                       cat ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/${namespace}-event.txt && \
+                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
+                       cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
+            script.archiveArtifacts artifacts: '**/*-event.txt'
+            Log.info(script, "get event logs success.")
+        }
+        catch (exc) {
+            Log.error(script, "get event logs failed.")
+            throw exc
+        }
+    }
 }
