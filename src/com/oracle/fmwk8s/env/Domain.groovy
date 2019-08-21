@@ -11,6 +11,7 @@ class Domain {
     static def domainName
     static def domainNamespace
     static def weblogicCredentialsSecretName
+    static def createdomainPodName
 
     static pullSampleScripts(script) {
         script.git branch: "${Common.samplesBranch}",
@@ -82,7 +83,11 @@ class Domain {
                            sleep 60\n \
                            rcustat=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep fmwk8s-rcu\\``\n \
                            done"
-
+                           
+                Log.info(script, "begin fetch rcu pod logs.")
+                Logging.getPodLogs(script, 'fmwk8s-rcu', domainNamespace)
+                Log.info(script, "fetch rcu pod logs success.")
+                
                 Log.info(script, "prepare rcu success.")
             }
         }
@@ -182,6 +187,14 @@ class Domain {
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain && \
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain" + Common.productId + ""
             Log.info(script, "create " + Common.productId + " domain success.")
+            
+            this.createdomainPodName = script.sh(
+                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${domainName}-create",
+                    returnStdout: true
+            ).trim()
+            Log.info(script, "begin fetch create domain job pod logs.")
+            Logging.getPodLogs(script, this.createdomainPodName, domainNamespace)
+            Log.info(script, "fetch create domain job pod logs success.")
 
             Log.info(script, "begin start " + Common.productId + " domain")
             yamlUtility.generateDomainYaml(script, Common.productId, "domain")
