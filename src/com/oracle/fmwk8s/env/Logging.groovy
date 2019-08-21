@@ -97,14 +97,40 @@ class Logging {
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
                        kubectl get events --namespace=${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/${namespace}-event.txt && \
-                       cat ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/${namespace}-event.txt && \
-                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
-                       cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
-            script.archiveArtifacts artifacts: '**/*-event.txt'
+                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
             Log.info(script, "get event logs success.")
         }
         catch (exc) {
             Log.error(script, "get event logs failed.")
+            throw exc
+        }
+    }
+
+    static getPodLogs(script, podname, namespace) {
+        try {
+            Log.info(script, "begin get pod logs.")
+            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
+                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
+                       kubectl logs ${podname} -n ${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/${podname}-pod.txt && \
+                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
+            Log.info(script, "get pod logs success.")
+        }
+        catch (exc) {
+            Log.error(script, "get pod logs failed.")
+            throw exc
+        }
+    }
+
+    static archiveLogs(script) {
+        try {
+            Log.info(script, "archive logs.")
+            script.sh "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
+            script.archiveArtifacts artifacts: '**/*-event.txt'
+            script.archiveArtifacts artifacts: '**/*-pod.txt'
+            Log.info(script, "archive logs success.")
+        }
+        catch (exc) {
+            Log.error(script, "archive logs failed.")
             throw exc
         }
     }
