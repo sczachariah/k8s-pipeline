@@ -187,8 +187,11 @@ pipeline {
             container(name: 'jnlp') {
                 script {
                     currentBuild.displayName = this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME
+                    
                     Logging.getEventLogs(this, "${OPERATOR_NS}" )
                     Logging.getEventLogs(this, "${DOMAIN_NS}")
+                    Logging.archiveLogs(this)
+                    
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
 
                     IngressController.undeployLoadBalancer this, "${LB_HELM_RELEASE}"
