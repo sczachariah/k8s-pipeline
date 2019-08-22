@@ -268,7 +268,7 @@ class Domain {
 
     static cleanDomain(script, domainName, namespace) {
         try {
-            script.sh "helm delete --purge ${namespace}"
+            script.sh "helm delete --purge ${namespace}-ingress"
         }
         catch (exc) {
             Log.error(script, "cleanup domain ingress failed.")
