@@ -10,23 +10,23 @@ pipeline {
     environment {
         KUBECONFIG = credentials('v1.12.9.admin.fmwk8s.oci.kubeconfig')
     }
-    stages {
+stages {
         stage('deploy Test tools') {
             steps {
                 container(name: 'jnlp') {
                     git branch: 'master',
-                            credentialsId: 'sandeep.zachariah.ssh',
+                            credentialsId: 'jaya.selvaraj.ssh',
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-                    sh 'echo $KUBECONFIG && cat $KUBECONFIG && kubectl get nodes && kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
+                    sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
 
-                    //sh label: 'generate test props', script: '''
-                    //cat <<EOF > ${WORKSPACE}/test.props
-//SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
-//SELENIUM_HUB_PORT=4444
-//EOF
-                    //cat ${WORKSPACE}/test.props
-                    //'''
+                    sh label: 'generate test props', script: '''
+                    cat <<EOF > ${WORKSPACE}/test.props
+SELENIUM_HUB_HOST=selenium-standalone-firefox.fmwk8s
+SELENIUM_HUB_PORT=4444
+EOF
+                    cat ${WORKSPACE}/test.props
+                    '''
                 }
             }
         }
@@ -46,30 +46,15 @@ pipeline {
 							echo "***********Checking content of the workspace******************"
 							ls
 							echo "***********Checking is values passed properly******************"
-							echo PRODUCT_NAME
-							echo ${PRODUCT_NAME}
-							echo PRODUCT_DOMAIN_TYPE
-							echo ${PRODUCT_DOMAIN_TYPE}
-							echo ADMIN_USERNAME
-							echo ${ADMIN_USERNAME}
-							echo ADMIN_PASSWORD
-							echo ${ADMIN_PASSWORD}
-							echo K8S_IP
-							echo ${K8S_IP}
-							echo ADMIN_NODE_PORT
-							echo ${ADMIN_NODE_PORT}
-							echo MS_NODE_PORT
-							echo ${MS_NODE_PORT}
-							echo BUILD_NUMBER ${BUILD_NUMBER}
-							echo BUILD_URL ${BUILD_URL}	
-					
+							echo -e "\nPRODUCT_NAME : ${PRODUCT_NAME} \n PRODUCT_DOMAIN_TYPE : ${PRODUCT_DOMAIN_TYPE} \n ADMIN_USERNAME : ${ADMIN_USERNAME} \n ADMIN_PASSWORD : ${ADMIN_PASSWORD} \n K8S_IP : ${K8S_IP} \n ADMIN_NODE_PORT : ${ADMIN_NODE_PORT} \n MS_NODE_PORT : ${MS_NODE_PORT} \n BUILD_NUMBER : ${BUILD_NUMBER} \n BUILD_URL : ${BUILD_URL}"
+
 							if [[ ${PRODUCT_NAME} == *"SOA"* ]]; then
 								sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
 								sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
 								sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
 								sed -i -e "s|UNAME|${ADMIN_USERNAME}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
 								sed -i -e "s|PWD|${ADMIN_PASSWORD}|g" config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
-								
+
 								if [[ ${PRODUCT_DOMAIN_TYPE} == *"SOA"* ]]; then
 									mvn test -Dtest=SOAsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
 								elif [[ ${PRODUCT_DOMAIN_TYPE} == *"OSB"* ]]; then
@@ -77,13 +62,84 @@ pipeline {
 								elif [[ ${PRODUCT_DOMAIN_TYPE} == *"BPM"* ]]; then
 									mvn test -Dtest=BPMsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_DOMAIN_TYPE}/urlTemplate.properties
 								fi
-							fi							
-                            
+							fi
+
+							if [[ ${PRODUCT_NAME} == *"ODI"* ]]; then
+                                echo "ODI Testing*******"
+                            	sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                            	sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                            	mvn test -Dtest=ODIsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
+                            fi
+
+                            if [[ ${PRODUCT_NAME} == *"OHS"* ]]; then
+                                echo "OHS Testing*******"
+                               	sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                               	sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                mvn test -Dtest=OHSsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
+                            fi
+
+                            if [[ ${PRODUCT_NAME} == *"WLS-INFRA"* ]]; then
+                                sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|UNAME|${ADMIN_USERNAME}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|PWD|${ADMIN_PASSWORD}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                mvn test -Dtest=WLSINFRAsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
+                            fi
+
+                            if [[ ${PRODUCT_NAME} == *"WLS-DEVELOPER"* || ${PRODUCT_NAME} == *"WLS-GENERIC"* ]]; then
+                                sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                mvn test -Dtest=WLS_DEV_GENERICsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
+                            fi
+
+
                             '''
                         }
                     }
                 }
             }
+        }
+        stage('Collect and Upload Reports') {
+            steps {
+                echo "Reports directory: ${WORKSPACE}/test-output"
+                script {
+                    env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%d-%H%M'").trim()
+                    def logContent = Jenkins.getInstance()
+                                    .getItemByFullName(env.JOB_NAME)
+                                    .getBuildByNumber(
+                                        Integer.parseInt(env.BUILD_NUMBER))
+                                    .logFile.text
+                    writeFile file: "buildlog-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.txt", text: logContent
+                }
+                zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
+                rtUpload(
+                        serverId: "artifactory.oraclecorp.com",
+                        spec:
+                                """{
+                           "files": [
+                             {
+                                "pattern": "test-output*.zip",
+                                "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/test-reports/"
+                             },
+                             {
+                                "pattern": "buildlog*.txt",
+                                "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/logs/"
+                             }
+                           ]
+                        }""",
+                        failNoOp: true
+                )
+
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.PRODUCT_NAME
+            }
+
         }
     }
 
