@@ -1,13 +1,14 @@
 pipeline {
     agent {
         kubernetes {
-            label 'fmwk8s-test-mats-slave'
+            cloud 'kubernetes12'
+            label 'fmwk8s-test-mats-slave-pp'
             namespace 'fmwk8s'
-            inheritFrom 'fmwk8s-test-infra-slave'
+            inheritFrom 'fmwk8s-test-infra-slave-pp'
         }
     }
     environment {
-        KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
+        KUBECONFIG = credentials('v1.12.9.admin.fmwk8s.oci.kubeconfig')
     }
     stages {
         stage('deploy Test tools') {
