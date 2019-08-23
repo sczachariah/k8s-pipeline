@@ -178,7 +178,7 @@ class Common {
 
 //        script.zip zipFile: "test-output-${script.env.BUILD_NUMBER}-${script.env.DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${script.env.WORKSPACE}/test-output"
             script.rtUpload(
-                    serverId: "artifactory.oraclecorp.com",
+                    serverId: "artifactory-slc-prod1.oraclecorp.com",
                     spec:
                             """{
                            "files": [
