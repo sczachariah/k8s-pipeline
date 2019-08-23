@@ -25,7 +25,7 @@ pipeline {
         RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT_NAME}")
         HTTP_PROXY = "http://10.236.2.53:80"
         HTTPS_PROXY = "http://10.236.2.53:80"
-        KUBECONFIG = credentials('v1.12.9.admin.fmwk8s.oci.kubeconfig')
+        KUBECONFIG = credentials('admin.fmwk8s.oci.kubeconfig')
         REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
         OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
         OPERATOR_SA = 'default'
