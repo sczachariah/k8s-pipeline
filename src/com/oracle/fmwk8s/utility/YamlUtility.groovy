@@ -62,9 +62,6 @@ class YamlUtility implements Serializable {
         Map<Object, Object> map = readYaml(script, domainYaml)
         this.domainYaml = map
 
-        LinkedHashMap serverService = new LinkedHashMap()
-        serverService.put("precreateService", true)
-
         if ("${productId}" == "oim") {
             for (Object key : map.keySet()) {
                 if (key.equals("spec")) {
@@ -77,7 +74,6 @@ class YamlUtility implements Serializable {
                             for (LinkedHashMap cluster : clusters) {
                                 cluster.put("clusterName", "soa_cluster")
                                 cluster.put("replicas", 1)
-                                cluster.put("serverService", serverService)
                             }
                         }
                     }
@@ -100,7 +96,6 @@ class YamlUtility implements Serializable {
                             cluster.put("clusterName", "oim_cluster")
                             cluster.put("serverStartState", "RUNNING")
                             cluster.put("replicas", 1)
-                            cluster.put("serverService", serverService)
                             clusters.add(0, cluster)
                         }
                     }
@@ -109,21 +104,6 @@ class YamlUtility implements Serializable {
 
             writeYaml(script, map, domainYaml + productId)
         } else {
-            for (Object key : map.keySet()) {
-                if (key.equals("spec")) {
-                    LinkedHashMap specs = map.get("spec")
-
-                    for (Object spec : specs.keySet()) {
-                        if (spec.equals("clusters")) {
-                            List clusters = specs.get("clusters")
-
-                            for (LinkedHashMap cluster : clusters) {
-                                cluster.put("serverService", serverService)
-                            }
-                        }
-                    }
-                }
-            }
             writeYaml(script, map, domainYaml)
         }
     }
@@ -145,8 +125,31 @@ class YamlUtility implements Serializable {
     }
 
     static writeYaml(script, map, yamlFile) {
+        doPrecreateServiceWA(map)
         script.writeFile file: yamlFile + ".yaml", text: getYamlContent(map)
 //        script.writeYaml file: yamlFile + ".yaml", data: map
+    }
+
+    static doPrecreateServiceWA(map) {
+        LinkedHashMap serverService = new LinkedHashMap()
+        serverService.put("precreateService", true)
+
+        for (Object key : map.keySet()) {
+            if (key.equals("spec")) {
+                LinkedHashMap specs = map.get("spec")
+
+                for (Object spec : specs.keySet()) {
+                    if (spec.equals("clusters")) {
+                        List clusters = specs.get("clusters")
+
+                        for (LinkedHashMap cluster : clusters) {
+                            cluster.putIfAbsent("serverService", serverService)
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     @NonCPS
