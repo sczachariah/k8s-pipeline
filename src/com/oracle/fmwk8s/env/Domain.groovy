@@ -197,7 +197,7 @@ class Domain {
                        sleep 480"
             if ("${Common.productId}" == "oim") {
                 script.sh "kubectl apply -f domain" + Common.productId + ".yaml -n ${domainNamespace} && \
-                           sleep 480000"
+                           sleep 480"
             }
             Log.info(script, "start " + Common.productId + " domain success.")
 
