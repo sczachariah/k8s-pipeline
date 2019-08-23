@@ -1,0 +1,211 @@
+@Library('fmwk8s-pipeline-library') _
+
+
+import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.common.EnvironmentSetup
+import com.oracle.fmwk8s.common.Validation
+import com.oracle.fmwk8s.env.Database
+import com.oracle.fmwk8s.env.Domain
+import com.oracle.fmwk8s.env.IngressController
+import com.oracle.fmwk8s.env.Logging
+import com.oracle.fmwk8s.env.Operator
+import com.oracle.fmwk8s.test.Functional
+
+pipeline {
+    agent {
+        kubernetes {
+            cloud 'kubernetes12'
+            label 'fmwk8s-test-mats-slave-pp'
+            namespace 'fmwk8s'
+            inheritFrom 'fmwk8s-test-mats-slave-pp'
+        }
+    }
+
+    environment {
+        RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT_NAME}")
+        HTTP_PROXY = "http://10.236.2.53:80"
+        HTTPS_PROXY = "http://10.236.2.53:80"
+        KUBECONFIG = credentials('v1.12.9.admin.fmwk8s.oci.kubeconfig')
+        REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
+        OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
+        OPERATOR_SA = 'default'
+        OPERATOR_HELM_RELEASE = "op-${RUN_SUFFIX}"
+        DOMAIN_NAME = Common.getDomainName("${PRODUCT_NAME}")
+        DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${RUN_SUFFIX}"
+        WEBLOGIC_USER = 'weblogic'
+        ADMIN_PASSWORD = 'Welcome1'
+        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
+        NFS_DOMAIN_DIR = "${DOMAIN_NS}"
+        NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
+        LB_HELM_RELEASE = "lb-${RUN_SUFFIX}"
+    }
+
+
+    stages {
+        stage('validate input parameters') {
+            steps {
+                log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
+
+                container('jnlp') {
+                    script {
+                        Validation.validateInputs(this, "${OPERATOR_VERSION}", "${PRODUCT_NAME}", "${DOMAIN_TYPE}", "${DATABASE_VERSION}", "${TEST_IMAGE_TAG}", "${TEST_TYPE}" ,"${HOURS_AFTER}")
+                        sleep 1
+                    }
+                }
+            }
+        }
+
+        stage('deploy kubernetes operator') {
+            steps {
+                container('jnlp') {
+                    dir('weblogic-operator') {
+                        script {
+                            Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}", "${ELK_ENABLE}")
+                        }
+                    }
+                }
+
+                container('jnlp') {
+                    script {
+                        Domain.createNamespace(this, "${DOMAIN_NS}")
+                        Common.configureRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
+                        EnvironmentSetup.createNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
+                    }
+                }
+            }
+        }
+
+        stage('prepare fmw product environment') {
+            parallel {
+                stage('setup database') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwk8s') {
+                                script {
+                                    Database.deployDatabase(this, "${DATABASE_VERSION}", "${DOMAIN_NS}")
+                                    Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('prepare fmw domain in pv') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwsamples') {
+                                script {
+                                    Domain.pullSampleScripts(this)
+
+                                    Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
+                                    Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
+                                    Domain.prepareDomain(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        stage('deploy fmw domain') {
+            parallel {
+                stage('create fmw domain') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwsamples') {
+                                script {
+                                    Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Logging.deployLogstash(this, "${ELK_ENABLE}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('configure domain loadbalancer') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwsamples') {
+                                script {
+                                    IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
+                                    sleep(60)
+                                    Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('verify domain ready') {
+            steps {
+                container('jnlp') {
+                    sh label: 'verify weblogic ready', script: '''
+                            echo "TODO WEBLOGIC READY"
+                            '''
+                }
+            }
+        }
+
+        stage('run tests') {
+            parallel {
+                stage('wait for completion') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                EnvironmentSetup.waitHoursAfter(this, "${HOURS_AFTER}")
+                            }
+                        }
+                    }
+                }
+
+                stage('execute tests') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                Functional.invokeTest(this, "${TEST_TYPE}", "${TEST_IMAGE_TAG}")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('publish results') {
+            steps {
+                container('jnlp') {
+                    script {
+                        Common.publishLogs(this)
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            container(name: 'jnlp') {
+                script {
+                    currentBuild.displayName = this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME
+                    
+                    Logging.getEventLogs(this, "${OPERATOR_NS}" )
+                    Logging.getEventLogs(this, "${DOMAIN_NS}")
+                    Logging.archiveLogs(this)
+                    
+                    Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
+
+                    IngressController.undeployLoadBalancer this, "${LB_HELM_RELEASE}"
+                    Domain.cleanDomain this, "${DOMAIN_NAME}", "${DOMAIN_NS}"
+                    EnvironmentSetup.deleteNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
+                    Domain.cleanDomainNamespace this, "${DOMAIN_NS}"
+
+                    Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
+                    Operator.cleanOperatorNamespace this, "${OPERATOR_NS}"
+                }
+            }
+        }
+    }
+}
