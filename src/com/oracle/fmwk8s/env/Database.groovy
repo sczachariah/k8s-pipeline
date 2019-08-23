@@ -51,10 +51,6 @@ class Database {
                 ).trim()
                 script.sh "kubectl exec -it ${this.dbPodName} -n ${dbNamespace} -- bash -c \"source /home/oracle/.bashrc; sqlplus sys/${this.dbPassword}@${this.dbName}pdb as sysdba <<EOF @\\\$ORACLE_HOME/rdbms/admin/xaview.sql / exit EOF\""
                 Log.info(script, "xaview setup for database success.")
-                
-                Log.info(script, "begin fetch database pod logs.")
-                Logging.getPodLogs(script, this.dbPodName, dbNamespace)
-                Log.info(script, "fetch database pod logs success.")
 
                 Log.info(script, "deploy database success.")
             }
@@ -62,6 +58,12 @@ class Database {
         catch (exc) {
             Log.error(script, "deploy database failed.")
             throw exc
+        }
+        finally {
+            Log.info(script, "begin fetch database pod logs.")
+            Logging.getPodLogs(script, this.dbPodName, dbNamespace)
+            Log.info(script, "fetch database pod logs success.")
+            
         }
     }
 
