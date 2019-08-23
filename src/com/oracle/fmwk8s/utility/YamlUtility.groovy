@@ -62,7 +62,7 @@ class YamlUtility implements Serializable {
         Map<Object, Object> map = readYaml(script, domainYaml)
         this.domainYaml = map
 
-        LinkedHashMap serverService
+        LinkedHashMap serverService = new LinkedHashMap()
         serverService.put("precreateService", true)
 
         if ("${productId}" == "oim") {
