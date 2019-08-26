@@ -97,7 +97,7 @@ class Operator {
             Log.info(script, "begin create kubernetes operator namespace.")
 
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
-            script.sh "kubectl create ns ${namespace}"
+            script.sh "kubectl create ns ${namespace} --v=8"
 
             Log.info(script, "create kubernetes operator namespace success.")
         }
