@@ -9,8 +9,7 @@ class Logging {
         try {
             Log.info(script, "begin configure logstash configmap.")
 
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                       cd ../fmwk8s/kubernetes/framework/logging && \
+            script.sh "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-configmap.yaml && \
                        sed -i \"s#%ELASTICSEARCH_HOST%#${Common.elasticSearchHost}:${Common.elasticSearchPort}#g\" logstash-configmap.yaml && \
                        cat logstash-configmap.yaml && \
@@ -29,8 +28,7 @@ class Logging {
         try {
             Log.info(script, "begin configure logstash.")
 
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                       cd ../fmwk8s/kubernetes/framework/logging && \
+            script.sh "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" fmwk8s-logstash-config-pod.yaml && \
                        sed -i \"s#%DOMAIN_PVC%#${domainName}-${domainNamespace}-pvc#g\" fmwk8s-logstash-config-pod.yaml && \
                        cat fmwk8s-logstash-config-pod.yaml && \
@@ -50,8 +48,7 @@ class Logging {
         try {
             Log.info(script, "begin update and deploy logstash.")
 
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                       cd ../fmwk8s/kubernetes/framework/logging && \
+            script.sh "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-deployment.yaml && \
                        sed -i \"s#%DOMAIN_NAMESPACE%#${domainNamespace}#g\" logstash-deployment.yaml && \
                        sed -i \"s#%DOMAIN_PVC%#${domainName}-${domainNamespace}-pvc#g\" logstash-deployment.yaml && \

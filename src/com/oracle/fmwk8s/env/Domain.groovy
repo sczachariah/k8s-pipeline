@@ -24,8 +24,6 @@ class Domain {
             if (Common.productId != "weblogic") {
                 Log.info(script, "begin configure rcu secrets.")
 
-                script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
-
                 script.sh "retVal=`echo \\`kubectl get secret ${domainName}-rcu-credentials -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
                           kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${domainName} -p Welcome1 -a sys -q ${Database.dbPassword} -d ${domainName} -n ${domainNamespace} \n \
@@ -66,8 +64,7 @@ class Domain {
                            sed -i \"s|%PRODUCT_IMAGE%|${Common.productImage}|g\" fmwk8s-rcu-pod.yaml && \
                            cat fmwk8s-rcu-pod.yaml"
 
-                script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                           kubectl apply -f kubernetes/framework/db/rcu/${Common.productId}-rcu-configmap.yaml -n ${domainNamespace} && \
+                script.sh "kubectl apply -f kubernetes/framework/db/rcu/${Common.productId}-rcu-configmap.yaml -n ${domainNamespace} && \
                            kubectl apply -f kubernetes/framework/db/rcu/fmwk8s-rcu-pod.yaml -n ${domainNamespace}"
 
                 script.sh "rcustat='rcustat' && \
@@ -104,8 +101,6 @@ class Domain {
             Log.info(script, "begin configure domain secrets.")
 
             this.weblogicCredentialsSecretName = "${domainName}-weblogic-credentials"
-
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
 
             script.sh "retVal=`echo \\`kubectl get secret ${this.weblogicCredentialsSecretName} -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
@@ -252,7 +247,6 @@ class Domain {
         try {
             Log.info(script, "begin create domain namespace.")
 
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             script.sh "kubectl create ns ${namespace}"
 
             Log.info(script, "create domain namespace success.")
@@ -264,7 +258,6 @@ class Domain {
         finally {
             Log.info(script, "initialize helm.")
 
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             script.sh "helm init --client-only --skip-refresh --wait"
         }
     }

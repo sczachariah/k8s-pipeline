@@ -54,10 +54,9 @@ class IngressController {
         try {
             Log.info(script, "begin deploy apache ingress controller.")
             Log.info(script, Common.operatorBranch)
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                   helm init --client-only --skip-refresh --wait && \
-                   helm repo update && \
-                   helm install ../fmwk8s/kubernetes/framework/ingress-controller/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set image=fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3,imagePullSecrets=${Common.denRegistrySecret}"
+            script.sh "helm init --client-only --skip-refresh --wait && \
+                       helm repo update && \
+                       helm install ../fmwk8s/kubernetes/framework/ingress-controller/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set image=fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3,imagePullSecrets=${Common.denRegistrySecret}"
 
             Log.info(script, "deploy apache ingress controller success.")
         }
@@ -100,7 +99,6 @@ class IngressController {
     static getLoadBalancerPort(script, lbHelmRelease, domainNamespace) {
         try {
             Log.info(script, "begin get load balancer port.")
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
 
             this.httplbPort = script.sh(
                     script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",

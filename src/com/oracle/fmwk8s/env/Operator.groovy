@@ -76,7 +76,6 @@ class Operator {
         try {
             Log.info(script, "begin set domain namespace.")
 
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             script.sh "helm upgrade \
                        --reuse-values \
                        --set \"domainNamespaces={$domainNamespace}\" \
@@ -96,7 +95,6 @@ class Operator {
         try {
             Log.info(script, "begin create kubernetes operator namespace.")
 
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG}"
             script.sh "kubectl create ns ${namespace} --v=8"
 
             Log.info(script, "create kubernetes operator namespace success.")

@@ -145,8 +145,7 @@ class Common {
             Log.info(script, "begin configure registry secret.")
 
 
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
-                       retVal=`echo \\`kubectl get secret ${registrySecret} -n ${namespace} 2>&1\\`` &&\
+            script.sh "retVal=`echo \\`kubectl get secret ${registrySecret} -n ${namespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" \\| grep -q 'not found'; then\n \
                           kubectl create secret docker-registry ${registrySecret} -n ${namespace} --docker-server=http://container-registry.oracle.com --docker-username='${registryUsername}' --docker-password='${registryPass}' --docker-email='${registryUsername}'\n \
                        fi"
