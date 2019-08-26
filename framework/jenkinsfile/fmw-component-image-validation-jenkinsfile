@@ -113,7 +113,7 @@ EOF
                 }
                 zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
                 rtUpload(
-                        serverId: "artifactory-slc-prod1.oraclecorp.com",
+                        serverId: "artifactory.oraclecorp.com",
                         spec:
                                 """{
                            "files": [
