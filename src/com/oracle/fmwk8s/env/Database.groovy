@@ -60,9 +60,11 @@ class Database {
             throw exc
         }
         finally {
-            Log.info(script, "begin fetch database pod logs.")
-            Logging.getPodLogs(script, this.dbPodName, dbNamespace)
-            Log.info(script, "fetch database pod logs success.")
+            if (Common.productId != "weblogic") {
+                Log.info(script, "begin fetch database pod logs.")
+                Logging.getPodLogs(script, this.dbPodName, dbNamespace)
+                Log.info(script, "fetch database pod logs success.")
+            }
             
         }
     }
