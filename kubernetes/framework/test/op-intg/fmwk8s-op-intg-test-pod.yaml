@@ -5,11 +5,6 @@ metadata:
   name: fmwk8s-op-intg-test
 spec:
   restartPolicy: Never
-  volumes:
-    - name: fmwk8s-kubeconfig-configmap
-      configMap:
-        name: fmwk8s-kubeconfig-configmap
-        defaultMode: 0777
   containers:
     - name: fmwk8s-op-intg-test
       image: "%TEST_IMAGE%"
@@ -17,9 +12,5 @@ spec:
       envFrom:
         - configMapRef:
             name: fmwk8s-op-intg-env-configmap
-      volumeMounts:
-        - name: fmwk8s-kubeconfig-configmap
-          mountPath: /u01/kubeconfig
-          subPath: kubeconfig
 ---
 ---
