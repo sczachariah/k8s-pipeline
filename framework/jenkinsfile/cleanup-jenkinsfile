@@ -16,7 +16,6 @@ pipeline {
     }
 
     environment {
-        KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
         OPERATOR_HELM_RELEASE = "op-${RUN_SUFFIX}"
         DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${RUN_SUFFIX}"

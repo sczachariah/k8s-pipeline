@@ -18,7 +18,6 @@ pipeline {
 
     environment {
         RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT}")
-        KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
         OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
         OPERATOR_SA = 'default'
         OPERATOR_HELM_RELEASE = "op-${RUN_SUFFIX}"
