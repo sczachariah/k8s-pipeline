@@ -103,7 +103,6 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "get event logs failed.")
-            throw exc
         }
     }
 
@@ -118,7 +117,6 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "get pod logs failed.")
-            throw exc
         }
     }
 
@@ -136,7 +134,6 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "get domain logs failed.")
-            throw exc
         }
     }
 
@@ -154,7 +151,6 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "archive logs failed.")
-            throw exc
         }
     }
 }
