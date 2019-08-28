@@ -43,13 +43,12 @@ pipeline {
                                   usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                     container('dind') {
                         git branch: 'master',
-                                credentialsId: 'sandeep.zachariah.ssh',
+                                credentialsId: 'sandeep.zachariah.docker',
                                 url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
 
                         script {
                             try {
                                 sh label: 'create operator namespace', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
                                 kubectl create ns ${OPERATOR_NS}
                                 #kubectl create sa ${OPERATOR_SA} -n ${OPERATOR_NS}
                                 '''
@@ -61,7 +60,6 @@ pipeline {
                         script {
                             try {
                                 sh label: 'create domain namespace', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
                                 kubectl create ns ${DOMAIN_NS}
                                 '''
                             }
@@ -69,7 +67,6 @@ pipeline {
                             }
                             finally {
                                 sh label: 'initialize helm', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
                                 helm init --client-only --skip-refresh --wait
                                 '''
                             }
@@ -126,11 +123,10 @@ pipeline {
 
                     container('jnlp') {
                         git branch: 'master',
-                                credentialsId: 'sandeep.zachariah.ssh',
+                                credentialsId: 'sandeep.zachariah.docker',
                                 url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                         sh label: 'create nfs folder', script: '''
-                        export KUBECONFIG=${KUBECONFIG}
 
                         cd kubernetes/framework
                         sed -i "s#%FMWK8S_NFS_HOME%#${FMWK8S_NFS_HOME}#g" fmwk8s-mkdir-pod.yaml
@@ -154,11 +150,10 @@ pipeline {
                                           usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                             container('jnlp') {
                                 git branch: 'master',
-                                        credentialsId: 'sandeep.zachariah.ssh',
+                                        credentialsId: 'sandeep.zachariah.docker',
                                         url: 'git@orahub.oraclecorp.com:tooling/soa-kubernetes-operator.git'
 
                                 sh label: 'setup env', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
                                 '''
 
                                 sh label: 'setup db', script: '''
@@ -210,7 +205,6 @@ pipeline {
                                           usernameVariable: 'DOCKER_USERNAME_CISYSTEM', passwordVariable: 'DOCKER_PASSWORD_CISYSTEM']]) {
                             container('jnlp') {
                                 sh label: 'setup env', script: '''
-                                export KUBECONFIG=${KUBECONFIG}
                                 sleep 120
                                 '''
 
@@ -343,7 +337,7 @@ pipeline {
                     steps {
                         container('jnlp') {
                             git branch: 'master',
-                                    credentialsId: 'sandeep.zachariah.ssh',
+                                    credentialsId: 'sandeep.zachariah.docker',
                                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-operator-intg-tests.git'
 
                             sh label: 'prepare properties file', script: '''
