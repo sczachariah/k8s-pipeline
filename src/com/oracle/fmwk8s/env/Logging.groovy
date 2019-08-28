@@ -91,44 +91,66 @@ class Logging {
     static getEventLogs(script, namespace) {
         try {
             Log.info(script, "begin get event logs.")
-            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
-                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
-                       kubectl get events --namespace=${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/${namespace}-event.txt && \
-                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
+            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs && \
+                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs && \
+                       kubectl get events --namespace=${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs/${namespace}-event.txt && \
+                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs"
             Log.info(script, "get event logs success.")
         }
         catch (exc) {
             Log.error(script, "get event logs failed.")
-            exc.printStackTrace()
+            throw exc
         }
     }
 
     static getPodLogs(script, podname, namespace) {
         try {
             Log.info(script, "begin get pod logs.")
-            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
-                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
-                       kubectl logs ${podname} -n ${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/${podname}-pod.txt && \
-                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
+            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs && \
+                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs && \
+                       kubectl logs ${podname} -n ${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs/${podname}-pod.txt && \
+                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs"
             Log.info(script, "get pod logs success.")
         }
         catch (exc) {
             Log.error(script, "get pod logs failed.")
-            exc.printStackTrace()
+            throw exc
         }
     }
+
+    static fetchDomainLogs(script, domainName, domainNamespace) {
+        try {
+            Log.info(script, "begin get domain logs.")
+            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
+                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
+                       kubectl cp ${domainNamespace}/${domainName}-${YamlUtility.domainInputsMap.get("adminServerName")}:${YamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
+                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
+                       cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
+            script.zip zipFile: "domain_logs.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
+            script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
+            Log.info(script, "get domain logs success.")
+        }
+        catch (exc) {
+            Log.error(script, "get domain logs failed.")
+            throw exc
+        }
+    }
+
 
     static archiveLogs(script) {
         try {
             Log.info(script, "archive logs.")
             script.sh "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
-            script.archiveArtifacts artifacts: '**/*-event.txt'
-            script.archiveArtifacts artifacts: '**/*-pod.txt'
+            script.zip zipFile: "event_logs.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs"
+            script.zip zipFile: "pod_logs.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs"
+            script.archiveArtifacts artifacts: '**/event_logs.zip'
+            script.archiveArtifacts artifacts: '**/pod_logs.zip'
+            script.archiveArtifacts artifacts: '**/domain_logs.zip'
             Log.info(script, "archive logs success.")
         }
         catch (exc) {
             Log.error(script, "archive logs failed.")
-            exc.printStackTrace()
+            throw exc
         }
     }
 }
