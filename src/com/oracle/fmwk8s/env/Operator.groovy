@@ -135,7 +135,7 @@ class Operator {
         }
         finally {
             script.sh "kubectl get ns ${operatorNamespace} -o json | jq '.spec.finalizers=[]' > ns-without-finalizers.json && \
-                       curl -k -X PUT https://fmwk8s.us.oracle.com:6443/api/v1/namespaces/${operatorNamespace}/finalize \
+                       curl -k -X PUT ${Common.k8sMasterUrl}/api/v1/namespaces/${operatorNamespace}/finalize \
                                -H \"Content-Type: application/json\" --data-binary @ns-without-finalizers.json"
         }
     }

@@ -13,7 +13,6 @@ class Common {
     static def registrySecret = "regcred"
     static def denRegistrySecret = "denregcred"
 
-
     static def domainName
 
     static def samplesRepo
@@ -22,6 +21,7 @@ class Common {
 
     static def elasticSearchHost = "elasticsearch.logging.svc.cluster.local"
     static def elasticSearchPort = "9200"
+    static def k8sMasterUrl = ""
 
     static def getUniqueId(def script, productName) {
         def date = new Date()
@@ -34,6 +34,8 @@ class Common {
         getDomainName(productName)
         getProductIdentifier(productName)
         getSamplesRepo(productName)
+
+        getKubernetesMasterUrl(script)
 
         return uniqueId
     }
@@ -200,5 +202,16 @@ class Common {
             Log.error(script, "publish logs failed.")
             throw exc
         }
+    }
+
+    static getKubernetesMasterUrl(script) {
+        Log.info(script, "begin get k8s master url.")
+        this.k8sMasterUrl = script.sh(
+                script: "kubectl cluster-info | grep 'master is running at' | sed 's/.*\\ //'",
+                returnStdout: true
+        ).trim()
+
+        Log.info(script, "k8s master url : ${this.k8sMasterUrl}")
+        Log.info(script, "get k8s master url success.")
     }
 }
