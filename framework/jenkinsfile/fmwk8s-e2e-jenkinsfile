@@ -189,6 +189,7 @@ pipeline {
                     
                     Logging.getEventLogs(this, "${OPERATOR_NS}" )
                     Logging.getEventLogs(this, "${DOMAIN_NS}")
+                    Logging.fetchDomainLogs(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                     Logging.archiveLogs(this)
                     
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
