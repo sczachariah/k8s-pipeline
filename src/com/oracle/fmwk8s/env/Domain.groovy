@@ -80,8 +80,8 @@ class Domain {
                            sleep 60\n \
                            rcustat=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep fmwk8s-rcu\\``\n \
                            done"
-                           
-                
+
+
                 Log.info(script, "prepare rcu success.")
             }
         }
@@ -328,9 +328,13 @@ class Domain {
             Log.error(script, "cleanup domain namespace failed.")
         }
         finally {
-            script.sh "kubectl get ns ${namespace} -o json | jq '.spec.finalizers=[]' > ns-without-finalizers.json && \
+            try {
+                script.sh "kubectl get ns ${namespace} -o json | jq '.spec.finalizers=[]' > ns-without-finalizers.json && \
                        curl -k -X PUT ${Common.k8sMasterUrl}/api/v1/namespaces/${namespace}/finalize \
                                -H \"Content-Type: application/json\" --data-binary @ns-without-finalizers.json"
+            }
+            catch (exc) {
+            }
         }
     }
 }

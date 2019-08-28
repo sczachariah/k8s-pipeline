@@ -134,9 +134,14 @@ class Operator {
             Log.error(script, "clean kubernetes operator namespace failed.")
         }
         finally {
-            script.sh "kubectl get ns ${operatorNamespace} -o json | jq '.spec.finalizers=[]' > ns-without-finalizers.json && \
+            try {
+                script.sh "kubectl get ns ${operatorNamespace} -o json | jq '.spec.finalizers=[]' > ns-without-finalizers.json && \
                        curl -k -X PUT ${Common.k8sMasterUrl}/api/v1/namespaces/${operatorNamespace}/finalize \
                                -H \"Content-Type: application/json\" --data-binary @ns-without-finalizers.json"
+
+            }
+            catch (exc) {
+            }
         }
     }
 }
