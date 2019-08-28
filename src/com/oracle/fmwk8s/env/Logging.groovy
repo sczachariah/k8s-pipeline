@@ -2,8 +2,12 @@ package com.oracle.fmwk8s.env
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
+import com.oracle.fmwk8s.utility.YamlUtility
+
 
 class Logging {
+    
+    static def yamlUtility = new YamlUtility()
 
     static configureLogstashConfigmap(script, domainName, domainNamespace) {
         try {
