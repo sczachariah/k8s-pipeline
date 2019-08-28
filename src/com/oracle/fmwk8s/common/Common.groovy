@@ -207,7 +207,7 @@ class Common {
     static getKubernetesMasterUrl(script) {
         Log.info(script, "begin get k8s master url.")
         this.k8sMasterUrl = script.sh(
-                script: "kubectl cluster-info | grep 'master is running at' | sed 's/.*\\ //'",
+                script: "kubectl cluster-info | grep \"master is running at\" | sed \"s/.*\\ //\"",
                 returnStdout: true
         ).trim()
 
