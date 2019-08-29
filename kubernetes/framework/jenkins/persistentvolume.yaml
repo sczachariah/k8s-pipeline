@@ -1,0 +1,19 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: fmwk8s-jenkins-pv
+  labels:
+    type: fmwk8s-hostpath-pv
+  namespace: default
+spec:
+  storageClassName: fmwk8s-jenkins-pv
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: "/scratch/u01/DockerVolume/jenkins"
+---

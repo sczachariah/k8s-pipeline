@@ -14,6 +14,17 @@ pipeline {
             label 'fmwk8s-test-mats-slave'
             namespace 'fmwk8s'
             inheritFrom 'fmwk8s-test-mats-slave'
+            yaml """
+spec:
+  volumes:
+  - name: fmwk8s-jenkins-pv
+    persistentVolumeClaim:
+      claimName: fmwk8s-jenkins-pvc
+  containers:
+  - volumeMounts:
+    - mountPath: "/u01"
+      name: fmwk8s-jenkins-pv
+"""
         }
     }
 
@@ -27,7 +38,7 @@ pipeline {
         DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${RUN_SUFFIX}"
         WEBLOGIC_USER = 'weblogic'
         ADMIN_PASSWORD = 'Welcome1'
-        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
+        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume/domains"
         NFS_DOMAIN_DIR = "${DOMAIN_NS}"
         NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
         LB_HELM_RELEASE = "lb-${RUN_SUFFIX}"

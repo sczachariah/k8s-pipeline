@@ -1,0 +1,14 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: fmwk8s-jenkins-pvc
+  namespace: default
+spec:
+  storageClassName: fmwk8s-jenkins-pv
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+---
