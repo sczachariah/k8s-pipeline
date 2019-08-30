@@ -194,11 +194,7 @@ pipeline {
                 script {
                     currentBuild.displayName = this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME
 
-                    Logging.getEventLogs(this, "${OPERATOR_NS}")
-                    Logging.getEventLogs(this, "${DOMAIN_NS}")
-                    Logging.fetchDomainLogs(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                    Logging.fetchTestLogs(this)
-                    Logging.archiveLogs(this)
+                    Logging.getLogs(this)
 
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
 

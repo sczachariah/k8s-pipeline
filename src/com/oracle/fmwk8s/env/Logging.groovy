@@ -7,7 +7,7 @@ import com.oracle.fmwk8s.utility.YamlUtility
 
 
 class Logging {
-    
+
     static def yamlUtility = new YamlUtility()
 
     static configureLogstashConfigmap(script, domainName, domainNamespace) {
@@ -70,7 +70,6 @@ class Logging {
 
     }
 
-
     static deployLogstash(script, elkEnable, domainName, domainNamespace) {
         try {
             Log.info(script, "begin deploy logstash.")
@@ -92,7 +91,15 @@ class Logging {
 
 
     }
-    
+
+    static getLogs(script) {
+        getEventLogs(script, "${Operator.operatorNamespace}")
+        getEventLogs(script, "${Domain.domainNamespace}")
+        getDomainLogs(script, "${Domain.domainName}", "${Domain.domainNamespace}")
+        getTestLogs(script)
+        archiveLogs(script)
+    }
+
     static getEventLogs(script, namespace) {
         try {
             Log.info(script, "begin get event logs.")
@@ -121,7 +128,7 @@ class Logging {
         }
     }
 
-    static fetchDomainLogs(script, domainName, domainNamespace) {
+    static getDomainLogs(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin get domain logs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
@@ -138,7 +145,7 @@ class Logging {
         }
     }
 
-    static fetchTestLogs(script) {
+    static getTestLogs(script) {
         try {
             Log.info(script, "begin get test logs.")
 
@@ -157,7 +164,6 @@ class Logging {
             Log.error(script, "get test logs failed.")
         }
     }
-
 
     static archiveLogs(script) {
         try {
