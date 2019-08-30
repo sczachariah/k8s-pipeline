@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: fmwk8s-op-intg-pvc
+  name: fmwk8s-op-intg-pvc-%RUN_ID%
 spec:
-  storageClassName: fmwk8s-jenkins-pv
+  storageClassName: fmwk8s-op-intg-pv-%RUN_ID%
   accessModes:
     - ReadWriteMany
   resources:

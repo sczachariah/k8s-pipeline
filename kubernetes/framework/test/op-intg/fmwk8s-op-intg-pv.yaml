@@ -6,7 +6,7 @@ metadata:
   labels:
     type: fmwk8s-hostpath-pv
 spec:
-  storageClassName: fmwk8s-jenkins-pv
+  storageClassName: fmwk8s-op-intg-pv-%RUN_ID%
   capacity:
     storage: 1Gi
   accessModes:

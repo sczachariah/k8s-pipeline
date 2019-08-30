@@ -63,7 +63,9 @@ class OperatorIntegration {
 
             script.sh "cd kubernetes/framework/test/${testId} && \
                        sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-pv.yaml && \
-                       cat fmwk8s-${testId}-pv.yaml"
+                       sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-pvc.yaml && \
+                       cat fmwk8s-${testId}-pv.yaml && \
+                       cat fmwk8s-${testId}-pvc.yaml"
 
             script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace}"
             script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pvc.yaml -n ${Domain.domainNamespace}"
