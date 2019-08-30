@@ -8,7 +8,6 @@ import com.oracle.fmwk8s.utility.YamlUtility
 class Logging {
     
     static def yamlUtility = new YamlUtility()
-    static def testPodName
 
     static configureLogstashConfigmap(script, domainName, domainNamespace) {
         try {
@@ -141,10 +140,7 @@ class Logging {
     static fetchTestLogs(script, domainNamespace) {
         try {
             Log.info(script, "begin get test logs.")
-            this.testPodName = script.sh(
-                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep test",
-                    returnStdout: true
-            ).trim()
+
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        ls -ltr /logs && \
@@ -153,6 +149,7 @@ class Logging {
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
             script.zip zipFile: "test_logs.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
+
             Log.info(script, "get test logs success.")
         }
         catch (exc) {
