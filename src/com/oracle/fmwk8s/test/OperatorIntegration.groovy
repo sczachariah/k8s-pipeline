@@ -85,8 +85,9 @@ class OperatorIntegration {
             Log.info(script, "begin run test.")
 
             script.sh "cd kubernetes/framework/test/${testId} && \
-                        sed -i \"s#%TEST_IMAGE%#${testImage}#g\" fmwk8s-${testId}-test-pod.yaml && \
-                        sed -i \"s|%LOG_DIRECTORY%|${Functional.logDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${testId}-test-pod.yaml && \
+                        sed -i \"s|%LOG_DIRECTORY%|${Functional.logDirectory}|g\" fmwk8s-${testId}-test-pod.yaml && \
+                        sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         cat fmwk8s-${testId}-test-pod.yaml"
 
             script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} && \

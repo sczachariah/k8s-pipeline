@@ -14,10 +14,10 @@ spec:
             name: fmwk8s-op-intg-env-configmap
       volumeMounts:
         - mountPath: "%LOG_DIRECTORY%"
-          name: fmwk8s-op-intg-pv
+          name: fmwk8s-log-volume
   volumes:
-    - name: fmwk8s-op-intg-pv
+    - name: fmwk8s-log-volume
       persistentVolumeClaim:
-        claimName: fmwk8s-op-intg-pvc
+        claimName: fmwk8s-op-intg-pvc-%RUN_ID%
 ---
 ---
