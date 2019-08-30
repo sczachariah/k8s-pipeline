@@ -2,6 +2,7 @@ package com.oracle.fmwk8s.env
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
+import com.oracle.fmwk8s.test.Functional
 import com.oracle.fmwk8s.utility.YamlUtility
 
 
@@ -137,14 +138,14 @@ class Logging {
         }
     }
 
-    static fetchTestLogs(script, domainNamespace) {
+    static fetchTestLogs(script) {
         try {
             Log.info(script, "begin get test logs.")
 
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                       ls -ltr /logs && \
-                       cp -r /logs/ ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs/ && \
+                       ls -ltr ${Functional.logDirectory} && \
+                       cp -r ${Functional.logDirectory}/ ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        ls -ltr ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
             script.zip zipFile: "test_logs.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
