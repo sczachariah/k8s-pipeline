@@ -32,13 +32,10 @@ spec:
       volumeMounts:
         - mountPath: "/scratch/syseng/workspace"
           name: "volume-1"
-          readOnly: false
         - mountPath: "/dev/shm"
           name: "volume-0"
-          readOnly: false
         - mountPath: "/home/jenkins/agent"
           name: "workspace-volume"
-          readOnly: false
       workingDir: "/home/jenkins/agent"
     - env:
         - name: "http_proxy"
