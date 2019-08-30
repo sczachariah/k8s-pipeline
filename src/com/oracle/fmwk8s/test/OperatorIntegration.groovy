@@ -18,7 +18,8 @@ class OperatorIntegration {
         createEnvConfigMap(script)
         createPersistentVolume(script)
         runTests(script, testImage)
-        publishResults(script)
+        publishLogs(script)
+        cleanup(script)
     }
 
     static createEnvConfigMap(script) {
@@ -152,8 +153,23 @@ class OperatorIntegration {
         }
     }
 
-    static publishResults(script) {
+    static publishLogs(script) {
+        Logging.getTestLogs(script)
     }
 
-    static cleanTests(script) {}
+    static cleanup(script) {
+        try {
+            Log.info(script, "begin cleanup test resources.")
+
+            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pvc.yaml -n ${Domain.domainNamespace}"
+            sleep 30
+            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace}"
+
+            Log.error(script, "cleanup test resources success.")
+        }
+        catch (exc) {
+            Log.error(script, "cleanup test resources failed.")
+            exc.printStackTrace()
+        }
+    }
 }

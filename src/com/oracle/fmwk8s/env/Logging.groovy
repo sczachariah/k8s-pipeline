@@ -96,7 +96,6 @@ class Logging {
         getEventLogs(script, Operator.operatorNamespace)
         getEventLogs(script, Domain.domainNamespace)
         getDomainLogs(script, Domain.domainName, Domain.domainNamespace)
-        getTestLogs(script)
         archiveLogs(script)
     }
 
