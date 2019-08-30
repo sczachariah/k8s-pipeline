@@ -3,6 +3,7 @@ package com.oracle.fmwk8s.test
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
+import com.oracle.fmwk8s.env.Logging
 import com.oracle.fmwk8s.env.Operator
 import com.oracle.fmwk8s.utility.YamlUtility
 
@@ -10,6 +11,7 @@ class OperatorIntegration {
     static def yamlUtility = new YamlUtility()
     static def testId = "op-intg"
     static def mavenProfile
+    static def testPodName
 
     static invokeTest(script, testImage, mavenProfile) {
         this.mavenProfile = mavenProfile
@@ -93,6 +95,13 @@ class OperatorIntegration {
             throw exc
         }
         finally {
+            this.testPodName = script.sh(
+                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${testId}-test",
+                    returnStdout: true
+            ).trim()
+            Log.info(script, "begin fetch test pod logs.")
+            Logging.getPodLogs(script, this.testPodName, ${Domain.domainNamespace})
+            Log.info(script, "fetch test pod logs success.")
         }
     }
 
