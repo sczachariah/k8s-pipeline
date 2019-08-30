@@ -5,11 +5,10 @@ metadata:
   name: fmwk8s-jenkins-pv
   labels:
     type: fmwk8s-hostpath-pv
-  namespace: default
 spec:
   storageClassName: fmwk8s-jenkins-pv
   capacity:
-    storage: 50Gi
+    storage: 1Gi
   accessModes:
     - ReadWriteOnce
     - ReadWriteMany
