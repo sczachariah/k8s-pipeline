@@ -62,7 +62,7 @@ class OperatorIntegration {
             Log.info(script, "begin create persistent volume.")
 
             script.sh "cd kubernetes/framework/test/${testId} && \
-                       sed -i \"s|%LOG_DIRECTORY%|${Functional.logDirectory}|g\" fmwk8s-${testId}-pv.yaml && \
+                       sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-pv.yaml && \
                        cat fmwk8s-${testId}-pv.yaml"
 
             script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace}"
@@ -104,7 +104,7 @@ class OperatorIntegration {
                     returnStdout: true
             ).trim()
             Log.info(script, "begin fetch test pod logs.")
-            Logging.getPodLogs(script, this.testPodName, ${Domain.domainNamespace})
+            Logging.getPodLogs(script, this.testPodName, $ { Domain.domainNamespace })
             Log.info(script, "fetch test pod logs success.")
         }
     }
