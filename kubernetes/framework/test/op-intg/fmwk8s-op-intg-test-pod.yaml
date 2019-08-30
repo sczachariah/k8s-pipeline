@@ -13,7 +13,7 @@ spec:
         - configMapRef:
             name: fmwk8s-op-intg-env-configmap
       volumeMounts:
-        - mountPath: "/logs"
+        - mountPath: "%LOG_DIRECTORY%"
           name: fmwk8s-op-intg-pv
   volumes:
     - name: fmwk8s-op-intg-pv
