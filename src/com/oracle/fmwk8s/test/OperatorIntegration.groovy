@@ -14,6 +14,7 @@ class OperatorIntegration {
     static invokeTest(script, testImage, mavenProfile) {
         this.mavenProfile = mavenProfile
         createEnvConfigMap(script)
+        createPersistentVolume(script)
         runTests(script, testImage)
         publishResults(script)
     }
@@ -39,6 +40,7 @@ class OperatorIntegration {
                         sed -i \"s|%WEBLOGIC_CREDENTIALS_SECRET_NAME%|${Domain.weblogicCredentialsSecretName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_T3_CHANNEL_PORT%|${yamlUtility.domainInputsMap.get("t3ChannelPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%MAVEN_PROFILE%|${this.mavenProfile}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%LOG_DIRECTORY%|${Functional.logDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"
 
             script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-env-configmap.yaml -n ${Domain.domainNamespace}"
@@ -53,13 +55,26 @@ class OperatorIntegration {
         }
     }
 
+    static createPersistentVolume(script) {
+        try {
+            Log.info(script, "begin create persistent volume.")
+
+            script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace}"
+            script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pvc.yaml -n ${Domain.domainNamespace}"
+
+            Log.info(script, "create persistent volume success.")
+        }
+        catch (exc) {
+            Log.error(script, "create persistent volume failed.")
+            throw exc
+        }
+        finally {
+        }
+    }
+
     static runTests(script, testImage) {
         try {
             Log.info(script, "begin run test.")
-
-            script.git branch: 'master',
-                    credentialsId: 'sandeep.zachariah.ssh',
-                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh "cd kubernetes/framework/test/${testId} && \
                         sed -i \"s#%TEST_IMAGE%#${testImage}#g\" fmwk8s-${testId}-test-pod.yaml && \

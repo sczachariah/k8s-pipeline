@@ -12,5 +12,12 @@ spec:
       envFrom:
         - configMapRef:
             name: fmwk8s-op-intg-env-configmap
+      volumeMounts:
+        - mountPath: "/logs"
+          name: fmwk8s-op-intg-pv
+  volumes:
+    - name: fmwk8s-op-intg-pv
+      persistentVolumeClaim:
+        claimName: fmwk8s-op-intg-pvc
 ---
 ---

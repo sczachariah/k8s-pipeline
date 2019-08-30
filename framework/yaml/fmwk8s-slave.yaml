@@ -58,7 +58,7 @@ spec:
         privileged: true
       tty: true
       volumeMounts:
-        - mountPath: "/u01"
+        - mountPath: "/logs"
           name: fmwk8s-jenkins-pv
         - mountPath: "/scratch/syseng/workspace"
           name: "volume-1"

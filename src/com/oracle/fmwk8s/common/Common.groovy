@@ -3,6 +3,8 @@ package com.oracle.fmwk8s.common
 import java.text.SimpleDateFormat
 
 class Common {
+    static def runId
+
     static def operatorVersion
     static def operatorBranch
     static def operatorImageVersion
@@ -28,7 +30,7 @@ class Common {
         def sdf = new SimpleDateFormat("MMddHHmm")
 
         def buildNumber = "${script.env.BUILD_NUMBER}"
-        def uniqueId = buildNumber + "-" + sdf.format(date)
+        runId = buildNumber + "-" + sdf.format(date)
 
         this.productName = productName
         getDomainName(productName)
@@ -37,7 +39,7 @@ class Common {
 
         getKubernetesMasterUrl(script)
 
-        return uniqueId
+        return runId
     }
 
     static def getOperatorVersions(operatorVersion) {
