@@ -152,7 +152,7 @@ class Logging {
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        ls -ltr ${Functional.logDirectory} && \
-                       cp -r ${Functional.logDirectory}/ ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
+                       mv ${Functional.logDirectory}/ ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        ls -ltr ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
             script.zip zipFile: "test_logs.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
