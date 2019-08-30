@@ -150,7 +150,7 @@ class Logging {
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        ls -ltr ${Functional.logDirectory} && \
-                       mv ${Functional.logDirectory}/ ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
+                       cp -r ${Functional.logDirectory}/** ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs/ && \
                        ls -ltr ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
