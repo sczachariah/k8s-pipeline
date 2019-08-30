@@ -100,11 +100,11 @@ class OperatorIntegration {
         }
         finally {
             this.testPodName = script.sh(
-                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${testId}-test",
+                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${Domain.domainNamespace} | grep ${testId}-test",
                     returnStdout: true
             ).trim()
             Log.info(script, "begin fetch test pod logs.")
-            Logging.getPodLogs(script, this.testPodName, $ { Domain.domainNamespace })
+            Logging.getPodLogs(script, this.testPodName, Domain.domainNamespace)
             Log.info(script, "fetch test pod logs success.")
         }
     }
