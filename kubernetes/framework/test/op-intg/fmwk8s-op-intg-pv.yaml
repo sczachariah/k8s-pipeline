@@ -2,7 +2,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: fmwk8s-op-intg-pv
+  name: fmwk8s-op-intg-pv%RUN_ID%
   labels:
     type: fmwk8s-hostpath-pv
 spec:
