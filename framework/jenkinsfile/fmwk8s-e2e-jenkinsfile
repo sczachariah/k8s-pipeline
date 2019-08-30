@@ -11,20 +11,9 @@ import com.oracle.fmwk8s.test.Functional
 pipeline {
     agent {
         kubernetes {
-            label 'fmwk8s-test-mats-slave'
+            label 'fmwk8s-slave'
             namespace 'fmwk8s'
-            inheritFrom 'fmwk8s-test-mats-slave'
-            yaml """
-spec:
-  volumes:
-  - name: fmwk8s-jenkins-pv
-    persistentVolumeClaim:
-      claimName: fmwk8s-jenkins-pvc
-  containers:
-  - volumeMounts:
-    - mountPath: "/u01"
-      name: fmwk8s-jenkins-pv
-"""
+            yamlFile 'yaml/fmwk8s-slave.yaml'
         }
     }
 
