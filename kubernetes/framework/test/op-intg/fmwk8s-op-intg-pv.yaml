@@ -14,5 +14,5 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Recycle
   hostPath:
-    path: "/scratch/u01/DockerVolume/jenkins"
+    path: "/scratch/u01/DockerVolume/jenkins/%LOG_DIRECTORY%"
 ---
