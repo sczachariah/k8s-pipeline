@@ -9,6 +9,7 @@ import com.oracle.fmwk8s.utility.YamlUtility
 class Logging {
 
     static def yamlUtility = new YamlUtility()
+    static def buildSuffix
 
     static configureLogstashConfigmap(script, domainName, domainNamespace) {
         try {
@@ -165,11 +166,12 @@ class Logging {
     static archiveLogs(script) {
         try {
             Log.info(script, "archive logs.")
-            script.sh "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
-            script.zip zipFile: "event_logs.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs"
-            script.zip zipFile: "pod_logs.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs"
-            script.zip zipFile: "domain_logs.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
-            script.zip zipFile: "test_logs.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
+            buildSuffix = "${script.env.BUILD_NUMBER}-${Common.operatorVersion}-${Common.productName}"
+
+            script.zip zipFile: "event_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs"
+            script.zip zipFile: "pod_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs"
+            script.zip zipFile: "domain_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
+            script.zip zipFile: "test_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
 
             script.archiveArtifacts artifacts: '**/event_logs.zip'
             script.archiveArtifacts artifacts: '**/pod_logs.zip'
