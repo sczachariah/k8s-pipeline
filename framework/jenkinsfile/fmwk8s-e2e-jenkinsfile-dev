@@ -1,4 +1,4 @@
-@Library('fmwk8s-pipeline-library') _
+@Library('fmwk8s-pipeline-library-dev') _
 
 
 import com.oracle.fmwk8s.common.Common

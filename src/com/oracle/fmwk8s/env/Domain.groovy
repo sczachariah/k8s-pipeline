@@ -221,9 +221,24 @@ class Domain {
             script.sh "kubectl get all,domains -n ${domainNamespace}"
             script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
             script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
-
+            Log.info(script, ${yamlUtility.domainInputsMap.get("adminServerName")})
+            checkServerStatus(script, 'weblogic-admin-server', domainNamespace)
             Log.info(script, "domain readiness check success.")
 
+        }
+        catch (exc) {
+            Log.error(script, "domain readiness check failed.")
+        }
+    }
+
+    static checkServerStatus(script, podname, domainNamespace) {
+        try {
+            Log.info(script, "begin domain readiness check.")
+            this.serverStatus = script.sh(
+                    script: "kubectl describe pod ${podname} -n ${domainNamespace}  | grep Status: | awk -F' ' '{print \$2}'",
+                    returnStdout: true
+            ).trim()
+            Log.info(script, "domain readiness check success.")
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
