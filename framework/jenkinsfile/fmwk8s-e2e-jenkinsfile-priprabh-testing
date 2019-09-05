@@ -3,12 +3,9 @@
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.EnvironmentSetup
+import com.oracle.fmwk8s.common.Initializer
 import com.oracle.fmwk8s.common.Validation
-import com.oracle.fmwk8s.env.Database
-import com.oracle.fmwk8s.env.Domain
-import com.oracle.fmwk8s.env.IngressController
-import com.oracle.fmwk8s.env.Logging
-import com.oracle.fmwk8s.env.Operator
+import com.oracle.fmwk8s.env.*
 import com.oracle.fmwk8s.test.Functional
 
 pipeline {
@@ -23,8 +20,6 @@ pipeline {
 
     environment {
         RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT_NAME}")
-        HTTP_PROXY = "http://10.236.2.53:80"
-        HTTPS_PROXY = "http://10.236.2.53:80"
         REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
         OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
         OPERATOR_SA = 'default'
@@ -33,7 +28,7 @@ pipeline {
         DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${RUN_SUFFIX}"
         WEBLOGIC_USER = 'weblogic'
         ADMIN_PASSWORD = 'Welcome1'
-        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume"
+        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume/domains"
         NFS_DOMAIN_DIR = "${DOMAIN_NS}"
         NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
         LB_HELM_RELEASE = "lb-${RUN_SUFFIX}"
@@ -41,13 +36,23 @@ pipeline {
 
 
     stages {
-        stage('validate input parameters') {
+        stage('initialize validation framework') {
             steps {
                 log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
 
                 container('jnlp') {
                     script {
-                        Validation.validateInputs(this, "${OPERATOR_VERSION}", "${PRODUCT_NAME}", "${DOMAIN_TYPE}", "${DATABASE_VERSION}", "${TEST_IMAGE_TAG}", "${TEST_TYPE}" ,"${HOURS_AFTER}")
+                        Initializer.initialize(this)
+                    }
+                }
+            }
+        }
+
+        stage('validate input parameters') {
+            steps {
+                container('jnlp') {
+                    script {
+                        Validation.validateInputs(this, "${OPERATOR_VERSION}", "${PRODUCT_NAME}", "${DOMAIN_TYPE}", "${DATABASE_VERSION}", "${TEST_IMAGE_TAG}", "${TEST_TYPE}", "${HOURS_AFTER}")
                         sleep 1
                     }
                 }
@@ -188,12 +193,10 @@ pipeline {
         always {
             container(name: 'jnlp') {
                 script {
-                    currentBuild.displayName = this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME
-                    
-                    Logging.getEventLogs(this, "${OPERATOR_NS}" )
-                    Logging.getEventLogs(this, "${DOMAIN_NS}")
-                    Logging.archiveLogs(this)
-                    
+                    currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME
+
+                    Logging.getLogs(this)
+
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
 
                     IngressController.undeployLoadBalancer this, "${LB_HELM_RELEASE}"
