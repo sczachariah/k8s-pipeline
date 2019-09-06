@@ -234,6 +234,7 @@ class Domain {
             Log.info(script, today.getTime())
             Timer timer = new Timer()
             Log.info(script, "Timer check start0")
+            script.sh "sleep 60"
             validateServerStatus(script, domainNamespace)
             timer.schedule(new TimerTask() {
                 @Override
@@ -264,12 +265,14 @@ class Domain {
         }
     }
     static validateServerStatus(script, domainNamespace) {
-        List podnames = script.sh(
-                script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep admin-server",
+        List serverNames = script.sh(
+                script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep server",
                 returnStdout: true
         ).trim()
+        Log.info(serverNames)
+        Log.info(serverNames.size())
         checkServerStatus(script, "weblogic-admin-server", domainNamespace)
-        Log.info(podnames.size())
+
     }
 
     static checkServerStatus(script, podname, domainNamespace) {
