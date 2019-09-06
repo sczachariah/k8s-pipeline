@@ -65,7 +65,12 @@ class Common {
                     case "SOA":
                         samplesBranch = "soa-2.2.1"
                 }
-
+                break
+            case "2.3.0":
+                this.operatorVersion = "2.3.0"
+                operatorBranch = "release/2.3.0"
+                operatorImageVersion = "2.3.0"
+                samplesBranch = "release/2.3.0"
                 break
             default:
                 this.operatorVersion = "develop"
