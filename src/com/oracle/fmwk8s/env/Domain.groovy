@@ -246,15 +246,15 @@ class Domain {
     static validateServerStatus(script, domainNamespace) {
         try {
             Log.info(script, "Validating server status")
-            String adminServerPodName = script.sh(
+            String adminServerPodName = ""
+            adminServerPodName = script.sh(
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep admin-server",
                     returnStdout: true
             ).trim()
-            Log.info(adminServerPodName)
-            if(adminServerPodName!=null){
-                checkServerStatus(script, adminServerPodName, domainNamespace)
-            }else{
-                validateServerStatus(script, domainNamespace)
+            Log.info(script, "Validating server status1")
+            Log.info(script, adminServerPodName)
+            if(adminServerPodName!=""){
+               checkServerStatus(script, adminServerPodName, domainNamespace)
             }
             Log.info(script, "Validating server status completed")
         }
