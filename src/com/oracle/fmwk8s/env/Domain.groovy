@@ -233,7 +233,7 @@ class Domain {
             today.set(Calendar.MINUTE, LocalDateTime.now().getMinute())
             today.set(Calendar.SECOND, 0)
             Log.info(script, today.getTime())
-            String date = today.get(Calendar.DATE)+"-"+today.get(Calendar.MONTH)+"-"+today.get(Calendar.YEAR)
+            String date = today.get(Calendar.DATE)+"-"+today    .get(Calendar.MONTH)+"-"+today.get(Calendar.YEAR)
             String time = today.get(Calendar.HOUR)+"-"+today.get(Calendar.MINUTE)+"-"+today.get(Calendar.SECOND)
             Log.info(script, date + "  : " + time)
 
@@ -265,7 +265,7 @@ class Domain {
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
             Log.error(script,exc.getMessage())
-            exc.printStackTrace()
+            Log.error(script,exc.printStackTrace())
         }
     }
     static validateServerStatus(script, domainNamespace) {
