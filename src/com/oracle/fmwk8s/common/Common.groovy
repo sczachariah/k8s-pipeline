@@ -79,6 +79,7 @@ class Common {
                 samplesBranch = "develop"
                 break
         }
+        getSamplesRepo(productName)
     }
 
     static def getDomainName(productName) {
