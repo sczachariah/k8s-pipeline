@@ -134,6 +134,10 @@ class Common {
             case "WLS-INFRA":
                 samplesRepo = "https://github.com/oracle/weblogic-kubernetes-operator"
                 samplesDirectory = ""
+                switch (operatorVersion) {
+                    case "2.3.0":
+                        samplesDirectory = "domain-home-on-pv"
+                }
                 break
             case "SOA":
                 samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
