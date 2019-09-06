@@ -249,6 +249,7 @@ class Domain {
                         timer.purge()
                     }
                     println( "Date : " +  date + " time : "+ time + " count : " + count)
+                    Log.info(script, "Date : " +  date + " time : "+ time + " count : " + count)
                 }
 
             }, today.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES))
