@@ -223,7 +223,7 @@ class Domain {
         try {
             Log.info(script, "begin domain readiness check.")
 
-            script.sh "kubectl get all,domains -n ${domainNamespace}"
+            //script.sh "kubectl get all,domains -n ${domainNamespace}"
             //script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
             //script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
             //begin timer check for domain
@@ -242,17 +242,17 @@ class Domain {
             timer.schedule(new TimerTask() {
                 @Override
                 void run() {
-                    count++
+                    //count++
                     Log.info(script, "Timer check start1")
                     Calendar cal = Calendar.getInstance()
                     cal.setTimeInMillis(System.currentTimeMillis())
                     String date1 = cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
                     String time1 = cal.get(Calendar.HOUR)+"-"+cal.get(Calendar.MINUTE)+"-"+cal.get(Calendar.SECOND)
-                    Log.info(script, date1 + "  : " + date1)
-                    if (count>2){
-                        timer.cancel()
-                        timer.purge()
-                    }
+                    Log.info(script, date1 + "  : " + time1)
+                    //if (count>2){
+                      //  timer.cancel()
+                       // timer.purge()
+                   // }
                     //println( "Date : " +  date + " time : "+ time + " count : " + count)
                     //Log.info(script, "Date : " +  date + " time : "+ time + " count : " + count)
                     Log.info(script, time)
@@ -264,6 +264,7 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
+            Log.error(script,exc.getMessage())
             exc.printStackTrace()
         }
     }
