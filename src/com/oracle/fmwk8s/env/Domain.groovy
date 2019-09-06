@@ -5,7 +5,6 @@ import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.YamlUtility
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
-import java.util.Calendar
 
 class Domain {
     static def yamlUtility = new YamlUtility()
@@ -239,6 +238,7 @@ class Domain {
                 @Override
                 void run() {
                     count++
+                    Log.info(script, "Timer check start1")
                     Calendar cal = Calendar.getInstance()
                     cal.setTimeInMillis(System.currentTimeMillis())
                     String date = cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
