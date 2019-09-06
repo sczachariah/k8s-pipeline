@@ -219,7 +219,7 @@ class Domain {
         }
     }
 
-    static isDomainReady(script, domainName, domainNamespace) {
+    static isDomainReady(script) {
         try {
             Log.info(script, "begin domain readiness check.")
 
