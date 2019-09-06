@@ -234,6 +234,7 @@ class Domain {
             Log.info(script, today.getTime())
             Timer timer = new Timer()
             Log.info(script, "Timer check start0")
+            validateServerStatus(script, domainNamespace)
             timer.schedule(new TimerTask() {
                 @Override
                 void run() {
@@ -261,6 +262,14 @@ class Domain {
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
         }
+    }
+    static validateServerStatus(script, domainNamespace) {
+        List podnames = script.sh(
+                script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep admin-server",
+                returnStdout: true
+        ).trim()
+        checkServerStatus(script, "weblogic-admin-server", domainNamespace)
+        Log.info(podnames.size())
     }
 
     static checkServerStatus(script, podname, domainNamespace) {
