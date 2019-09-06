@@ -200,8 +200,8 @@ class Domain {
             }
             Log.info(script, "start " + Common.productId + " domain success.")
 
-            isDomainReady(script, domainName, domainNamespace)
-
+            //isDomainReady(script, domainName, domainNamespace)
+            validateServerStatus(script, domainNamespace)
         }
         catch (exc) {
             Log.error(script, "create/start " + Common.productId + " domain failed.")
@@ -234,7 +234,6 @@ class Domain {
             Log.info(script, today.getTime())
             Timer timer = new Timer()
             Log.info(script, "Timer check start0")
-            script.sh "sleep 60"
             validateServerStatus(script, domainNamespace)
 
             Log.info(script, "domain readiness check success.")
