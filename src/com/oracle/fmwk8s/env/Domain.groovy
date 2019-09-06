@@ -237,19 +237,20 @@ class Domain {
             timer.schedule(new TimerTask() {
                 @Override
                 void run() {
-                    count++
-                    Log.info(script, "Timer check start1")
-                    Calendar cal = Calendar.getInstance()
-                    cal.setTimeInMillis(System.currentTimeMillis())
-                    String date = cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
-                    String time = cal.get(Calendar.HOUR)+"-"+cal.get(Calendar.MINUTE)+"-"+cal.get(Calendar.SECOND)
+                     count++
+                     Log.info(script, "Timer check start1")
+                     Calendar cal = Calendar.getInstance()
+                     cal.setTimeInMillis(System.currentTimeMillis())
+                     String date = cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
+                     String time = cal.get(Calendar.HOUR)+"-"+cal.get(Calendar.MINUTE)+"-"+cal.get(Calendar.SECOND)
 
-                    if (count>2){
-                        timer.cancel()
-                        timer.purge()
-                    }
-                    println( "Date : " +  date + " time : "+ time + " count : " + count)
-                    Log.info(script, "Date : " +  date + " time : "+ time + " count : " + count)
+                     if (count>2){
+                         timer.cancel()
+                         timer.purge()
+                     }
+                     //println( "Date : " +  date + " time : "+ time + " count : " + count)
+                     //Log.info(script, "Date : " +  date + " time : "+ time + " count : " + count)
+                     Log.info(script, time)
                 }
 
             }, today.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES))
