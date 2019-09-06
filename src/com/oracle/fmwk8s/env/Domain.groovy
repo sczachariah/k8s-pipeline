@@ -266,6 +266,7 @@ class Domain {
             Log.error(script, "domain readiness check failed.")
             Log.error(script,exc.getMessage())
             Log.error(script,exc.printStackTrace())
+            throw exc
         }
     }
     static validateServerStatus(script, domainNamespace) {
