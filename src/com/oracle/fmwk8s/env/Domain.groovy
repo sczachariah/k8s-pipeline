@@ -5,6 +5,7 @@ import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.YamlUtility
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
+import java.util.Calendar
 
 class Domain {
     static def yamlUtility = new YamlUtility()
@@ -231,16 +232,19 @@ class Domain {
             today.set(Calendar.HOUR_OF_DAY , LocalDateTime.now().getHour())
             today.set(Calendar.MINUTE, LocalDateTime.now().getMinute())
             today.set(Calendar.SECOND, 0)
-            Log.info(script, "timer check.")
+            Log.info(script, today.getTime())
             Timer timer = new Timer()
+            Log.info(script, "Timer check start0")
             timer.schedule(new TimerTask() {
                 @Override
-                 public void run() {
+                 void run() {
+                    Log.info(script, "Timer check start1")
                     count++
                     Calendar cal = Calendar.getInstance()
                     cal.setTimeInMillis(System.currentTimeMillis())
                     String date = cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
                     String time = cal.get(Calendar.HOUR)+"-"+cal.get(Calendar.MINUTE)+"-"+cal.get(Calendar.SECOND)
+                    Log.info(script, "Timer check start2")
                     Log.info(script, ${yamlUtility.domainInputsMap.get("domainUID")}-${yamlUtility.domainInputsMap.get("adminServerName")})
                     checkServerStatus(script, 'weblogic-admin-server', domainNamespace)
                     if (count>2 || serversup=="up"){
