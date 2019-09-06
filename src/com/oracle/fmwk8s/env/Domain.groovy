@@ -3,6 +3,8 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.YamlUtility
+import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 
 class Domain {
     static def yamlUtility = new YamlUtility()
@@ -12,6 +14,9 @@ class Domain {
     static def domainNamespace
     static def weblogicCredentialsSecretName
     static def createdomainPodName
+    private static int count =0
+    static def serversup = "down"
+    static def serverStatus = ""
 
     static pullSampleScripts(script) {
         script.git branch: "${Common.samplesBranch}",
@@ -188,8 +193,7 @@ class Domain {
             Log.info(script, "begin start " + Common.productId + " domain")
             yamlUtility.generateDomainYaml(script, Common.productId, "domain")
             script.sh "ls -ltr && cat domain*"
-            script.sh "kubectl apply -f domain.yaml -n ${domainNamespace} && \
-                       sleep 480"
+            script.sh "kubectl apply -f domain.yaml -n ${domainNamespace}"
             if ("${Common.productId}" == "oim") {
                 script.sh "kubectl apply -f domain" + Common.productId + ".yaml -n ${domainNamespace} && \
                            sleep 480000"
@@ -221,8 +225,35 @@ class Domain {
             script.sh "kubectl get all,domains -n ${domainNamespace}"
             script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
             script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
-            Log.info(script, ${yamlUtility.domainInputsMap.get("adminServerName")})
-            checkServerStatus(script, 'weblogic-admin-server', domainNamespace)
+            //begin timer check for domain
+            Calendar today = Calendar.getInstance()
+            today.set(Calendar.HOUR_OF_DAY , LocalDateTime.now().getHour())
+            today.set(Calendar.MINUTE, LocalDateTime.now().getMinute())
+            today.set(Calendar.SECOND, 0)
+
+            Timer timer = new Timer()
+            timer.schedule(new TimerTask() {
+                @Override
+                 void run() {
+                    count++
+                    Calendar cal = Calendar.getInstance()
+                    cal.setTimeInMillis(System.currentTimeMillis())
+                    String date = cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
+                    String time = cal.get(Calendar.HOUR)+"-"+cal.get(Calendar.MINUTE)+"-"+cal.get(Calendar.SECOND)
+                    Log.info(script, ${yamlUtility.domainInputsMap.get("domainUID")}-${yamlUtility.domainInputsMap.get("adminServerName")})
+                    checkServerStatus(script, 'weblogic-admin-server', domainNamespace)
+                    if (count>2 || serversup=="up"){
+                        timer.cancel()
+                        timer.purge()
+                    }
+
+                    Log.info(script,"Date : " +  date + " time : "+ time + " count : " + count)
+                }
+
+            }, today.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES))
+
+
+         //end timer check for domain
             Log.info(script, "domain readiness check success.")
 
         }
@@ -238,6 +269,11 @@ class Domain {
                     script: "kubectl describe pod ${podname} -n ${domainNamespace}  | grep Status: | awk -F' ' '{print \$2}'",
                     returnStdout: true
             ).trim()
+            Log.info(script, this.serverStatus)
+            if({this.serverStatus()} == "Running")
+            {
+                this.serversup = "up"
+            }
             Log.info(script, "domain readiness check success.")
         }
         catch (exc) {
