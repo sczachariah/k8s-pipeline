@@ -17,6 +17,7 @@ class Domain {
     private static int count =0
     static def serversup = "down"
     static def serverStatus = ""
+    static def adminServerPodName = ""
 
     static pullSampleScripts(script) {
         script.git branch: "${Common.samplesBranch}",
@@ -200,8 +201,8 @@ class Domain {
             }
             Log.info(script, "start " + Common.productId + " domain success.")
 
-            //isDomainReady(script, domainName, domainNamespace)
-            validateServerStatus(script, domainNamespace)
+            isDomainReady(script, domainName, domainNamespace)
+            //validateServerStatus(script, domainNamespace)
         }
         catch (exc) {
             Log.error(script, "create/start " + Common.productId + " domain failed.")
@@ -234,20 +235,38 @@ class Domain {
             Log.info(script, today.getTime())
             Timer timer = new Timer()
             Log.info(script, "Timer check start0")
-            validateServerStatus(script, domainNamespace)
+            timer.schedule(new TimerTask() {
+                @Override
+                void run() {
+                    count++
+                    Log.info(script, "Timer check start1")
+                    Calendar cal = Calendar.getInstance()
+                    cal.setTimeInMillis(System.currentTimeMillis())
+                    String date = cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
+                    String time = cal.get(Calendar.HOUR)+"-"+cal.get(Calendar.MINUTE)+"-"+cal.get(Calendar.SECOND)
 
+                    if (count>2){
+                        timer.cancel()
+                        timer.purge()
+                    }
+                    //println( "Date : " +  date + " time : "+ time + " count : " + count)
+                    //Log.info(script, "Date : " +  date + " time : "+ time + " count : " + count)
+                    Log.info(script, time)
+                }
+
+            }, today.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES))
             Log.info(script, "domain readiness check success.")
 
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
+            exc.printStackTrace()
         }
     }
     static validateServerStatus(script, domainNamespace) {
         try {
             Log.info(script, "Validating server status")
-            String adminServerPodName = ""
-            adminServerPodName = script.sh(
+            this.adminServerPodName = script.sh(
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep admin-server",
                     returnStdout: true
             ).trim()
