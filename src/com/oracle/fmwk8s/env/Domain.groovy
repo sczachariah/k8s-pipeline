@@ -223,18 +223,19 @@ class Domain {
             Log.info(script, "begin domain readiness check.")
 
             script.sh "kubectl get all,domains -n ${domainNamespace}"
-            script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
+            //script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
             //script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
             //begin timer check for domain
+            Log.info(script, "Timer check start")
             Calendar today = Calendar.getInstance()
             today.set(Calendar.HOUR_OF_DAY , LocalDateTime.now().getHour())
             today.set(Calendar.MINUTE, LocalDateTime.now().getMinute())
             today.set(Calendar.SECOND, 0)
-
+            Log.info(script, "timer check.")
             Timer timer = new Timer()
             timer.schedule(new TimerTask() {
                 @Override
-                 void run() {
+                 public void run() {
                     count++
                     Calendar cal = Calendar.getInstance()
                     cal.setTimeInMillis(System.currentTimeMillis())
