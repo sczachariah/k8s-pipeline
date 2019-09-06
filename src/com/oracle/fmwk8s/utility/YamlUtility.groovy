@@ -24,7 +24,7 @@ class YamlUtility implements Serializable {
         map.put("domainUID", domainName.toString())
         map.put("namespace", domainNamespace.toString())
         map.put("weblogicDomainStoragePath", nfsDomainPath.toString())
-        map.put("weblogicDomainStorageReclaimPolicy", "Recycle")
+        map.put("weblogicDomainStorageReclaimPolicy", "Delete")
 
         this.pvInputsMap = map
         writeYaml(script, map, pvInputsYamlFile)

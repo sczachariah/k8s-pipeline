@@ -161,9 +161,11 @@ class OperatorIntegration {
         try {
             Log.info(script, "begin cleanup test resources.")
 
-            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pvc.yaml -n ${Domain.domainNamespace} --force --grace-period=0"
+            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test.yaml -n ${Domain.domainNamespace}"
             sleep 30
-            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace} --force --grace-period=0"
+            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pvc.yaml -n ${Domain.domainNamespace}"
+            sleep 30
+            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace}"
 
             Log.error(script, "cleanup test resources success.")
         }
