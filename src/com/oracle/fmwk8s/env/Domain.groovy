@@ -233,6 +233,10 @@ class Domain {
             today.set(Calendar.MINUTE, LocalDateTime.now().getMinute())
             today.set(Calendar.SECOND, 0)
             Log.info(script, today.getTime())
+            String date = today.get(Calendar.DATE)+"-"+today.get(Calendar.MONTH)+"-"+today.get(Calendar.YEAR)
+            String time = today.get(Calendar.HOUR)+"-"+today.get(Calendar.MINUTE)+"-"+today.get(Calendar.SECOND)
+            Log.info(script, date + "  : " + time)
+
             Timer timer = new Timer()
             Log.info(script, "Timer check start0")
             timer.schedule(new TimerTask() {
@@ -242,9 +246,9 @@ class Domain {
                     Log.info(script, "Timer check start1")
                     Calendar cal = Calendar.getInstance()
                     cal.setTimeInMillis(System.currentTimeMillis())
-                    String date = cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
-                    String time = cal.get(Calendar.HOUR)+"-"+cal.get(Calendar.MINUTE)+"-"+cal.get(Calendar.SECOND)
-
+                    String date1 = cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
+                    String time1 = cal.get(Calendar.HOUR)+"-"+cal.get(Calendar.MINUTE)+"-"+cal.get(Calendar.SECOND)
+                    Log.info(script, date1 + "  : " + date1)
                     if (count>2){
                         timer.cancel()
                         timer.purge()
