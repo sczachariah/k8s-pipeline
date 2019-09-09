@@ -3,7 +3,7 @@ package com.oracle.fmwk8s.utility
 import com.oracle.fmwk8s.common.Log
 import java.time.LocalDateTime
 
-class TimerUtility implements Serializable {
+class TimerUtility {
     private static int count =0
     private static int maxTimerPeriod =2
 
