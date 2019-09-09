@@ -4,7 +4,7 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.YamlUtility
 import java.time.LocalDateTime
-import java.util.concurrent.TimeUnit
+import java.util.*
 
 class Domain {
     static def yamlUtility = new YamlUtility()
@@ -237,25 +237,16 @@ class Domain {
             String time = today.get(Calendar.HOUR)+"-"+today.get(Calendar.MINUTE)+"-"+today.get(Calendar.SECOND)
             Log.info(script, date + "  : " + time)
 
-            Timer timer = new Timer()
-            Log.info(script, "Timer check start0")
-            timer.schedule(new TimerTask() {
+            TimerTask tasknew = new TimerTask() {
                 @Override
                 void run() {
-                    Log.info(script, "Timer check start1")
-                    count++
-                    Calendar cal = Calendar.getInstance()
-                    cal.setTimeInMillis(System.currentTimeMillis())
-                    String date1 = cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
-                    String time1 = cal.get(Calendar.HOUR)+"-"+cal.get(Calendar.MINUTE)+"-"+cal.get(Calendar.SECOND)
-                    if (count>2){
-                        timer.cancel()
-                        timer.purge()
-                    }
-                    println( "Date : " +  date1 + " time : "+ time1 + " count : " + count)
+                    Log.info(script,"Inside the run method")
                 }
-            }, today.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES))
-            Log.info(script, "domain readiness check success.")
+            }
+            Timer timer = new Timer()
+
+            // scheduling the task at interval
+            timer.schedule(tasknew,100, 100)
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
@@ -263,6 +254,16 @@ class Domain {
             Log.error(script,exc.printStackTrace())
             throw exc
         }
+    }
+    public void run() {
+        System.out.println("timer working")
+        Calendar today = Calendar.getInstance()
+        today.set(Calendar.HOUR_OF_DAY , LocalDateTime.now().getHour())
+        today.set(Calendar.MINUTE, LocalDateTime.now().getMinute())
+        today.set(Calendar.SECOND, 0)
+        String date = today.get(Calendar.DATE)+"-"+today    .get(Calendar.MONTH)+"-"+today.get(Calendar.YEAR)
+        String time = today.get(Calendar.HOUR)+"-"+today.get(Calendar.MINUTE)+"-"+today.get(Calendar.SECOND)
+        System.out.println(date + "  : " + time)
     }
     static validateServerStatus(script, domainNamespace) {
         try {
