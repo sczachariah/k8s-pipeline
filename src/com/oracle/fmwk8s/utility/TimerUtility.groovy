@@ -5,6 +5,8 @@ import com.oracle.fmwk8s.common.Log
 class TimerUtility {
     private static int count = 0
     private static int maxTimerPeriod = 2
+    private static Timer timer
+    private static TimerTask timerTask
 
     static void main(String[] args) {
         TimerUtility timerUtility = new TimerUtility()
@@ -13,8 +15,8 @@ class TimerUtility {
 
     void startTimer(script) {
         Log.info(script, "Timer check start")
-        Timer timer = new Timer()
-        TimerTask timerTask = new TimerTask() {
+        timer = new Timer()
+        timerTask = new TimerTask() {
             @Override
             void run() {
                 Log.info(script, "Inside the run method")
