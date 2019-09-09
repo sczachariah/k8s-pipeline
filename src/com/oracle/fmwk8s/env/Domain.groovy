@@ -229,7 +229,7 @@ class Domain {
             //script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
             //begin timer check for domain
             Log.info(script, "Timer check start")
-            timerUtility.startTimer()
+            timerUtility.startTimer(script)
 
         }
         catch (exc) {
