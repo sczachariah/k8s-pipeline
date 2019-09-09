@@ -237,7 +237,7 @@ class Domain {
             String time = today.get(Calendar.HOUR)+"-"+today.get(Calendar.MINUTE)+"-"+today.get(Calendar.SECOND)
             Log.info(script, date + "  : " + time)
 
-            TimerTask tasknew = new TimerTask() {
+            TimerTask timerTask = new TimerTask() {
                 @Override
                 void run() {
                     Log.info(script,"Inside the run method")
@@ -246,7 +246,7 @@ class Domain {
             Timer timer = new Timer()
 
             // scheduling the task at interval
-            timer.schedule(tasknew,100, 100)
+            timer.schedule(timerTask,100, 60000)
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
@@ -255,16 +255,7 @@ class Domain {
             throw exc
         }
     }
-    public void run() {
-        System.out.println("timer working")
-        Calendar today = Calendar.getInstance()
-        today.set(Calendar.HOUR_OF_DAY , LocalDateTime.now().getHour())
-        today.set(Calendar.MINUTE, LocalDateTime.now().getMinute())
-        today.set(Calendar.SECOND, 0)
-        String date = today.get(Calendar.DATE)+"-"+today    .get(Calendar.MONTH)+"-"+today.get(Calendar.YEAR)
-        String time = today.get(Calendar.HOUR)+"-"+today.get(Calendar.MINUTE)+"-"+today.get(Calendar.SECOND)
-        System.out.println(date + "  : " + time)
-    }
+
     static validateServerStatus(script, domainNamespace) {
         try {
             Log.info(script, "Validating server status")
