@@ -3,11 +3,12 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.YamlUtility
+import com.oracle.fmwk8s.utility.TimerUtility
 import java.time.LocalDateTime
-import java.util.*
 
 class Domain {
     static def yamlUtility = new YamlUtility()
+    static def timerUtility = new TimerUtility()
     static def weblogicUser = "weblogic"
     static def weblogicPass = "Welcome1"
     static def domainName
@@ -228,25 +229,8 @@ class Domain {
             //script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
             //begin timer check for domain
             Log.info(script, "Timer check start")
-            Calendar today = Calendar.getInstance()
-            today.set(Calendar.HOUR_OF_DAY , LocalDateTime.now().getHour())
-            today.set(Calendar.MINUTE, LocalDateTime.now().getMinute())
-            today.set(Calendar.SECOND, 0)
-            Log.info(script, today.getTime())
-            String date = today.get(Calendar.DATE)+"-"+today    .get(Calendar.MONTH)+"-"+today.get(Calendar.YEAR)
-            String time = today.get(Calendar.HOUR)+"-"+today.get(Calendar.MINUTE)+"-"+today.get(Calendar.SECOND)
-            Log.info(script, date + "  : " + time)
+            timerUtility.startTimer()
 
-            TimerTask timerTask = new TimerTask() {
-                @Override
-                void run() {
-                    Log.info(script,"Inside the run method")
-                }
-            }
-            Timer timer = new Timer()
-
-            // scheduling the task at interval
-            timer.schedule(timerTask,100, 60000)
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
