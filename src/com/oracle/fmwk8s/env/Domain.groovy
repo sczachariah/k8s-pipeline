@@ -242,11 +242,23 @@ class Domain {
             timer.schedule(new TimerTask() {
                 @Override
                 void run() {
-                    //count++
-                    Log.info(script, "Timer check start1")
+                    count++
+                    Calendar cal = Calendar.getInstance()
+                    cal.setTimeInMillis(System.currentTimeMillis())
+                    String date1 = cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
+                    String time1 = cal.get(Calendar.HOUR)+"-"+cal.get(Calendar.MINUTE)+"-"+cal.get(Calendar.SECOND)
+                    checkserverstatus()
+                    println(this.serverStatus)
+                    if (count>2 || this.serverStatus=="up"){
+                        timer.cancel()
+                        timer.purge()
+                    }
+                    println( "Date : " +  date1 + " time : "+ time1 + " count : " + count)
                 }
-            },today.getTime(),TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES))
-            Log.info(script, "domain readiness check success.")
+
+            }, today.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES))
+
+        Log.info(script, "domain readiness check success.")
 
         }
         catch (exc) {
