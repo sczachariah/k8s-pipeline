@@ -29,6 +29,7 @@ class TimerUtility {
                 String time = cal.get(Calendar.HOUR) + "-" + cal.get(Calendar.MINUTE) + "-" + cal.get(Calendar.SECOND)
                 println("Date : " + date + " time : " + time + " count : " + count)
                 Log.info(workflowScript, "Date : " + date + " time : " + time + " count : " + count)
+                System.out.println("Date : " + date + " time : " + time + " count : " + count)
                 if (count > maxTimerPeriod) {
                     timer.cancel()
                     timer.purge()
