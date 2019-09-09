@@ -2,9 +2,8 @@ package com.oracle.fmwk8s.env
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
-import com.oracle.fmwk8s.utility.YamlUtility
 import com.oracle.fmwk8s.utility.TimerUtility
-import java.time.LocalDateTime
+import com.oracle.fmwk8s.utility.YamlUtility
 
 class Domain {
     static def yamlUtility = new YamlUtility()
@@ -15,7 +14,7 @@ class Domain {
     static def domainNamespace
     static def weblogicCredentialsSecretName
     static def createdomainPodName
-    private static int count =0
+    private static int count = 0
     static def serversup = "down"
     static def serverStatus = ""
     static def adminServerPodName = ""
@@ -234,8 +233,8 @@ class Domain {
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
-            Log.error(script,exc.getMessage())
-            Log.error(script,exc.printStackTrace())
+            Log.error(script, exc.getMessage())
+            Log.error(script, exc.printStackTrace())
             throw exc
         }
     }
@@ -249,8 +248,8 @@ class Domain {
             ).trim()
             Log.info(script, "Validating server status1")
             Log.info(script, adminServerPodName)
-            if(adminServerPodName!=""){
-               checkServerStatus(script, adminServerPodName, domainNamespace)
+            if (adminServerPodName != "") {
+                checkServerStatus(script, adminServerPodName, domainNamespace)
             }
             Log.info(script, "Validating server status completed")
         }
@@ -268,8 +267,7 @@ class Domain {
                     returnStdout: true
             ).trim()
             Log.info(script, this.serverStatus)
-            if({this.serverStatus()} == "Running")
-            {
+            if ({ this.serverStatus() } == "Running") {
                 this.serversup = "up"
             }
             Log.info(script, "domain readiness check success.")
