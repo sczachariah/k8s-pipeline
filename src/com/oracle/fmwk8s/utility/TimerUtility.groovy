@@ -19,7 +19,7 @@ class TimerUtility {
         timerTask = new TimerTask() {
             @Override
             void run() {
-                Log.info(script, "Inside the run method")
+//                Log.info(script, "Inside the run method")
                 count++
                 Calendar cal = Calendar.getInstance()
                 cal.setTimeInMillis(System.currentTimeMillis())
