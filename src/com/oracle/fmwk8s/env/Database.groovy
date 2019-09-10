@@ -23,7 +23,6 @@ class Database {
      * @param script the workflow script of jenkins
      * @param databaseVersion the version of database that needs to be deployed
      * @param dbNamespace the kubernetes namespace in which database is to be deployed
-     * @return none
      */
     static deployDatabase(script, databaseVersion, dbNamespace) {
         try {
