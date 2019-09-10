@@ -3,12 +3,28 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 
+/**
+ * Database class handles the common database operations that are required
+ * in E2E execution of FMW in Docker/K8S environments
+ */
 class Database {
+    /** the name of the database service */
     static dbName = "oracledb"
+    /** the password to connect to db */
     static dbPassword = "Oradoc_db1"
+    /** the port on which database service is up */
     static dbPort = "1521"
+    /** the kubernetes pod name of database pod */
     static dbPodName
 
+    /**
+     * Deploys a specific version of database container in a kubernetes cluster.
+     *
+     * @param script the workflow script of jenkins
+     * @param databaseVersion the version of database that needs to be deployed
+     * @param dbNamespace the kubernetes namespace in which database is to be deployed
+     * @return none
+     */
     static deployDatabase(script, databaseVersion, dbNamespace) {
         try {
             if (Common.productId != "weblogic") {
@@ -65,7 +81,7 @@ class Database {
                 Logging.getPodLogs(script, this.dbPodName, dbNamespace)
                 Log.info(script, "fetch database pod logs success.")
             }
-            
+
         }
     }
 
