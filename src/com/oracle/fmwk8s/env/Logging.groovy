@@ -136,11 +136,11 @@ class Logging {
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
             script.sh "echo \"Start1\" \n \
-                       adminServer==`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\``\n \
+                       adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\``\n \
                        echo \"Start3\" \n \
                        echo \"\$adminServer\" \n \
                        if [[ \$adminServer ]]; then \n \
-                            echo \"Domain created\"  \n \
+                            echo \"Domain created\" \n \
                        else \n \
                             echo \"Domian not created\" \n \
                        fi"
