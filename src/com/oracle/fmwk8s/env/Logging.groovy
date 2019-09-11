@@ -135,7 +135,7 @@ class Logging {
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        adminServer='adminServer' && \
-                       echo \"\$adminServer\" && \
+                       echo \$adminServer && \
                        adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\`` && \
                        echo \"Admin server: \$adminServer\" && \
                        if(`echo \$adminServer | grep -q admin-server`); then \n \
