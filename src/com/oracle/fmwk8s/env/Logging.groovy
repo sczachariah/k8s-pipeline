@@ -10,6 +10,7 @@ class Logging {
 
     static def yamlUtility = new YamlUtility()
     static def buildSuffix
+    static def adminServerPodName
 
     static configureLogstashConfigmap(script, domainName, domainNamespace) {
         try {
@@ -131,6 +132,11 @@ class Logging {
     static getDomainLogs(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin get domain logs.")
+            this.adminServerPodName = script.sh(
+                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${YamlUtility.domainInputsMap.get("adminServerName")}",
+                    returnStdout: true
+            ).trim()
+            Log.info(script,this.adminServerPodName)
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        kubectl cp ${domainNamespace}/${domainName}-${YamlUtility.domainInputsMap.get("adminServerName")}:${YamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
