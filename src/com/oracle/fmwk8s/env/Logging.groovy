@@ -134,10 +134,10 @@ class Logging {
         try {
             Log.info(script, "begin get domain logs sfdfsfsfs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
-                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
-                       adminServer='adminServer' && \
-                       adminServer==`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\`` && \
-                       echo \"Admin server: \$adminServer\" && \
+                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
+            script.sh "adminServer='adminServer' \n \
+                       adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\``\n \
+                       echo \"Admin server: \$adminServer\" \n \
                        if(`echo \$adminServer | grep -q admin-server`); then \n \
                             echo \"Domain created\"  \n \
                             kubectl cp ${domainNamespace}/${domainName}-${YamlUtility.domainInputsMap.get("adminServerName")}:${YamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs \n \
@@ -204,7 +204,7 @@ class Logging {
                            "files": [
                              {
                                 "pattern": "*_logs*.zip",
-                                "target": "cisystem-dev-local/com/oracle/fmwk8s/e2e/logs/"
+                                "target": "cisystem-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${Common.productImage}/${script.env.BUILD_NUMBER}"
                              }
                            ]
                         }""",
