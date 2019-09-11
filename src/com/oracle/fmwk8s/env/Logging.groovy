@@ -137,16 +137,7 @@ class Logging {
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
             script.sh "echo \"Start1\" \n \
                        adminServer='adminServer' \n \
-                       echo \"Start2\" \n \
-                       adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\``\n \
-                       echo \"Start3\" \n \
-                       echo \"Admin server: \$adminServer\" \n \
-                       if(`echo \$adminServer | grep -q admin-server`); then \n \
-                            echo \"Domain created\"  \n \
-                            kubectl cp ${domainNamespace}/${domainName}-${YamlUtility.domainInputsMap.get("adminServerName")}:${YamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs \n \
-                       else \n \
-                            echo \"Domian not created\" \n \
-                       fi"
+                       echo \"Start2\" "
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
