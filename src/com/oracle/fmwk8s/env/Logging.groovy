@@ -99,7 +99,7 @@ class Logging {
         getEventLogs(script, Domain.domainNamespace)
         getDomainLogs(script, Domain.domainName, Domain.domainNamespace)
         archiveLogs(script)
-        //publishLogsToArtifactory(script)
+        publishLogsToArtifactory(script)
     }
 
     static getEventLogs(script, namespace) {
@@ -183,10 +183,10 @@ class Logging {
             script.zip zipFile: "domain_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
             script.zip zipFile: "test_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
 
-            script.archiveArtifacts artifacts: '**/event_logs.zip'
-            script.archiveArtifacts artifacts: '**/pod_logs.zip'
-            script.archiveArtifacts artifacts: '**/domain_logs.zip'
-            script.archiveArtifacts artifacts: '**/test_logs.zip'
+            script.archiveArtifacts artifacts: '**/event_logs_*.zip'
+            script.archiveArtifacts artifacts: '**/pod_logs_*.zip'
+            script.archiveArtifacts artifacts: '**/domain_logs_*.zip'
+            script.archiveArtifacts artifacts: '**/test_logs_*.zip'
             Log.info(script, "archive logs success.")
         }
         catch (exc) {
