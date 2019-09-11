@@ -98,6 +98,7 @@ class Logging {
         getEventLogs(script, Domain.domainNamespace)
         getDomainLogs(script, Domain.domainName, Domain.domainNamespace)
         archiveLogs(script)
+        publishLogsToArtifactory(script)
     }
 
     static getEventLogs(script, namespace) {
@@ -181,6 +182,31 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "archive logs failed.")
+        }
+    }
+    
+    static publishLogsToArtifactory(script) {
+        try {
+            Log.info(script, "publish logs to artifactory.")
+            script.sh "pwd && \
+                       ls"
+            script.rtUpload(
+                    serverId: "artifactory.oraclecorp.com",
+                    spec:
+                            """{
+                           "files": [
+                             {
+                                "pattern": "*_logs_*.zip",
+                                "target": "cisystem-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${script.env.BUILD_NUMBER}/"
+                             }
+                           ]
+                        }""",
+                    failNoOp: true
+            )
+            Log.info(script, "publish logs to artifactory success.")
+        }
+        catch (exc) {
+            Log.error(script, "publish logs to artifactory failed.")
         }
     }
 }
