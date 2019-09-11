@@ -182,10 +182,10 @@ class Logging {
             script.zip zipFile: "domain_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
             script.zip zipFile: "test_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
 
-            script.archiveArtifacts artifacts: '**/event_logs_*.zip'
-            script.archiveArtifacts artifacts: '**/pod_logs_*.zip'
-            script.archiveArtifacts artifacts: '**/domain_logs_*.zip'
-            script.archiveArtifacts artifacts: '**/test_logs_*.zip'
+            script.archiveArtifacts artifacts: '**/*_logs_*.zip'
+            //script.archiveArtifacts artifacts: '**/pod_logs_*.zip'
+            //script.archiveArtifacts artifacts: '**/domain_logs_*.zip'
+            //script.archiveArtifacts artifacts: '**/test_logs_*.zip'
             Log.info(script, "archive logs success.")
         }
         catch (exc) {
@@ -209,7 +209,7 @@ class Logging {
                             """{
                            "files": [
                              {
-                                "pattern": "*_logs_*.zip",
+                                "pattern": "event_logs_*.zip",
                                 "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
                              }
                            ]
