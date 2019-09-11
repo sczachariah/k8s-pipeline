@@ -10,7 +10,7 @@ class Logging {
 
     static def yamlUtility = new YamlUtility()
     static def buildSuffix
-    static def adminServerPodName
+    static def productImageVersion
 
     static configureLogstashConfigmap(script, domainName, domainNamespace) {
         try {
@@ -198,14 +198,19 @@ class Logging {
             Log.info(script, "publish logs to artifactory.")
             script.sh "pwd && \
                        ls"
+            this.productImageVersion = script.sh(
+                    script: "echo ${Common.productImage}| awk -F':' '{print \$2}'",
+                    returnStdout: true
+            ).trim()
+            Log.info(script,this.productImageVersion)
             script.rtUpload(
                     serverId: "artifactory.oraclecorp.com",
                     spec:
                             """{
                            "files": [
                              {
-                                "pattern": "event_logs_*.zip",
-                                "target": "cisystem-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${script.env.BUILD_NUMBER}/"
+                                "pattern": "*_logs_*.zip",
+                                "target": "cisystem-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
                              }
                            ]
                         }""",
