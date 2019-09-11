@@ -131,7 +131,7 @@ class Logging {
 
     static getDomainLogs(script, domainName, domainNamespace) {
         try {
-            Log.info(script, "begin get domain logs.")
+            Log.info(script, "begin get domain logs sfdfsfsfs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        adminServer='adminServer' && \
