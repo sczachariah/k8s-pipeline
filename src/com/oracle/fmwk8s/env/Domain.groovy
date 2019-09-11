@@ -2,22 +2,16 @@ package com.oracle.fmwk8s.env
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
-import com.oracle.fmwk8s.utility.TimerUtility
 import com.oracle.fmwk8s.utility.YamlUtility
 
 class Domain {
     static def yamlUtility = new YamlUtility()
-    static def timerUtility = new TimerUtility()
     static def weblogicUser = "weblogic"
     static def weblogicPass = "Welcome1"
     static def domainName
     static def domainNamespace
     static def weblogicCredentialsSecretName
     static def createdomainPodName
-    private static int count = 0
-    static def serversup = "down"
-    static def serverStatus = ""
-    static def adminServerPodName = ""
 
     static pullSampleScripts(script) {
         script.git branch: "${Common.samplesBranch}",
@@ -194,7 +188,8 @@ class Domain {
             Log.info(script, "begin start " + Common.productId + " domain")
             yamlUtility.generateDomainYaml(script, Common.productId, "domain")
             script.sh "ls -ltr && cat domain*"
-            script.sh "kubectl apply -f domain.yaml -n ${domainNamespace}"
+            script.sh "kubectl apply -f domain.yaml -n ${domainNamespace} && \
+                       sleep 480"
             if ("${Common.productId}" == "oim") {
                 script.sh "kubectl apply -f domain" + Common.productId + ".yaml -n ${domainNamespace} && \
                            sleep 480000"
@@ -202,7 +197,7 @@ class Domain {
             Log.info(script, "start " + Common.productId + " domain success.")
 
             isDomainReady(script, domainName, domainNamespace)
-            //validateServerStatus(script, domainNamespace)
+
         }
         catch (exc) {
             Log.error(script, "create/start " + Common.productId + " domain failed.")
@@ -219,58 +214,16 @@ class Domain {
         }
     }
 
-    static isDomainReady(script) {
+    static isDomainReady(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin domain readiness check.")
 
-            //script.sh "kubectl get all,domains -n ${domainNamespace}"
-            //script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
-            //script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
-            //begin timer check for domain
-            Log.info(script, "Timer check start")
-            timerUtility.startTimer(script)
+            script.sh "kubectl get all,domains -n ${domainNamespace}"
+            script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
+            script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
 
-        }
-        catch (exc) {
-            Log.error(script, "domain readiness check failed.")
-            Log.error(script, exc.getMessage())
-            Log.error(script, exc.printStackTrace())
-            throw exc
-        }
-    }
-
-    static validateServerStatus(script, domainNamespace) {
-        try {
-            Log.info(script, "Validating server status")
-            this.adminServerPodName = script.sh(
-                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep admin-server",
-                    returnStdout: true
-            ).trim()
-            Log.info(script, "Validating server status1")
-            Log.info(script, adminServerPodName)
-            if (adminServerPodName != "") {
-                checkServerStatus(script, adminServerPodName, domainNamespace)
-            }
-            Log.info(script, "Validating server status completed")
-        }
-        catch (exc) {
-            Log.error(script, "validate server status failed.")
-        }
-
-    }
-
-    static checkServerStatus(script, podname, domainNamespace) {
-        try {
-            Log.info(script, "begin domain readiness check.")
-            this.serverStatus = script.sh(
-                    script: "kubectl describe pod ${podname} -n ${domainNamespace}  | grep Status: | awk -F' ' '{print \$2}'",
-                    returnStdout: true
-            ).trim()
-            Log.info(script, this.serverStatus)
-            if ({ this.serverStatus() } == "Running") {
-                this.serversup = "up"
-            }
             Log.info(script, "domain readiness check success.")
+
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
