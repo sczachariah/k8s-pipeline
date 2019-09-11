@@ -198,14 +198,16 @@ class Logging {
     static publishLogsToArtifactory(script) {
         try {
             Log.info(script, "publish logs to artifactory.")
+            script.sh "pwd && \
+                       ls"
             script.rtUpload(
                     serverId: "artifactory.oraclecorp.com",
                     spec:
                             """{
                            "files": [
                              {
-                                "pattern": "*_logs*.zip",
-                                "target": "cisystem-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${Common.productImage}/${script.env.BUILD_NUMBER}"
+                                "pattern": "event_logs_*.zip",
+                                "target": "cisystem-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${script.env.BUILD_NUMBER}"
                              }
                            ]
                         }""",
