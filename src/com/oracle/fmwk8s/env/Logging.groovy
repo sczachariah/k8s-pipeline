@@ -205,7 +205,7 @@ class Logging {
                            "files": [
                              {
                                 "pattern": "event_logs_*.zip",
-                                "target": "cisystem-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${script.env.BUILD_NUMBER}"
+                                "target": "cisystem-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${script.env.BUILD_NUMBER}/"
                              }
                            ]
                         }""",
