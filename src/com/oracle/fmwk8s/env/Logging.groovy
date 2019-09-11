@@ -135,8 +135,11 @@ class Logging {
             Log.info(script, "begin get domain logs sfdfsfsfs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
-            script.sh "adminServer='adminServer' \n \
+            script.sh "echo \"Start1\" \n \
+                       adminServer='adminServer' \n \
+                       echo \"Start2\" \n \
                        adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\``\n \
+                       echo \"Start3\" \n \
                        echo \"Admin server: \$adminServer\" \n \
                        if(`echo \$adminServer | grep -q admin-server`); then \n \
                             echo \"Domain created\"  \n \
