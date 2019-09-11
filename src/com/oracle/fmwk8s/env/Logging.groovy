@@ -141,6 +141,7 @@ class Logging {
                        echo \"\$adminServer\" \n \
                        if [[ \$adminServer ]]; then \n \
                             echo \"Domain created\" \n \
+                            kubectl cp ${domainNamespace}/${domainName}-${YamlUtility.domainInputsMap.get("adminServerName")}:${YamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs \n \
                        else \n \
                             echo \"Domian not created\" \n \
                        fi"
