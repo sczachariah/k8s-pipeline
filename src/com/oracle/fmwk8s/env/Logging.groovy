@@ -99,6 +99,7 @@ class Logging {
         getEventLogs(script, Domain.domainNamespace)
         getDomainLogs(script, Domain.domainName, Domain.domainNamespace)
         archiveLogs(script)
+        //publishLogsToArtifactory(script)
     }
 
     static getEventLogs(script, namespace) {
@@ -135,8 +136,7 @@ class Logging {
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        adminServer='adminServer' && \
-                       echo \$adminServer && \
-                       adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\`` && \
+                       adminServer==`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\`` && \
                        echo \"Admin server: \$adminServer\" && \
                        if(`echo \$adminServer | grep -q admin-server`); then \n \
                             echo \"Domain created\"  \n \
@@ -191,6 +191,29 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "archive logs failed.")
+        }
+    }
+
+    static publishLogsToArtifactory(script) {
+        try {
+            Log.info(script, "publish logs to artifactory.")
+            script.rtUpload(
+                    serverId: "artifactory.oraclecorp.com",
+                    spec:
+                            """{
+                           "files": [
+                             {
+                                "pattern": "*_logs*.zip",
+                                "target": "cisystem-dev-local/com/oracle/fmwk8s/e2e/logs/"
+                             }
+                           ]
+                        }""",
+                    failNoOp: true
+            )
+            Log.info(script, "publish logs to artifactory success.")
+        }
+        catch (exc) {
+            Log.error(script, "publish logs to artifactory failed.")
         }
     }
 }

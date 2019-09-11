@@ -46,18 +46,6 @@ pipeline {
                 }
             }
         }
-
-        stage('validate input parameters') {
-            steps {
-                container('jnlp') {
-                    script {
-                        Validation.validateInputs(this, "${OPERATOR_VERSION}", "${PRODUCT_NAME}", "${DOMAIN_TYPE}", "${DATABASE_VERSION}", "${TEST_IMAGE_TAG}", "${TEST_TYPE}", "${HOURS_AFTER}")
-                        sleep 1
-                    }
-                }
-            }
-        }
-
         stage('deploy kubernetes operator') {
             steps {
                 container('jnlp') {
