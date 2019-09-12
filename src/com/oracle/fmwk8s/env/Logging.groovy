@@ -11,6 +11,7 @@ class Logging {
     static def yamlUtility = new YamlUtility()
     static def buildSuffix
     static def productImageVersion
+    static def logLocation
 
     static configureLogstashConfigmap(script, domainName, domainNamespace) {
         try {
@@ -133,6 +134,8 @@ class Logging {
     static getDomainLogs(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin get domain logs sfdfsfsfs.")
+            Log.info(yamlUtility.domainInputsMap)
+            this.logLocation = YamlUtility.domainInputsMap.get("adminServerName")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
             script.sh "adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\``\n \
