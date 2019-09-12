@@ -204,13 +204,13 @@ class Logging {
             ).trim()
             Log.info(script,this.productImageVersion)
             script.rtUpload(
-                    serverId: "artifactory.oraclecorp.com",
+                    serverId: "artifacthub.oraclecorp.com",
                     spec:
                             """{
                            "files": [
                              {
                                 "pattern": "event_logs_*.zip",
-                                "target": "cisystem-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
                              }
                            ]
                         }""",
