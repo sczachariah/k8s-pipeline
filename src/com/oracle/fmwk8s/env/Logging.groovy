@@ -95,11 +95,11 @@ class Logging {
     }
 
     static getLogs(script) {
-        getEventLogs(script, Operator.operatorNamespace)
-        getEventLogs(script, Domain.domainNamespace)
+        //getEventLogs(script, Operator.operatorNamespace)
+        //getEventLogs(script, Domain.domainNamespace)
         getDomainLogs(script, Domain.domainName, Domain.domainNamespace)
-        archiveLogs(script)
-        publishLogsToArtifactory(script)
+        //archiveLogs(script)
+        //publishLogsToArtifactory(script)
     }
 
     static getEventLogs(script, namespace) {

@@ -46,25 +46,6 @@ pipeline {
                 }
             }
         }
-        stage('deploy kubernetes operator') {
-            steps {
-                container('jnlp') {
-                    dir('weblogic-operator') {
-                        script {
-                            Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}", "${ELK_ENABLE}")
-                        }
-                    }
-                }
-
-                container('jnlp') {
-                    script {
-                        Domain.createNamespace(this, "${DOMAIN_NS}")
-                        Common.configureRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
-                        EnvironmentSetup.createNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
-                    }
-                }
-            }
-        }
     }
 
     post {
