@@ -210,7 +210,7 @@ class Logging {
                            "files": [
                              {
                                 "pattern": "event_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${script.env.BUILD_NUMBER}/"
                              }
                            ]
                         }""",
