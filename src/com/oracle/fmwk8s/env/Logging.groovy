@@ -151,6 +151,7 @@ class Logging {
         }
         catch (exc) {
             Log.error(script, "get domain logs failed.")
+            throw exc
         }
     }
 
