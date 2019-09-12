@@ -211,7 +211,19 @@ class Logging {
                              {
                                 "pattern": "event_logs_*.zip",
                                 "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
-                             }
+                             },
+                             {
+                                "pattern": "domain_logs_*.zip",
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                             },
+                             {
+                                "pattern": "pod_logs_*.zip",
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                             },
+                             {
+                                "pattern": "test_logs_*.zip",
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                             }                           
                            ]
                         }""",
                     failNoOp: true
