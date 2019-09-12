@@ -135,7 +135,7 @@ class Logging {
             Log.info(script, "begin get domain logs sfdfsfsfs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
-            script.sh "adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep \"${YamlUtility.domainInputsMap.get("adminServerName")}\"\\``\n \
+            script.sh "adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\``\n \
                        echo \"\$adminServer\" "
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
