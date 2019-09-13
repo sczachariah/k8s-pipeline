@@ -1,3 +1,5 @@
+@Library('fmwk8s-pipeline-library') _
+
 pipeline {
     agent {
         kubernetes {
@@ -105,10 +107,10 @@ EOF
                 script {
                     env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%d-%H%M'").trim()
                     def logContent = Jenkins.getInstance()
-                                    .getItemByFullName(env.JOB_NAME)
-                                    .getBuildByNumber(
-                                        Integer.parseInt(env.BUILD_NUMBER))
-                                    .logFile.text
+                            .getItemByFullName(env.JOB_NAME)
+                            .getBuildByNumber(
+                                    Integer.parseInt(env.BUILD_NUMBER))
+                            .logFile.text
                     writeFile file: "buildlog-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.txt", text: logContent
                 }
                 zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
@@ -138,7 +140,7 @@ EOF
             script {
                 currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.PRODUCT_NAME
             }
-
+            slackNotifier(currentBuild.currentResult)
         }
     }
 
