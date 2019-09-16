@@ -16,3 +16,21 @@ spec:
   hostPath:
     path: "/scratch/u01/DockerVolume/jenkins"
 ---
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: fmwk8s-pv
+  labels:
+    type: fmwk8s-hostpath-pv
+spec:
+  storageClassName: fmwk8s-pv
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: "/scratch/u01/DockerVolume/fmwk8s"
+---
