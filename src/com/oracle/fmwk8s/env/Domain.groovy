@@ -4,6 +4,10 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.YamlUtility
 
+/**
+ * Domain class handles the common domain operations that are required
+ * in E2E execution of FMW in Docker/K8S environments
+ */
 class Domain {
     static def yamlUtility = new YamlUtility()
     static def weblogicUser = "weblogic"
