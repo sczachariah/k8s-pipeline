@@ -12,6 +12,9 @@ class Domain {
     static def domainNamespace
     static def weblogicCredentialsSecretName
     static def createdomainPodName
+    static def adminServerPodName
+    static def replicaCount
+    static def managedServerPodName
 
     static pullSampleScripts(script) {
         script.git branch: "${Common.samplesBranch}",
@@ -188,8 +191,7 @@ class Domain {
             Log.info(script, "begin start " + Common.productId + " domain")
             yamlUtility.generateDomainYaml(script, Common.productId, "domain")
             script.sh "ls -ltr && cat domain*"
-            script.sh "kubectl apply -f domain.yaml -n ${domainNamespace} && \
-                       sleep 480"
+            script.sh "kubectl apply -f domain.yaml -n ${domainNamespace}"
             if ("${Common.productId}" == "oim") {
                 script.sh "kubectl apply -f domain" + Common.productId + ".yaml -n ${domainNamespace} && \
                            sleep 480000"
@@ -219,14 +221,54 @@ class Domain {
             Log.info(script, "begin domain readiness check.")
 
             script.sh "kubectl get all,domains -n ${domainNamespace}"
-            script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
-            script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
-
+            //script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
+            //script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
+            Log.info(script, "Begin Admin server status check")
+            this.adminServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}"
+            Log.info(script,this.adminServerPodName)
+            checkServerStatus(script, this.adminServerPodName, domainNamespace)
+            Log.info(script, "Admin server status check completed.")
+            Log.info(script, "begin Managed server status check.")
+            script.sh "kubectl get domain -n ${domainNamespace} -o yaml > ${domainName}-domain.yaml && \
+                       pwd && \
+                       ls"
+            this.replicaCount = script.sh(
+                    script: "cat ${domainName}-domain.yaml | grep replicas:|tail -1|awk -F':' '{print \$2}'",
+                    returnStdout: true
+            ).trim()
+            Log.info(script,this.replicaCount)
+            for(int i = 1;i<=Integer.parseInt(this.replicaCount);i++) {
+                this.managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase")}${i}"
+                checkServerStatus(script, this.managedServerPodName, domainNamespace)
+            }
+            Log.info(script, "Managed server status check completed.")
             Log.info(script, "domain readiness check success.")
-
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
+        }
+    }
+    
+    static checkServerStatus(script, podname, domainNamespace) {
+        try {
+            Log.info(script, "begin ${podname} status check.")
+            script.sh "adminstat='adminstat' && \
+                        i=0 && \
+                        until `echo \$adminstat | grep -q 1/1` > /dev/null\n \
+                        do \n \
+                            if [ \$i == 20 ]; then\n \
+                                echo \"Timeout waiting for Admin server. Exiting!!.\"\n \
+                                exit 1\n \
+                            fi\n \
+                        i=\$((i+1))\n \
+                        echo \"${podname} is not Running. Iteration \$i of 20. Sleeping\"\n \
+                        sleep 60\n \
+                        adminstat=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep ${podname}\\``\n \
+                        done"
+            Log.info(script, "${podname} is up and running")
+        }
+        catch (exc) {
+            Log.error(script, "server status check failed.")
         }
     }
 
