@@ -8,9 +8,6 @@ pipeline {
             inheritFrom 'fmwk8s-test-infra-slave'
         }
     }
-    environment {
-        KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
-    }
     stages {
         stage('deploy Test tools') {
             steps {
