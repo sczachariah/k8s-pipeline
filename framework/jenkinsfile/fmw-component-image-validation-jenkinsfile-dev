@@ -136,7 +136,6 @@ EOF
         always {
             script {
                 currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.PRODUCT_NAME
-                slackNotifier(currentBuild.currentResult)
             }
         }
     }
