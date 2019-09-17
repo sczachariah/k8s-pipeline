@@ -16,7 +16,7 @@ pipeline {
             steps {
                 container(name: 'jnlp') {
                     git branch: 'master',
-                            credentialsId: 'jaya.selvaraj.ssh',
+                            credentialsId: 'sandeep.zachariah.ssh',
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                     sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
