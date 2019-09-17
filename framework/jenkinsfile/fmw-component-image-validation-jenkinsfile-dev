@@ -1,3 +1,5 @@
+@Library('fmwk8s-pipeline-library') _
+
 pipeline {
     agent {
         kubernetes {
@@ -6,18 +8,15 @@ pipeline {
             inheritFrom 'fmwk8s-test-infra-slave'
         }
     }
-    environment {
-        KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
-    }
     stages {
         stage('deploy Test tools') {
             steps {
                 container(name: 'jnlp') {
                     git branch: 'master',
-                            credentialsId: 'jaya.selvaraj.ssh',
+                            credentialsId: 'sandeep.zachariah.ssh',
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-                    sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
+                    sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/ --v=8'
 
                     sh label: 'generate test props', script: '''
                     cat <<EOF > ${WORKSPACE}/test.props
@@ -99,13 +98,46 @@ EOF
                 }
             }
         }
+        stage('Collect and Upload Reports') {
+            steps {
+                echo "Reports directory: ${WORKSPACE}/test-output"
+                script {
+                    env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%d-%H%M'").trim()
+                    def logContent = Jenkins.getInstance()
+                            .getItemByFullName(env.JOB_NAME)
+                            .getBuildByNumber(
+                                    Integer.parseInt(env.BUILD_NUMBER))
+                            .logFile.text
+                    writeFile file: "buildlog-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.txt", text: logContent
+                }
+                zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
+                rtUpload(
+                        serverId: "artifactory.oraclecorp.com",
+                        spec:
+                                """{
+                           "files": [
+                             {
+                                "pattern": "test-output*.zip",
+                                "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/test-reports/"
+                             },
+                             {
+                                "pattern": "buildlog*.txt",
+                                "target": "cisystem-dev-local/com/oracle/cisystem/imagevalidation/${PRODUCT_NAME}/logs/"
+                             }
+                           ]
+                        }""",
+                        failNoOp: true
+                )
+
+            }
+        }
     }
     post {
         always {
             script {
                 currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.PRODUCT_NAME
+                slackNotifier(currentBuild.currentResult)
             }
-
         }
     }
 
