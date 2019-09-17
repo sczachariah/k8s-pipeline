@@ -225,16 +225,13 @@ class Domain {
             Log.info(script, "begin domain readiness check.")
 
             script.sh "kubectl get all,domains -n ${domainNamespace}"
-            //script.sh "kubectl get domain -n ${domainNamespace} | grep ${domainName}"
-            //script.sh "curl -o /dev/null -s -w \"%{http_code}\\n\" \"http://${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${domainNamespace}.svc.cluster.local:${yamlUtility.domainInputsMap.get("adminPort")}/weblogic/ready\" | grep 200"
-            Log.info(script, "Begin Admin server status check")
+            Log.info(script, "begin Admin server status check")
             this.adminServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}"
             Log.info(script,this.adminServerPodName)
             checkServerStatus(script, this.adminServerPodName, domainNamespace)
-            Log.info(script, "Admin server status check completed.")
+            Log.info(script, "admin server status check completed.")
             Log.info(script, "begin Managed server status check.")
             script.sh "kubectl get domain -n ${domainNamespace} -o yaml > ${domainName}-domain.yaml && \
-                       pwd && \
                        ls"
             this.replicaCount = script.sh(
                     script: "cat ${domainName}-domain.yaml | grep replicas:|tail -1|awk -F':' '{print \$2}'",
@@ -245,7 +242,7 @@ class Domain {
                 this.managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase")}${i}"
                 checkServerStatus(script, this.managedServerPodName, domainNamespace)
             }
-            Log.info(script, "Managed server status check completed.")
+            Log.info(script, "managed server status check completed.")
             Log.info(script, "domain readiness check success.")
         }
         catch (exc) {
