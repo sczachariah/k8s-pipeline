@@ -140,7 +140,7 @@ class Logging {
                        echo \"\$adminServer\"\n \
                        if [[ \$adminServer ]]; then \n \
                              echo \"Domain Found\" \n \
-                             kubectl cp ${domainNamespace}/${YamlUtility.domainInputsMap.get("adminServerName")}:${YamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs \n \
+                             kubectl cp ${domainNamespace}/${domainName}-${YamlUtility.domainInputsMap.get("adminServerName")}:${YamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs \n \
                        fi"
             }
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
