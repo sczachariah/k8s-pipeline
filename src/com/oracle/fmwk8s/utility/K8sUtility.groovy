@@ -5,23 +5,23 @@ import com.oracle.fmwk8s.common.Log
 
 class K8sUtility {
 
-    static checkPodStatus(script, podname, namespace, timeout) {
+    static checkPodStatus(script, podName, namespace, timeout) {
         try {
-            Log.info(script, "begin ${podname} status check.")
-            script.sh "adminstat='adminstat' && \
+            Log.info(script, "begin ${podName} status check.")
+            script.sh "podstat='podstat' && \
                         i=0 && \
-                        until `echo \$adminstat | grep -q 1/1` > /dev/null\n \
+                        until `echo \$podstat | grep -q 1/1` > /dev/null\n \
                         do \n \
                             if [ \$i == ${timeout} ]; then\n \
-                                echo \"Timeout waiting for Admin server. Exiting!!.\"\n \
+                                echo \"timeout waiting for pod ${podName}. exiting!!.\"\n \
                                 exit 1\n \
                             fi\n \
                         i=\$((i+1))\n \
-                        echo \"${podname} is not Running. Iteration \$i of 20. Sleeping\"\n \
+                        echo \"${podName} is not running. iteration \$i of 20. sleeping\"\n \
                         sleep 60\n \
-                        adminstat=`echo \\`kubectl get pods -n ${namespace} 2>&1 | grep ${podname}\\``\n \
+                        podstat=`echo \\`kubectl get pods -n ${namespace} 2>&1 | grep ${podName}\\``\n \
                         done"
-            Log.info(script, "${podname} is up and running")
+            Log.info(script, "${podName} is up and running")
         }
         catch (exc) {
             Log.error(script, "server status check failed.")
