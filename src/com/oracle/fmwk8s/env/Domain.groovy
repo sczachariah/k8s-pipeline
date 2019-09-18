@@ -3,6 +3,7 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.YamlUtility
+import com.oracle.fmwk8s.utility.K8sUtility
 
 /**
  * Domain class handles the common domain operations that are required
@@ -10,6 +11,7 @@ import com.oracle.fmwk8s.utility.YamlUtility
  */
 class Domain {
     static def yamlUtility = new YamlUtility()
+    static def K8sUtility = new K8sUtility()
     static def weblogicUser = "weblogic"
     static def weblogicPass = "Welcome1"
     static def domainName
@@ -228,7 +230,7 @@ class Domain {
             Log.info(script, "begin Admin server status check")
             this.adminServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}"
             Log.info(script,this.adminServerPodName)
-            checkServerStatus(script, this.adminServerPodName, domainNamespace)
+            K8sUtility.checkPodStatus(script, this.adminServerPodName, domainNamespace,20)
             Log.info(script, "admin server status check completed.")
             Log.info(script, "begin Managed server status check.")
             script.sh "kubectl get domain -n ${domainNamespace} -o yaml > ${domainName}-domain.yaml && \
@@ -240,36 +242,13 @@ class Domain {
             Log.info(script,this.replicaCount)
             for(int i = 1;i<=Integer.parseInt(this.replicaCount);i++) {
                 this.managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase")}${i}"
-                checkServerStatus(script, this.managedServerPodName, domainNamespace)
+                K8sUtility.checkPodStatus(script, this.managedServerPodName, domainNamespace,20)
             }
             Log.info(script, "managed server status check completed.")
             Log.info(script, "domain readiness check success.")
         }
         catch (exc) {
             Log.error(script, "domain readiness check failed.")
-        }
-    }
-    
-    static checkServerStatus(script, podname, domainNamespace) {
-        try {
-            Log.info(script, "begin ${podname} status check.")
-            script.sh "adminstat='adminstat' && \
-                        i=0 && \
-                        until `echo \$adminstat | grep -q 1/1` > /dev/null\n \
-                        do \n \
-                            if [ \$i == 20 ]; then\n \
-                                echo \"Timeout waiting for Admin server. Exiting!!.\"\n \
-                                exit 1\n \
-                            fi\n \
-                        i=\$((i+1))\n \
-                        echo \"${podname} is not Running. Iteration \$i of 20. Sleeping\"\n \
-                        sleep 60\n \
-                        adminstat=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep ${podname}\\``\n \
-                        done"
-            Log.info(script, "${podname} is up and running")
-        }
-        catch (exc) {
-            Log.error(script, "server status check failed.")
         }
     }
 
