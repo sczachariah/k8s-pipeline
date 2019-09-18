@@ -13,7 +13,7 @@ pipeline {
         kubernetes {
             label 'fmwk8s-slave'
             namespace 'fmwk8s'
-            yamlFile 'framework/podtemplate/fmwk8s-slave-${env.LABEL}.yaml'
+            yamlFile "framework/podtemplate/fmwk8s-slave-${LABEL}.yaml"
         }
     }
 
