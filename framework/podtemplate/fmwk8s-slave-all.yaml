@@ -1,0 +1,81 @@
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  labels:
+    jenkins: "slave"
+    jenkins/fmwk8s-slave: "true"
+spec:
+  containers:
+    - env:
+        - name: "http_proxy"
+          value: "http://www-proxy-brmdc.us.oracle.com:80"
+        - name: "no_proxy"
+          value: ".cluster.local,.us.oracle.com,.oraclecorp.com,100.0.0.0/8,.oraclevcn.com,10.96.0.1"
+        - name: "https_proxy"
+          value: "http://www-proxy-brmdc.us.oracle.com:80"
+        - name: "JVM_ARGS"
+          value: "-XX:+UnlockExperimentalVMOptions  -XX:+UseCGroupMemoryLimitForHeap "
+        - name: "DISABLE_JNLP"
+          value: "true"
+        - name: "INSECURE_REGISTRY"
+          value: "cisystem.docker.oraclecorp.com,docker.io"
+      image: "cisystem.docker.oraclecorp.com/fmw-k8s-dind-slave:latest"
+      imagePullPolicy: "IfNotPresent"
+      name: "dind"
+      resources:
+        limits: {}
+        requests:
+          memory: "2Gi"
+      securityContext:
+        privileged: true
+      tty: true
+      volumeMounts:
+        - mountPath: "/scratch/syseng/workspace"
+          name: "volume-1"
+        - mountPath: "/dev/shm"
+          name: "volume-0"
+        - mountPath: "/home/jenkins/agent"
+          name: "workspace-volume"
+      workingDir: "/home/jenkins/agent"
+    - env:
+        - name: "http_proxy"
+          value: "http://www-proxy-brmdc.us.oracle.com:80"
+        - name: "no_proxy"
+          value: ".cluster.local,.us.oracle.com,.oraclecorp.com,100.0.0.0/8,.oraclevcn.com,10.96.0.1"
+        - name: "https_proxy"
+          value: "http://www-proxy-brmdc.us.oracle.com:80"
+      image: "cisystem.docker.oraclecorp.com/fmw-k8s-syseng-oel7-slave:latest"
+      imagePullPolicy: "Always"
+      name: "jnlp"
+      resources:
+        limits: {}
+        requests:
+          memory: "2Gi"
+      securityContext:
+        privileged: true
+      tty: true
+      volumeMounts:
+        - mountPath: "/logs"
+          name: fmwk8s-jenkins-pv
+        - mountPath: "/scratch/syseng/workspace"
+          name: "volume-1"
+        - mountPath: "/dev/shm"
+          name: "volume-0"
+        - mountPath: "/home/jenkins/agent"
+          name: "workspace-volume"
+      workingDir: "/home/jenkins/agent"
+  nodeSelector: {}
+  restartPolicy: "Never"
+  volumes:
+    - name: fmwk8s-jenkins-pv
+      persistentVolumeClaim:
+        claimName: fmwk8s-jenkins-pvc
+    - emptyDir:
+        medium: "Memory"
+      name: "volume-0"
+    - emptyDir:
+        medium: "Memory"
+      name: "volume-1"
+    - emptyDir:
+        medium: ""
+      name: "workspace-volume"
