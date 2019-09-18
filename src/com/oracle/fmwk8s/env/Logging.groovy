@@ -134,9 +134,16 @@ class Logging {
         try {
             Log.info(script, "begin get domain logs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
-                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
-                       kubectl cp ${domainNamespace}/${domainName}-${YamlUtility.domainInputsMap.get("adminServerName")}:${YamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
-                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
+                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
+            if (yamlUtility.domainInputsMap!=null){
+                script.sh "adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\``\n \
+                       echo \"\$adminServer\"\n \
+                       if [[ \$adminServer ]]; then \n \
+                             echo \"Domain Found\" \n \
+                             kubectl cp ${domainNamespace}/${YamlUtility.domainInputsMap.get("adminServerName")}:${YamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs \n \
+                       fi"
+            }
+            script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
             Log.info(script, "get domain logs success.")
