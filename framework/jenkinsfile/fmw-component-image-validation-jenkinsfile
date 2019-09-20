@@ -90,6 +90,24 @@ EOF
                                 sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
                                 mvn test -Dtest=WLS_DEV_GENERICsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
                             fi
+                            
+                            if [[ ${PRODUCT_NAME} == *"WCC"* ]]; then
+                                sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|UNAME|${ADMIN_USERNAME}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|PWD|${ADMIN_PASSWORD}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                mvn test -Dtest=WCCsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
+                            fi
+
+                            if [[ ${PRODUCT_NAME} == *"WCP"* ]]; then
+                                sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|UNAME|${ADMIN_USERNAME}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|PWD|${ADMIN_PASSWORD}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                mvn test -Dtest=WCPsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
+                            fi
 
 
                             '''
