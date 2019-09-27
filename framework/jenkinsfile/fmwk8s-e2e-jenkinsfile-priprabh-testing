@@ -11,7 +11,7 @@ import com.oracle.fmwk8s.test.Functional
 pipeline {
     agent {
         kubernetes {
-            cloud 'kubernetes12'
+            cloud 'oke'
             label 'fmwk8s-slave'
             namespace 'fmwk8s'
             yamlFile 'framework/podtemplate/fmwk8s-slave.yaml'
@@ -28,7 +28,7 @@ pipeline {
         DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${RUN_SUFFIX}"
         WEBLOGIC_USER = 'weblogic'
         ADMIN_PASSWORD = 'Welcome1'
-        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume/domains"
+        FMWK8S_NFS_HOME = "/fmwk8sokenfs/DockerVolume/domains"
         NFS_DOMAIN_DIR = "${DOMAIN_NS}"
         NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
         LB_HELM_RELEASE = "lb-${RUN_SUFFIX}"
