@@ -19,7 +19,6 @@ pipeline {
     }
 
     environment {
-        LABEl = "all"
         RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT_NAME}")
         REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
         OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
