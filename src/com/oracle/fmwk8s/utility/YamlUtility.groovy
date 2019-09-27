@@ -23,8 +23,7 @@ class YamlUtility implements Serializable {
         map.put("baseName", domainNamespace.toString())
         map.put("domainUID", domainName.toString())
         map.put("namespace", domainNamespace.toString())
-        map.put("weblogicDomainStorageType", "NFS")
-        map.put("weblogicDomainStorageNFSServer", "100.111.149.56")
+        map.put("weblogicDomainStorageType", "HOST_PATH")
         map.put("weblogicDomainStoragePath", nfsDomainPath.toString())
         map.put("weblogicDomainStorageReclaimPolicy", "Recycle")
 
