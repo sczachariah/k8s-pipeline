@@ -41,7 +41,7 @@ class Validation {
                 Log.error(script, "Domain type ${domainType} is not applicable for product ${productName} .")
                 throw new Exception("domain type validation failed")
             }
-            if (!("${domainType}".equalsIgnoreCase("N/A")) && !("${productName}".equalsIgnoreCase("SOA")) ) {
+            if (!("${domainType}".equalsIgnoreCase("N/A")) && !("${productName}".equalsIgnoreCase("SOA"))) {
                 Log.error(script, "Domain type ${domainType} is not applicable for product ${productName} .")
                 throw new Exception("domain type validation failed")
             }
@@ -52,6 +52,7 @@ class Validation {
             throw exc
         }
     }
+
     static manadatoryDatabaseVersion(script, databaseVersion) {
         try {
             Log.info(script, "begin mandatory database version validation.")

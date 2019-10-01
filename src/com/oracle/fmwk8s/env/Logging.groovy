@@ -135,7 +135,7 @@ class Logging {
             Log.info(script, "begin get domain logs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
-            if (yamlUtility.domainInputsMap!=null){
+            if (yamlUtility.domainInputsMap != null) {
                 script.sh "adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\``\n \
                        echo \"\$adminServer\"\n \
                        if [[ \$adminServer ]]; then \n \
@@ -192,7 +192,7 @@ class Logging {
             Log.error(script, "archive logs failed.")
         }
     }
-    
+
     static publishLogsToArtifactory(script) {
         try {
             Log.info(script, "publish logs to artifactory.")
@@ -202,7 +202,7 @@ class Logging {
                     script: "echo ${Common.productImage}| awk -F':' '{print \$2}'",
                     returnStdout: true
             ).trim()
-            Log.info(script,this.productImageVersion)
+            Log.info(script, this.productImageVersion)
             script.rtUpload(
                     serverId: "artifacthub.oraclecorp.com",
                     spec:
@@ -210,19 +210,27 @@ class Logging {
                            "files": [
                              {
                                 "pattern": "event_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
+                                this.productImageVersion
+                            }/${script.env.BUILD_NUMBER}/"
                              },
                              {
                                 "pattern": "domain_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
+                                this.productImageVersion
+                            }/${script.env.BUILD_NUMBER}/"
                              },
                              {
                                 "pattern": "pod_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
+                                this.productImageVersion
+                            }/${script.env.BUILD_NUMBER}/"
                              },
                              {
                                 "pattern": "test_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
+                                this.productImageVersion
+                            }/${script.env.BUILD_NUMBER}/"
                              }                           
                            ]
                         }""",

@@ -7,13 +7,13 @@ import com.oracle.fmwk8s.env.Logging
 import com.oracle.fmwk8s.env.Operator
 import com.oracle.fmwk8s.utility.YamlUtility
 
-class OperatorIntegration {
+class OperatorIntegration extends Test {
     static def yamlUtility = new YamlUtility()
-    static def testId = "op-intg"
     static def mavenProfile
     static def testPodName
 
     static invokeTest(script, testImage, mavenProfile) {
+        testId = "op-intg"
         this.mavenProfile = mavenProfile
         createEnvConfigMap(script)
         createPersistentVolume(script)
@@ -94,6 +94,7 @@ class OperatorIntegration {
             script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} && \
                        kubectl get all -n ${Domain.domainNamespace}"
 
+            testStatus = "started"
             waitForTests(script)
 
             Log.info(script, "run test success.")
@@ -145,6 +146,7 @@ class OperatorIntegration {
                         testStat=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
 
+            testStatus = "completed"
             Log.info(script, "wait for test completion success.")
         }
         catch (exc) {
@@ -155,23 +157,5 @@ class OperatorIntegration {
 
     static publishLogs(script) {
         Logging.getTestLogs(script)
-    }
-
-    static cleanup(script) {
-        try {
-            Log.info(script, "begin cleanup test resources.")
-
-            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace}"
-            sleep 30
-            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pvc.yaml -n ${Domain.domainNamespace}"
-            sleep 30
-            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace}"
-
-            Log.info(script, "cleanup test resources success.")
-        }
-        catch (exc) {
-            Log.error(script, "cleanup test resources failed.")
-            exc.printStackTrace()
-        }
     }
 }

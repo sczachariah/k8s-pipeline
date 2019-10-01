@@ -2,8 +2,8 @@ package com.oracle.fmwk8s.env
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
-import com.oracle.fmwk8s.utility.YamlUtility
 import com.oracle.fmwk8s.utility.K8sUtility
+import com.oracle.fmwk8s.utility.YamlUtility
 
 /**
  * Domain class handles the common domain operations that are required
@@ -229,8 +229,8 @@ class Domain {
             script.sh "kubectl get all,domains -n ${domainNamespace}"
             Log.info(script, "begin Admin server status check")
             this.adminServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}"
-            Log.info(script,this.adminServerPodName)
-            K8sUtility.checkPodStatus(script, this.adminServerPodName, domainNamespace,20)
+            Log.info(script, this.adminServerPodName)
+            K8sUtility.checkPodStatus(script, this.adminServerPodName, domainNamespace, 20)
             Log.info(script, "admin server status check completed.")
             Log.info(script, "begin Managed server status check.")
             script.sh "kubectl get domain -n ${domainNamespace} -o yaml > ${domainName}-domain.yaml && \
@@ -239,10 +239,10 @@ class Domain {
                     script: "cat ${domainName}-domain.yaml | grep replicas:|tail -1|awk -F':' '{print \$2}'",
                     returnStdout: true
             ).trim()
-            Log.info(script,this.replicaCount)
-            for(int i = 1;i<=Integer.parseInt(this.replicaCount);i++) {
+            Log.info(script, this.replicaCount)
+            for (int i = 1; i <= Integer.parseInt(this.replicaCount); i++) {
                 this.managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase")}${i}"
-                K8sUtility.checkPodStatus(script, this.managedServerPodName, domainNamespace,20)
+                K8sUtility.checkPodStatus(script, this.managedServerPodName, domainNamespace, 20)
             }
             Log.info(script, "managed server status check completed.")
             Log.info(script, "domain readiness check success.")

@@ -1,5 +1,7 @@
 package com.oracle.fmwk8s.common
 
+import com.oracle.fmwk8s.test.Test
+
 class EnvironmentSetup {
 
     static def isWaiting = false
@@ -77,6 +79,8 @@ class EnvironmentSetup {
                 isWaiting = true
                 script.sh "sleep 14400"
                 Log.info(script, "end wait loop.")
+                isWaiting = false
+                Test.cleanup(script)
             }
         } else {
             Log.info(script, "skipping wait loop.")
