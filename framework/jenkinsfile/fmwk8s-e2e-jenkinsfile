@@ -14,12 +14,11 @@ pipeline {
             cloud "${CLOUD}"
             label 'fmwk8s-slave'
             namespace 'fmwk8s'
-            yamlFile "framework/podtemplate/fmwk8s-slave-${NODE_SELECTOR}.yaml"
+            yamlFile "framework/podtemplate/fmwk8s-slave.yaml"
         }
     }
 
     environment {
-        NODE_SELECTOR = "all"
         RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT_NAME}")
         REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
         OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
