@@ -167,7 +167,7 @@ class OperatorIntegration {
             sleep 30
             script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace}"
 
-            Log.error(script, "cleanup test resources success.")
+            Log.info(script, "cleanup test resources success.")
         }
         catch (exc) {
             Log.error(script, "cleanup test resources failed.")
