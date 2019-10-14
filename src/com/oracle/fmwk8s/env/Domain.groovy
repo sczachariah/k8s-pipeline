@@ -156,7 +156,7 @@ class Domain {
         }
     }
 
-    static prepareDomain(script, productImage, domainName, domainNamespace) {
+    static prepareDomain(script, productImage, domainType, domainName, domainNamespace) {
         try {
             Log.info(script, "begin prepare domain.")
 
@@ -168,7 +168,7 @@ class Domain {
                        cp -r kubernetes/samples/scripts/create-${Common.productId}-domain/${Common.samplesDirectory}/create-domain-job-template.yaml create-domain-job-template && \
                        ls -ltr . && cat create-domain-inputs"
 
-            yamlUtility.generateDomainInputsYaml(script, domainName, domainNamespace, "create-domain-inputs")
+            yamlUtility.generateDomainInputsYaml(script, domainType, domainName, domainNamespace, "create-domain-inputs")
 
             script.sh "cat create-domain-inputs.yaml"
 
