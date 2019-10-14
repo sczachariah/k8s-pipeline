@@ -9,12 +9,12 @@ import com.oracle.fmwk8s.utility.YamlUtility
 
 class OperatorIntegration extends Test {
     static def yamlUtility = new YamlUtility()
-    static def mavenProfile
+    static def testType
     static def testPodName
 
-    static invokeTest(script, testImage, mavenProfile) {
+    static invokeTest(script, testImage, testType) {
         testId = "op-intg"
-        this.mavenProfile = mavenProfile
+        this.testType = testType
         createEnvConfigMap(script)
         createPersistentVolume(script)
         runTests(script, testImage)
@@ -42,7 +42,7 @@ class OperatorIntegration extends Test {
                         sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${yamlUtility.domainInputsMap.get("managedServerNameBase")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%WEBLOGIC_CREDENTIALS_SECRET_NAME%|${Domain.weblogicCredentialsSecretName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_T3_CHANNEL_PORT%|${yamlUtility.domainInputsMap.get("t3ChannelPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MAVEN_PROFILE%|${this.mavenProfile}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%TEST_TYPE%|${this.testType}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%LOG_DIRECTORY%|${Functional.logDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"
 
