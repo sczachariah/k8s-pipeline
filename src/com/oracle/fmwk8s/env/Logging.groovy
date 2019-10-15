@@ -5,13 +5,26 @@ import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.test.Functional
 import com.oracle.fmwk8s.utility.YamlUtility
 
-
+/**
+ * Logging class allows to configures the Logstash and collect the logs
+ * in E2E execution of FMW in Docker/K8S environments
+ */
 class Logging {
-
+    
+    /** the instance of the YamlUtility */
     static def yamlUtility = new YamlUtility()
+    /** the buildsuffix used to archive logs {BUILD_NUMBER}-${operatorVersion}-${productName}*/
     static def buildSuffix
+    /** the image version of the product*/
     static def productImageVersion
-
+    
+    /**
+     * Configure the Logstash configmap
+     *
+     * @param script the workflow script of jenkins
+     * @param domainName the name given to domain
+     * @param domainNamespace the domain namespace given to the product
+     */
     static configureLogstashConfigmap(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin configure logstash configmap.")
@@ -30,7 +43,14 @@ class Logging {
             throw exc
         }
     }
-
+    
+    /**
+     * configures the logstash
+     *
+     * @param script the workflow script of jenkins
+     * @param domainName the name of the domain
+     * @param domainNamespace the domain namespace given to the product
+     */
     static configureLogstash(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin configure logstash.")
@@ -50,7 +70,14 @@ class Logging {
         }
 
     }
-
+    
+    /**
+     * deploys the logstash.
+     *
+     * @param script the workflow script of jenkins
+     * @param domainName the name of the domain
+     * @param domainNamespace the domain namespace given to the product
+     */
     static updateLogstashDeployment(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin update and deploy logstash.")
@@ -71,7 +98,15 @@ class Logging {
         }
 
     }
-
+    
+    /**
+     * configure the logstash configmap, configure logstash and deploys the logstash
+     *
+     * @param script the workflow script of jenkins
+     * @param elkEnable the flag with true value to deploy the logstash
+     * @param domainName the name of the domain
+     * @param domainNamespace the domain namespace given to the product
+     */
     static deployLogstash(script, elkEnable, domainName, domainNamespace) {
         try {
             Log.info(script, "begin deploy logstash.")
@@ -93,7 +128,12 @@ class Logging {
 
 
     }
-
+    
+    /**
+     * retreives the event and domain logs ,archives logs and publish the logs to artifactory
+     *
+     * @param script the workflow script of jenkins
+     */
     static getLogs(script) {
         getEventLogs(script, Operator.operatorNamespace)
         getEventLogs(script, Domain.domainNamespace)
@@ -101,7 +141,13 @@ class Logging {
         archiveLogs(script)
         publishLogsToArtifactory(script)
     }
-
+    
+    /**
+     * retreives the event logs
+     *
+     * @param script the workflow script of jenkins
+     * @param namespace the domain namespace given to the product
+     */
     static getEventLogs(script, namespace) {
         try {
             Log.info(script, "begin get event logs.")
@@ -115,7 +161,14 @@ class Logging {
             Log.error(script, "get event logs failed.")
         }
     }
-
+    
+    /**
+     * retreives the pod logs
+     *
+     * @param script the workflow script of jenkins
+     * @param podname the name of the pod
+     * @param namespace the domain namespace given to the product
+     */
     static getPodLogs(script, podname, namespace) {
         try {
             Log.info(script, "begin get pod logs.")
@@ -129,7 +182,14 @@ class Logging {
             Log.error(script, "get pod logs failed.")
         }
     }
-
+    
+    /**
+     * retreives the domain logs
+     *
+     * @param script the workflow script of jenkins
+     * @param domainName the name of the domain
+     * @param domainNamespace the domain namespace given to the product
+     */
     static getDomainLogs(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin get domain logs.")
@@ -152,7 +212,12 @@ class Logging {
             Log.error(script, "get domain logs failed.")
         }
     }
-
+    
+    /**
+     * retreives the test logs
+     *
+     * @param script the workflow script of jenkins
+     */
     static getTestLogs(script) {
         try {
             Log.info(script, "begin get test logs.")
@@ -171,7 +236,12 @@ class Logging {
             Log.error(script, "get test logs failed.")
         }
     }
-
+    
+    /**
+     * archives the event,domain,pod,test logs
+     *
+     * @param script the workflow script of jenkins
+     */
     static archiveLogs(script) {
         try {
             Log.info(script, "archive logs.")
@@ -192,7 +262,12 @@ class Logging {
             Log.error(script, "archive logs failed.")
         }
     }
-
+    
+    /**
+     * Publishes the event,domain,pod,test logs to artifactory
+     *
+     * @param script the workflow script of jenkins
+     */
     static publishLogsToArtifactory(script) {
         try {
             Log.info(script, "publish logs to artifactory.")
