@@ -193,7 +193,7 @@ pipeline {
         always {
             container(name: 'jnlp') {
                 script {
-                    currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME
+                    currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME + "-" + "${this.env.DOMAIN_TYPE}".toString().toUpperCase()
 
                     Logging.getLogs(this)
 
