@@ -263,6 +263,8 @@ class Domain {
     static configureDomainLoadBalancer(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin configure domain loadbalancer.")
+            script.sh "ls -ltr"
+            script.sh "ls -ltr kubernetes/framework/charts/ingress-per-domain"
             script.sh "helm install kubernetes/framework/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
                     --set wlsDomain.domainUID=${domainName} \
                     --set wlsDomain.domainType=${this.domainType} \
