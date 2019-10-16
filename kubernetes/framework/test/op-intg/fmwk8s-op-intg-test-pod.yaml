@@ -21,7 +21,7 @@ spec:
           exec:
             command: [
               # Stop Container Termination for Debugging
-              "tail", "-f", "/dev/null"
+              "tail", "-f", "/dev/null", "&"
             ]
   volumes:
     - name: fmwk8s-log-volume
