@@ -16,11 +16,14 @@ class Initializer {
         Log.info(script,Base.runId)
 
         Log.info(script,"Calling getDomainName")
-        common.getDomainName(script)
+        common.getDomainName()
         Log.info(script, common.domainName)
         Log.info(script, Base.domainName)
 
         common.getProductIdentifier()
+        Log.info(script, Base.productId)
+        Log.info(script, Base.productImage)
+
         common.getSamplesRepo()
         common.getOperatorVarNames()
         common.gerDomainVarNames()
