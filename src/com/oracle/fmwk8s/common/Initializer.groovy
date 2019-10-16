@@ -5,5 +5,9 @@ class Initializer {
     static def initialize(def script) {
         script.sh "echo Initializing Validation Framework"
         script.sh "touch /logs/jenkinsSample"
+        Base.productName = this.env.PRODUCT_NAME
+        Log.info(script, Base.productName)
+        Common common = new Common()
+        common.getUniqueId(this)
     }
 }

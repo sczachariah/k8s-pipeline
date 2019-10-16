@@ -1,4 +1,4 @@
-@Library('fmwk8s-pipeline-library') _
+@Library('fmwk8s-pipeline-library-dev') _
 
 
 import com.oracle.fmwk8s.common.Common
@@ -16,23 +16,6 @@ pipeline {
             yamlFile 'framework/podtemplate/fmwk8s-slave.yaml'
         }
     }
-
-    environment {
-        RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT_NAME}")
-        REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
-        OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
-        OPERATOR_SA = 'default'
-        OPERATOR_HELM_RELEASE = "op-${RUN_SUFFIX}"
-        DOMAIN_NAME = Common.getDomainName("${PRODUCT_NAME}")
-        DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${RUN_SUFFIX}"
-        WEBLOGIC_USER = 'weblogic'
-        ADMIN_PASSWORD = 'Welcome1'
-        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume/domains"
-        NFS_DOMAIN_DIR = "${DOMAIN_NS}"
-        NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
-        LB_HELM_RELEASE = "lb-${RUN_SUFFIX}"
-    }
-
 
     stages {
         stage('initialize validation framework') {
