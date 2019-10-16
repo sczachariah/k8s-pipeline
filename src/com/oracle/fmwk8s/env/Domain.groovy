@@ -16,6 +16,7 @@ class Domain {
     static def weblogicPass = "Welcome1"
     static def domainName
     static def domainNamespace
+    static def domainType
     static def weblogicCredentialsSecretName
     static def createdomainPodName
     static def adminServerPodName
@@ -159,6 +160,7 @@ class Domain {
     static prepareDomain(script, productImage, domainType, domainName, domainNamespace) {
         try {
             Log.info(script, "begin prepare domain.")
+            this.domainType = domainType
 
             if (productImage?.trim()) {
                 Common.productImage = productImage
@@ -255,8 +257,14 @@ class Domain {
     static configureDomainLoadBalancer(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin configure domain loadbalancer.")
-            script.sh "helm install kubernetes/samples/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
-                    --set wlsDomain.domainUID=${domainName} --set traefik.hostname=fmwk8s.us.oracle.com"
+            script.sh "helm install kubernetes/framework/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
+                    --set wlsDomain.domainUID=${domainName} \
+                    --set wlsDomain.domainType=${this.domainType} \
+                    --set wlsDomain.adminServerName=${yamlUtility.domainInputsMap.get("adminServerName")} \
+                    --set wlsDomain.clusterName=${yamlUtility.domainInputsMap.get("clusterName")} \
+                    --set wlsDomain.adminServerPort=${yamlUtility.domainInputsMap.get("adminPort")} \
+                    --set wlsDomain.managedServerPort=${yamlUtility.domainInputsMap.get("managedServerPort")} \
+                    --set traefik.hostname=fmwk8s.us.oracle.com"
             Log.info(script, "configure domain loadbalancer success.")
         }
         catch (exc) {
