@@ -5,11 +5,11 @@ metadata:
   name: fmwk8s-op-intg-test
 spec:
   restartPolicy: Never
+  terminationGracePeriodSeconds: %HOURS_AFTER_SECONDS%
   containers:
     - name: fmwk8s-op-intg-test
       image: "%TEST_IMAGE%"
       imagePullPolicy: Always
-      terminationGracePeriodSeconds: %HOURS_AFTER_SECONDS%
       envFrom:
         - configMapRef:
             name: fmwk8s-op-intg-env-configmap
