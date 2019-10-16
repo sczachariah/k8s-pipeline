@@ -39,13 +39,13 @@ class Base {
 
     Base() {
         System.out.println("Inside constructor")
-        getDomainName()
-        getProductIdentifier()
-        getSamplesRepo()
-        getOperatorVarNames()
-        gerDomainVarNames()
-        getNfsPathNames()
-        getLoadBalancerNames()
+        //getDomainName()
+        //getProductIdentifier()
+        //getSamplesRepo()
+        //getOperatorVarNames()
+        //gerDomainVarNames()
+        //getNfsPathNames()
+        //getLoadBalancerNames()
     }
 
     def getOperatorVarNames(){
