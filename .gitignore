@@ -23,5 +23,7 @@ dist/
 
 # Jenkins
 *.gdsl
+
+# Gradle
 /.gradle/
 /build/
