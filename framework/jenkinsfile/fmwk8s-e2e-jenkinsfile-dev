@@ -133,7 +133,10 @@ pipeline {
                             dir('fmwsamples') {
                                 script {
                                     IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
-                                    sleep(60)
+                                }
+                            }
+                            dir('fmwk8s') {
+                                script {
                                     Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                 }
                             }
