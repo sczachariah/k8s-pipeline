@@ -6,7 +6,7 @@ class Initializer {
         Log.info(script, "Inside the Initializer")
         script.sh "echo Initializing Validation Framework"
         script.sh "touch /logs/jenkinsSample"
-        Base.productName = this.env.PRODUCT_NAME
+        Base.productName = script.env.PRODUCT_NAME
         Log.info(script, Base.productName)
         Common common = new Common()
         common.getUniqueId(this)
