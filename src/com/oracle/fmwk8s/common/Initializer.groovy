@@ -13,9 +13,12 @@ class Initializer {
         Log.info(script,"Calling UniqueID")
         common.getUniqueId(script)
         Log.info(script,common.runId)
+        Log.info(script,Base.runId)
+
         Log.info(script,"Calling getDomainName")
         common.getDomainName(script)
         Log.info(script, common.domainName)
+
         common.getProductIdentifier()
         //common.getSamplesRepo()
         //common.getOperatorVarNames()

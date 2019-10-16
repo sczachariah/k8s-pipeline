@@ -116,8 +116,8 @@ class Base {
         getSamplesRepo(productName)
     }
 
-    static def getDomainName() {
-        System.out.println("Inside the getDomainname")
+    static def getDomainName(def script) {
+        Log.info(script,"Calling getDomainName")
         switch ("${productName}") {
             case "WLS":
                 domainName = "weblogic"
