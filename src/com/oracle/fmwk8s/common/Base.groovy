@@ -38,6 +38,7 @@ class Base {
 
 
     Base() {
+        System.out.println("Inside constructor")
         getDomainName()
         getProductIdentifier()
         getSamplesRepo()
@@ -115,7 +116,8 @@ class Base {
         getSamplesRepo(productName)
     }
 
-    static def getDomainName() {
+    def getDomainName() {
+        System.out.println("Inside the getDomainname")
         switch ("${productName}") {
             case "WLS":
                 domainName = "weblogic"

@@ -9,6 +9,7 @@ class Initializer {
         Base.productName = script.env.PRODUCT_NAME
         Log.info(script, Base.productName)
         Common common = new Common()
+        Log.info(script,"Calling UniqueID")
         common.getUniqueId(script)
     }
 }
