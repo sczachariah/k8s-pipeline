@@ -163,10 +163,9 @@ class Domain {
             Log.info(script, "begin prepare domain.")
 
             if (domainType.toString().equalsIgnoreCase("N/A")) {
-                domainType = ""
-            } else {
-                this.domainType = domainType
+                domainType = "weblogic"
             }
+            this.domainType = domainType
 
             if (productImage?.trim()) {
                 Common.productImage = productImage
@@ -266,7 +265,7 @@ class Domain {
             script.git branch: 'master',
                     credentialsId: 'sandeep.zachariah.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
-            
+
             script.sh "ls -ltr"
             script.sh "ls -ltr kubernetes/framework/charts/ingress-per-domain"
             script.sh "helm install kubernetes/framework/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
