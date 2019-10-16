@@ -23,6 +23,7 @@ class Common {
 
     static def elasticSearchHost = "elasticsearch.logging.svc.cluster.local"
     static def elasticSearchPort = "9200"
+    static def k8sMasterIP = "100.111.149.15"
     static def k8sMasterUrl = ""
 
     static def getUniqueId(def script, productName) {

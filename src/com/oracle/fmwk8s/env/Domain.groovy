@@ -3,6 +3,7 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.K8sUtility
+import com.oracle.fmwk8s.utility.ReportUtility
 import com.oracle.fmwk8s.utility.YamlUtility
 
 /**
@@ -212,7 +213,7 @@ class Domain {
             Log.info(script, "start " + Common.productId + " domain success.")
 
             isDomainReady(script, domainName, domainNamespace)
-
+            ReportUtility.printDomainUrls(script)
         }
         catch (exc) {
             Log.error(script, "create/start " + Common.productId + " domain failed.")
