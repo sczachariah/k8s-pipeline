@@ -87,6 +87,7 @@ class OperatorIntegration extends Test {
 
             script.sh "cd kubernetes/framework/test/${testId} && \
                         sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${testId}-test-pod.yaml && \
+                        sed -i \"s|%HOURS_AFTER_SECONDS%|144000|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%LOG_DIRECTORY%|${Functional.logDirectory}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         cat fmwk8s-${testId}-test-pod.yaml"
