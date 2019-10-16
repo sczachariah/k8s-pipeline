@@ -77,7 +77,7 @@ class EnvironmentSetup {
             else {
                 Log.info(script, "begin wait loop.")
                 isWaiting = true
-                script.sh "sleep 14400"
+                script.sh "sleep 144000"
                 Log.info(script, "end wait loop.")
                 isWaiting = false
                 Test.cleanup(script)
