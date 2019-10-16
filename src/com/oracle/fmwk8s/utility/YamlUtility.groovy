@@ -34,11 +34,19 @@ class YamlUtility implements Serializable {
     static generateDomainInputsYaml(script, domainType, domainName, domainNamespace, domainInputsYamlFile) {
         Map<Object, Object> map = readYaml(script, domainInputsYamlFile)
 
+        def managedServerNameBase = map.get("managedServerNameBase").toString().replaceAll("_", "-")
+        def clusterName = map.get("clusterName").toString().replaceAll("_", "-")
+
         map.put("adminPort", 17001)
         map.put("adminServerName", "admin-server")
         map.put("domainUID", domainName.toString())
+        map.put("clusterName", clusterName.toString())
+        map.put("managedServerNameBase", managedServerNameBase.toString())
         if (domainType != null && !domainType.toString().equalsIgnoreCase("N/A")) {
             map.put("domainType", domainType.toString())
+            if (domainType.toString().equalsIgnoreCase("osb")) {
+                map.put("clusterName", "osb-cluster")
+            }
         }
         map.put("domainHome", "/shared/domains/" + domainName.toString())
         map.put("configuredManagedServerCount", 4)
