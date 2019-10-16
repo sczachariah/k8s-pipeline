@@ -135,7 +135,7 @@ class Base {
                 break
         }
 
-        return domainName
+        //return domainName
     }
 
     def getProductIdentifier() {
