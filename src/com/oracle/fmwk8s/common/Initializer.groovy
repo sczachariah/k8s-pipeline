@@ -12,18 +12,17 @@ class Initializer {
         Common common = new Common()
         Log.info(script,"Calling UniqueID")
         common.getUniqueId(script)
-        Log.info(script,common.runId)
         Log.info(script,Base.runId)
 
         Log.info(script,"Calling getDomainName")
-        common.getDomainName()
+        common.getDomainNameValue()
         Log.info(script, Base.domainName)
 
         common.getProductIdentifier()
         Log.info(script, Base.productId)
         Log.info(script, Base.productImage)
 
-        common.getSamplesRepo()
+        common.getSamplesRepoDetails()
         Log.info(script, Base.samplesRepo)
         Log.info(script, Base.samplesDirectory)
 
