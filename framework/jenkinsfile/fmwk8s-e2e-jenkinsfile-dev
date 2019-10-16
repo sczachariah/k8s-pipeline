@@ -21,7 +21,7 @@ pipeline {
     stages {
         stage('initialize validation framework') {
             steps {
-                log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
+                //log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
 
                 container('jnlp') {
                     script {
