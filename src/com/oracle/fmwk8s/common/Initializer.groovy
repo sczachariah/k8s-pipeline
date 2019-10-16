@@ -20,5 +20,4 @@ class Initializer {
         common.getNfsPathNames()
         common.getLoadBalancerNames()
     }
-    }
 }
