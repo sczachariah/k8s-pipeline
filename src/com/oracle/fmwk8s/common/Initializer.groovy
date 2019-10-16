@@ -17,7 +17,6 @@ class Initializer {
 
         Log.info(script,"Calling getDomainName")
         common.getDomainName()
-        Log.info(script, common.domainName)
         Log.info(script, Base.domainName)
 
         common.getProductIdentifier()
@@ -25,9 +24,25 @@ class Initializer {
         Log.info(script, Base.productImage)
 
         common.getSamplesRepo()
+        Log.info(script, Base.samplesRepo)
+        Log.info(script, Base.samplesDirectory)
+
         common.getOperatorVarNames()
+        Log.info(script, Base.OPERATOR_NS)
+        Log.info(script, Base.OPERATOR_SA)
+        Log.info(script, Base.OPERATOR_HELM_RELEASE)
+
         common.gerDomainVarNames()
+        Log.info(script, Base.DOMAIN_NS)
+        Log.info(script, Base.WEBLOGIC_USER)
+        Log.info(script, Base.ADMIN_PASSWORD)
+
         common.getNfsPathNames()
+        Log.info(script, Base.FMWK8S_NFS_HOME)
+        Log.info(script, Base.NFS_DOMAIN_DIR)
+        Log.info(script, Base.NFS_DOMAIN_PATH)
+
         common.getLoadBalancerNames()
+        Log.info(script, Base.LB_HELM_RELEASE)
     }
 }
