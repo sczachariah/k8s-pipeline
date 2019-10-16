@@ -41,8 +41,8 @@ spec:
           {{- if or (eq .Values.wlsDomain.domainType "soaess") (eq .Values.wlsDomain.domainType "soaessosb") }}
           - path: /em
             backend:
-            serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
-            servicePort: {{ .Values.wlsDomain.adminServerPort }}
+              serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
+              servicePort: {{ .Values.wlsDomain.adminServerPort }}
           - path: /servicebus
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
