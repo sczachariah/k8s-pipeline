@@ -49,7 +49,7 @@ class Base {
     }
 
     static def getOperatorVarNames(){
-        REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
+        //REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
         OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${runId}"
         OPERATOR_SA = 'default'
         OPERATOR_HELM_RELEASE = "op-${runId}"
