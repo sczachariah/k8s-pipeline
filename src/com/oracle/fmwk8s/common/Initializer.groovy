@@ -8,6 +8,7 @@ class Initializer {
         script.sh "touch /logs/jenkinsSample"
         Base.productName = script.env.PRODUCT_NAME
         Log.info(script, Base.productName)
+        Log.info(script,"Calling Common constructor")
         Common common = new Common()
         Log.info(script,"Calling UniqueID")
         common.getUniqueId(script)

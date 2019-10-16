@@ -116,7 +116,7 @@ class Base {
         getSamplesRepo(productName)
     }
 
-    def getDomainName() {
+    static def getDomainName() {
         System.out.println("Inside the getDomainname")
         switch ("${productName}") {
             case "WLS":
