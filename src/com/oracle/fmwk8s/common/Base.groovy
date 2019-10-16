@@ -50,14 +50,14 @@ class Base {
 
     static def getOperatorVarNames(){
         //REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
-        OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${runId}"
+        OPERATOR_NS = "${domainName}-operator-ns-${runId}"
         OPERATOR_SA = 'default'
         OPERATOR_HELM_RELEASE = "op-${runId}"
     }
 
     static def gerDomainVarNames(){
-        DOMAIN_NAME = getDomainName("${productName}")
-        DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${runId}"
+        DOMAIN_NAME = getDomainName()
+        DOMAIN_NS = "${domainName}-domain-ns-${runId}"
         WEBLOGIC_USER = 'weblogic'
         ADMIN_PASSWORD = 'Welcome1'
     }
@@ -117,7 +117,6 @@ class Base {
     }
 
     static def getDomainName() {
-        //Log.info(script,"Calling getDomainName")
         switch ("${productName}") {
             case "WLS":
                 domainName = "weblogic"
