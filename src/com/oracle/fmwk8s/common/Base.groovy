@@ -48,31 +48,31 @@ class Base {
         getLoadBalancerNames()
     }
 
-    static def getOperatorVarNames(){
+    def getOperatorVarNames(){
         REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
         OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${runId}"
         OPERATOR_SA = 'default'
         OPERATOR_HELM_RELEASE = "op-${runId}"
     }
 
-    static def gerDomainVarNames(){
+    def gerDomainVarNames(){
         DOMAIN_NAME = getDomainName("${productName}")
         DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${runId}"
         WEBLOGIC_USER = 'weblogic'
         ADMIN_PASSWORD = 'Welcome1'
     }
 
-    static def getNfsPathNames(){
+    def getNfsPathNames(){
         FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume/domains"
         NFS_DOMAIN_DIR = "${DOMAIN_NS}"
         NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
     }
 
-    static def getLoadBalancerNames(){
+    def getLoadBalancerNames(){
         LB_HELM_RELEASE = "lb-${runId}"
     }
 
-    static def getOperatorVersions(operatorVersion) {
+    def getOperatorVersions(operatorVersion) {
         switch ("${operatorVersion}") {
             case "2.1":
                 this.operatorVersion = "2.1"
@@ -116,7 +116,7 @@ class Base {
         getSamplesRepo(productName)
     }
 
-    static def getDomainName() {
+    def getDomainName() {
         System.out.println("Inside the getDomainname")
         switch ("${productName}") {
             case "WLS":
@@ -138,7 +138,7 @@ class Base {
         return domainName
     }
 
-    static def getProductIdentifier() {
+    def getProductIdentifier() {
         switch ("${productName}") {
             case "WLS":
                 productId = "weblogic"
@@ -161,7 +161,7 @@ class Base {
         }
     }
 
-    static def getSamplesRepo() {
+    def getSamplesRepo() {
         switch ("${productName}") {
             case "WLS":
                 samplesRepo = "https://github.com/oracle/weblogic-kubernetes-operator"
