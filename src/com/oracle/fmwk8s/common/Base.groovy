@@ -138,7 +138,7 @@ class Base {
         //return domainName
     }
 
-    def getProductIdentifier() {
+    static def getProductIdentifier() {
         switch ("${productName}") {
             case "WLS":
                 productId = "weblogic"
