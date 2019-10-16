@@ -28,6 +28,6 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/weblogic/ready
         domainURLs = domainURLs + """
 -----------------------------------
 """
-        script.sh "printf \"%s\\n\" \"${domainURLs.toString()}\""
+        script.sh script: "printf \"%s\\n\" \"${domainURLs.toString()}\"", label: "print domain url's"
     }
 }
