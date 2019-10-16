@@ -15,6 +15,13 @@ spec:
       volumeMounts:
         - mountPath: "%LOG_DIRECTORY%"
           name: fmwk8s-log-volume
+      lifecycle:
+        preStop:
+          exec:
+            command: [
+              # Stop Container Termination for Debugging
+              "tail", "-f", "/dev/null"
+            ]
   volumes:
     - name: fmwk8s-log-volume
       persistentVolumeClaim:
