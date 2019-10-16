@@ -8,12 +8,12 @@ import com.oracle.fmwk8s.common.Log
  * in E2E execution of FMW in Docker/K8S environments
  */
 class IngressController {
-    
+
     /** the http port for the deployed load balancer */
     static def httplbPort
     /** the https port for the deployed load balancer */
     static def httpslbPort
-    
+
     /**
      * deploys the load balancer that is selected as input to the E2E execution job
      *
@@ -42,8 +42,9 @@ class IngressController {
         }
 
         getLoadBalancerPort(script, lbHelmRelease, domainNamespace)
+        sleep 60
     }
-    
+
     /**
      * deploys the Traefik load balancer
      *
@@ -70,7 +71,7 @@ class IngressController {
             throw exc
         }
     }
-    
+
     /**
      * deploys the Apache load balancer
      *
@@ -93,7 +94,7 @@ class IngressController {
             throw exc
         }
     }
-    
+
     /**
      * deploys the Voyager load balancer
      *
@@ -115,7 +116,7 @@ class IngressController {
             throw exc
         }
     }
-    
+
     /**
      * deploys the Nginx load balancer
      *
@@ -137,7 +138,7 @@ class IngressController {
             throw exc
         }
     }
-    
+
     /**
      * get the https,https load balancer port numbers
      *
@@ -168,8 +169,8 @@ class IngressController {
             throw exc
         }
     }
-    
-     /**
+
+    /**
      * undeploys the load balancer
      *
      * @param script the workflow script of jenkins
