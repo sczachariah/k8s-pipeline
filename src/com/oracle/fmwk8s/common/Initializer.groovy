@@ -18,12 +18,13 @@ class Initializer {
         Log.info(script,"Calling getDomainName")
         common.getDomainName(script)
         Log.info(script, common.domainName)
+        Log.info(script, Base.domainName)
 
         common.getProductIdentifier()
-        //common.getSamplesRepo()
-        //common.getOperatorVarNames()
-        //common.gerDomainVarNames()
-        //common.getNfsPathNames()
-        //common.getLoadBalancerNames()
+        common.getSamplesRepo()
+        common.getOperatorVarNames()
+        common.gerDomainVarNames()
+        common.getNfsPathNames()
+        common.getLoadBalancerNames()
     }
 }
