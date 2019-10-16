@@ -263,6 +263,10 @@ class Domain {
     static configureDomainLoadBalancer(script, domainName, domainNamespace) {
         try {
             Log.info(script, "begin configure domain loadbalancer.")
+            script.git branch: 'master',
+                    credentialsId: 'sandeep.zachariah.ssh',
+                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
+            
             script.sh "ls -ltr"
             script.sh "ls -ltr kubernetes/framework/charts/ingress-per-domain"
             script.sh "helm install kubernetes/framework/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
