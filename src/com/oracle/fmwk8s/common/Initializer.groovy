@@ -12,5 +12,13 @@ class Initializer {
         Common common = new Common()
         Log.info(script,"Calling UniqueID")
         common.getUniqueId(script)
+        common.getDomainName()
+        common.getProductIdentifier()
+        common.getSamplesRepo()
+        common.getOperatorVarNames()
+        common.gerDomainVarNames()
+        common.getNfsPathNames()
+        common.getLoadBalancerNames()
+    }
     }
 }
