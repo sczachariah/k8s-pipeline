@@ -160,7 +160,12 @@ class Domain {
     static prepareDomain(script, productImage, domainType, domainName, domainNamespace) {
         try {
             Log.info(script, "begin prepare domain.")
-            this.domainType = domainType
+
+            if (domainType.toString().equalsIgnoreCase("N/A")) {
+                domainType = ""
+            } else {
+                this.domainType = domainType
+            }
 
             if (productImage?.trim()) {
                 Common.productImage = productImage
