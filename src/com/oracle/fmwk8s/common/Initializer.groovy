@@ -18,6 +18,7 @@ class Initializer {
         common.getDomainName()
         Log.info(script, Base.domainName)
 
+
         common.getProductIdentifier()
         Log.info(script, Base.productId)
         Log.info(script, Base.productImage)

@@ -116,7 +116,7 @@ class Base {
         getSamplesRepo(productName)
     }
 
-    static def getDomainNameValue() {
+    static def getDomainName() {
         switch ("${productName}") {
             case "WLS":
                 domainName = "weblogic"
@@ -134,7 +134,7 @@ class Base {
                 break
         }
 
-        //return domainName
+        return domainName
     }
 
     static def getProductIdentifier() {
