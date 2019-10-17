@@ -53,14 +53,14 @@ spec:
               servicePort: {{ .Values.wlsDomain.adminServerPort }}
           - path: /ess
             backend:
-              serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
-              servicePort: {{ .Values.wlsDomain.adminServerPort }}
+              serviceName: '{{ .Values.wlsDomain.domainUID }}-cluster-{{ .Values.wlsDomain.clusterName | lower | replace "_" "-" }}'
+              servicePort: {{ .Values.wlsDomain.managedServerPort }}
           - path: /EssHealthCheck
             backend:
-              serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
-              servicePort: {{ .Values.wlsDomain.adminServerPort }}
+              serviceName: '{{ .Values.wlsDomain.domainUID }}-cluster-{{ .Values.wlsDomain.clusterName | lower | replace "_" "-" }}'
+              servicePort: {{ .Values.wlsDomain.managedServerPort }}
           {{- end }}
-          - path: /
+          - path:
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-cluster-{{ .Values.wlsDomain.clusterName | lower | replace "_" "-" }}'
               servicePort: {{ .Values.wlsDomain.managedServerPort }}
