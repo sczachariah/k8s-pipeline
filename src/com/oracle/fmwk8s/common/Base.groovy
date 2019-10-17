@@ -35,19 +35,6 @@ class Base {
     static def REGISTRY_AUTH
     static def LB_HELM_RELEASE
 
-
-
-    Base() {
-        System.out.println("Inside constructor")
-        //getDomainName()
-        //getProductIdentifier()
-        //getSamplesRepo()
-        //getOperatorVarNames()
-        //gerDomainVarNames()
-        //getNfsPathNames()
-        //getLoadBalancerNames()
-    }
-
     static def getOperatorVarNames(){
         //REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
         OPERATOR_NS = "${domainName}-operator-ns-${runId}"
