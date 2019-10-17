@@ -17,7 +17,7 @@ spec:
         - mountPath: "%LOG_DIRECTORY%"
           name: fmwk8s-log-volume
       lifecycle:
-        preStart:
+        postStart:
           exec:
             command: [
               # Stop Container Termination for Debugging
