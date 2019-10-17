@@ -160,7 +160,7 @@ class Base {
         }
     }
 
-    static def getSamplesRepoDetails() {
+    static def getSamplesRepo() {
         switch ("${productName}") {
             case "WLS":
                 samplesRepo = "https://github.com/oracle/weblogic-kubernetes-operator"
