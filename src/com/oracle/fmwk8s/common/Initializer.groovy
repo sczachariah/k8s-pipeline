@@ -15,7 +15,7 @@ class Initializer {
         Log.info(script,Base.runId)
 
         Log.info(script,"Calling getDomainName")
-        common.getDomainNameValue()
+        common.getDomainName()
         Log.info(script, Base.domainName)
 
         common.getProductIdentifier()
