@@ -23,7 +23,7 @@ class Initializer {
         Log.info(script, Base.productId)
         Log.info(script, Base.productImage)
 
-        common.getSamplesRepo()
+        common.getSamplesRepoDetails()
         Log.info(script, Base.samplesRepo)
         Log.info(script, Base.samplesDirectory)
 
