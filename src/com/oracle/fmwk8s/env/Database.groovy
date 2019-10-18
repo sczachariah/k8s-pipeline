@@ -1,5 +1,6 @@
 package com.oracle.fmwk8s.env
 
+import com.oracle.fmwk8s.common.Base
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 
@@ -7,7 +8,7 @@ import com.oracle.fmwk8s.common.Log
  * Database class handles the common database operations that are required
  * in E2E execution of FMW in Docker/K8S environments
  */
-class Database {
+class Database extends Base{
     /** the name of the database service */
     static dbName = "oracledb"
     /** the password to connect to db */
@@ -24,7 +25,7 @@ class Database {
      * @param databaseVersion the version of database that needs to be deployed
      * @param dbNamespace the kubernetes namespace in which database is to be deployed
      */
-    static deployDatabase(script, databaseVersion, dbNamespace) {
+    static deployDatabase(script) {
         try {
             if (Common.productId != "weblogic") {
                 Log.info(script, "begin deploy database.")
@@ -36,11 +37,11 @@ class Database {
                 script.sh "cd kubernetes/framework/db && \
                         sed -i \"s#%DB_NAME%#${dbName}#g\" oracle-db.yaml && \
                         sed -i \"s#%DB_PASSWORD%#${dbPassword}#g\" oracle-db.yaml && \
-                        sed -i \"s#%DB_NAMESPACE%#${dbNamespace}#g\" oracle-db.yaml && \
-                        sed -i \"s#%DB_IMAGE%#container-registry.oracle.com/database/${databaseVersion}#g\" oracle-db.yaml && \
+                        sed -i \"s#%DB_NAMESPACE%#${Base.DOMAIN_NS}#g\" oracle-db.yaml && \
+                        sed -i \"s#%DB_IMAGE%#container-registry.oracle.com/database/${script.env.DATABASE_VERSION}#g\" oracle-db.yaml && \
                         sed -i \"s#%DB_SECRET%#${Common.registrySecret}#g\" oracle-db.yaml && \
                         cat oracle-db.yaml && \
-                        kubectl apply -f oracle-db.yaml -n ${dbNamespace}"
+                        kubectl apply -f oracle-db.yaml -n ${Base.DOMAIN_NS}"
 
                 script.sh "dbstat='dbstat' && \
                         i=0 && \
@@ -53,18 +54,18 @@ class Database {
                         i=\$((i+1))\n \
                         echo \"DB is not Running. Iteration \$i of 25. Sleeping\"\n \
                         sleep 60\n \
-                        dbstat=`echo \\`kubectl get pods -n ${dbNamespace} 2>&1 | grep ${dbName}\\``\n \
+                        dbstat=`echo \\`kubectl get pods -n ${Base.DOMAIN_NS} 2>&1 | grep ${dbName}\\``\n \
                         done"
 
                 Log.info(script, "DB container is Running.")
-                script.sh "kubectl get pods,svc -n ${dbNamespace} | grep ${dbName}"
+                script.sh "kubectl get pods,svc -n ${Base.DOMAIN_NS} | grep ${dbName}"
 
                 Log.info(script, "begin xaview setup for database.")
                 this.dbPodName = script.sh(
-                        script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${dbNamespace} | grep ${dbName}",
+                        script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${Base.DOMAIN_NS} | grep ${dbName}",
                         returnStdout: true
                 ).trim()
-                script.sh "kubectl exec -it ${this.dbPodName} -n ${dbNamespace} -- bash -c \"source /home/oracle/.bashrc; sqlplus sys/${this.dbPassword}@${this.dbName}pdb as sysdba <<EOF @\\\$ORACLE_HOME/rdbms/admin/xaview.sql / exit EOF\""
+                script.sh "kubectl exec -it ${this.dbPodName} -n ${Base.DOMAIN_NS} -- bash -c \"source /home/oracle/.bashrc; sqlplus sys/${this.dbPassword}@${this.dbName}pdb as sysdba <<EOF @\\\$ORACLE_HOME/rdbms/admin/xaview.sql / exit EOF\""
                 Log.info(script, "xaview setup for database success.")
 
                 Log.info(script, "deploy database success.")
@@ -77,7 +78,7 @@ class Database {
         finally {
             if (Common.productId != "weblogic") {
                 Log.info(script, "begin fetch database pod logs.")
-                Logging.getPodLogs(script, this.dbPodName, dbNamespace)
+                Logging.getPodLogs(script, this.dbPodName, Base.DOMAIN_NS)
                 Log.info(script, "fetch database pod logs success.")
             }
 
