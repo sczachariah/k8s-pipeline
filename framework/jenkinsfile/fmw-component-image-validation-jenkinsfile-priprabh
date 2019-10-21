@@ -1,10 +1,10 @@
 pipeline {
     agent {
         kubernetes {
-            cloud 'kubernetes12'
-            label 'fmwk8s-test-mats-slave-pp'
+            cloud 'oke'
+            label 'fmwk8s-test-mats-slave-oke'
             namespace 'fmwk8s'
-            inheritFrom 'fmwk8s-test-infra-slave-pp'
+            inheritFrom 'fmwk8s-test-mats-slave-oke'
         }
     }
 stages {

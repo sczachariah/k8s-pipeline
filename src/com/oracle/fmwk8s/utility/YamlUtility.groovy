@@ -23,6 +23,7 @@ class YamlUtility implements Serializable {
         map.put("baseName", domainNamespace.toString())
         map.put("domainUID", domainName.toString())
         map.put("namespace", domainNamespace.toString())
+        map.put("weblogicDomainStorageType", "HOST_PATH")
         map.put("weblogicDomainStoragePath", nfsDomainPath.toString())
         map.put("weblogicDomainStorageReclaimPolicy", "Recycle")
 
@@ -30,12 +31,15 @@ class YamlUtility implements Serializable {
         writeYaml(script, map, pvInputsYamlFile)
     }
 
-    static generateDomainInputsYaml(script, domainName, domainNamespace, domainInputsYamlFile) {
+    static generateDomainInputsYaml(script, domainType, domainName, domainNamespace, domainInputsYamlFile) {
         Map<Object, Object> map = readYaml(script, domainInputsYamlFile)
 
         map.put("adminPort", 17001)
         map.put("adminServerName", "admin-server")
         map.put("domainUID", domainName.toString())
+        if (domainType != null && !domainType.toString().equalsIgnoreCase("N/A")) {
+            map.put("domainType", domainType.toString())
+        }
         map.put("domainHome", "/shared/domains/" + domainName.toString())
         map.put("configuredManagedServerCount", 4)
         map.put("initialManagedServerReplicas", 2)

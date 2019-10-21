@@ -7,14 +7,14 @@ import com.oracle.fmwk8s.env.Logging
 import com.oracle.fmwk8s.env.Operator
 import com.oracle.fmwk8s.utility.YamlUtility
 
-class OperatorIntegration {
+class OperatorIntegration extends Test {
     static def yamlUtility = new YamlUtility()
-    static def testId = "op-intg"
-    static def mavenProfile
+    static def testType
     static def testPodName
 
-    static invokeTest(script, testImage, mavenProfile) {
-        this.mavenProfile = mavenProfile
+    static invokeTest(script, testImage, testType) {
+        testId = "op-intg"
+        this.testType = testType
         createEnvConfigMap(script)
         createPersistentVolume(script)
         runTests(script, testImage)
@@ -42,7 +42,7 @@ class OperatorIntegration {
                         sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${yamlUtility.domainInputsMap.get("managedServerNameBase")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%WEBLOGIC_CREDENTIALS_SECRET_NAME%|${Domain.weblogicCredentialsSecretName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_T3_CHANNEL_PORT%|${yamlUtility.domainInputsMap.get("t3ChannelPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MAVEN_PROFILE%|${this.mavenProfile}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%TEST_TYPE%|${this.testType}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%LOG_DIRECTORY%|${Functional.logDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"
 
@@ -94,6 +94,7 @@ class OperatorIntegration {
             script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} && \
                        kubectl get all -n ${Domain.domainNamespace}"
 
+            testStatus = "started"
             waitForTests(script)
 
             Log.info(script, "run test success.")
@@ -145,6 +146,7 @@ class OperatorIntegration {
                         testStat=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
 
+            testStatus = "completed"
             Log.info(script, "wait for test completion success.")
         }
         catch (exc) {
@@ -155,21 +157,5 @@ class OperatorIntegration {
 
     static publishLogs(script) {
         Logging.getTestLogs(script)
-    }
-
-    static cleanup(script) {
-        try {
-            Log.info(script, "begin cleanup test resources.")
-
-            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pvc.yaml -n ${Domain.domainNamespace}"
-            sleep 30
-            script.sh "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace}"
-
-            Log.error(script, "cleanup test resources success.")
-        }
-        catch (exc) {
-            Log.error(script, "cleanup test resources failed.")
-            exc.printStackTrace()
-        }
     }
 }

@@ -1,3 +1,5 @@
+@Library('fmwk8s-pipeline-library') _
+
 pipeline {
     agent {
         kubernetes {
@@ -6,18 +8,15 @@ pipeline {
             inheritFrom 'fmwk8s-test-infra-slave'
         }
     }
-    environment {
-        KUBECONFIG = credentials('admin.fmwk8s.kubeconfig')
-    }
     stages {
         stage('deploy Test tools') {
             steps {
                 container(name: 'jnlp') {
                     git branch: 'master',
-                            credentialsId: 'jaya.selvaraj.ssh',
+                            credentialsId: 'sandeep.zachariah.ssh',
                             url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-                    sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/'
+                    sh 'kubectl apply -n fmwk8s -f kubernetes/tools/selenium/ --v=8'
 
                     sh label: 'generate test props', script: '''
                     cat <<EOF > ${WORKSPACE}/test.props
@@ -91,6 +90,24 @@ EOF
                                 sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
                                 mvn test -Dtest=WLS_DEV_GENERICsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
                             fi
+                            
+                            if [[ ${PRODUCT_NAME} == *"WCC"* ]]; then
+                                sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|UNAME|${ADMIN_USERNAME}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|PWD|${ADMIN_PASSWORD}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                mvn test -Dtest=WCCsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
+                            fi
+
+                            if [[ ${PRODUCT_NAME} == *"WCP"* ]]; then
+                                sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|UNAME|${ADMIN_USERNAME}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|PWD|${ADMIN_PASSWORD}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                mvn test -Dtest=WCPsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
+                            fi
 
 
                             '''
@@ -105,10 +122,10 @@ EOF
                 script {
                     env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%d-%H%M'").trim()
                     def logContent = Jenkins.getInstance()
-                                    .getItemByFullName(env.JOB_NAME)
-                                    .getBuildByNumber(
-                                        Integer.parseInt(env.BUILD_NUMBER))
-                                    .logFile.text
+                            .getItemByFullName(env.JOB_NAME)
+                            .getBuildByNumber(
+                                    Integer.parseInt(env.BUILD_NUMBER))
+                            .logFile.text
                     writeFile file: "buildlog-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.txt", text: logContent
                 }
                 zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
@@ -137,8 +154,8 @@ EOF
         always {
             script {
                 currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.PRODUCT_NAME
+                slackNotifier(currentBuild.currentResult)
             }
-
         }
     }
 

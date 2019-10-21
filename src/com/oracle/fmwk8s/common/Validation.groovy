@@ -1,7 +1,23 @@
 package com.oracle.fmwk8s.common
 
+/**
+ * Validation class handles the common validation operations that are required
+ * in E2E execution of FMW in Docker/K8S environments
+ */
 class Validation {
-
+    
+    /**
+     * validates the inputs given to the E2E execution job
+     *
+     * @param script the workflow script of jenkins
+     * @param operatorVersion the version of operator
+     * @param productName the name of the product
+     * @param domainType the domain type of the product
+     * @param databaseVersion the version of the database
+     * @param testImageTag the tag for the test image
+     * @param testType the type of the test selected in E2E
+     * @param hoursAfter the number of hours to hold the environment
+     */
     static def validateInputs(script, operatorVersion, productName, domainType, databaseVersion, testImageTag, testType, hoursAfter) {
         try {
             Log.info(script, "begin validate inputs.")
@@ -18,7 +34,14 @@ class Validation {
 
         Log.info(script, "validate inputs success.")
     }
-
+    
+    /**
+     * validates the operator version whether is is applicable for the product or not
+     *
+     * @param script the workflow script of jenkins
+     * @param operatorVersion the version of operator
+     * @param productName the name of the product
+     */
     static validateOperatorVersion(script, operatorVersion, productName) {
         try {
             Log.info(script, "begin operator version validation.")
@@ -33,7 +56,14 @@ class Validation {
             throw exc
         }
     }
-
+    
+    /**
+     * validates whether the domain type is applicable for the product or not
+     *
+     * @param script the workflow script of jenkins
+     * @param domainType the domain type of the product
+     * @param productName the name of the product
+     */
     static validateDomainType(script, domainType, productName) {
         try {
             Log.info(script, "begin domain type validation.")
@@ -41,7 +71,7 @@ class Validation {
                 Log.error(script, "Domain type ${domainType} is not applicable for product ${productName} .")
                 throw new Exception("domain type validation failed")
             }
-            if (!("${domainType}".equalsIgnoreCase("N/A")) && !("${productName}".equalsIgnoreCase("SOA")) ) {
+            if (!("${domainType}".equalsIgnoreCase("N/A")) && !("${productName}".equalsIgnoreCase("SOA"))) {
                 Log.error(script, "Domain type ${domainType} is not applicable for product ${productName} .")
                 throw new Exception("domain type validation failed")
             }
@@ -52,6 +82,13 @@ class Validation {
             throw exc
         }
     }
+    
+    /**
+     * validates for the mandatory databaseVersion
+     *
+     * @param script the workflow script of jenkins
+     * @param databaseVersion the version of the database
+     */
     static manadatoryDatabaseVersion(script, databaseVersion) {
         try {
             Log.info(script, "begin mandatory database version validation.")
@@ -66,7 +103,13 @@ class Validation {
             throw exc
         }
     }
-
+    
+    /**
+     * validates for the mandatory testImageTag
+     *
+     * @param testImageTag the tag for the test image
+     * @param testType the type of the test selected in E2E
+     */
     static validateTestimageTag(script, testImageTag, testType) {
         try {
             Log.info(script, "begin testImageTag validation.")
@@ -81,7 +124,13 @@ class Validation {
             throw exc
         }
     }
-
+    
+    /**
+     * validates the hoursafter flag if there is no testType selected
+     *
+     * @param hoursAfter the number of hours to hold the environment
+     * @param testType the type of the test selected in E2E
+     */
     static validateHoursAfter(script, hoursAfter, testType) {
         try {
             Log.info(script, "begin hours after validation.")

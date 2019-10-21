@@ -11,9 +11,10 @@ import com.oracle.fmwk8s.test.Functional
 pipeline {
     agent {
         kubernetes {
+            cloud "${CLOUD}"
             label 'fmwk8s-slave'
             namespace 'fmwk8s'
-            yamlFile 'framework/podtemplate/fmwk8s-slave.yaml'
+            yamlFile "framework/podtemplate/fmwk8s-slave.yaml"
         }
     }
 
@@ -103,7 +104,7 @@ pipeline {
                                     Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                     Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                     Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
-                                    Domain.prepareDomain(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.prepareDomain(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_TYPE}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                 }
                             }
                         }

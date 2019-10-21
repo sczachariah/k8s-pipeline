@@ -1,0 +1,31 @@
+@Library('fmwk8s-pipeline-library') _
+
+
+import com.oracle.fmwk8s.utility.DocUtility
+
+pipeline {
+    agent {
+        kubernetes {
+            label 'fmwk8s-generic'
+            namespace 'fmwk8s'
+            yamlFile 'framework/podtemplate/fmwk8s-generic.yaml'
+        }
+    }
+
+    environment {
+        REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
+    }
+
+
+    stages {
+        stage('generate groovy doc') {
+            steps {
+                container('jnlp') {
+                    script {
+                        DocUtility.generateGroovyDoc(this)
+                    }
+                }
+            }
+        }
+    }
+}
