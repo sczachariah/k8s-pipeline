@@ -61,6 +61,7 @@ class Base {
         operatorVersion = script.env.OPERATOR_VERSION
         productName = script.env.PRODUCT_NAME
         domainType = script.env.DOMAIN_TYPE
+        productImage = script.env.PRODUCT_IMAGE_TAG
         databaseVersion = script.env.DATABASE_VERSION
         lbType = script.env.K8S_LOADBALANCER
         testImage = script.env.TEST_IMAGE_TAG
@@ -153,19 +154,15 @@ class Base {
         switch ("${productName}") {
             case "WLS":
                 productId = "weblogic"
-                productImage = "container-registry.oracle.com/middleware/weblogic:12.2.1.3"
                 break
             case "WLS-INFRA":
                 productId = "fmw-infrastructure"
-                productImage = "container-registry.oracle.com/middleware/fmw-infrastructure:12.2.1.3"
                 break
             case "SOA":
                 productId = "soa"
-                productImage = "container-registry.oracle.com/middleware/soasuite:12.2.1.3"
                 break
             case "OIG":
                 productId = "oim"
-                productImage = "fmw-paas-sandbox-cert-docker.dockerhub-den.oraclecorp.com/oracle/oig:12.2.1.4.0-190725.1317.317"
             default:
                 productId = "unknown"
                 break

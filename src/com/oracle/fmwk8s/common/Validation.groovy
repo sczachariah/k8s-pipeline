@@ -21,12 +21,14 @@ class Validation extends Base {
     static def validateInputs() {
         try {
             Log.info("begin validate inputs.")
-            validateOperatorVersion(script, operatorVersion, productName)
-            validateDomainType(script, domainType, productName)
-            validateDatabaseVersion(script, databaseVersion)
-            validateTestImageTag(script, testImage, testType)
+            validateOperatorVersion(operatorVersion, productName)
+            validateOperatorVersion(operatorVersion, productName)
+            validateProductImageTag(productImage)
+            validateDomainType(domainType, productName)
+            validateDatabaseVersion(databaseVersion)
+            validateTestImageTag(testImage, testType)
             // disabling hoursAfter validation so that env can be retained even if no tests are run
-//            validateHoursAfter(script, hoursAfter, testType)
+//            validateHoursAfter(hoursAfter, testType)
         }
         catch (exc) {
             Log.error("input validation failed.")
@@ -43,7 +45,7 @@ class Validation extends Base {
      * @param operatorVersion the version of operator
      * @param productName the name of the product
      */
-    static validateOperatorVersion(script, operatorVersion, productName) {
+    static validateOperatorVersion(operatorVersion, productName) {
         try {
             Log.info("begin operator version validation.")
             if ("${operatorVersion}".equalsIgnoreCase("2.1") && "${productName}".equalsIgnoreCase("WLS-INFRA")) {
@@ -58,6 +60,21 @@ class Validation extends Base {
         }
     }
 
+    static validateProductImageTag(productImage) {
+        try {
+            Log.info("begin product image tag validation.")
+            if (productImage == null || productImage.toString().isEmpty()) {
+                Log.error("Product Image Tag is mandatory.")
+                throw new Exception("[validation error] productImage tag is mandatory.")
+            }
+            Log.info("product image tag validation success.")
+        }
+        catch (exc) {
+            Log.error("product image tag validation failed.")
+            throw exc
+        }
+    }
+
     /**
      * validates whether the domain type is applicable for the product or not
      *
@@ -65,7 +82,7 @@ class Validation extends Base {
      * @param domainType the domain type of the product
      * @param productName the name of the product
      */
-    static validateDomainType(script, domainType, productName) {
+    static validateDomainType(domainType, productName) {
         try {
             Log.info("begin domain type validation.")
             if ("${domainType}".equalsIgnoreCase("N/A") && "${productName}".equalsIgnoreCase("SOA")) {
@@ -90,7 +107,7 @@ class Validation extends Base {
      * @param script the workflow script of jenkins
      * @param databaseVersion the version of the database
      */
-    static validateDatabaseVersion(script, databaseVersion) {
+    static validateDatabaseVersion(databaseVersion) {
         try {
             Log.info("begin mandatory database version validation.")
             if ("${databaseVersion}" == "" || "${databaseVersion}" == " ") {
@@ -111,7 +128,7 @@ class Validation extends Base {
      * @param testImageTag the tag for the test image
      * @param testType the type of the test selected in E2E
      */
-    static validateTestImageTag(script, testImageTag, testType) {
+    static validateTestImageTag(testImageTag, testType) {
         try {
             Log.info("begin testImageTag validation.")
             if ("${testType}" != "N/A" && "${testImageTag}" == "") {
@@ -132,7 +149,7 @@ class Validation extends Base {
      * @param hoursAfter the number of hours to hold the environment
      * @param testType the type of the test selected in E2E
      */
-    static validateHoursAfter(script, hoursAfter, testType) {
+    static validateHoursAfter(hoursAfter, testType) {
         try {
             Log.info("begin hours after validation.")
             if ("${testType}" == "N/A" && "${hoursAfter}" == "true") {

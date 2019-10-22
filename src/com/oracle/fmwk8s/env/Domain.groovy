@@ -154,10 +154,6 @@ class Domain extends Common {
                 domainType = "weblogic"
             }
 
-            if (productImage?.trim()) {
-                productImage = productImage
-            }
-
             script.sh "cp -r kubernetes/samples/scripts/create-${productId}-domain/${samplesDirectory}/create-domain-inputs.yaml create-domain-inputs && \
                        cp -r kubernetes/samples/scripts/create-${productId}-domain/${samplesDirectory}/create-domain-job-template.yaml create-domain-job-template && \
                        ls -ltr . && cat create-domain-inputs"
