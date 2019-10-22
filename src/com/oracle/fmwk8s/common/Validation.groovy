@@ -4,7 +4,7 @@ package com.oracle.fmwk8s.common
  * Validation class handles the common validation operations that are required
  * in E2E execution of FMW in Docker/K8S environments
  */
-class Validation {
+class Validation extends Base {
 
     /**
      * validates the inputs given to the E2E execution job
@@ -20,20 +20,20 @@ class Validation {
      */
     static def validateInputs() {
         try {
-            Log.info(Base.script, "begin validate inputs.")
-            validateOperatorVersion(Base.script, Base.operatorVersion, Base.productName)
-            validateDomainType(Base.script, Base.domainType, Base.productName)
-            validateDatabaseVersion(Base.script, Base.databaseVersion)
-            validateTestImageTag(Base.script, Base.testImage, Base.testType)
+            Log.info(script, "begin validate inputs.")
+            validateOperatorVersion(script, operatorVersion, productName)
+            validateDomainType(script, domainType, productName)
+            validateDatabaseVersion(script, databaseVersion)
+            validateTestImageTag(script, testImage, testType)
             // disabling hoursAfter validation so that env can be retained even if no tests are run
 //            validateHoursAfter(Base.script, Base.hoursAfter, Base.testType)
         }
         catch (exc) {
-            Log.error(Base.script, "input validation failed.")
+            Log.error(script, "input validation failed.")
             throw exc
         }
 
-        Log.info(Base.script, "validate inputs success.")
+        Log.info(script, "validate inputs success.")
     }
 
     /**

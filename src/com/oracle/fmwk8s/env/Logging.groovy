@@ -1,25 +1,25 @@
 package com.oracle.fmwk8s.env
 
+import com.oracle.fmwk8s.common.Base
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
-import com.oracle.fmwk8s.test.Functional
+import com.oracle.fmwk8s.test.Test
 import com.oracle.fmwk8s.utility.YamlUtility
 
 
-class Logging {
+class Logging extends Base {
 
-    static def yamlUtility = new YamlUtility()
     static def buildSuffix
     static def productImageVersion
     static def logLocation
 
-    static configureLogstashConfigmap(script, domainName, domainNamespace) {
+    static configureLogstashConfigmap() {
         try {
             Log.info(script, "begin configure logstash configmap.")
 
             script.sh "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-configmap.yaml && \
-                       sed -i \"s#%ELASTICSEARCH_HOST%#${Common.elasticSearchHost}:${Common.elasticSearchPort}#g\" logstash-configmap.yaml && \
+                       sed -i \"s#%ELASTICSEARCH_HOST%#${elasticSearchHost}:${elasticSearchPort}#g\" logstash-configmap.yaml && \
                        cat logstash-configmap.yaml && \
                        kubectl apply -f logstash-configmap.yaml -n ${domainNamespace} && \
                        sleep 60"
@@ -32,7 +32,7 @@ class Logging {
         }
     }
 
-    static configureLogstash(script, domainName, domainNamespace) {
+    static configureLogstash() {
         try {
             Log.info(script, "begin configure logstash.")
 
@@ -52,7 +52,7 @@ class Logging {
 
     }
 
-    static updateLogstashDeployment(script, domainName, domainNamespace) {
+    static updateLogstashDeployment() {
         try {
             Log.info(script, "begin update and deploy logstash.")
 
@@ -73,7 +73,7 @@ class Logging {
 
     }
 
-    static deployLogstash(script, elkEnable, domainName, domainNamespace) {
+    static deployLogstash() {
         try {
             Log.info(script, "begin deploy logstash.")
 
@@ -95,15 +95,15 @@ class Logging {
 
     }
 
-    static getLogs(script) {
-        //getEventLogs(script, Operator.operatorNamespace)
-        //getEventLogs(script, Domain.domainNamespace)
-        getDomainLogs(script, Domain.domainName, Domain.domainNamespace)
-        //archiveLogs(script)
-        //publishLogsToArtifactory(script)
+    static getLogs() {
+        getEventLogs(operatorNamespace)
+        getEventLogs(domainNamespace)
+        getDomainLogs(domainName, domainNamespace)
+        archiveLogs()
+        publishLogsToArtifactory()
     }
 
-    static getEventLogs(script, namespace) {
+    static getEventLogs(namespace) {
         try {
             Log.info(script, "begin get event logs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs && \
@@ -117,7 +117,7 @@ class Logging {
         }
     }
 
-    static getPodLogs(script, podname, namespace) {
+    static getPodLogs(podname, namespace) {
         try {
             Log.info(script, "begin get pod logs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs && \
@@ -131,7 +131,7 @@ class Logging {
         }
     }
 
-    static getDomainLogs(script, domainName, domainNamespace) {
+    static getDomainLogs(domainName, domainNamespace) {
         try {
             Log.info(script, "begin get domain logs sfdfsfsfs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
@@ -153,14 +153,14 @@ class Logging {
         }
     }
 
-    static getTestLogs(script) {
+    static getTestLogs() {
         try {
             Log.info(script, "begin get test logs.")
 
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                       ls -ltr ${Functional.logDirectory} && \
-                       cp -r ${Functional.logDirectory}/** ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs/ && \
+                       ls -ltr ${Test.logDirectory} && \
+                       cp -r ${Test.logDirectory}/** ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs/ && \
                        ls -ltr ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
@@ -172,7 +172,7 @@ class Logging {
         }
     }
 
-    static archiveLogs(script) {
+    static archiveLogs() {
         try {
             Log.info(script, "archive logs.")
             buildSuffix = "${script.env.BUILD_NUMBER}-${Common.operatorVersion}-${Common.productName}"
@@ -193,16 +193,16 @@ class Logging {
         }
     }
 
-    static publishLogsToArtifactory(script) {
+    static publishLogsToArtifactory() {
         try {
             Log.info(script, "publish logs to artifactory.")
             script.sh "pwd && \
                        ls"
-            this.productImageVersion = script.sh(
-                    script: "echo ${Common.productImage}| awk -F':' '{print \$2}'",
+            productImageVersion = script.sh(
+                    script: "echo ${productImage}| awk -F':' '{print \$2}'",
                     returnStdout: true
             ).trim()
-            Log.info(script, this.productImageVersion)
+            Log.info(script, productImageVersion)
             script.rtUpload(
                     serverId: "artifacthub.oraclecorp.com",
                     spec:
@@ -210,26 +210,26 @@ class Logging {
                            "files": [
                              {
                                 "pattern": "event_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
-                                this.productImageVersion
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
+                                productImageVersion
                             }/${script.env.BUILD_NUMBER}/"
                              },
                              {
                                 "pattern": "domain_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
-                                this.productImageVersion
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
+                                productImageVersion
                             }/${script.env.BUILD_NUMBER}/"
                              },
                              {
                                 "pattern": "pod_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
-                                this.productImageVersion
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
+                                productImageVersion
                             }/${script.env.BUILD_NUMBER}/"
                              },
                              {
                                 "pattern": "test_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
-                                this.productImageVersion
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
+                                productImageVersion
                             }/${script.env.BUILD_NUMBER}/"
                              }                           
                            ]

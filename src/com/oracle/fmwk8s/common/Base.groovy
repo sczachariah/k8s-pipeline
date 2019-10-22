@@ -1,7 +1,12 @@
 package com.oracle.fmwk8s.common
 
+import com.oracle.fmwk8s.utility.K8sUtility
+import com.oracle.fmwk8s.utility.YamlUtility
+
 class Base {
     static def script
+    static def yamlUtility = new YamlUtility()
+    static def K8sUtility = new K8sUtility()
 
     static def k8sMasterUrl = ""
 
@@ -42,6 +47,7 @@ class Base {
     static def nfsDomainDir
     static def nfsDomainPath
 
+    static def lbType
     static def lbHelmRelease
 
     static def elkEnable
@@ -55,6 +61,7 @@ class Base {
         productName = script.env.PRODUCT_NAME
         domainType = script.env.DOMAIN_TYPE
         databaseVersion = script.env.DATABASE_VERSION
+        lbType = script.env.K8S_LOADBALANCER
         testImage = script.env.TEST_IMAGE_TAG
         testType = script.env.TEST_TYPE
         elkEnable = script.env.ELK_ENABLE
@@ -62,7 +69,6 @@ class Base {
     }
 
     static def getOperatorVariables() {
-        //REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
         operatorNamespace = "${domainName}-operator-ns-${runId}"
         operatorServiceAccount = 'default'
         operatorHelmRelease = "op-${runId}"
@@ -75,7 +81,6 @@ class Base {
     }
 
     static def getDatabaseVariables() {
-
     }
 
     static def getNfsVariables() {
@@ -198,5 +203,4 @@ class Base {
                 break
         }
     }
-
 }

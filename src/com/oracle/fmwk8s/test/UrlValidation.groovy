@@ -2,19 +2,20 @@ package com.oracle.fmwk8s.test
 
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
+import com.oracle.fmwk8s.utility.Tools
 
-class UrlValidation {
-    static invokeTest(script, testImage) {
-        deployTestTools(script, Domain.domainNamespace)
-        createTestProps(script, Domain.domainNamespace)
+class UrlValidation extends Test {
+    static fireTest() {
+        deployTestTools(Domain.domainNamespace)
+        createTestProps(Domain.domainNamespace)
     }
 
-    static deployTestTools(script, testNamespace) {
+    static deployTestTools(testNamespace) {
         Tools.deploySelenium(script, testNamespace)
     }
 
 
-    static createTestProps(script, testNamespace) {
+    static createTestProps(testNamespace) {
         try {
             Log.info(script, "begin create test props.")
 

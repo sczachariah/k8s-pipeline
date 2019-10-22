@@ -4,21 +4,17 @@ import com.oracle.fmwk8s.common.Base
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.K8sUtility
 import com.oracle.fmwk8s.utility.ReportUtility
-import com.oracle.fmwk8s.utility.YamlUtility
 
 /**
  * Domain class handles the common domain operations that are required
  * in E2E execution of FMW in Docker/K8S environments
  */
 class Domain extends Base {
-    static def yamlUtility = new YamlUtility()
-    static def K8sUtility = new K8sUtility()
-
     static def weblogicCredentialsSecretName
-    static def createdomainPodName
+    static def createDomainPodName
     static def adminServerPodName
-    static def replicaCount
     static def managedServerPodName
+    static def replicaCount
 
     static pullSampleScripts() {
         script.git branch: "${samplesBranch}",
@@ -33,7 +29,7 @@ class Domain extends Base {
 
                 script.sh "retVal=`echo \\`kubectl get secret ${domainName}-rcu-credentials -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
-                          kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${domainName} -p Welcome1 -a sys -q ${DatadbPassword} -d ${domainName} -n ${domainNamespace} \n \
+                          kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${domainName} -p Welcome1 -a sys -q ${Database.dbPassword} -d ${domainName} -n ${domainNamespace} \n \
                        fi"
 
                 Log.info(script, "configure rcu secrets success.")
@@ -55,9 +51,9 @@ class Domain extends Base {
                         url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                 script.sh "cd kubernetes/framework/db/rcu && \
-                           sed -i \"s|%CONNECTION_STRING%|${DatadbName}.${domainNamespace}:${DatadbPort}/${DatadbName}pdb.us.oracle.com|g\" ${productId}-rcu-configmap.yaml && \
+                           sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" ${productId}-rcu-configmap.yaml && \
                            sed -i \"s|%RCUPREFIX%|${domainName}|g\" ${productId}-rcu-configmap.yaml && \
-                           sed -i \"s|%SYS_PASSWORD%|${DatadbPassword}|g\" ${productId}-rcu-configmap.yaml && \
+                           sed -i \"s|%SYS_PASSWORD%|${Database.dbPassword}|g\" ${productId}-rcu-configmap.yaml && \
                            sed -i \"s|%PASSWORD%|Welcome1|g\" ${productId}-rcu-configmap.yaml && \
                            cat ${productId}-rcu-configmap.yaml"
 
@@ -166,7 +162,7 @@ class Domain extends Base {
                        cp -r kubernetes/samples/scripts/create-${productId}-domain/${samplesDirectory}/create-domain-job-template.yaml create-domain-job-template && \
                        ls -ltr . && cat create-domain-inputs"
 
-            yamlUtility.generateDomainInputsYaml(script, script.env.DOMAIN_TYPE, domainName, domainNamespace, "create-domain-inputs")
+            yamlUtility.generateDomainInputsYaml(script, domainType, domainName, domainNamespace, "create-domain-inputs")
 
             script.sh "cat create-domain-inputs.yaml"
 
@@ -179,7 +175,7 @@ class Domain extends Base {
         }
     }
 
-    static createDomain(script) {
+    static createDomain() {
         try {
             this.domainName = domainName
             this.domainNamespace = domainNamespace
@@ -203,7 +199,7 @@ class Domain extends Base {
             Log.info(script, "start " + productId + " domain success.")
 
             ReportUtility.printDomainUrls(script)
-            isDomainReady(script)
+            isDomainReady()
 
         }
         catch (exc) {
@@ -211,37 +207,37 @@ class Domain extends Base {
             throw exc
         }
         finally {
-            this.createdomainPodName = script.sh(
+            this.createDomainPodName = script.sh(
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${domainName}-create",
                     returnStdout: true
             ).trim()
             Log.info(script, "begin fetch create domain job pod logs.")
-            Logging.getPodLogs(script, this.createdomainPodName, domainNamespace)
+            Logging.getPodLogs(script, this.createDomainPodName, domainNamespace)
             Log.info(script, "fetch create domain job pod logs success.")
         }
     }
 
-    static isDomainReady(script) {
+    static isDomainReady() {
         try {
             Log.info(script, "begin domain readiness check.")
 
             script.sh "kubectl get all,domains -n ${domainNamespace}"
             Log.info(script, "begin Admin server status check")
-            this.adminServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}"
-            Log.info(script, this.adminServerPodName)
-            K8sUtility.checkPodStatus(script, this.adminServerPodName, domainNamespace, 20)
+            adminServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}"
+            Log.info(script, adminServerPodName)
+            K8sUtility.checkPodStatus(script, adminServerPodName, domainNamespace, 20)
             Log.info(script, "admin server status check completed.")
             Log.info(script, "begin Managed server status check.")
             script.sh "kubectl get domain -n ${domainNamespace} -o yaml > ${domainName}-domain.yaml && \
                        ls"
-            this.replicaCount = script.sh(
+            replicaCount = script.sh(
                     script: "cat ${domainName}-domain.yaml | grep replicas:|tail -1|awk -F':' '{print \$2}'",
                     returnStdout: true
             ).trim()
-            Log.info(script, this.replicaCount)
-            for (int i = 1; i <= Integer.parseInt(this.replicaCount); i++) {
-                this.managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase")}${i}"
-                K8sUtility.checkPodStatus(script, this.managedServerPodName, domainNamespace, 20)
+            Log.info(script, replicaCount)
+            for (int i = 1; i <= Integer.parseInt(replicaCount); i++) {
+                managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase")}${i}"
+                K8sUtility.checkPodStatus(script, managedServerPodName, domainNamespace, 20)
             }
             Log.info(script, "managed server status check completed.")
             Log.info(script, "domain readiness check success.")
@@ -251,7 +247,7 @@ class Domain extends Base {
         }
     }
 
-    static configureDomainLoadBalancer(script) {
+    static configureDomainLoadBalancer() {
         try {
             Log.info(script, "begin configure domain loadbalancer.")
             script.git branch: 'master',
@@ -262,7 +258,7 @@ class Domain extends Base {
             script.sh "ls -ltr kubernetes/framework/charts/ingress-per-domain"
             script.sh "helm install kubernetes/framework/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
                     --set wlsDomain.domainUID=${domainName} \
-                    --set wlsDomain.domainType=${this.domainType} \
+                    --set wlsDomain.domainType=${domainType} \
                     --set wlsDomain.adminServerName=${yamlUtility.domainInputsMap.get("adminServerName")} \
                     --set wlsDomain.clusterName=${yamlUtility.domainInputsMap.get("clusterName")} \
                     --set wlsDomain.adminServerPort=${yamlUtility.domainInputsMap.get("adminPort")} \
@@ -295,7 +291,7 @@ class Domain extends Base {
         }
     }
 
-    static cleanDomain(script) {
+    static cleanDomain() {
         try {
             script.sh "helm delete --purge ${domainNamespace}-ingress"
         }
@@ -352,7 +348,7 @@ class Domain extends Base {
         }
     }
 
-    static cleanDomainNamespace(script) {
+    static cleanDomainNamespace() {
         try {
             script.sh "kubectl delete ns ${domainNamespace}"
             sleep 30

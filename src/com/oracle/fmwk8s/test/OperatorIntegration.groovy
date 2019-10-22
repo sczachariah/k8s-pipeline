@@ -5,24 +5,18 @@ import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Logging
 import com.oracle.fmwk8s.env.Operator
-import com.oracle.fmwk8s.utility.YamlUtility
 
 class OperatorIntegration extends Test {
-    static def yamlUtility = new YamlUtility()
-    static def testType
-    static def testPodName
-
-    static invokeTest(script, testImage, testType) {
+    static fireTest() {
         testId = "op-intg"
-        this.testType = testType
-        createEnvConfigMap(script)
-        createPersistentVolume(script)
-        runTests(script, testImage)
-        publishLogs(script)
-        cleanup(script)
+        createEnvConfigMap()
+        createPersistentVolume()
+        runTests()
+        publishLogs()
+        cleanup()
     }
 
-    static createEnvConfigMap(script) {
+    static createEnvConfigMap() {
         try {
             Log.info(script, "begin create env configmap.")
 
@@ -42,8 +36,8 @@ class OperatorIntegration extends Test {
                         sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${yamlUtility.domainInputsMap.get("managedServerNameBase")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%WEBLOGIC_CREDENTIALS_SECRET_NAME%|${Domain.weblogicCredentialsSecretName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_T3_CHANNEL_PORT%|${yamlUtility.domainInputsMap.get("t3ChannelPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%TEST_TYPE%|${this.testType}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%LOG_DIRECTORY%|${Functional.logDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%TEST_TYPE%|${testType}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"
 
             script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-env-configmap.yaml -n ${Domain.domainNamespace}"
@@ -58,7 +52,7 @@ class OperatorIntegration extends Test {
         }
     }
 
-    static createPersistentVolume(script) {
+    static createPersistentVolume() {
         try {
             Log.info(script, "begin create persistent volume.")
 
@@ -81,14 +75,14 @@ class OperatorIntegration extends Test {
         }
     }
 
-    static runTests(script, testImage) {
+    static runTests() {
         try {
             Log.info(script, "begin run test.")
 
             script.sh "cd kubernetes/framework/test/${testId} && \
                         sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%HOURS_AFTER_SECONDS%|144000|g\" fmwk8s-${testId}-test-pod.yaml && \
-                        sed -i \"s|%LOG_DIRECTORY%|${Functional.logDirectory}|g\" fmwk8s-${testId}-test-pod.yaml && \
+                        sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         cat fmwk8s-${testId}-test-pod.yaml"
 
@@ -96,7 +90,7 @@ class OperatorIntegration extends Test {
                        kubectl get all -n ${Domain.domainNamespace}"
 
             testStatus = "started"
-            waitForTests(script)
+            waitForTests()
 
             Log.info(script, "run test success.")
         }
@@ -105,17 +99,17 @@ class OperatorIntegration extends Test {
             throw exc
         }
         finally {
-            this.testPodName = script.sh(
+            testPodName = script.sh(
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${Domain.domainNamespace} | grep ${testId}-test",
                     returnStdout: true
             ).trim()
             Log.info(script, "begin fetch test pod logs.")
-            Logging.getPodLogs(script, this.testPodName, Domain.domainNamespace)
+            Logging.getPodLogs(script, testPodName, Domain.domainNamespace)
             Log.info(script, "fetch test pod logs success.")
         }
     }
 
-    static waitForTests(script) {
+    static waitForTests() {
         try {
             Log.info(script, "begin wait for test completion.")
 
@@ -156,7 +150,7 @@ class OperatorIntegration extends Test {
         }
     }
 
-    static publishLogs(script) {
-        Logging.getTestLogs(script)
+    static publishLogs() {
+        Logging.getTestLogs()
     }
 }

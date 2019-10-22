@@ -14,7 +14,7 @@ class Common extends Base {
         getKubernetesMasterUrl()
     }
 
-    static configureRegistrySecret(registryUsername, registryPass) {
+    static configureRegistrySecret() {
         try {
             Log.info(script, "begin configure registry secret.")
 

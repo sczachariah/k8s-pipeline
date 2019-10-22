@@ -6,7 +6,6 @@ import com.oracle.fmwk8s.common.EnvironmentSetup
 import com.oracle.fmwk8s.common.Initializer
 import com.oracle.fmwk8s.common.Validation
 import com.oracle.fmwk8s.env.*
-import com.oracle.fmwk8s.test.Functional
 
 pipeline {
     agent {
@@ -174,7 +173,7 @@ pipeline {
                     steps {
                         container('jnlp') {
                             script {
-                                Functional.invokeTest(this, "${TEST_TYPE}", "${TEST_IMAGE_TAG}")
+                                Test.invokeTest(this, "${TEST_TYPE}", "${TEST_IMAGE_TAG}")
                             }
                         }
                     }

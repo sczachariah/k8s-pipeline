@@ -1,4 +1,4 @@
-package com.oracle.fmwk8s.test
+package com.oracle.fmwk8s.utility
 
 import com.oracle.fmwk8s.common.Log
 

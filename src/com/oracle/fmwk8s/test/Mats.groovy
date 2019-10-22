@@ -4,18 +4,15 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.Domain
-import com.oracle.fmwk8s.utility.YamlUtility
 
-class Mats {
-    static def yamlUtility = new YamlUtility()
-
-    static invokeTest(script, testImage) {
-        createEnvConfigMap(script)
-        runTests(script, testImage)
-        publishResults(script)
+class Mats extends Test {
+    static fireTest() {
+        createEnvConfigMap()
+        runTests()
+        publishResults()
     }
 
-    static createEnvConfigMap(script) {
+    static createEnvConfigMap() {
         try {
             Log.info(script, "begin create env configmap.")
 
@@ -26,8 +23,8 @@ class Mats {
             script.sh "cd kubernetes/framework/${Common.productId} && \
                         sed -i \"s|%ADMIN_SERVER_NAME_SVC%|${Domain.domainName}-adminserver.${Domain.domainNamespace}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%MANAGED_SERVER_NAME_SVC%|${Domain.domainName}-cluster-${Common.productId}-cluster.${Domain.domainNamespace}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%WEBLOGIC_USER%|${Domain.weblogicUser}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_PASSWORD%|${Domain.weblogicPass}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
+                        sed -i \"s|%WEBLOGIC_USER%|${Domain.weblogicUsername}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
+                        sed -i \"s|%ADMIN_PASSWORD%|${Domain.weblogicPassword}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_PORT%|7001|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_SERVER_NAME%|${yamlUtility.domainInputsMap.get("adminServerName")}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_SSL_PORT%||g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
@@ -53,7 +50,7 @@ class Mats {
         }
     }
 
-    static runTests(script, testImage) {
+    static runTests() {
         try {
             Log.info(script, "begin run test.")
 
@@ -79,7 +76,7 @@ class Mats {
         }
     }
 
-    static waitForTests(script) {
+    static waitForTests() {
         try {
             Log.info(script, "begin wait for test completion.")
 
@@ -105,8 +102,8 @@ class Mats {
         }
     }
 
-    static publishResults(script) {
+    static publishResults() {
     }
 
-    static cleanTests(script) {}
+    static cleanTests() {}
 }

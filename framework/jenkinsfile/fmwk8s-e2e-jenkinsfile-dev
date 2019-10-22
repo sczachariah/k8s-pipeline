@@ -10,6 +10,7 @@ import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.IngressController
 import com.oracle.fmwk8s.env.Logging
 import com.oracle.fmwk8s.env.Operator
+import com.oracle.fmwk8s.test.Test
 
 pipeline {
     agent {
@@ -61,7 +62,7 @@ pipeline {
                 container('jnlp') {
                     script {
                         Domain.createNamespace()
-                        Common.configureRegistrySecret("${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
+                        Common.configureRegistrySecret()
                         EnvironmentSetup.createNfsFolder()
                     }
                 }
@@ -87,18 +88,95 @@ pipeline {
                         container('jnlp') {
                             dir('fmwsamples') {
                                 script {
-                                    Domain.pullSampleScripts(this)
+                                    Domain.pullSampleScripts()
 
-                                    Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
-                                    Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                    Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                    Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
-                                    Domain.prepareDomain(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_TYPE}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Operator.setDomainNamespace()
+                                    Domain.configureDomainSecret()
+                                    Domain.configureRcuSecret()
+                                    Domain.preparePersistentVolume()
+                                    Domain.prepareDomain()
                                 }
                             }
                         }
                     }
 
+                }
+            }
+        }
+
+        stage('deploy fmw domain') {
+            parallel {
+                stage('create fmw domain') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwsamples') {
+                                script {
+                                    Domain.createDomain()
+                                    Logging.deployLogstash()
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('configure domain loadbalancer') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwsamples') {
+                                script {
+                                    IngressController.deployLoadBalancer()
+                                }
+                            }
+                            dir('fmwk8s') {
+                                script {
+                                    Domain.configureDomainLoadBalancer()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('verify domain ready') {
+            steps {
+                container('jnlp') {
+                    sh label: 'verify weblogic ready', script: '''
+                            echo "TODO WEBLOGIC READY"
+                            '''
+                }
+            }
+        }
+
+        stage('run tests') {
+            parallel {
+                stage('wait for completion') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                EnvironmentSetup.waitHoursAfter()
+                            }
+                        }
+                    }
+                }
+
+                stage('execute tests') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                Test.invokeTest()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('publish results') {
+            steps {
+                container('jnlp') {
+                    script {
+                        Common.publishLogs()
+                    }
                 }
             }
         }
@@ -108,17 +186,17 @@ pipeline {
         always {
             container(name: 'jnlp') {
                 script {
-                    Logging.getLogs(this)
+                    Logging.getLogs()
 
-                    Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
+                    Operator.cleanOperator()
 
-                    IngressController.undeployLoadBalancer this, "${LB_HELM_RELEASE}"
-                    Domain.cleanDomain this, "${DOMAIN_NAME}", "${DOMAIN_NS}"
-                    EnvironmentSetup.deleteNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
-                    Domain.cleanDomainNamespace this, "${DOMAIN_NS}"
+                    IngressController.undeployLoadBalancer()
+                    Domain.cleanDomain()
+                    EnvironmentSetup.deleteNfsFolder()
+                    Domain.cleanDomainNamespace()
 
-                    Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
-                    Operator.cleanOperatorNamespace this, "${OPERATOR_NS}"
+                    Operator.cleanOperator()
+                    Operator.cleanOperatorNamespace()
                 }
             }
         }

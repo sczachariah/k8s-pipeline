@@ -1,13 +1,13 @@
 package com.oracle.fmwk8s.env
 
-import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.common.Base
 import com.oracle.fmwk8s.common.Log
 
 /**
  * IngressController class deploys the different loadBalancers per domain that are required
  * in E2E execution of FMW in Docker/K8S environments
  */
-class IngressController {
+class IngressController extends Base {
 
     /** the http port for the deployed load balancer */
     static def httplbPort
@@ -22,26 +22,26 @@ class IngressController {
      * @param lbHelmRelease the name given to load balacer
      * @param domainNamespace the domain namespace given to the product
      */
-    static deployLoadBalancer(script, lbType, lbHelmRelease, domainNamespace) {
+    static deployLoadBalancer() {
         switch ("${lbType}") {
             case "TRAEFIK":
-                deployTraefik(script, lbHelmRelease, domainNamespace)
+                deployTraefik()
                 break
             case "APACHE":
-                deployApache(script, lbHelmRelease, domainNamespace)
+                deployApache()
                 break
             case "VOYAGER":
-                deployVoyager(script, lbHelmRelease, domainNamespace)
+                deployVoyager()
                 break
             case "NGINX":
-                deployNginx(script, lbHelmRelease, domainNamespace)
+                deployNginx()
                 break
             default:
-                deployTraefik(script, lbHelmRelease, domainNamespace)
+                deployTraefik()
                 break
         }
 
-        getLoadBalancerPort(script, lbHelmRelease, domainNamespace)
+        getLoadBalancerPort()
         sleep 60
     }
 
@@ -52,7 +52,7 @@ class IngressController {
      * @param lbHelmRelease the name given to load balacer
      * @param domainNamespace the domain namespace to use to deploy the load balancer
      */
-    static deployTraefik(script, lbHelmRelease, domainNamespace) {
+    static deployTraefik() {
         try {
             Log.info(script, "begin deploy traefik ingress controller.")
             script.sh "helm init --client-only --skip-refresh --wait && \
@@ -79,13 +79,13 @@ class IngressController {
      * @param lbHelmRelease the name given to load balacer
      * @param domainNamespace the domain namespace to use to deploy the load balancer
      */
-    static deployApache(script, lbHelmRelease, domainNamespace) {
+    static deployApache() {
         try {
             Log.info(script, "begin deploy apache ingress controller.")
-            Log.info(script, Common.operatorBranch)
+            Log.info(script, operatorBranch)
             script.sh "helm init --client-only --skip-refresh --wait && \
                        helm repo update && \
-                       helm install ../fmwk8s/kubernetes/framework/ingress-controller/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set image=fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3,imagePullSecrets=${Common.denRegistrySecret}"
+                       helm install ../fmwk8s/kubernetes/framework/ingress-controller/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set image=fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3,imagePullSecrets=${denRegistrySecret}"
 
             Log.info(script, "deploy apache ingress controller success.")
         }
@@ -102,7 +102,7 @@ class IngressController {
      * @param lbHelmRelease the name given to load balacer
      * @param domainNamespace the domain namespace to use to deploy the load balancer
      */
-    static deployVoyager(script, lbHelmRelease, domainNamespace) {
+    static deployVoyager() {
         try {
             Log.info(script, "begin deploy apache ingress controller.")
             script.sh "helm init --client-only --skip-refresh --wait && \
@@ -124,7 +124,7 @@ class IngressController {
      * @param lbHelmRelease the name given to load balacer
      * @param domainNamespace the domain namespace to use to deploy the load balancer
      */
-    static deployNginx(script, lbHelmRelease, domainNamespace) {
+    static deployNginx() {
         try {
             Log.info(script, "begin deploy nginx ingress controller.")
             script.sh "helm init --client-only --skip-refresh --wait && \
@@ -146,22 +146,22 @@ class IngressController {
      * @param lbHelmRelease the name given to load balacer
      * @param domainNamespace the domain namespace to use to deploy the load balancer
      */
-    static getLoadBalancerPort(script, lbHelmRelease, domainNamespace) {
+    static getLoadBalancerPort() {
         try {
             Log.info(script, "begin get load balancer port.")
 
-            this.httplbPort = script.sh(
+            httplbPort = script.sh(
                     script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
                     returnStdout: true
             ).trim()
 
-            this.httpslbPort = script.sh(
+            httpslbPort = script.sh(
                     script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'https\' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
                     returnStdout: true
             ).trim()
 
-            Log.info(script, "${this.httplbPort}")
-            Log.info(script, "${this.httpslbPort}")
+            Log.info(script, "${httplbPort}")
+            Log.info(script, "${httpslbPort}")
             Log.info(script, "get load balancer port success.")
         }
         catch (exc) {
@@ -176,7 +176,7 @@ class IngressController {
      * @param script the workflow script of jenkins
      * @param lbHelmRelease the name of the load balacer
      */
-    static undeployLoadBalancer(script, lbHelmRelease) {
+    static undeployLoadBalancer() {
         try {
             Log.info(script, "begin clean kubernetes ingress controller.")
 
