@@ -68,16 +68,32 @@ class Base {
         hoursAfter = script.env.HOURS_AFTER
     }
 
+    static def getDomainVariables() {
+        switch ("${productName}") {
+            case "WLS":
+                domainName = "weblogic"
+                break
+            case "WLS-INFRA":
+                domainName = "wlsinfra"
+                break
+            case "SOA":
+                domainName = "soainfra"
+                break
+            case "OIG":
+                domainName = "oim"
+            default:
+                domainName = "unknown"
+                break
+        }
+        domainNamespace = "${domainName}-domain-ns-${runId}"
+        weblogicUsername = 'weblogic'
+        weblogicPassword = 'Welcome1'
+    }
+
     static def getOperatorVariables() {
         operatorNamespace = "${domainName}-operator-ns-${runId}"
         operatorServiceAccount = 'default'
         operatorHelmRelease = "op-${runId}"
-    }
-
-    static def getDomainVariables() {
-        domainNamespace = "${domainName}-domain-ns-${runId}"
-        weblogicUsername = 'weblogic'
-        weblogicPassword = 'Welcome1'
     }
 
     static def getDatabaseVariables() {
@@ -130,27 +146,6 @@ class Base {
                 break
         }
         getSamplesRepoDetails()
-    }
-
-    static def getDomainName() {
-        switch ("${productName}") {
-            case "WLS":
-                domainName = "weblogic"
-                break
-            case "WLS-INFRA":
-                domainName = "wlsinfra"
-                break
-            case "SOA":
-                domainName = "soainfra"
-                break
-            case "OIG":
-                domainName = "oim"
-            default:
-                domainName = "unknown"
-                break
-        }
-
-        return domainName
     }
 
     static def getProductIdentifier() {
