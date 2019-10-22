@@ -6,6 +6,7 @@ import com.oracle.fmwk8s.common.EnvironmentSetup
 import com.oracle.fmwk8s.common.Initializer
 import com.oracle.fmwk8s.common.Validation
 import com.oracle.fmwk8s.env.*
+import com.oracle.fmwk8s.test.Test
 
 pipeline {
     agent {
@@ -13,32 +14,17 @@ pipeline {
             cloud "${CLOUD}"
             label 'fmwk8s-slave'
             namespace 'fmwk8s'
-            yamlFile "framework/podtemplate/fmwk8s-slave.yaml"
+            yamlFile 'framework/podtemplate/fmwk8s-slave.yaml'
         }
     }
 
     environment {
-        RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT_NAME}")
         REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
-        OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
-        OPERATOR_SA = 'default'
-        OPERATOR_HELM_RELEASE = "op-${RUN_SUFFIX}"
-        DOMAIN_NAME = Common.getDomainName("${PRODUCT_NAME}")
-        DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${RUN_SUFFIX}"
-        WEBLOGIC_USER = 'weblogic'
-        ADMIN_PASSWORD = 'Welcome1'
-        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume/domains"
-        NFS_DOMAIN_DIR = "${DOMAIN_NS}"
-        NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
-        LB_HELM_RELEASE = "lb-${RUN_SUFFIX}"
     }
-
 
     stages {
         stage('initialize validation framework') {
             steps {
-                log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
-
                 container('jnlp') {
                     script {
                         currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME + "-" + "${this.env.DOMAIN_TYPE}".toString().toUpperCase()
@@ -52,7 +38,7 @@ pipeline {
             steps {
                 container('jnlp') {
                     script {
-                        Validation.validateInputs(this, "${OPERATOR_VERSION}", "${PRODUCT_NAME}", "${DOMAIN_TYPE}", "${DATABASE_VERSION}", "${TEST_IMAGE_TAG}", "${TEST_TYPE}", "${HOURS_AFTER}")
+                        Validation.validateInputs()
                         sleep 1
                     }
                 }
@@ -64,16 +50,16 @@ pipeline {
                 container('jnlp') {
                     dir('weblogic-operator') {
                         script {
-                            Operator.deployOperator(this, "${OPERATOR_VERSION}", "${OPERATOR_HELM_RELEASE}", "${OPERATOR_NS}", "${OPERATOR_SA}", "${ELK_ENABLE}")
+                            Operator.deployOperator()
                         }
                     }
                 }
 
                 container('jnlp') {
                     script {
-                        Domain.createNamespace(this, "${DOMAIN_NS}")
-                        Common.configureRegistrySecret(this, "${DOMAIN_NS}", "${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
-                        EnvironmentSetup.createNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
+                        Domain.createNamespace()
+                        Common.configureRegistrySecret()
+                        EnvironmentSetup.createNfsFolder()
                     }
                 }
             }
@@ -86,8 +72,8 @@ pipeline {
                         container('jnlp') {
                             dir('fmwk8s') {
                                 script {
-                                    Database.deployDatabase(this, "${DATABASE_VERSION}", "${DOMAIN_NS}")
-                                    Domain.preparRcu(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Database.deployDatabase()
+                                    Domain.preparRcu()
                                 }
                             }
                         }
@@ -98,13 +84,13 @@ pipeline {
                         container('jnlp') {
                             dir('fmwsamples') {
                                 script {
-                                    Domain.pullSampleScripts(this)
+                                    Domain.pullSampleScripts()
 
-                                    Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
-                                    Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                    Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                    Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
-                                    Domain.prepareDomain(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_TYPE}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Operator.setDomainNamespace()
+                                    Domain.configureDomainSecret()
+                                    Domain.configureRcuSecret()
+                                    Domain.preparePersistentVolume()
+                                    Domain.prepareDomain()
                                 }
                             }
                         }
@@ -121,8 +107,8 @@ pipeline {
                         container('jnlp') {
                             dir('fmwsamples') {
                                 script {
-                                    Domain.createDomain(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
-                                    Logging.deployLogstash(this, "${ELK_ENABLE}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.createDomain()
+                                    Logging.deployLogstash()
                                 }
                             }
                         }
@@ -133,12 +119,12 @@ pipeline {
                         container('jnlp') {
                             dir('fmwsamples') {
                                 script {
-                                    IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
+                                    IngressController.deployLoadBalancer()
                                 }
                             }
                             dir('fmwk8s') {
                                 script {
-                                    Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.configureDomainLoadBalancer()
                                 }
                             }
                         }
@@ -163,7 +149,7 @@ pipeline {
                     steps {
                         container('jnlp') {
                             script {
-                                EnvironmentSetup.waitHoursAfter(this, "${HOURS_AFTER}")
+                                EnvironmentSetup.waitHoursAfter()
                             }
                         }
                     }
@@ -173,7 +159,7 @@ pipeline {
                     steps {
                         container('jnlp') {
                             script {
-                                Test.invokeTest(this, "${TEST_TYPE}", "${TEST_IMAGE_TAG}")
+                                Test.invokeTest()
                             }
                         }
                     }
@@ -185,7 +171,7 @@ pipeline {
             steps {
                 container('jnlp') {
                     script {
-                        Common.publishLogs(this)
+                        Common.publishLogs()
                     }
                 }
             }
@@ -196,17 +182,17 @@ pipeline {
         always {
             container(name: 'jnlp') {
                 script {
-                    Logging.getLogs(this)
+                    Logging.getLogs()
 
-                    Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
+                    Operator.cleanOperator()
 
-                    IngressController.undeployLoadBalancer this, "${LB_HELM_RELEASE}"
-                    Domain.cleanDomain this, "${DOMAIN_NAME}", "${DOMAIN_NS}"
-                    EnvironmentSetup.deleteNfsFolder(this, "${DOMAIN_NS}", "${FMWK8S_NFS_HOME}", "${NFS_DOMAIN_DIR}")
-                    Domain.cleanDomainNamespace this, "${DOMAIN_NS}"
+                    IngressController.undeployLoadBalancer()
+                    Domain.cleanDomain()
+                    EnvironmentSetup.deleteNfsFolder()
+                    Domain.cleanDomainNamespace()
 
-                    Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"
-                    Operator.cleanOperatorNamespace this, "${OPERATOR_NS}"
+                    Operator.cleanOperator()
+                    Operator.cleanOperatorNamespace()
                 }
             }
         }

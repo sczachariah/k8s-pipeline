@@ -21,12 +21,19 @@ class Test {
     static invokeTest() {
         logDirectory = "/logs/${runId}"
 
-        if (testType.matches("url-validation")) {
-            UrlValidation.fireTest()
-        } else if (testType.matches("operator-integration-.*")) {
-            OperatorIntegration.fireTest()
-        } else if (testType.matches("mats.*")) {
-            Mats.fireTest()
+        if (testType != null && !testType.toString().isEmpty()) {
+            if (testType.matches("url-validation")) {
+                Log.info("invoking ${testType} tests.")
+                UrlValidation.fireTest()
+            } else if (testType.matches("operator-integration-.*")) {
+                Log.info("invoking ${testType} tests.")
+                OperatorIntegration.fireTest()
+            } else if (testType.matches("mats.*")) {
+                Log.info("invoking ${testType} tests.")
+                Mats.fireTest()
+            } else {
+                Log.info("no tests to run.")
+            }
         }
     }
 
@@ -49,4 +56,5 @@ class Test {
             }
         }
     }
+
 }
