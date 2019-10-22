@@ -17,7 +17,7 @@ class K8sUtility {
                                 exit 1\n \
                             fi\n \
                         i=\$((i+1))\n \
-                        echo \"${podName} is not running. iteration \$i of 20. sleeping\"\n \
+                        echo \"${podName} is not running. iteration \$i of ${timeout}. sleeping\"\n \
                         sleep 60\n \
                         podstat=`echo \\`kubectl get pods -n ${namespace} 2>&1 | grep ${podName}\\``\n \
                         done"
