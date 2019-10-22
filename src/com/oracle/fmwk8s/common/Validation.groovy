@@ -26,7 +26,7 @@ class Validation extends Base {
             validateDatabaseVersion(script, databaseVersion)
             validateTestImageTag(script, testImage, testType)
             // disabling hoursAfter validation so that env can be retained even if no tests are run
-//            validateHoursAfter(Base.script, Base.hoursAfter, Base.testType)
+//            validateHoursAfter(script, hoursAfter, testType)
         }
         catch (exc) {
             Log.error("input validation failed.")
@@ -48,7 +48,7 @@ class Validation extends Base {
             Log.info("begin operator version validation.")
             if ("${operatorVersion}".equalsIgnoreCase("2.1") && "${productName}".equalsIgnoreCase("WLS-INFRA")) {
                 Log.error("Operator version ${operatorVersion} is not applicable for the product ${productName} .")
-                throw new Exception("input validation for operator failed")
+                throw new Exception("[validation error] operator version ${operatorVersion} is not applicable for the product ${productName} .")
             }
             Log.info("operator version validation success.")
         }
@@ -70,11 +70,11 @@ class Validation extends Base {
             Log.info("begin domain type validation.")
             if ("${domainType}".equalsIgnoreCase("N/A") && "${productName}".equalsIgnoreCase("SOA")) {
                 Log.error("Domain type ${domainType} is not applicable for product ${productName} .")
-                throw new Exception("domain type validation failed")
+                throw new Exception("[validation error] domain type ${domainType} is not applicable for product ${productName} .")
             }
             if (!("${domainType}".equalsIgnoreCase("N/A")) && !("${productName}".equalsIgnoreCase("SOA"))) {
                 Log.error("Domain type ${domainType} is not applicable for product ${productName} .")
-                throw new Exception("domain type validation failed")
+                throw new Exception("[validation error] domain type ${domainType} is not applicable for product ${productName} .")
             }
             Log.info("domain type validation success.")
         }
@@ -95,7 +95,7 @@ class Validation extends Base {
             Log.info("begin mandatory database version validation.")
             if ("${databaseVersion}" == "" || "${databaseVersion}" == " ") {
                 Log.error("Database version is mandatory.")
-                throw new Exception(" mandatory database version validation failed")
+                throw new Exception("[validation error] database version is mandatory.")
             }
             Log.info("mandatory database version validation success.")
         }
@@ -116,7 +116,7 @@ class Validation extends Base {
             Log.info("begin testImageTag validation.")
             if ("${testType}" != "N/A" && "${testImageTag}" == "") {
                 Log.error("Test Image Tag is mandatory for the ${testType}.")
-                throw new Exception("test image tag validation failed")
+                throw new Exception("[validation error] testImage tag is mandatory for the ${testType}.")
             }
             Log.info("mandatory test image tag validation success.")
         }
@@ -137,7 +137,7 @@ class Validation extends Base {
             Log.info("begin hours after validation.")
             if ("${testType}" == "N/A" && "${hoursAfter}" == "true") {
                 Log.error("Hours after is not applicable for the test type ${testType}.")
-                throw new Exception("hours after validation failed")
+                throw new Exception("[validation error] hoursAfter is not applicable for the test type ${testType}.")
             }
             Log.info("hours after validation success.")
         }

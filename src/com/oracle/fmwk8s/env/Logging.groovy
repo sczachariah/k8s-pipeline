@@ -130,19 +130,23 @@ class Logging extends Common {
 
     static getDomainLogs(domainName, namespace) {
         try {
-            Log.info("begin get domain logs sfdfsfsfs.")
-            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
+            Log.info("begin get domain logs.")
+            if (yamlUtility.domainInputsMap != null) {
+                script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
-            script.sh "adminServer=`echo \\`kubectl get pods -n ${namespace} 2>&1 | grep admin-server\\``\n \
+                script.sh "adminServer=`echo \\`kubectl get pods -n ${namespace} 2>&1 | grep admin-server\\``\n \
                        echo \"\$adminServer\"\n \
                        if [[ \$adminServer ]]; then \n \
                              echo \"Domain Found\" \n \
                              kubectl cp ${namespace}/${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}:${yamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs \n \
                        fi"
-            script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
+                script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
-            script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
-            Log.info("get domain logs success.")
+                script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
+                Log.info("get domain logs success.")
+            } else {
+                Log.info("no domain logs exist.")
+            }
         }
         catch (exc) {
             Log.error("get domain logs failed.")
