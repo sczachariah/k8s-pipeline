@@ -4,14 +4,11 @@ import com.oracle.fmwk8s.common.Base
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.test.Test
-import com.oracle.fmwk8s.utility.YamlUtility
-
 
 class Logging extends Base {
 
     static def buildSuffix
     static def productImageVersion
-    static def logLocation
 
     static configureLogstashConfigmap() {
         try {
@@ -131,16 +128,16 @@ class Logging extends Base {
         }
     }
 
-    static getDomainLogs(domainName, domainNamespace) {
+    static getDomainLogs(domainName, namespace) {
         try {
             Log.info(script, "begin get domain logs sfdfsfsfs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
-            script.sh "adminServer=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep admin-server\\``\n \
+            script.sh "adminServer=`echo \\`kubectl get pods -n ${namespace} 2>&1 | grep admin-server\\``\n \
                        echo \"\$adminServer\"\n \
                        if [[ \$adminServer ]]; then \n \
                              echo \"Domain Found\" \n \
-                             kubectl cp ${domainNamespace}/${domainName}-${YamlUtility.domainInputsMap.get("adminServerName")}:${YamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs \n \
+                             kubectl cp ${namespace}/${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}:${yamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs \n \
                        fi"
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"

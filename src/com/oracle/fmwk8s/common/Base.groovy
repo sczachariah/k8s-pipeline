@@ -129,7 +129,7 @@ class Base {
                 samplesBranch = "develop"
                 break
         }
-        getSamplesRepo(productName)
+        getSamplesRepoDetails()
     }
 
     static def getDomainName() {
