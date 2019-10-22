@@ -48,16 +48,16 @@ class Database extends Common {
                         until `echo \$dbstat | grep -q 1/1` > /dev/null\n \
                         do \n \
                             if [ \$i == 25 ]; then\n \
-                                echo \"Timeout waiting for DB. Exiting!!.\"\n \
+                                echo \"timeout waiting for db. exiting!!.\"\n \
                                 exit 1\n \
                             fi\n \
                         i=\$((i+1))\n \
-                        echo \"DB is not Running. Iteration \$i of 25. Sleeping\"\n \
+                        echo \"db is not running. iteration \$i of 25. sleeping\"\n \
                         sleep 60\n \
                         dbstat=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep ${dbName}\\``\n \
                         done"
 
-                Log.info("DB container is Running.")
+                Log.info("db container is running.")
                 script.sh "kubectl get pods,svc -n ${domainNamespace} | grep ${dbName}"
 
                 Log.info("begin xaview setup for database.")
