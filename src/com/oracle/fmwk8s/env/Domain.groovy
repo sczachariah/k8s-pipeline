@@ -90,12 +90,12 @@ class Domain extends Base {
         }
         finally {
             Log.info(script, "begin fetch rcu pod logs.")
-            Logging.getPodLogs(script, 'fmwk8s-rcu', domainName)
+            Logging.getPodLogs('fmwk8s-rcu', domainName)
             Log.info(script, "fetch rcu pod logs success.")
         }
     }
 
-    static configureDomainSecret(script) {
+    static configureDomainSecret() {
         try {
             Log.info(script, "begin configure domain secrets.")
 
@@ -207,12 +207,12 @@ class Domain extends Base {
             throw exc
         }
         finally {
-            this.createDomainPodName = script.sh(
+            createDomainPodName = script.sh(
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${domainName}-create",
                     returnStdout: true
             ).trim()
             Log.info(script, "begin fetch create domain job pod logs.")
-            Logging.getPodLogs(script, this.createDomainPodName, domainNamespace)
+            Logging.getPodLogs(createDomainPodName, domainNamespace)
             Log.info(script, "fetch create domain job pod logs success.")
         }
     }

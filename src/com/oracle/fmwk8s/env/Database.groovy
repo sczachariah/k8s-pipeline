@@ -77,7 +77,7 @@ class Database extends Base {
         finally {
             if (productId != "weblogic") {
                 Log.info(script, "begin fetch database pod logs.")
-                Logging.getPodLogs(script, dbPodName, domainNamespace)
+                Logging.getPodLogs(dbPodName, domainNamespace)
                 Log.info(script, "fetch database pod logs success.")
             }
 

@@ -104,7 +104,7 @@ class OperatorIntegration extends Test {
                     returnStdout: true
             ).trim()
             Log.info(script, "begin fetch test pod logs.")
-            Logging.getPodLogs(script, testPodName, Domain.domainNamespace)
+            Logging.getPodLogs(testPodName, Domain.domainNamespace)
             Log.info(script, "fetch test pod logs success.")
         }
     }
