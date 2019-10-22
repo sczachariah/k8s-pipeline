@@ -42,6 +42,7 @@ pipeline {
 
                 container('jnlp') {
                     script {
+                        currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME + "-" + "${this.env.DOMAIN_TYPE}".toString().toUpperCase()
                         Initializer.initialize(this)
                     }
                 }
@@ -134,7 +135,10 @@ pipeline {
                             dir('fmwsamples') {
                                 script {
                                     IngressController.deployLoadBalancer(this, "${K8S_LOADBALANCER}", "${LB_HELM_RELEASE}", "${DOMAIN_NS}")
-                                    sleep(60)
+                                }
+                            }
+                            dir('fmwk8s') {
+                                script {
                                     Domain.configureDomainLoadBalancer(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
                                 }
                             }
@@ -193,8 +197,6 @@ pipeline {
         always {
             container(name: 'jnlp') {
                 script {
-                    currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME
-
                     Logging.getLogs(this)
 
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"

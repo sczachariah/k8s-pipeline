@@ -5,12 +5,16 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.EnvironmentSetup
 import com.oracle.fmwk8s.common.Initializer
 import com.oracle.fmwk8s.common.Validation
-import com.oracle.fmwk8s.env.*
-import com.oracle.fmwk8s.test.Functional
+import com.oracle.fmwk8s.env.Database
+import com.oracle.fmwk8s.env.Domain
+import com.oracle.fmwk8s.env.IngressController
+import com.oracle.fmwk8s.env.Logging
+import com.oracle.fmwk8s.env.Operator
 
 pipeline {
     agent {
         kubernetes {
+            cloud "${CLOUD}"
             label 'fmwk8s-slave'
             namespace 'fmwk8s'
             yamlFile 'framework/podtemplate/fmwk8s-slave.yaml'
@@ -18,31 +22,83 @@ pipeline {
     }
 
     environment {
-        RUN_SUFFIX = Common.getUniqueId(this, "${PRODUCT_NAME}")
         REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
-        OPERATOR_NS = "${DOMAIN_NAME}-operator-ns-${RUN_SUFFIX}"
-        OPERATOR_SA = 'default'
-        OPERATOR_HELM_RELEASE = "op-${RUN_SUFFIX}"
-        DOMAIN_NAME = Common.getDomainName("${PRODUCT_NAME}")
-        DOMAIN_NS = "${DOMAIN_NAME}-domain-ns-${RUN_SUFFIX}"
-        WEBLOGIC_USER = 'weblogic'
-        ADMIN_PASSWORD = 'Welcome1'
-        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume/domains"
-        NFS_DOMAIN_DIR = "${DOMAIN_NS}"
-        NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
-        LB_HELM_RELEASE = "lb-${RUN_SUFFIX}"
     }
-
 
     stages {
         stage('initialize validation framework') {
             steps {
-                log('INFO', 'Starting E2E pipeline for ' + "${PRODUCT_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
+                container('jnlp') {
+                    script {
+                        currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME + "-" + "${this.env.DOMAIN_TYPE}".toString().toUpperCase()
+                        Initializer.initialize(this)
+                    }
+                }
+            }
+        }
+
+        stage('validate input parameters') {
+            steps {
+                container('jnlp') {
+                    script {
+                        Validation.validateInputs()
+                        sleep 1
+                    }
+                }
+            }
+        }
+
+        stage('deploy kubernetes operator') {
+            steps {
+                container('jnlp') {
+                    dir('weblogic-operator') {
+                        script {
+                            Operator.deployOperator()
+                        }
+                    }
+                }
 
                 container('jnlp') {
                     script {
-                        Initializer.initialize(this)
+                        Domain.createNamespace()
+                        Common.configureRegistrySecret("${REGISTRY_AUTH_USR}", "${REGISTRY_AUTH_PSW}")
+                        EnvironmentSetup.createNfsFolder()
                     }
+                }
+            }
+        }
+
+        stage('prepare fmw product environment') {
+            parallel {
+                stage('setup database') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwk8s') {
+                                script {
+                                    Database.deployDatabase()
+                                    Domain.preparRcu()
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('prepare fmw domain in pv') {
+                    steps {
+                        container('jnlp') {
+                            dir('fmwsamples') {
+                                script {
+                                    Domain.pullSampleScripts(this)
+
+                                    Operator.setDomainNamespace(this, "${OPERATOR_HELM_RELEASE}", "${DOMAIN_NS}")
+                                    Domain.configureDomainSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.configureRcuSecret(this, "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                    Domain.preparePersistentVolume(this, "${DOMAIN_NAME}", "${DOMAIN_NS}", "${NFS_DOMAIN_PATH}")
+                                    Domain.prepareDomain(this, "${PRODUCT_IMAGE_TAG}", "${DOMAIN_TYPE}", "${DOMAIN_NAME}", "${DOMAIN_NS}")
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -52,8 +108,6 @@ pipeline {
         always {
             container(name: 'jnlp') {
                 script {
-                    currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME
-
                     Logging.getLogs(this)
 
                     Operator.cleanOperator this, "${OPERATOR_HELM_RELEASE}"

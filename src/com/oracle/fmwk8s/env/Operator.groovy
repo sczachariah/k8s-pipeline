@@ -1,53 +1,46 @@
 package com.oracle.fmwk8s.env
 
 import com.oracle.fmwk8s.common.Base
-import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 
-class Operator extends Base{
-    static def operatorNamespace
-    static def operatorServiceAccount
-    static def operatorHelmRelease
+class Operator extends Base {
 
-    static deployOperator(script) {
-        Common.getOperatorVersions(script.env.OPERATOR_VERSION)
+    static deployOperator() {
+        getOperatorVersionMappings()
+
         try {
             Log.info(script, "begin deploy kubernetes operator.")
-            Log.info(script, script.env.ELK_ENABLE)
 
-            createNamespace(script, Base.OPERATOR_NS)
-            this.operatorNamespace = Base.OPERATOR_NS
-            this.operatorServiceAccount = Base.OPERATOR_SA
-            this.operatorHelmRelease = Base.OPERATOR_HELM_RELEASE
+            createNamespace()
 
-            script.git branch: "${Base.operatorBranch}",
+            script.git branch: "${operatorBranch}",
                     url: 'https://github.com/oracle/weblogic-kubernetes-operator'
 
-            script.sh "retVal==`echo \\`helm ls ${Base.OPERATOR_HELM_RELEASE}\\``"
+            script.sh "retVal==`echo \\`helm ls ${operatorHelmRelease}\\``"
 
-            if ("${script.env.ELK_ENABLE}" == "false") {
+            if ("${elkEnable}" == "false") {
                 script.sh "if [[ \$retVal ]]; then\n \
-                               helm upgrade --reuse-values --wait ${Base.OPERATOR_HELM_RELEASE} kubernetes/charts/weblogic-operator \n \
+                               helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
                            else\n \
-                               helm install kubernetes/charts/weblogic-operator --name ${Base.OPERATOR_HELM_RELEASE} --namespace ${Base.OPERATOR_NS} \
-                                        --set serviceAccount=${Base.OPERATOR_SA} --set domainNamespaces={} \
-                                        --set image=oracle/weblogic-kubernetes-operator:${Base.operatorImageVersion} --wait\n \
+                               helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
+                                        --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} \
+                                        --set image=oracle/weblogic-kubernetes-operator:${operatorImageVersion} --wait\n \
                            fi"
             } else {
                 Log.info(script, "elk is enabled")
                 script.sh "if [[ \$retVal ]]; then\n \
-                               helm upgrade --reuse-values --wait ${Base.OPERATOR_HELM_RELEASE} kubernetes/charts/weblogic-operator \n \
+                               helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
                            else\n \
-                               helm install kubernetes/charts/weblogic-operator --name ${Base.OPERATOR_HELM_RELEASE} --namespace ${Base.OPERATOR_NS} \
-                                        --set serviceAccount=${Base.OPERATOR_SA} --set domainNamespaces={} \
-                                        --set image=oracle/weblogic-kubernetes-operator:${Base.operatorImageVersion} \
-                                        --set elkIntegrationEnabled=true --set elasticSearchHost=${Base.elasticSearchHost} --set elasticSearchPort=${Base.elasticSearchPort} --set logStashImage=logstash:6.4.3 --wait\n \
+                               helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
+                                        --set serviceAccount=${operatorServiceAccount} --set domainNamespaces={} \
+                                        --set image=oracle/weblogic-kubernetes-operator:${operatorImageVersion} \
+                                        --set elkIntegrationEnabled=true --set elasticSearchHost=${elasticSearchHost} --set elasticSearchPort=${elasticSearchPort} --set logStashImage=logstash:6.4.3 --wait\n \
                            fi"
             }
 
             Log.info(script, "deploy kubernetes operator success.")
 
-            verifyOperator(script, Base.OPERATOR_NS, script.env.ELK_ENABLE)
+            verifyOperator()
         }
         catch (exc) {
             Log.error(script, "deploy kubernetes operator failed.")
@@ -55,14 +48,14 @@ class Operator extends Base{
         }
     }
 
-    static verifyOperator(script) {
+    static verifyOperator() {
         try {
             Log.info(script, "begin verify kubernetes operator.")
 
-            if ("${script.env.ELK_ENABLE}" == "false") {
-                script.sh "kubectl get pods -n ${Base.OPERATOR_NS} | grep weblogic-operator | grep Running | grep 1/1"
+            if ("${elkEnable}" == "false") {
+                script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1"
             } else {
-                script.sh "kubectl get pods -n ${Base.OPERATOR_NS} | grep weblogic-operator | grep Running | grep 2/2"
+                script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 2/2"
             }
 
             Log.info(script, "verify kubernetes operator success.")
@@ -73,15 +66,15 @@ class Operator extends Base{
         }
     }
 
-    static setDomainNamespace(script) {
+    static setDomainNamespace() {
         try {
             Log.info(script, "begin set domain namespace.")
 
             script.sh "helm upgrade \
                        --reuse-values \
-                       --set \"domainNamespaces={$Base.DOMAIN_NS}\" \
+                       --set \"domainNamespaces={${domainNamespace}}\" \
                        --wait \
-                       ${Base.OPERATOR_HELM_RELEASE} \
+                       ${operatorHelmRelease} \
                        kubernetes/charts/weblogic-operator"
 
             Log.info(script, "set domain namespace success.")
@@ -92,11 +85,11 @@ class Operator extends Base{
         }
     }
 
-    static createNamespace(script) {
+    static createNamespace() {
         try {
             Log.info(script, "begin create kubernetes operator namespace.")
 
-            script.sh "kubectl create ns ${Base.OPERATOR_NS} --v=8"
+            script.sh "kubectl create ns ${operatorNamespace} --v=8"
 
             Log.info(script, "create kubernetes operator namespace success.")
         }
@@ -106,11 +99,11 @@ class Operator extends Base{
         }
     }
 
-    static cleanOperator(script) {
+    static cleanOperator() {
         try {
             Log.info(script, "begin clean kubernetes operator.")
 
-            script.sh "helm delete --purge ${Base.OPERATOR_HELM_RELEASE}"
+            script.sh "helm delete --purge ${operatorHelmRelease}"
 
             Log.info(script, "clean kubernetes operator success.")
         }
@@ -119,14 +112,14 @@ class Operator extends Base{
         }
     }
 
-    static cleanOperatorNamespace(script) {
+    static cleanOperatorNamespace() {
         try {
             Log.info(script, "begin clean kubernetes operator namespace.")
 
-            script.sh "kubectl delete configmaps --all -n ${Base.OPERATOR_NS}"
-            script.sh "kubectl delete all --all -n ${Base.OPERATOR_NS}"
+            script.sh "kubectl delete configmaps --all -n ${operatorNamespace}"
+            script.sh "kubectl delete all --all -n ${operatorNamespace}"
             sleep 30
-            script.sh "kubectl delete ns ${Base.OPERATOR_NS}"
+            script.sh "kubectl delete ns ${operatorNamespace}"
             sleep 30
 
             Log.info(script, "clean kubernetes operator namespace success.")
@@ -136,10 +129,9 @@ class Operator extends Base{
         }
         finally {
             try {
-                script.sh "kubectl get ns ${Base.OPERATOR_NS} -o json | jq '.spec.finalizers=[]' > ns-without-finalizers.json && \
-                       curl -k -X PUT ${Common.k8sMasterUrl}/api/v1/namespaces/${Base.OPERATOR_NS}/finalize \
+                script.sh "kubectl get ns ${operatorNamespace} -o json | jq '.spec.finalizers=[]' > ns-without-finalizers.json && \
+                       curl -k -X PUT ${k8sMasterUrl}/api/v1/namespaces/${operatorNamespace}/finalize \
                                -H \"Content-Type: application/json\" --data-binary @ns-without-finalizers.json"
-
             }
             catch (exc) {
             }

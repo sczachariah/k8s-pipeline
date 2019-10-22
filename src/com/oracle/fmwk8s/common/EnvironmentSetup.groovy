@@ -2,12 +2,12 @@ package com.oracle.fmwk8s.common
 
 import com.oracle.fmwk8s.test.Test
 
-class EnvironmentSetup {
+class EnvironmentSetup extends Base {
 
     static def isWaiting = false
     static def kubeconfig
 
-    static createNfsFolder(script, namespace, nfsHomeDir, nfsDomainDir) {
+    static createNfsFolder() {
         try {
             Log.info(script, "begin create nfs folder.")
 
@@ -16,10 +16,10 @@ class EnvironmentSetup {
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh "cd kubernetes/framework && \
-                        sed -i \"s#%FMWK8S_NFS_HOME%#${nfsHomeDir}#g\" fmwk8s-mkdir-pod.yaml && \
+                        sed -i \"s#%FMWK8S_NFS_HOME%#${fmwk8sNfsHome}#g\" fmwk8s-mkdir-pod.yaml && \
                         sed -i \"s#%NFS_DOMAIN_DIR%#${nfsDomainDir}#g\" fmwk8s-mkdir-pod.yaml && \
                         cat fmwk8s-mkdir-pod.yaml && \
-                        kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${namespace}"
+                        kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${domainNamespace}"
 
             Log.info(script, "create nfs folder success.")
         }
@@ -46,7 +46,7 @@ class EnvironmentSetup {
         }
     }
 
-    static deleteNfsFolder(script, namespace, nfsHomeDir, nfsDomainDir) {
+    static deleteNfsFolder() {
         try {
             Log.info(script, "begin delete nfs folder.")
 
@@ -55,10 +55,10 @@ class EnvironmentSetup {
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh "cd kubernetes/framework && \
-                        sed -i \"s#%FMWK8S_NFS_HOME%#${nfsHomeDir}#g\" fmwk8s-rmdir-pod.yaml && \
+                        sed -i \"s#%FMWK8S_NFS_HOME%#${fmwk8sNfsHome}#g\" fmwk8s-rmdir-pod.yaml && \
                         sed -i \"s#%NFS_DOMAIN_DIR%#${nfsDomainDir}#g\" fmwk8s-rmdir-pod.yaml && \
                         cat fmwk8s-rmdir-pod.yaml && \
-                        kubectl apply -f fmwk8s-rmdir-pod.yaml -n ${namespace} && \
+                        kubectl apply -f fmwk8s-rmdir-pod.yaml -n ${domainNamespace} && \
                         sleep 60"
 
             Log.info(script, "delete nfs folder success.")
@@ -70,7 +70,7 @@ class EnvironmentSetup {
         }
     }
 
-    static waitHoursAfter(script, hoursAfter) {
+    static waitHoursAfter() {
         if ("${hoursAfter}" == "true") {
             if (isWaiting)
                 Log.warning(script, "already in wait loop.")

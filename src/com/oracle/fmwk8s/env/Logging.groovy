@@ -202,7 +202,7 @@ class Logging {
                     script: "echo ${Common.productImage}| awk -F':' '{print \$2}'",
                     returnStdout: true
             ).trim()
-            Log.info(script,this.productImageVersion)
+            Log.info(script, this.productImageVersion)
             script.rtUpload(
                     serverId: "artifacthub.oraclecorp.com",
                     spec:
@@ -210,19 +210,27 @@ class Logging {
                            "files": [
                              {
                                 "pattern": "event_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
+                                this.productImageVersion
+                            }/${script.env.BUILD_NUMBER}/"
                              },
                              {
                                 "pattern": "domain_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
+                                this.productImageVersion
+                            }/${script.env.BUILD_NUMBER}/"
                              },
                              {
                                 "pattern": "pod_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
+                                this.productImageVersion
+                            }/${script.env.BUILD_NUMBER}/"
                              },
                              {
                                 "pattern": "test_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${this.productImageVersion}/${script.env.BUILD_NUMBER}/"
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${
+                                this.productImageVersion
+                            }/${script.env.BUILD_NUMBER}/"
                              }                           
                            ]
                         }""",

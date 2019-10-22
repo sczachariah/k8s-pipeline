@@ -2,33 +2,30 @@ package com.oracle.fmwk8s.common
 
 import java.text.SimpleDateFormat
 
-class Common extends Base{
+class Common extends Base {
 
-
-    static def k8sMasterUrl = ""
-
-    def getUniqueId(def script) {
+    static def getUniqueId() {
         def date = new Date()
         def sdf = new SimpleDateFormat("MMddHHmm")
 
         def buildNumber = "${script.env.BUILD_NUMBER}"
         runId = buildNumber + "-" + sdf.format(date)
 
-        getKubernetesMasterUrl(script)
+        getKubernetesMasterUrl()
     }
 
-    static configureRegistrySecret(script, namespace, registryUsername, registryPass) {
+    static configureRegistrySecret(registryUsername, registryPass) {
         try {
             Log.info(script, "begin configure registry secret.")
 
 
-            script.sh "retVal=`echo \\`kubectl get secret ${registrySecret} -n ${namespace} 2>&1\\`` &&\
+            script.sh "retVal=`echo \\`kubectl get secret ${registrySecret} -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" \\| grep -q 'not found'; then\n \
-                          kubectl create secret docker-registry ${registrySecret} -n ${namespace} --docker-server=http://container-registry.oracle.com --docker-username='${registryUsername}' --docker-password='${registryPass}' --docker-email='${registryUsername}'\n \
+                          kubectl create secret docker-registry ${registrySecret} -n ${domainNamespace} --docker-server=http://container-registry.oracle.com --docker-username='${registryAuthUsr}' --docker-password='${registryAuthPsw}' --docker-email='${registryAuthUsr}'\n \
                        fi"
-            script.sh "denRetVal=`echo \\`kubectl get secret ${denRegistrySecret} -n ${namespace} 2>&1\\`` &&\
+            script.sh "denRetVal=`echo \\`kubectl get secret ${denRegistrySecret} -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$denRetVal\" \\| grep -q 'not found'; then\n \
-                          kubectl create secret docker-registry ${denRegistrySecret} -n ${namespace} --docker-server=http://fmwk8s-dev.dockerhub-den.oraclecorp.com --docker-username='${registryUsername}' --docker-password='${registryPass}' --docker-email='${registryUsername}'\n \
+                          kubectl create secret docker-registry ${denRegistrySecret} -n ${domainNamespace} --docker-server=http://fmwk8s-dev.dockerhub-den.oraclecorp.com --docker-username='${registryAuthUsr}' --docker-password='${registryAuthPsw}' --docker-email='${registryAuthUsr}'\n \
                        fi"
 
             Log.info(script, "configure registry secret success.")
@@ -39,7 +36,7 @@ class Common extends Base{
         }
     }
 
-    static publishLogs(script) {
+    static publishLogs() {
         try {
             Log.info(script, "begin publish logs.")
 
@@ -60,11 +57,11 @@ class Common extends Base{
                            "files": [
                              {
                                 "pattern": "test-output*.zip",
-                                "target": "cisystem-dev-local/com/oracle/fmwk8s/e2e/${this.productId}/test-reports/"
+                                "target": "cisystem-dev-local/com/oracle/fmwk8s/e2e/${productId}/test-reports/"
                              },
                              {
                                 "pattern": "buildlog*.txt",
-                                "target": "cisystem-dev-local/com/oracle/fmwk8s/e2e/${this.productId}/logs/"
+                                "target": "cisystem-dev-local/com/oracle/fmwk8s/e2e/${productId}/logs/"
                              }
                            ]
                         }""",
@@ -79,14 +76,14 @@ class Common extends Base{
         }
     }
 
-    static getKubernetesMasterUrl(script) {
+    static getKubernetesMasterUrl() {
         Log.info(script, "begin get k8s master url.")
         this.k8sMasterUrl = script.sh(
                 script: "kubectl cluster-info | grep \"master is running at\" | sed \"s|.*\\ ||\"",
                 returnStdout: true
         ).trim()
 
-        Log.info(script, "k8s master url : ${this.k8sMasterUrl}")
+        Log.info(script, "k8s master url : ${k8sMasterUrl}")
         Log.info(script, "get k8s master url success.")
     }
 }

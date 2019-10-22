@@ -1,80 +1,106 @@
 package com.oracle.fmwk8s.common
 
-import java.text.SimpleDateFormat
-
 class Base {
+    static def script
+
+    static def k8sMasterUrl = ""
+
     static def runId
+    static def registrySecret = "regcred"
+    static def denRegistrySecret = "denregcred"
+    static def registryAuthUsr
+    static def registryAuthPsw
+
     static def operatorVersion
     static def operatorBranch
     static def operatorImageVersion
+    static def operatorNamespace
+    static def operatorServiceAccount
+    static def operatorHelmRelease
 
     static def productId
     static def productName
     static def productImage
-    static def registrySecret = "regcred"
-    static def denRegistrySecret = "denregcred"
 
+    static def testImage
+    static def testType
+    static def hoursAfter
+
+    static def domainType
     static def domainName
+    static def domainNamespace
+    static def weblogicUsername
+    static def weblogicPassword
+
+    static def databaseVersion
 
     static def samplesRepo
     static def samplesBranch
     static def samplesDirectory
 
+    static def fmwk8sNfsHome
+    static def nfsDomainDir
+    static def nfsDomainPath
+
+    static def lbHelmRelease
+
+    static def elkEnable
     static def elasticSearchHost = "elasticsearch.logging.svc.cluster.local"
     static def elasticSearchPort = "9200"
-    static def OPERATOR_NS
-    static def OPERATOR_SA
-    static def OPERATOR_HELM_RELEASE
-    static def DOMAIN_NAME
-    static def DOMAIN_NS
-    static def WEBLOGIC_USER
-    static def ADMIN_PASSWORD
-    static def FMWK8S_NFS_HOME
-    static def NFS_DOMAIN_DIR
-    static def NFS_DOMAIN_PATH
-    static def REGISTRY_AUTH
-    static def LB_HELM_RELEASE
 
-    static def getOperatorVarNames(){
+    static def getInputVariables() {
+        registryAuthUsr = script.env.REGISTRY_AUTH_USR
+        registryAuthPsw = script.env.REGISTRY_AUTH_PSW
+        operatorVersion = script.env.OPERATOR_VERSION
+        productName = script.env.PRODUCT_NAME
+        domainType = script.env.DOMAIN_TYPE
+        databaseVersion = script.env.DATABASE_VERSION
+        testImage = script.env.TEST_IMAGE_TAG
+        testType = script.env.TEST_TYPE
+        elkEnable = script.env.ELK_ENABLE
+        hoursAfter = script.env.HOURS_AFTER
+    }
+
+    static def getOperatorVariables() {
         //REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
-        OPERATOR_NS = "${domainName}-operator-ns-${runId}"
-        OPERATOR_SA = 'default'
-        OPERATOR_HELM_RELEASE = "op-${runId}"
+        operatorNamespace = "${domainName}-operator-ns-${runId}"
+        operatorServiceAccount = 'default'
+        operatorHelmRelease = "op-${runId}"
     }
 
-    static def gerDomainVarNames(){
-        DOMAIN_NAME = getDomainName()
-        DOMAIN_NS = "${domainName}-domain-ns-${runId}"
-        WEBLOGIC_USER = 'weblogic'
-        ADMIN_PASSWORD = 'Welcome1'
+    static def getDomainVariables() {
+        domainNamespace = "${domainName}-domain-ns-${runId}"
+        weblogicUsername = 'weblogic'
+        weblogicPassword = 'Welcome1'
     }
 
-    static def getNfsPathNames(){
-        FMWK8S_NFS_HOME = "/scratch/u01/DockerVolume/domains"
-        NFS_DOMAIN_DIR = "${DOMAIN_NS}"
-        NFS_DOMAIN_PATH = "${FMWK8S_NFS_HOME}/${NFS_DOMAIN_DIR}"
+    static def getDatabaseVariables() {
+
     }
 
-    static def getLoadBalancerNames(){
-        LB_HELM_RELEASE = "lb-${runId}"
+    static def getNfsVariables() {
+        fmwk8sNfsHome = "/scratch/u01/DockerVolume/domains"
+        nfsDomainDir = "${domainNamespace}"
+        nfsDomainPath = "${fmwk8sNfsHome}/${nfsDomainDir}"
     }
 
-    static def getOperatorVersions(operatorVersion) {
+    static def getLoadBalancerVariables() {
+        lbHelmRelease = "lb-${runId}"
+    }
+
+    static def getOperatorVersionMappings() {
         switch ("${operatorVersion}") {
             case "2.1":
-                this.operatorVersion = "2.1"
                 operatorBranch = "release/2.1"
                 operatorImageVersion = "2.1"
                 samplesBranch = "release/2.1"
                 break
             case "2.2":
-                this.operatorVersion = "2.2"
                 operatorBranch = "release/2.2"
                 operatorImageVersion = "2.2.0"
                 samplesBranch = "release/2.2"
                 break
             case "2.2.1":
-                this.operatorVersion = "2.2.1"
                 operatorBranch = "release/2.2.1"
                 operatorImageVersion = "2.2.1"
                 samplesBranch = "release/2.2.1"
@@ -84,7 +110,6 @@ class Base {
                 }
                 break
             case "2.3.0":
-                this.operatorVersion = "2.3.0"
                 operatorBranch = "release/2.3.0"
                 operatorImageVersion = "2.3.0"
                 samplesBranch = "release/2.3.0"
@@ -94,7 +119,6 @@ class Base {
                 }
                 break
             default:
-                this.operatorVersion = "develop"
                 operatorBranch = "develop"
                 operatorImageVersion = "develop"
                 samplesBranch = "develop"
