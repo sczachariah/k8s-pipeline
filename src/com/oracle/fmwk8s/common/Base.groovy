@@ -9,6 +9,7 @@ class Base {
     static def K8sUtility = new K8sUtility()
 
     static def k8sMasterUrl = ""
+    static def k8sMasterIP = "100.111.149.15"
 
     static def runId
     static def registrySecret = "regcred"

@@ -198,15 +198,14 @@ class Domain extends Common {
             }
             Log.info("start " + productId + " domain success.")
 
-            ReportUtility.printDomainUrls(script)
             isDomainReady()
-
         }
         catch (exc) {
             Log.error("create/start " + productId + " domain failed.")
             throw exc
         }
         finally {
+            ReportUtility.printDomainUrls(script)
             createDomainPodName = script.sh(
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${domainName}-create",
                     returnStdout: true
