@@ -42,6 +42,7 @@ class IngressController {
         }
 
         getLoadBalancerPort(script, lbHelmRelease, domainNamespace)
+        sleep 60
     }
 
     /**

@@ -9,9 +9,10 @@ import com.oracle.fmwk8s.env.Operator
 pipeline {
     agent {
         kubernetes {
-            label 'fmwk8s-oel7-slave'
+            cloud "${CLOUD}"
+            label 'fmwk8s-slave'
             namespace 'fmwk8s'
-            inheritFrom 'fmwk8s-oel7-slave'
+            yamlFile "framework/podtemplate/fmwk8s-slave.yaml"
         }
     }
 

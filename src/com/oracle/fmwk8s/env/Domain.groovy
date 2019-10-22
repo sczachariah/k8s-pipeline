@@ -3,6 +3,7 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Base
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.K8sUtility
+import com.oracle.fmwk8s.utility.ReportUtility
 import com.oracle.fmwk8s.utility.YamlUtility
 
 /**
@@ -153,6 +154,10 @@ class Domain extends Base {
         try {
             Log.info(script, "begin prepare domain.")
 
+            if (domainType.toString().equalsIgnoreCase("N/A")) {
+                domainType = "weblogic"
+            }
+
             if (productImage?.trim()) {
                 productImage = productImage
             }
@@ -197,6 +202,7 @@ class Domain extends Base {
             }
             Log.info(script, "start " + productId + " domain success.")
 
+            ReportUtility.printDomainUrls(script)
             isDomainReady(script)
 
         }
@@ -248,8 +254,20 @@ class Domain extends Base {
     static configureDomainLoadBalancer(script) {
         try {
             Log.info(script, "begin configure domain loadbalancer.")
-            script.sh "helm install kubernetes/samples/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
-                    --set wlsDomain.domainUID=${domainName} --set traefik.hostname=fmwk8s.us.oracle.com"
+            script.git branch: 'master',
+                    credentialsId: 'sandeep.zachariah.ssh',
+                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
+
+            script.sh "ls -ltr"
+            script.sh "ls -ltr kubernetes/framework/charts/ingress-per-domain"
+            script.sh "helm install kubernetes/framework/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
+                    --set wlsDomain.domainUID=${domainName} \
+                    --set wlsDomain.domainType=${this.domainType} \
+                    --set wlsDomain.adminServerName=${yamlUtility.domainInputsMap.get("adminServerName")} \
+                    --set wlsDomain.clusterName=${yamlUtility.domainInputsMap.get("clusterName")} \
+                    --set wlsDomain.adminServerPort=${yamlUtility.domainInputsMap.get("adminPort")} \
+                    --set wlsDomain.managedServerPort=${yamlUtility.domainInputsMap.get("managedServerPort")} \
+                    --set traefik.hostname=fmwk8s.us.oracle.com"
             Log.info(script, "configure domain loadbalancer success.")
         }
         catch (exc) {

@@ -11,6 +11,13 @@ spec:
       envFrom:
         - configMapRef:
             name: fmwk8s-weblogic-env-configmap
+      lifecycle:
+        preStop:
+          exec:
+            command: [
+              # Stop Container Termination for Debugging
+              "tail", "-f", "/dev/null"
+            ]
   restartPolicy: Never
 ---
 ---
