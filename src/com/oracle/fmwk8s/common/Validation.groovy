@@ -22,7 +22,6 @@ class Validation extends Base {
         try {
             Log.info("begin validate inputs.")
             validateOperatorVersion(operatorVersion, productName)
-            validateOperatorVersion(operatorVersion, productName)
             validateProductImageTag(productImage)
             validateDomainType(domainType, productName)
             validateDatabaseVersion(databaseVersion)
