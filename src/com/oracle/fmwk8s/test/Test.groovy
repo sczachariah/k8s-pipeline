@@ -6,13 +6,13 @@ import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
 
 class Test extends Common {
-    static def script = Common.script
-    static def yamlUtility = Common.yamlUtility
+//    static def script = Common.script
+//    static def yamlUtility = Common.yamlUtility
 
     static def testId
-    static def runId = Common.runId
-    static def testType = Common.testType
-    static def testImage = Common.testImage
+//    static def runId = Common.runId
+//    static def testType = Common.testType
+//    static def testImage = Common.testImage
     static def testPodName
     static def testStatus = "init"
 
