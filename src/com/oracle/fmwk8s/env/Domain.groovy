@@ -146,7 +146,7 @@ class Domain extends Base {
         }
     }
 
-    static prepareDomain(script) {
+    static prepareDomain() {
         try {
             Log.info(script, "begin prepare domain.")
 

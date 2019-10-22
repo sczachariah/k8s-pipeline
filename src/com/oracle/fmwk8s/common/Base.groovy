@@ -3,7 +3,7 @@ package com.oracle.fmwk8s.common
 import com.oracle.fmwk8s.utility.K8sUtility
 import com.oracle.fmwk8s.utility.YamlUtility
 
-class Base {
+public class Base {
     static def script
     static def yamlUtility = new YamlUtility()
     static def K8sUtility = new K8sUtility()
