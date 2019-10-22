@@ -5,7 +5,7 @@ import com.oracle.fmwk8s.common.EnvironmentSetup
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
 
-class Test {
+class Test extends Common {
     static def script = Common.script
     static def yamlUtility = Common.yamlUtility
 
