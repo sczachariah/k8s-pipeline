@@ -17,7 +17,7 @@ class UrlValidation extends Test {
 
     static createTestProps(testNamespace) {
         try {
-            Log.info(script, "begin create test props.")
+            Log.info("begin create test props.")
 
             script.sh "cat <<EOF > ${script.env.WORKSPACE}/test.props \
 SELENIUM_HUB_HOST=selenium-standalone-firefox.${testNamespace} \
@@ -25,10 +25,10 @@ SELENIUM_HUB_PORT=4444 \
 EOF && \
             cat ${script.env.WORKSPACE}/test.props"
 
-            Log.info(script, "create test props success.")
+            Log.info("create test props success.")
         }
         catch (exc) {
-            Log.error(script, "create test props failed.")
+            Log.error("create test props failed.")
         }
         finally {
         }

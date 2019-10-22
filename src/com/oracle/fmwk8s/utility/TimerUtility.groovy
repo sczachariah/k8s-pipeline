@@ -16,7 +16,7 @@ class TimerUtility {
 
     void startTimer(script) {
         this.workflowScript = script
-        Log.info(script, "Timer check start")
+        Log.info("Timer check start")
         timer = new Timer()
         timerTask = new TimerTask() {
             @Override

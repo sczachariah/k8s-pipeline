@@ -3,7 +3,7 @@ package com.oracle.fmwk8s.common
 import com.oracle.fmwk8s.utility.K8sUtility
 import com.oracle.fmwk8s.utility.YamlUtility
 
-public class Base {
+class Base {
     static def script
     static def yamlUtility = new YamlUtility()
     static def K8sUtility = new K8sUtility()
@@ -54,7 +54,7 @@ public class Base {
     static def elasticSearchHost = "elasticsearch.logging.svc.cluster.local"
     static def elasticSearchPort = "9200"
 
-    static def getInputVariables() {
+    static getInputVariables() {
         registryAuthUsr = script.env.REGISTRY_AUTH_USR
         registryAuthPsw = script.env.REGISTRY_AUTH_PSW
         operatorVersion = script.env.OPERATOR_VERSION
@@ -68,7 +68,7 @@ public class Base {
         hoursAfter = script.env.HOURS_AFTER
     }
 
-    static def getDomainVariables() {
+    static getDomainVariables() {
         switch ("${productName}") {
             case "WLS":
                 domainName = "weblogic"
@@ -90,26 +90,26 @@ public class Base {
         weblogicPassword = 'Welcome1'
     }
 
-    static def getOperatorVariables() {
+    static getOperatorVariables() {
         operatorNamespace = "${domainName}-operator-ns-${runId}"
         operatorServiceAccount = 'default'
         operatorHelmRelease = "op-${runId}"
     }
 
-    static def getDatabaseVariables() {
+    static getDatabaseVariables() {
     }
 
-    static def getNfsVariables() {
+    static getNfsVariables() {
         fmwk8sNfsHome = "/scratch/u01/DockerVolume/domains"
         nfsDomainDir = "${domainNamespace}"
         nfsDomainPath = "${fmwk8sNfsHome}/${nfsDomainDir}"
     }
 
-    static def getLoadBalancerVariables() {
+    static getLoadBalancerVariables() {
         lbHelmRelease = "lb-${runId}"
     }
 
-    static def getOperatorVersionMappings() {
+    static getOperatorVersionMappings() {
         switch ("${operatorVersion}") {
             case "2.1":
                 operatorBranch = "release/2.1"
@@ -148,7 +148,7 @@ public class Base {
         getSamplesRepoDetails()
     }
 
-    static def getProductIdentifier() {
+    static getProductIdentifier() {
         switch ("${productName}") {
             case "WLS":
                 productId = "weblogic"
@@ -171,7 +171,7 @@ public class Base {
         }
     }
 
-    static def getSamplesRepoDetails() {
+    static getSamplesRepoDetails() {
         switch ("${productName}") {
             case "WLS":
                 samplesRepo = "https://github.com/oracle/weblogic-kubernetes-operator"

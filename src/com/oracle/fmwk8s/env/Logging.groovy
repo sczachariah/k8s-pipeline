@@ -1,18 +1,18 @@
 package com.oracle.fmwk8s.env
 
-import com.oracle.fmwk8s.common.Base
+
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.test.Test
 
-class Logging extends Base {
+class Logging extends Common {
 
     static def buildSuffix
     static def productImageVersion
 
     static configureLogstashConfigmap() {
         try {
-            Log.info(script, "begin configure logstash configmap.")
+            Log.info("begin configure logstash configmap.")
 
             script.sh "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-configmap.yaml && \
@@ -21,17 +21,17 @@ class Logging extends Base {
                        kubectl apply -f logstash-configmap.yaml -n ${domainNamespace} && \
                        sleep 60"
 
-            Log.info(script, "configure logstash configmap success.")
+            Log.info("configure logstash configmap success.")
         }
         catch (exc) {
-            Log.error(script, "configure logstash configmap failed.")
+            Log.error("configure logstash configmap failed.")
             throw exc
         }
     }
 
     static configureLogstash() {
         try {
-            Log.info(script, "begin configure logstash.")
+            Log.info("begin configure logstash.")
 
             script.sh "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" fmwk8s-logstash-config-pod.yaml && \
@@ -40,10 +40,10 @@ class Logging extends Base {
                        kubectl apply -f fmwk8s-logstash-config-pod.yaml -n ${domainNamespace} && \
                        sleep 60"
 
-            Log.info(script, "configure logstash success.")
+            Log.info("configure logstash success.")
         }
         catch (exc) {
-            Log.error(script, "configure logstash failed.")
+            Log.error("configure logstash failed.")
             throw exc
         }
 
@@ -51,7 +51,7 @@ class Logging extends Base {
 
     static updateLogstashDeployment() {
         try {
-            Log.info(script, "begin update and deploy logstash.")
+            Log.info("begin update and deploy logstash.")
 
             script.sh "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-deployment.yaml && \
@@ -61,10 +61,10 @@ class Logging extends Base {
                        kubectl apply -f logstash-deployment.yaml -n ${domainNamespace} && \
                        sleep 60"
 
-            Log.info(script, "update and deploy logstash success.")
+            Log.info("update and deploy logstash success.")
         }
         catch (exc) {
-            Log.error(script, "update and deploy logstash failed.")
+            Log.error("update and deploy logstash failed.")
             throw exc
         }
 
@@ -72,20 +72,20 @@ class Logging extends Base {
 
     static deployLogstash() {
         try {
-            Log.info(script, "begin deploy logstash.")
+            Log.info("begin deploy logstash.")
 
             if ("${elkEnable}" == "true") {
-                Log.info(script, "elk is enabled.")
+                Log.info("elk is enabled.")
                 configureLogstashConfigmap(script, domainName, domainNamespace)
                 configureLogstash(script, domainName, domainNamespace)
                 updateLogstashDeployment(script, domainName, domainNamespace)
-                Log.info(script, "deploy logstash success.")
+                Log.info("deploy logstash success.")
             } else {
-                Log.info(script, "elk is disabled.")
+                Log.info("elk is disabled.")
             }
         }
         catch (exc) {
-            Log.error(script, "deploy logstash failed.")
+            Log.error("deploy logstash failed.")
             throw exc
         }
 
@@ -102,35 +102,35 @@ class Logging extends Base {
 
     static getEventLogs(namespace) {
         try {
-            Log.info(script, "begin get event logs.")
+            Log.info("begin get event logs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs && \
                        kubectl get events --namespace=${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs/${namespace}-event.txt && \
                        ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs"
-            Log.info(script, "get event logs success.")
+            Log.info("get event logs success.")
         }
         catch (exc) {
-            Log.error(script, "get event logs failed.")
+            Log.error("get event logs failed.")
         }
     }
 
     static getPodLogs(podname, namespace) {
         try {
-            Log.info(script, "begin get pod logs.")
+            Log.info("begin get pod logs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs && \
                        kubectl logs ${podname} -n ${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs/${podname}-pod.txt && \
                        ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs"
-            Log.info(script, "get pod logs success.")
+            Log.info("get pod logs success.")
         }
         catch (exc) {
-            Log.error(script, "get pod logs failed.")
+            Log.error("get pod logs failed.")
         }
     }
 
     static getDomainLogs(domainName, namespace) {
         try {
-            Log.info(script, "begin get domain logs sfdfsfsfs.")
+            Log.info("begin get domain logs sfdfsfsfs.")
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
             script.sh "adminServer=`echo \\`kubectl get pods -n ${namespace} 2>&1 | grep admin-server\\``\n \
@@ -142,17 +142,17 @@ class Logging extends Base {
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
-            Log.info(script, "get domain logs success.")
+            Log.info("get domain logs success.")
         }
         catch (exc) {
-            Log.error(script, "get domain logs failed.")
+            Log.error("get domain logs failed.")
             throw exc
         }
     }
 
     static getTestLogs() {
         try {
-            Log.info(script, "begin get test logs.")
+            Log.info("begin get test logs.")
 
             script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
@@ -162,16 +162,16 @@ class Logging extends Base {
                        cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
             script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
 
-            Log.info(script, "get test logs success.")
+            Log.info("get test logs success.")
         }
         catch (exc) {
-            Log.error(script, "get test logs failed.")
+            Log.error("get test logs failed.")
         }
     }
 
     static archiveLogs() {
         try {
-            Log.info(script, "archive logs.")
+            Log.info("archive logs.")
             buildSuffix = "${script.env.BUILD_NUMBER}-${Common.operatorVersion}-${Common.productName}"
 
             script.zip zipFile: "event_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs"
@@ -183,23 +183,23 @@ class Logging extends Base {
             //script.archiveArtifacts artifacts: '**/pod_logs_*.zip'
             //script.archiveArtifacts artifacts: '**/domain_logs_*.zip'
             //script.archiveArtifacts artifacts: '**/test_logs_*.zip'
-            Log.info(script, "archive logs success.")
+            Log.info("archive logs success.")
         }
         catch (exc) {
-            Log.error(script, "archive logs failed.")
+            Log.error("archive logs failed.")
         }
     }
 
     static publishLogsToArtifactory() {
         try {
-            Log.info(script, "publish logs to artifactory.")
+            Log.info("publish logs to artifactory.")
             script.sh "pwd && \
                        ls"
             productImageVersion = script.sh(
                     script: "echo ${productImage}| awk -F':' '{print \$2}'",
                     returnStdout: true
             ).trim()
-            Log.info(script, productImageVersion)
+            Log.info(productImageVersion)
             script.rtUpload(
                     serverId: "artifacthub.oraclecorp.com",
                     spec:
@@ -233,10 +233,10 @@ class Logging extends Base {
                         }""",
                     failNoOp: true
             )
-            Log.info(script, "publish logs to artifactory success.")
+            Log.info("publish logs to artifactory success.")
         }
         catch (exc) {
-            Log.error(script, "publish logs to artifactory failed.")
+            Log.error("publish logs to artifactory failed.")
         }
     }
 }

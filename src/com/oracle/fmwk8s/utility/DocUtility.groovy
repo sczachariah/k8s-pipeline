@@ -6,7 +6,7 @@ import com.oracle.fmwk8s.common.Log
 class DocUtility {
 
     static generateGroovyDoc(script) {
-        Log.info(script, "begin generate groovy doc.")
+        Log.info("begin generate groovy doc.")
 
         script.git branch: 'master',
                 credentialsId: 'sandeep.zachariah.ssh',
@@ -17,6 +17,6 @@ class DocUtility {
         script.sh "cp -r groovydoc /fmwk8s/"
         script.sh "chmod -R 777 /fmwk8s/groovydoc"
 
-        Log.info(script, "generate groovy doc success.")
+        Log.info("generate groovy doc success.")
     }
 }

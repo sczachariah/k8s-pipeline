@@ -5,7 +5,7 @@ import com.oracle.fmwk8s.common.Log
 class Tools {
     static deploySelenium(script, testNamespace) {
         try {
-            Log.info(script, "begin deploy selenium.")
+            Log.info("begin deploy selenium.")
 
             script.git branch: 'master',
                     credentialsId: 'sandeep.zachariah.ssh',
@@ -13,10 +13,10 @@ class Tools {
 
             script.sh "kubectl apply -n ${testNamespace} -f kubernetes/tools/selenium/"
 
-            Log.info(script, "deploy selenium success.")
+            Log.info("deploy selenium success.")
         }
         catch (exc) {
-            Log.error(script, "deploy selenium failed.")
+            Log.error("deploy selenium failed.")
         }
         finally {
         }

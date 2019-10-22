@@ -9,7 +9,7 @@ class EnvironmentSetup extends Base {
 
     static createNfsFolder() {
         try {
-            Log.info(script, "begin create nfs folder.")
+            Log.info("begin create nfs folder.")
 
             script.git branch: 'master',
                     credentialsId: 'sandeep.zachariah.ssh',
@@ -21,10 +21,10 @@ class EnvironmentSetup extends Base {
                         cat fmwk8s-mkdir-pod.yaml && \
                         kubectl apply -f fmwk8s-mkdir-pod.yaml -n ${domainNamespace}"
 
-            Log.info(script, "create nfs folder success.")
+            Log.info("create nfs folder success.")
         }
         catch (exc) {
-            Log.error(script, "create nfs folder failed.")
+            Log.error("create nfs folder failed.")
             throw exc
         }
         finally {
@@ -33,22 +33,22 @@ class EnvironmentSetup extends Base {
 
     static mountKubeconfig(script, namespace) {
         try {
-            Log.info(script, "begin mount kubeconfig.")
+            Log.info("begin mount kubeconfig.")
 
             script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
                        kubectl create configmap fmwk8s-kubeconfig-configmap --from-file=kubeconfig=${script.env.KUBECONFIG} -n ${namespace}"
 
-            Log.info(script, "mount kubeconfig success.")
+            Log.info("mount kubeconfig success.")
         }
         catch (exc) {
-            Log.error(script, "mount kubeconfig failed.")
+            Log.error("mount kubeconfig failed.")
             throw exc
         }
     }
 
     static deleteNfsFolder() {
         try {
-            Log.info(script, "begin delete nfs folder.")
+            Log.info("begin delete nfs folder.")
 
             script.git branch: 'master',
                     credentialsId: 'sandeep.zachariah.ssh',
@@ -61,10 +61,10 @@ class EnvironmentSetup extends Base {
                         kubectl apply -f fmwk8s-rmdir-pod.yaml -n ${domainNamespace} && \
                         sleep 60"
 
-            Log.info(script, "delete nfs folder success.")
+            Log.info("delete nfs folder success.")
         }
         catch (exc) {
-            Log.error(script, "delete nfs folder failed.")
+            Log.error("delete nfs folder failed.")
         }
         finally {
         }
@@ -73,17 +73,17 @@ class EnvironmentSetup extends Base {
     static waitHoursAfter() {
         if ("${hoursAfter}" == "true") {
             if (isWaiting)
-                Log.warning(script, "already in wait loop.")
+                Log.warning("already in wait loop.")
             else {
-                Log.info(script, "begin wait loop.")
+                Log.info("begin wait loop.")
                 isWaiting = true
                 script.sh "sleep 14400"
-                Log.info(script, "end wait loop.")
+                Log.info("end wait loop.")
                 isWaiting = false
                 Test.cleanup(script)
             }
         } else {
-            Log.info(script, "skipping wait loop.")
+            Log.info("skipping wait loop.")
         }
     }
 }

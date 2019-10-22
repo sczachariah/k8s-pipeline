@@ -1,13 +1,14 @@
 package com.oracle.fmwk8s.env
 
-import com.oracle.fmwk8s.common.Base
+
+import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 
 /**
  * IngressController class deploys the different loadBalancers per domain that are required
  * in E2E execution of FMW in Docker/K8S environments
  */
-class IngressController extends Base {
+class IngressController extends Common {
 
     /** the http port for the deployed load balancer */
     static def httplbPort
@@ -54,7 +55,7 @@ class IngressController extends Base {
      */
     static deployTraefik() {
         try {
-            Log.info(script, "begin deploy traefik ingress controller.")
+            Log.info("begin deploy traefik ingress controller.")
             script.sh "helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
                    helm install stable/traefik --name ${lbHelmRelease} --namespace ${domainNamespace} \
@@ -64,10 +65,10 @@ class IngressController extends Base {
                     --set ssl.insecureSkipVerify=true \
                     --set ssl.tlsMinVersion=VersionTLS12 \
                     --wait"
-            Log.info(script, "deploy traefik ingress controller success.")
+            Log.info("deploy traefik ingress controller success.")
         }
         catch (exc) {
-            Log.error(script, "deploy traefik ingress controller failed.")
+            Log.error("deploy traefik ingress controller failed.")
             throw exc
         }
     }
@@ -81,16 +82,16 @@ class IngressController extends Base {
      */
     static deployApache() {
         try {
-            Log.info(script, "begin deploy apache ingress controller.")
-            Log.info(script, operatorBranch)
+            Log.info("begin deploy apache ingress controller.")
+            Log.info(operatorBranch)
             script.sh "helm init --client-only --skip-refresh --wait && \
                        helm repo update && \
                        helm install ../fmwk8s/kubernetes/framework/ingress-controller/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set image=fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3,imagePullSecrets=${denRegistrySecret}"
 
-            Log.info(script, "deploy apache ingress controller success.")
+            Log.info("deploy apache ingress controller success.")
         }
         catch (exc) {
-            Log.error(script, "deploy apache ingress controller failed.")
+            Log.error("deploy apache ingress controller failed.")
             throw exc
         }
     }
@@ -104,15 +105,15 @@ class IngressController extends Base {
      */
     static deployVoyager() {
         try {
-            Log.info(script, "begin deploy apache ingress controller.")
+            Log.info("begin deploy apache ingress controller.")
             script.sh "helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
                    helm install stable/voyager --name ${lbHelmRelease} --namespace ${domainNamespace} \
                    --set ingressClass={${domainNamespace}}"
-            Log.info(script, "deploy apache ingress controller success.")
+            Log.info("deploy apache ingress controller success.")
         }
         catch (exc) {
-            Log.error(script, "deploy apache ingress controller failed.")
+            Log.error("deploy apache ingress controller failed.")
             throw exc
         }
     }
@@ -126,15 +127,15 @@ class IngressController extends Base {
      */
     static deployNginx() {
         try {
-            Log.info(script, "begin deploy nginx ingress controller.")
+            Log.info("begin deploy nginx ingress controller.")
             script.sh "helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
                    helm install stable/nginx-ingress --name ${lbHelmRelease} --namespace ${domainNamespace} \
                    --set controller.scope.namespace={${domainNamespace}}"
-            Log.info(script, "deploy nginx ingress controller success.")
+            Log.info("deploy nginx ingress controller success.")
         }
         catch (exc) {
-            Log.error(script, "deploy nginx ingress controller failed.")
+            Log.error("deploy nginx ingress controller failed.")
             throw exc
         }
     }
@@ -148,7 +149,7 @@ class IngressController extends Base {
      */
     static getLoadBalancerPort() {
         try {
-            Log.info(script, "begin get load balancer port.")
+            Log.info("begin get load balancer port.")
 
             httplbPort = script.sh(
                     script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
@@ -160,12 +161,12 @@ class IngressController extends Base {
                     returnStdout: true
             ).trim()
 
-            Log.info(script, "${httplbPort}")
-            Log.info(script, "${httpslbPort}")
-            Log.info(script, "get load balancer port success.")
+            Log.info("${httplbPort}")
+            Log.info("${httpslbPort}")
+            Log.info("get load balancer port success.")
         }
         catch (exc) {
-            Log.error(script, "get load balancer port failed.")
+            Log.error("get load balancer port failed.")
             throw exc
         }
     }
@@ -178,14 +179,14 @@ class IngressController extends Base {
      */
     static undeployLoadBalancer() {
         try {
-            Log.info(script, "begin clean kubernetes ingress controller.")
+            Log.info("begin clean kubernetes ingress controller.")
 
             script.sh "helm delete --purge ${lbHelmRelease}"
 
-            Log.info(script, "clean kubernetes ingress controller success.")
+            Log.info("clean kubernetes ingress controller success.")
         }
         catch (exc) {
-            Log.error(script, "clean kubernetes ingress controller failed.")
+            Log.error("clean kubernetes ingress controller failed.")
         }
     }
 }

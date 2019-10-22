@@ -18,7 +18,7 @@ class OperatorIntegration extends Test {
 
     static createEnvConfigMap() {
         try {
-            Log.info(script, "begin create env configmap.")
+            Log.info("begin create env configmap.")
 
             script.git branch: 'master',
                     credentialsId: 'sandeep.zachariah.ssh',
@@ -42,10 +42,10 @@ class OperatorIntegration extends Test {
 
             script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-env-configmap.yaml -n ${Domain.domainNamespace}"
 
-            Log.info(script, "create env configmap success.")
+            Log.info("create env configmap success.")
         }
         catch (exc) {
-            Log.error(script, "create env configmap failed.")
+            Log.error("create env configmap failed.")
             throw exc
         }
         finally {
@@ -54,7 +54,7 @@ class OperatorIntegration extends Test {
 
     static createPersistentVolume() {
         try {
-            Log.info(script, "begin create persistent volume.")
+            Log.info("begin create persistent volume.")
 
             script.sh "cd kubernetes/framework/test/${testId} && \
                        sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-pv.yaml && \
@@ -65,10 +65,10 @@ class OperatorIntegration extends Test {
             script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace}"
             script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pvc.yaml -n ${Domain.domainNamespace}"
 
-            Log.info(script, "create persistent volume success.")
+            Log.info("create persistent volume success.")
         }
         catch (exc) {
-            Log.error(script, "create persistent volume failed.")
+            Log.error("create persistent volume failed.")
             throw exc
         }
         finally {
@@ -77,7 +77,7 @@ class OperatorIntegration extends Test {
 
     static runTests() {
         try {
-            Log.info(script, "begin run test.")
+            Log.info("begin run test.")
 
             script.sh "cd kubernetes/framework/test/${testId} && \
                         sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${testId}-test-pod.yaml && \
@@ -92,10 +92,10 @@ class OperatorIntegration extends Test {
             testStatus = "started"
             waitForTests()
 
-            Log.info(script, "run test success.")
+            Log.info("run test success.")
         }
         catch (exc) {
-            Log.error(script, "run test failed.")
+            Log.error("run test failed.")
             throw exc
         }
         finally {
@@ -103,15 +103,15 @@ class OperatorIntegration extends Test {
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${Domain.domainNamespace} | grep ${testId}-test",
                     returnStdout: true
             ).trim()
-            Log.info(script, "begin fetch test pod logs.")
+            Log.info("begin fetch test pod logs.")
             Logging.getPodLogs(testPodName, Domain.domainNamespace)
-            Log.info(script, "fetch test pod logs success.")
+            Log.info("fetch test pod logs success.")
         }
     }
 
     static waitForTests() {
         try {
-            Log.info(script, "begin wait for test completion.")
+            Log.info("begin wait for test completion.")
 
             script.sh "testInit='testInit' && \
                         i=0 && \
@@ -142,10 +142,10 @@ class OperatorIntegration extends Test {
                         done"
 
             testStatus = "completed"
-            Log.info(script, "wait for test completion success.")
+            Log.info("wait for test completion success.")
         }
         catch (exc) {
-            Log.error(script, "wait for test completion failed.")
+            Log.error("wait for test completion failed.")
             throw exc
         }
     }

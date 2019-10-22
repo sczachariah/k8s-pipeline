@@ -1,6 +1,6 @@
 package com.oracle.fmwk8s.env
 
-import com.oracle.fmwk8s.common.Base
+import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.K8sUtility
 import com.oracle.fmwk8s.utility.ReportUtility
@@ -9,7 +9,7 @@ import com.oracle.fmwk8s.utility.ReportUtility
  * Domain class handles the common domain operations that are required
  * in E2E execution of FMW in Docker/K8S environments
  */
-class Domain extends Base {
+class Domain extends Common {
     static def weblogicCredentialsSecretName
     static def createDomainPodName
     static def adminServerPodName
@@ -25,18 +25,18 @@ class Domain extends Base {
     static configureRcuSecret() {
         try {
             if (productId != "weblogic") {
-                Log.info(script, "begin configure rcu secrets.")
+                Log.info("begin configure rcu secrets.")
 
                 script.sh "retVal=`echo \\`kubectl get secret ${domainName}-rcu-credentials -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
                           kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${domainName} -p Welcome1 -a sys -q ${Database.dbPassword} -d ${domainName} -n ${domainNamespace} \n \
                        fi"
 
-                Log.info(script, "configure rcu secrets success.")
+                Log.info("configure rcu secrets success.")
             }
         }
         catch (exc) {
-            Log.error(script, "configure rcu secrets failed.")
+            Log.error("configure rcu secrets failed.")
             throw exc
         }
     }
@@ -44,7 +44,7 @@ class Domain extends Base {
     static preparRcu() {
         try {
             if (productId != "weblogic" && operatorVersion != "2.1") {
-                Log.info(script, "begin prepare rcu.")
+                Log.info("begin prepare rcu.")
 
                 script.git branch: 'master',
                         credentialsId: 'sandeep.zachariah.ssh',
@@ -81,23 +81,23 @@ class Domain extends Base {
                            done"
 
 
-                Log.info(script, "prepare rcu success.")
+                Log.info("prepare rcu success.")
             }
         }
         catch (exc) {
-            Log.error(script, "prepare rcu failed.")
+            Log.error("prepare rcu failed.")
             throw exc
         }
         finally {
-            Log.info(script, "begin fetch rcu pod logs.")
+            Log.info("begin fetch rcu pod logs.")
             Logging.getPodLogs('fmwk8s-rcu', domainName)
-            Log.info(script, "fetch rcu pod logs success.")
+            Log.info("fetch rcu pod logs success.")
         }
     }
 
     static configureDomainSecret() {
         try {
-            Log.info(script, "begin configure domain secrets.")
+            Log.info("begin configure domain secrets.")
 
             weblogicCredentialsSecretName = "${domainName}-weblogic-credentials"
 
@@ -106,18 +106,18 @@ class Domain extends Base {
                           kubernetes/samples/scripts/create-weblogic-domain-credentials/create-weblogic-credentials.sh -u ${weblogicUsername} -p ${weblogicPassword} -n ${domainNamespace} -d ${domainName} \n \
                        fi"
 
-            Log.info(script, "configure domain secrets success.")
+            Log.info("configure domain secrets success.")
 
         }
         catch (exc) {
-            Log.error(script, "configure domain secrets failed.")
+            Log.error("configure domain secrets failed.")
             throw exc
         }
     }
 
     static preparePersistentVolume() {
         try {
-            Log.info(script, "begin prepare persistent volume.")
+            Log.info("begin prepare persistent volume.")
 
             script.sh "cp -r kubernetes/samples/scripts/create-weblogic-domain-pv-pvc/create-pv-pvc-inputs.yaml create-pv-pvc-inputs && \
                        ls -ltr . && cat create-pv-pvc-inputs"
@@ -137,18 +137,18 @@ class Domain extends Base {
                        kubectl describe pv ${domainName}-${domainNamespace}-pv -n ${domainNamespace} && \
                        kubectl describe pvc ${domainName}-${domainNamespace}-pvc -n ${domainNamespace}"
 
-            Log.info(script, "prepare persistent volume success.")
+            Log.info("prepare persistent volume success.")
 
         }
         catch (exc) {
-            Log.error(script, "prepare persistent volume failed.")
+            Log.error("prepare persistent volume failed.")
             throw exc
         }
     }
 
     static prepareDomain() {
         try {
-            Log.info(script, "begin prepare domain.")
+            Log.info("begin prepare domain.")
 
             if (domainType.toString().equalsIgnoreCase("N/A")) {
                 domainType = "weblogic"
@@ -166,11 +166,11 @@ class Domain extends Base {
 
             script.sh "cat create-domain-inputs.yaml"
 
-            Log.info(script, "prepare domain success.")
+            Log.info("prepare domain success.")
 
         }
         catch (exc) {
-            Log.error(script, "prepare domain failed.")
+            Log.error("prepare domain failed.")
             throw exc
         }
     }
@@ -180,15 +180,15 @@ class Domain extends Base {
             this.domainName = domainName
             this.domainNamespace = domainNamespace
 
-            Log.info(script, "begin create " + productId + " domain.")
+            Log.info("begin create " + productId + " domain.")
             script.sh "./kubernetes/samples/scripts/create-${productId}-domain/${samplesDirectory}/create-domain.sh -i create-domain-inputs.yaml -o script-output-directory"
             script.sh "mkdir -p ${domainName}-${domainNamespace} && \
                        ls -ltr script-output-directory/weblogic-domains/ && \
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain && \
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain" + productId + ""
-            Log.info(script, "create " + productId + " domain success.")
+            Log.info("create " + productId + " domain success.")
 
-            Log.info(script, "begin start " + productId + " domain")
+            Log.info("begin start " + productId + " domain")
             yamlUtility.generateDomainYaml(script, productId, "domain")
             script.sh "ls -ltr && cat domain*"
             script.sh "kubectl apply -f domain.yaml -n ${domainNamespace}"
@@ -196,14 +196,14 @@ class Domain extends Base {
                 script.sh "kubectl apply -f domain" + productId + ".yaml -n ${domainNamespace} && \
                            sleep 480000"
             }
-            Log.info(script, "start " + productId + " domain success.")
+            Log.info("start " + productId + " domain success.")
 
             ReportUtility.printDomainUrls(script)
             isDomainReady()
 
         }
         catch (exc) {
-            Log.error(script, "create/start " + productId + " domain failed.")
+            Log.error("create/start " + productId + " domain failed.")
             throw exc
         }
         finally {
@@ -211,45 +211,45 @@ class Domain extends Base {
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${domainName}-create",
                     returnStdout: true
             ).trim()
-            Log.info(script, "begin fetch create domain job pod logs.")
+            Log.info("begin fetch create domain job pod logs.")
             Logging.getPodLogs(createDomainPodName, domainNamespace)
-            Log.info(script, "fetch create domain job pod logs success.")
+            Log.info("fetch create domain job pod logs success.")
         }
     }
 
     static isDomainReady() {
         try {
-            Log.info(script, "begin domain readiness check.")
+            Log.info("begin domain readiness check.")
 
             script.sh "kubectl get all,domains -n ${domainNamespace}"
-            Log.info(script, "begin Admin server status check")
+            Log.info("begin Admin server status check")
             adminServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}"
-            Log.info(script, adminServerPodName)
+            Log.info(adminServerPodName)
             K8sUtility.checkPodStatus(script, adminServerPodName, domainNamespace, 20)
-            Log.info(script, "admin server status check completed.")
-            Log.info(script, "begin Managed server status check.")
+            Log.info("admin server status check completed.")
+            Log.info("begin Managed server status check.")
             script.sh "kubectl get domain -n ${domainNamespace} -o yaml > ${domainName}-domain.yaml && \
                        ls"
             replicaCount = script.sh(
                     script: "cat ${domainName}-domain.yaml | grep replicas:|tail -1|awk -F':' '{print \$2}'",
                     returnStdout: true
             ).trim()
-            Log.info(script, replicaCount)
+            Log.info(replicaCount)
             for (int i = 1; i <= Integer.parseInt(replicaCount); i++) {
                 managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase")}${i}"
                 K8sUtility.checkPodStatus(script, managedServerPodName, domainNamespace, 20)
             }
-            Log.info(script, "managed server status check completed.")
-            Log.info(script, "domain readiness check success.")
+            Log.info("managed server status check completed.")
+            Log.info("domain readiness check success.")
         }
         catch (exc) {
-            Log.error(script, "domain readiness check failed.")
+            Log.error("domain readiness check failed.")
         }
     }
 
     static configureDomainLoadBalancer() {
         try {
-            Log.info(script, "begin configure domain loadbalancer.")
+            Log.info("begin configure domain loadbalancer.")
             script.git branch: 'master',
                     credentialsId: 'sandeep.zachariah.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
@@ -264,28 +264,28 @@ class Domain extends Base {
                     --set wlsDomain.adminServerPort=${yamlUtility.domainInputsMap.get("adminPort")} \
                     --set wlsDomain.managedServerPort=${yamlUtility.domainInputsMap.get("managedServerPort")} \
                     --set traefik.hostname=fmwk8s.us.oracle.com"
-            Log.info(script, "configure domain loadbalancer success.")
+            Log.info("configure domain loadbalancer success.")
         }
         catch (exc) {
-            Log.error(script, "configure domain loadbalancer failed.")
+            Log.error("configure domain loadbalancer failed.")
             throw exc
         }
     }
 
     static createNamespace() {
         try {
-            Log.info(script, "begin create domain namespace.")
+            Log.info("begin create domain namespace.")
 
             script.sh "kubectl create ns ${domainNamespace}"
 
-            Log.info(script, "create domain namespace success.")
+            Log.info("create domain namespace success.")
         }
         catch (exc) {
-            Log.error(script, "create domain namespace failed.")
+            Log.error("create domain namespace failed.")
             throw exc
         }
         finally {
-            Log.info(script, "initialize helm.")
+            Log.info("initialize helm.")
 
             script.sh "helm init --client-only --skip-refresh --wait"
         }
@@ -296,7 +296,7 @@ class Domain extends Base {
             script.sh "helm delete --purge ${domainNamespace}-ingress"
         }
         catch (exc) {
-            Log.error(script, "cleanup domain ingress failed.")
+            Log.error("cleanup domain ingress failed.")
         }
         finally {
             sleep 30
@@ -308,7 +308,7 @@ class Domain extends Base {
                        kubectl delete pods --all -n ${domainNamespace}"
         }
         catch (exc) {
-            Log.error(script, "cleanup domain pods and services failed.")
+            Log.error("cleanup domain pods and services failed.")
         }
         finally {
             sleep 30
@@ -319,7 +319,7 @@ class Domain extends Base {
             script.sh "kubectl delete statefulsets --all -n ${domainNamespace}"
         }
         catch (exc) {
-            Log.error(script, "cleanup domain configmap and stateful sets failed.")
+            Log.error("cleanup domain configmap and stateful sets failed.")
         }
         finally {
             sleep 30
@@ -329,7 +329,7 @@ class Domain extends Base {
             script.sh "kubectl delete domain ${domainName} -n ${domainNamespace}"
         }
         catch (exc) {
-            Log.error(script, "cleanup domain resource failed.")
+            Log.error("cleanup domain resource failed.")
         }
         finally {
             sleep 30
@@ -341,7 +341,7 @@ class Domain extends Base {
             script.sh "kubectl delete pv ${domainName}-${domainNamespace}-pv -n ${domainNamespace}"
         }
         catch (exc) {
-            Log.error(script, "cleanup domain persistent volume failed.")
+            Log.error("cleanup domain persistent volume failed.")
         }
         finally {
             sleep 60
@@ -354,7 +354,7 @@ class Domain extends Base {
             sleep 30
         }
         catch (exc) {
-            Log.error(script, "cleanup domain namespace failed.")
+            Log.error("cleanup domain namespace failed.")
         }
         finally {
             try {

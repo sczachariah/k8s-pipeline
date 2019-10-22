@@ -1,15 +1,16 @@
 package com.oracle.fmwk8s.env
 
-import com.oracle.fmwk8s.common.Base
+
+import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 
-class Operator extends Base {
+class Operator extends Common {
 
     static deployOperator() {
         getOperatorVersionMappings()
 
         try {
-            Log.info(script, "begin deploy kubernetes operator.")
+            Log.info("begin deploy kubernetes operator.")
 
             createNamespace()
 
@@ -27,7 +28,7 @@ class Operator extends Base {
                                         --set image=oracle/weblogic-kubernetes-operator:${operatorImageVersion} --wait\n \
                            fi"
             } else {
-                Log.info(script, "elk is enabled")
+                Log.info("elk is enabled")
                 script.sh "if [[ \$retVal ]]; then\n \
                                helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
                            else\n \
@@ -38,19 +39,19 @@ class Operator extends Base {
                            fi"
             }
 
-            Log.info(script, "deploy kubernetes operator success.")
+            Log.info("deploy kubernetes operator success.")
 
             verifyOperator()
         }
         catch (exc) {
-            Log.error(script, "deploy kubernetes operator failed.")
+            Log.error("deploy kubernetes operator failed.")
             throw exc
         }
     }
 
     static verifyOperator() {
         try {
-            Log.info(script, "begin verify kubernetes operator.")
+            Log.info("begin verify kubernetes operator.")
 
             if ("${elkEnable}" == "false") {
                 script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1"
@@ -58,17 +59,17 @@ class Operator extends Base {
                 script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 2/2"
             }
 
-            Log.info(script, "verify kubernetes operator success.")
+            Log.info("verify kubernetes operator success.")
         }
         catch (exc) {
-            Log.error(script, "verify kubernetes operator failed.")
+            Log.error("verify kubernetes operator failed.")
             throw exc
         }
     }
 
     static setDomainNamespace() {
         try {
-            Log.info(script, "begin set domain namespace.")
+            Log.info("begin set domain namespace.")
 
             script.sh "helm upgrade \
                        --reuse-values \
@@ -77,44 +78,44 @@ class Operator extends Base {
                        ${operatorHelmRelease} \
                        kubernetes/charts/weblogic-operator"
 
-            Log.info(script, "set domain namespace success.")
+            Log.info("set domain namespace success.")
         }
         catch (exc) {
-            Log.error(script, "set domain namespace failed.")
+            Log.error("set domain namespace failed.")
             throw exc
         }
     }
 
     static createNamespace() {
         try {
-            Log.info(script, "begin create kubernetes operator namespace.")
+            Log.info("begin create kubernetes operator namespace.")
 
             script.sh "kubectl create ns ${operatorNamespace} --v=8"
 
-            Log.info(script, "create kubernetes operator namespace success.")
+            Log.info("create kubernetes operator namespace success.")
         }
         catch (exc) {
-            Log.error(script, "create kubernetes operator namespace failed.")
+            Log.error("create kubernetes operator namespace failed.")
             throw exc
         }
     }
 
     static cleanOperator() {
         try {
-            Log.info(script, "begin clean kubernetes operator.")
+            Log.info("begin clean kubernetes operator.")
 
             script.sh "helm delete --purge ${operatorHelmRelease}"
 
-            Log.info(script, "clean kubernetes operator success.")
+            Log.info("clean kubernetes operator success.")
         }
         catch (exc) {
-            Log.error(script, "clean kubernetes operator failed.")
+            Log.error("clean kubernetes operator failed.")
         }
     }
 
     static cleanOperatorNamespace() {
         try {
-            Log.info(script, "begin clean kubernetes operator namespace.")
+            Log.info("begin clean kubernetes operator namespace.")
 
             script.sh "kubectl delete configmaps --all -n ${operatorNamespace}"
             script.sh "kubectl delete all --all -n ${operatorNamespace}"
@@ -122,10 +123,10 @@ class Operator extends Base {
             script.sh "kubectl delete ns ${operatorNamespace}"
             sleep 30
 
-            Log.info(script, "clean kubernetes operator namespace success.")
+            Log.info("clean kubernetes operator namespace success.")
         }
         catch (exc) {
-            Log.error(script, "clean kubernetes operator namespace failed.")
+            Log.error("clean kubernetes operator namespace failed.")
         }
         finally {
             try {

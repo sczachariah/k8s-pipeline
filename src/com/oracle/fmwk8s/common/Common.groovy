@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 
 class Common extends Base {
 
-    static def getUniqueId() {
+    static getUniqueId() {
         def date = new Date()
         def sdf = new SimpleDateFormat("MMddHHmm")
 
@@ -16,7 +16,7 @@ class Common extends Base {
 
     static configureRegistrySecret() {
         try {
-            Log.info(script, "begin configure registry secret.")
+            Log.info("begin configure registry secret.")
 
 
             script.sh "retVal=`echo \\`kubectl get secret ${registrySecret} -n ${domainNamespace} 2>&1\\`` &&\
@@ -28,17 +28,17 @@ class Common extends Base {
                           kubectl create secret docker-registry ${denRegistrySecret} -n ${domainNamespace} --docker-server=http://fmwk8s-dev.dockerhub-den.oraclecorp.com --docker-username='${registryAuthUsr}' --docker-password='${registryAuthPsw}' --docker-email='${registryAuthUsr}'\n \
                        fi"
 
-            Log.info(script, "configure registry secret success.")
+            Log.info("configure registry secret success.")
         }
         catch (exc) {
-            Log.error(script, "configure registry secret failed.")
+            Log.error("configure registry secret failed.")
             throw exc
         }
     }
 
     static publishLogs() {
         try {
-            Log.info(script, "begin publish logs.")
+            Log.info("begin publish logs.")
 
             script.echo "Reports directory: ${script.env.WORKSPACE}/test-output"
             script.env.DEPLOY_BUILD_DATE = script.sh(returnStdout: true, script: "date -u +'%Y-%m-%d-%H%M'").trim()
@@ -68,22 +68,22 @@ class Common extends Base {
                     failNoOp: true
             )
 
-            Log.info(script, "publish logs success.")
+            Log.info("publish logs success.")
         }
         catch (exc) {
-            Log.error(script, "publish logs failed.")
+            Log.error("publish logs failed.")
             throw exc
         }
     }
 
     static getKubernetesMasterUrl() {
-        Log.info(script, "begin get k8s master url.")
+        Log.info("begin get k8s master url.")
         this.k8sMasterUrl = script.sh(
                 script: "kubectl cluster-info | grep \"master is running at\" | sed \"s|.*\\ ||\"",
                 returnStdout: true
         ).trim()
 
-        Log.info(script, "k8s master url : ${k8sMasterUrl}")
-        Log.info(script, "get k8s master url success.")
+        Log.info("k8s master url : ${k8sMasterUrl}")
+        Log.info("get k8s master url success.")
     }
 }

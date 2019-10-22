@@ -7,7 +7,7 @@ class K8sUtility {
 
     static checkPodStatus(script, podName, namespace, timeout) {
         try {
-            Log.info(script, "begin ${podName} status check.")
+            Log.info("begin ${podName} status check.")
             script.sh "podstat='podstat' && \
                         i=0 && \
                         until `echo \$podstat | grep -q 1/1` > /dev/null\n \
@@ -21,10 +21,10 @@ class K8sUtility {
                         sleep 60\n \
                         podstat=`echo \\`kubectl get pods -n ${namespace} 2>&1 | grep ${podName}\\``\n \
                         done"
-            Log.info(script, "${podName} is up and running")
+            Log.info("${podName} is up and running")
         }
         catch (exc) {
-            Log.error(script, "server status check failed.")
+            Log.error("server status check failed.")
         }
     }
 }

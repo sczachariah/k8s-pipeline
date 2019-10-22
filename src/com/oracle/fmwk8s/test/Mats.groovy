@@ -14,7 +14,7 @@ class Mats extends Test {
 
     static createEnvConfigMap() {
         try {
-            Log.info(script, "begin create env configmap.")
+            Log.info("begin create env configmap.")
 
             script.git branch: 'master',
                     credentialsId: 'sandeep.zachariah.ssh',
@@ -41,10 +41,10 @@ class Mats extends Test {
 
             script.sh "kubectl apply -f kubernetes/framework/${Common.productId}/fmwk8s-${Common.productId}-env-configmap.yaml -n ${Domain.domainNamespace}"
 
-            Log.info(script, "create env configmap success.")
+            Log.info("create env configmap success.")
         }
         catch (exc) {
-            Log.error(script, "create env configmap failed.")
+            Log.error("create env configmap failed.")
         }
         finally {
         }
@@ -52,7 +52,7 @@ class Mats extends Test {
 
     static runTests() {
         try {
-            Log.info(script, "begin run test.")
+            Log.info("begin run test.")
 
             script.git branch: 'master',
                     credentialsId: 'sandeep.zachariah.ssh',
@@ -67,10 +67,10 @@ class Mats extends Test {
 
             waitForTests(script)
 
-            Log.info(script, "run test success.")
+            Log.info("run test success.")
         }
         catch (exc) {
-            Log.error(script, "run test failed.")
+            Log.error("run test failed.")
         }
         finally {
         }
@@ -78,7 +78,7 @@ class Mats extends Test {
 
     static waitForTests() {
         try {
-            Log.info(script, "begin wait for test completion.")
+            Log.info("begin wait for test completion.")
 
             script.sh "testStat='testStat' && \
                         i=0 && \
@@ -94,10 +94,10 @@ class Mats extends Test {
                         testStat=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${Common.productId}-mats\\``\n \
                         done"
 
-            Log.info(script, "wait for test completion success.")
+            Log.info("wait for test completion success.")
         }
         catch (exc) {
-            Log.error(script, "wait for test completion failed.")
+            Log.error("wait for test completion failed.")
             throw exc
         }
     }

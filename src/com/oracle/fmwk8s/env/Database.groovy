@@ -1,13 +1,14 @@
 package com.oracle.fmwk8s.env
 
-import com.oracle.fmwk8s.common.Base
+
+import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 
 /**
  * Database class handles the common database operations that are required
  * in E2E execution of FMW in Docker/K8S environments
  */
-class Database extends Base {
+class Database extends Common {
     /** the name of the database service */
     static dbName = "oracledb"
     /** the password to connect to db */
@@ -27,7 +28,7 @@ class Database extends Base {
     static deployDatabase() {
         try {
             if (productId != "weblogic") {
-                Log.info(script, "begin deploy database.")
+                Log.info("begin deploy database.")
 
                 script.git branch: 'master',
                         credentialsId: 'sandeep.zachariah.ssh',
@@ -56,29 +57,29 @@ class Database extends Base {
                         dbstat=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep ${dbName}\\``\n \
                         done"
 
-                Log.info(script, "DB container is Running.")
+                Log.info("DB container is Running.")
                 script.sh "kubectl get pods,svc -n ${domainNamespace} | grep ${dbName}"
 
-                Log.info(script, "begin xaview setup for database.")
+                Log.info("begin xaview setup for database.")
                 dbPodName = script.sh(
                         script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${dbName}",
                         returnStdout: true
                 ).trim()
                 script.sh "kubectl exec -it ${dbPodName} -n ${domainNamespace} -- bash -c \"source /home/oracle/.bashrc; sqlplus sys/${dbPassword}@${dbName}pdb as sysdba <<EOF @\\\$ORACLE_HOME/rdbms/admin/xaview.sql / exit EOF\""
-                Log.info(script, "xaview setup for database success.")
+                Log.info("xaview setup for database success.")
 
-                Log.info(script, "deploy database success.")
+                Log.info("deploy database success.")
             }
         }
         catch (exc) {
-            Log.error(script, "deploy database failed.")
+            Log.error("deploy database failed.")
             throw exc
         }
         finally {
             if (productId != "weblogic") {
-                Log.info(script, "begin fetch database pod logs.")
+                Log.info("begin fetch database pod logs.")
                 Logging.getPodLogs(dbPodName, domainNamespace)
-                Log.info(script, "fetch database pod logs success.")
+                Log.info("fetch database pod logs success.")
             }
 
         }
