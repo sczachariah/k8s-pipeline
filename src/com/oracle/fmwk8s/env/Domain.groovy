@@ -90,7 +90,7 @@ class Domain extends Common {
         }
         finally {
             Log.info("begin fetch rcu pod logs.")
-            Logging.getPodLogs('fmwk8s-rcu', domainName)
+            Logging.getPodLogs('fmwk8s-rcu', domainNamespace)
             Log.info("fetch rcu pod logs success.")
         }
     }
