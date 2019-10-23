@@ -80,7 +80,7 @@ class EnvironmentSetup extends Base {
                 script.sh "sleep 14400"
                 Log.info("end wait loop.")
                 isWaiting = false
-                Test.cleanup(script)
+                Test.cleanup()
             }
         } else {
             Log.info("skipping wait loop.")
