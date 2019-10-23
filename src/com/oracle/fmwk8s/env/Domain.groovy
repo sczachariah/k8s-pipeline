@@ -252,6 +252,7 @@ class Domain extends Common {
             script.sh "ls -ltr"
             script.sh "ls -ltr kubernetes/framework/charts/ingress-per-domain"
             script.sh "helm install kubernetes/framework/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
+                    --set type=${lbType} \
                     --set wlsDomain.domainUID=${domainName} \
                     --set wlsDomain.domainType=${domainType} \
                     --set wlsDomain.adminServerName=${yamlUtility.domainInputsMap.get("adminServerName")} \

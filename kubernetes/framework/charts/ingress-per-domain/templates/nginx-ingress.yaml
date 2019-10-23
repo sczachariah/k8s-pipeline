@@ -1,14 +1,14 @@
-{{- if eq .Values.type "TRAEFIK" }}
+{{- if eq .Values.type "NGINX" }}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ .Values.wlsDomain.domainUID }}-traefik
+  name: {{ .Values.wlsDomain.domainUID }}-nginx
   namespace: {{ .Release.Namespace }}
   labels:
     weblogic.resourceVersion: domain-v2
   annotations:
-    kubernetes.io/ingress.class: traefik
+    kubernetes.io/ingress.class: nginx
 spec:
   rules:
     - http:
