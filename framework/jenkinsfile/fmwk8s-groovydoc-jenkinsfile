@@ -6,6 +6,7 @@ import com.oracle.fmwk8s.utility.DocUtility
 pipeline {
     agent {
         kubernetes {
+            cloud 'oci-v1.12.9'
             label 'fmwk8s-generic'
             namespace 'fmwk8s'
             yamlFile 'framework/podtemplate/fmwk8s-generic.yaml'
