@@ -34,3 +34,21 @@ spec:
   hostPath:
     path: "/scratch/u01/DockerVolume/fmwk8s"
 ---
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: fmwk8s-root-pv
+  labels:
+    type: fmwk8s-hostpath-pv
+spec:
+  storageClassName: fmwk8s-root-pv
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: "/scratch/u01/DockerVolume"
+---

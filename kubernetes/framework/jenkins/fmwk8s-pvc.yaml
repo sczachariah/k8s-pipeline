@@ -26,3 +26,17 @@ spec:
     requests:
       storage: 1Gi
 ---
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: fmwk8s-root-pvc
+  namespace: fmwk8s
+spec:
+  storageClassName: fmwk8s-root-pv
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+---
