@@ -1,11 +1,12 @@
 package com.oracle.fmwk8s.utility
 
-
+import com.oracle.fmwk8s.common.Base
 import com.oracle.fmwk8s.common.Log
 
 class DocUtility {
 
     static generateGroovyDoc(script) {
+        Base.script = script
         Log.info("begin generate groovy doc.")
 
         script.git branch: 'master',
