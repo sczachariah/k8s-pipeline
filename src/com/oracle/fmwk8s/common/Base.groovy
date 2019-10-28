@@ -138,7 +138,7 @@ class Base {
                 samplesBranch = "release/2.3.0"
                 switch (productName) {
                     case "SOA":
-                        samplesBranch = "soa-2.2.1-dev"
+                        samplesBranch = "soa-2.3.0"
                 }
                 break
             default:
