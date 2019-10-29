@@ -186,6 +186,10 @@ class Base {
             case "SOA":
                 samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
                 samplesDirectory = ""
+                switch (operatorVersion) {
+                    case "2.3.0":
+                        samplesDirectory = "domain-home-on-pv"
+                }
                 break
             case "OIG":
                 samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
