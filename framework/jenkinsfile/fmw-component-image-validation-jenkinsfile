@@ -109,7 +109,7 @@ EOF
                                 mvn test -Dtest=WCPsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
                             fi
                             
-                            ls ${WORKSPACE}
+                            ls ${WORKSPACE}/target
 
 
                             '''
@@ -120,7 +120,7 @@ EOF
         }
         stage('Collect and Upload Reports') {
             steps {
-                echo "Reports directory: ${WORKSPACE}/test-output"
+                echo "Reports directory: ${WORKSPACE}/target"
                 script {
                     env.DEPLOY_BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%d-%H%M'").trim()
                     def logContent = Jenkins.getInstance()
@@ -130,7 +130,7 @@ EOF
                             .logFile.text
                     writeFile file: "buildlog-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.txt", text: logContent
                 }
-                zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/test-output"
+                zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/target"
                 rtUpload(
                         serverId: "artifactory.oraclecorp.com",
                         spec:
