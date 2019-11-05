@@ -213,25 +213,25 @@ class Logging extends Common {
                                 "pattern": "event_logs_*.zip",
                                 "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
                                 productImageVersion
-                            }/${script.env.BUILD_NUMBER}/"
+                            }/${runId}/"
                              },
                              {
                                 "pattern": "domain_logs_*.zip",
                                 "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
                                 productImageVersion
-                            }/${script.env.BUILD_NUMBER}/"
+                            }/${runId}/"
                              },
                              {
                                 "pattern": "pod_logs_*.zip",
                                 "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
                                 productImageVersion
-                            }/${script.env.BUILD_NUMBER}/"
+                            }/${runId}/"
                              },
                              {
                                 "pattern": "test_logs_*.zip",
                                 "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
                                 productImageVersion
-                            }/${script.env.BUILD_NUMBER}/"
+                            }/${runId}/"
                              }                           
                            ]
                         }""",
