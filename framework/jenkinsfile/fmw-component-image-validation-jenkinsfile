@@ -130,7 +130,7 @@ EOF
                             .logFile.text
                     writeFile file: "buildlog-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.txt", text: logContent
                 }
-                zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/target"
+                zip zipFile: "test-output-${BUILD_NUMBER}-${DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${WORKSPACE}/target/surefire-reports"
                 rtUpload(
                         serverId: "artifactory.oraclecorp.com",
                         spec:
