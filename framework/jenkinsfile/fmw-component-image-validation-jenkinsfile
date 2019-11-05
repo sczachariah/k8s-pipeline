@@ -108,6 +108,8 @@ EOF
                                 sed -i -e "s|PWD|${ADMIN_PASSWORD}|g" config/${PRODUCT_NAME}/urlTemplate.properties
                                 mvn test -Dtest=WCPsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
                             fi
+                            
+                            ls ${WORKSPACE}
 
 
                             '''
