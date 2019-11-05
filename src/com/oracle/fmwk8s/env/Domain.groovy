@@ -239,6 +239,7 @@ class Domain extends Common {
         }
         catch (exc) {
             Log.error("domain readiness check failed.")
+            throw exc
         }
     }
 
