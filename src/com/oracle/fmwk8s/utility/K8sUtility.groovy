@@ -25,7 +25,7 @@ class K8sUtility {
         }
         catch (exc) {
             Log.error("server status check failed.")
-            throw exc
+//            throw exc
         }
     }
 }
