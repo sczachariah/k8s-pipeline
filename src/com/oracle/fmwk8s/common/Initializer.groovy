@@ -43,4 +43,25 @@ class Initializer {
         Log.info("Hours After:::" + Base.hoursAfter)
         Log.info("validation framework initialization completed")
     }
+    
+    static def initializeCleanupParameterValues(def script) {
+        Base.script = script
+        Base.operatorNamespace = script.env.DOMAIN_NAME +"-operator-ns-" + script.env.RUN_SUFFIX
+        Base.operatorHelmRelease = "op-" + script.env.RUN_SUFFIX
+        Base.domainName = script.env.DOMAIN_NAME
+        Base.domainNamespace = script.env.DOMAIN_NAME +"-domain-ns-" + script.env.RUN_SUFFIX
+        Base.fmwk8sNfsHome = "/scratch/u01/DockerVolume"
+        Base.nfsDomainDir = Base.domainNamespace
+        Base.nfsDomainPath = Base.fmwk8sNfsHome+"/"+Base.nfsDomainDir
+        Base.lbHelmRelease = "lb-" + script.env.RUN_SUFFIX
+
+        Log.info("Operator Namespace:::" + Base.operatorNamespace)
+        Log.info("Operator Helm Release:::" + Base.operatorHelmRelease)
+        Log.info("Domain Namespace:::" + Base.domainNamespace)
+        Log.info("NFS Home:::" + Base.fmwk8sNfsHome)
+        Log.info("NFS Domain Direcory:::" + Base.nfsDomainDir)
+        Log.info("NFS Domain Path:::" + Base.nfsDomainPath)
+        Log.info("Load Balancer Helm Release:::" + Base.lbHelmRelease)
+        Log.info("Initialize completed")
+    }
 }
