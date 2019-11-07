@@ -10,7 +10,7 @@ class DocUtility {
         Log.info("begin generate groovy doc.")
 
         script.git branch: 'master',
-                credentialsId: 'sandeep.zachariah.ssh',
+                credentialsId: 'fmwk8sval_ww.ssh',
                 url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
         script.sh "groovy doc.groovy"

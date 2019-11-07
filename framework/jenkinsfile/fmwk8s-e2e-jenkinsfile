@@ -18,7 +18,7 @@ pipeline {
     }
 
     environment {
-        REGISTRY_AUTH = credentials("sandeep.zachariah.docker")
+        REGISTRY_AUTH = credentials("fmwk8sval_ww.docker")
     }
 
     stages {

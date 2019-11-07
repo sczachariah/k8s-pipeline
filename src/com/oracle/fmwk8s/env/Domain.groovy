@@ -18,7 +18,7 @@ class Domain extends Common {
 
     static pullSampleScripts() {
         script.git branch: "${samplesBranch}",
-                credentialsId: 'sandeep.zachariah.ssh',
+                credentialsId: 'fmwk8sval_ww.ssh',
                 url: "${samplesRepo}"
     }
 
@@ -47,7 +47,7 @@ class Domain extends Common {
                 Log.info("begin prepare rcu.")
 
                 script.git branch: 'master',
-                        credentialsId: 'sandeep.zachariah.ssh',
+                        credentialsId: 'fmwk8sval_ww.ssh',
                         url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                 script.sh "cd kubernetes/framework/db/rcu && \
@@ -247,7 +247,7 @@ class Domain extends Common {
         try {
             Log.info("begin configure domain loadbalancer.")
             script.git branch: 'master',
-                    credentialsId: 'sandeep.zachariah.ssh',
+                    credentialsId: 'fmwk8sval_ww.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh "ls -ltr"
