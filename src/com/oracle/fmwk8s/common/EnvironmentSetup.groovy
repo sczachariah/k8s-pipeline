@@ -72,7 +72,6 @@ class EnvironmentSetup extends Base {
 
     static waitHoursAfter() {
         if (hoursAfter > 0) {
-            hoursAfterSeconds = hoursAfter * 60 * 60
             if (isWaiting)
                 Log.warning("already in wait loop.")
             else {

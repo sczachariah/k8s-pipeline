@@ -71,6 +71,7 @@ class Base {
         testType = script.env.TEST_TYPE
         elkEnable = script.env.ELK_ENABLE
         hoursAfter = Long.valueOf(script.env.HOURS_AFTER)
+        hoursAfterSeconds = hoursAfter * 60 * 60
     }
 
     static getDomainVariables() {
