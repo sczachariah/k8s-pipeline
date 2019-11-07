@@ -70,7 +70,7 @@ class Base {
         testImage = script.env.TEST_IMAGE_TAG
         testType = script.env.TEST_TYPE
         elkEnable = script.env.ELK_ENABLE
-        hoursAfter = script.env.HOURS_AFTER
+        hoursAfter = Long.valueOf(script.env.HOURS_AFTER)
     }
 
     static getDomainVariables() {
