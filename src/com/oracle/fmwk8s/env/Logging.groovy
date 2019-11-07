@@ -95,6 +95,7 @@ class Logging extends Common {
     static getLogs() {
         getEventLogs(operatorNamespace)
         getEventLogs(domainNamespace)
+        getOperatorLogs(operatorNamespace)
         getDomainLogs(domainName, domainNamespace)
         archiveLogs()
         publishLogsToArtifactory()
@@ -128,6 +129,25 @@ class Logging extends Common {
         }
     }
 
+    static getOperatorLogs(namespace) {
+        try {
+            Log.info("begin get operator logs.")
+            def operatorPodName = script.sh(
+                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${namespace} | grep operator",
+                    returnStdout: true
+            ).trim()
+
+            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/operator_logs && \
+                       chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/operator_logs && \
+                       kubectl logs ${operatorPodName} -n ${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/operator_logs/${operatorPodName}-pod.txt && \
+                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/operator_logs"
+            Log.info("get operator logs success")
+        }
+        catch (exc) {
+            Log.error("get operator logs failed.")
+        }
+    }
+
     static getDomainLogs(domainName, namespace) {
         try {
             Log.info("begin get domain logs.")
@@ -150,7 +170,6 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("get domain logs failed.")
-            throw exc
         }
     }
 
@@ -181,12 +200,10 @@ class Logging extends Common {
             script.zip zipFile: "event_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs"
             script.zip zipFile: "pod_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs"
             script.zip zipFile: "domain_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
+            script.zip zipFile: "operator_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/operator_logs"
             script.zip zipFile: "test_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
 
             script.archiveArtifacts artifacts: '**/*_logs_*.zip'
-            //script.archiveArtifacts artifacts: '**/pod_logs_*.zip'
-            //script.archiveArtifacts artifacts: '**/domain_logs_*.zip'
-            //script.archiveArtifacts artifacts: '**/test_logs_*.zip'
             Log.info("archive logs success.")
         }
         catch (exc) {
