@@ -220,7 +220,7 @@ class Domain extends Common {
             Log.info("begin Admin server status check")
             adminServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}"
             Log.info(adminServerPodName)
-            K8sUtility.checkPodStatus(script, adminServerPodName, domainNamespace, 20)
+            K8sUtility.checkPodStatus(script, adminServerPodName, domainNamespace, 40)
             Log.info("admin server status check completed.")
             Log.info("begin Managed server status check.")
             script.sh "kubectl get domain -n ${domainNamespace} -o yaml > ${domainName}-domain.yaml && \
@@ -232,7 +232,7 @@ class Domain extends Common {
             Log.info(replicaCount)
             for (int i = 1; i <= Integer.parseInt(replicaCount); i++) {
                 managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase")}${i}"
-                K8sUtility.checkPodStatus(script, managedServerPodName, domainNamespace, 20)
+                K8sUtility.checkPodStatus(script, managedServerPodName, domainNamespace, 40)
             }
             Log.info("managed server status check completed.")
             Log.info("domain readiness check success.")
