@@ -23,5 +23,6 @@ data:
     -component OPSS \
     -component WLS \
     -component STB \
+    -component ESS \
     -component SOAINFRA -f < /tmp/pwd.txt
 ---
