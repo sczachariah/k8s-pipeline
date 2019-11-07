@@ -84,8 +84,6 @@ pipeline {
                             dir('fmwsamples') {
                                 script {
                                     Domain.pullSampleScripts()
-
-                                    Operator.setDomainNamespace()
                                     Domain.configureDomainSecret()
                                     Domain.configureRcuSecret()
                                     Domain.preparePersistentVolume()

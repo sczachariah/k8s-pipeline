@@ -194,6 +194,8 @@ class Domain extends Common {
             }
             Log.info("start " + productId + " domain success.")
 
+            // fix operator not managing the domain intermittently
+            Operator.setDomainNamespace()
             isDomainReady()
         }
         catch (exc) {
