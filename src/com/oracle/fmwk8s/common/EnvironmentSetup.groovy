@@ -71,13 +71,14 @@ class EnvironmentSetup extends Base {
     }
 
     static waitHoursAfter() {
-        if ("${hoursAfter}" == "true") {
+        if (hoursAfter > 0) {
+            hoursAfterSeconds = hoursAfter * 60 * 60
             if (isWaiting)
                 Log.warning("already in wait loop.")
             else {
                 Log.info("begin wait loop.")
                 isWaiting = true
-                script.sh "sleep 144000"
+                script.sh "sleep ${hoursAfterSeconds}"
                 Log.info("end wait loop.")
                 isWaiting = false
                 Test.cleanup()

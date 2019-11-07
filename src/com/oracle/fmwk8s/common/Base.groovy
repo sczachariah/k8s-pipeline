@@ -6,8 +6,9 @@ import com.oracle.fmwk8s.utility.YamlUtility
 class Base {
     static def script
     static def yamlUtility = new YamlUtility()
-    static def K8sUtility = new K8sUtility()
+    static def k8sUtility = new K8sUtility()
 
+    static def cloud
     static def k8sMasterUrl = ""
     static def k8sMasterIP = "100.111.149.15"
 
@@ -31,6 +32,7 @@ class Base {
     static def testImage
     static def testType
     static def hoursAfter
+    static def hoursAfterSeconds
 
     static def domainType
     static def domainName
@@ -56,6 +58,7 @@ class Base {
     static def elasticSearchPort = "9200"
 
     static getInputVariables() {
+        cloud = script.env.CLOUD
         registryAuthUsr = script.env.REGISTRY_AUTH_USR
         registryAuthPsw = script.env.REGISTRY_AUTH_PSW
         operatorVersion = script.env.OPERATOR_VERSION
