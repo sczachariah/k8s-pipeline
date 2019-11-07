@@ -24,10 +24,11 @@ class Initializer {
     }
 
     static def displayInitializedParameterValues() {
+        Log.info("Cloud:::" + Base.cloud)
         Log.info("Domain Name:::" + Base.domainName)
-        Log.info("ProductId:::" + Base.productId)
-        Log.info("Product image:::" + Base.productImage)
-        Log.info("Sample repo:::" + Base.samplesRepo)
+        Log.info("Product ID:::" + Base.productId)
+        Log.info("Product Image:::" + Base.productImage)
+        Log.info("Samples Repo:::" + Base.samplesRepo)
         Log.info("Samples Directory:::" + Base.samplesDirectory)
         Log.info("Operator Namespace:::" + Base.operatorNamespace)
         Log.info("Operator SA::::" + Base.operatorServiceAccount)
@@ -39,6 +40,7 @@ class Initializer {
         Log.info("NFS Domain Direcory:::" + Base.nfsDomainDir)
         Log.info("NFS Domain Path:::" + Base.nfsDomainPath)
         Log.info("Load Balancer Helm Release:::" + Base.lbHelmRelease)
+        Log.info("Hours After:::" + Base.hoursAfter)
         Log.info("validation framework initialization completed")
     }
 }
