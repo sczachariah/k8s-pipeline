@@ -19,8 +19,12 @@ pipeline {
     stages {
         stage('cleanup namespace') {
             steps {
-                log('INFO', 'Cleaning namespaces for ' + "${DOMAIN_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
-                Initializer.initializeCleanupParameterValues(this)
+                container('jnlp') {
+                    script {
+                        log('INFO', 'Cleaning namespaces for ' + "${DOMAIN_NAME}" + ' with unique runId ' + "${RUN_SUFFIX}")
+                        Initializer.initializeCleanupParameterValues(this)
+                    }
+                }
             }
         }
     }
