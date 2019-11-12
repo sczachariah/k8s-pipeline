@@ -78,11 +78,16 @@ class Common extends Base {
 
     static getKubernetesMasterUrl() {
         Log.info("begin get k8s master url.")
-        this.k8sMasterUrl = script.sh(
-                script: "kubectl cluster-info | grep \"master is running at\" | sed \"s|.*\\ ||\"",
+
+        this.k8sMasterIP = script.sh(
+                script: "kubectl get nodes --selector=node-role.kubernetes.io/master " +
+                        "-o jsonpath='{range .items[*]}{@.metadata.name}{\"\\t\"}{@.status.addresses[?(@.type==\"InternalIP\")].address}{\"\\n\"}{end}' " +
+                        "| sed -n `echo \$((1 + (RANDOM % 10) % 3))`p | awk '{print \$2}'",
                 returnStdout: true
         ).trim()
+        this.k8sMasterUrl = "https://" + this.k8sMasterIP + ":6443"
 
+        Log.info("k8s master ip  : ${k8sMasterIP}")
         Log.info("k8s master url : ${k8sMasterUrl}")
         Log.info("get k8s master url success.")
     }

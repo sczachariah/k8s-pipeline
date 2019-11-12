@@ -10,7 +10,7 @@ class Base {
 
     static def cloud
     static def k8sMasterUrl = ""
-    static def k8sMasterIP = "100.111.149.15"
+    static def k8sMasterIP = ""
 
     static def runId
     static def registrySecret = "regcred"
