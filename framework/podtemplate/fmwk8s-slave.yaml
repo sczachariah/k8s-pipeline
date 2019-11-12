@@ -10,7 +10,7 @@ spec:
         - name: "http_proxy"
           value: "http://www-proxy-brmdc.us.oracle.com:80"
         - name: "no_proxy"
-          value: ".cluster.local,.us.oracle.com,.oraclecorp.com,100.0.0.0/8,.oraclevcn.com,10.96.0.1,100.111.149.13,100.111.149.15,100.111.149.45"
+          value: ".cluster.local,.us.oracle.com,.oraclecorp.com,100.0.0.0/8,.oraclevcn.com,10.96.0.1,100.111.149.13,100.111.149.15,100.111.149.45,10.248.90.49,10.247.192.108,10.247.139.123"
         - name: "https_proxy"
           value: "http://www-proxy-brmdc.us.oracle.com:80"
         - name: "JVM_ARGS"
