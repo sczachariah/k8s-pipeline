@@ -10,7 +10,7 @@ spec:
     - name: fmwk8s-op-intg-test
       image: "%TEST_IMAGE%"
       imagePullPolicy: Always
-      args: ["/usr/bin/touch %LOG_DIRECTORY%/fmwk8s.completed && /usr/bin/tail -f /dev/null"]
+      args: ["/usr/bin/touch %LOG_DIRECTORY%/fmwk8s.completed && sleep 600"]
       envFrom:
         - configMapRef:
             name: fmwk8s-op-intg-env-configmap
