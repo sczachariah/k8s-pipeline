@@ -38,6 +38,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         domainURLs = domainURLs + """
 -----------------------------------
 """
-        script.sh script: "printf \"%s\\n\" \"${domainURLs.toString()}\"", label: "print domain url's"
+        script.sh label: "print domain url's",
+                script: "printf \"%s\\n\" \"${domainURLs.toString()}\""
     }
 }

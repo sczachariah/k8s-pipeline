@@ -18,12 +18,13 @@ class Common extends Base {
         try {
             Log.info("begin configure registry secret.")
 
-
-            script.sh "retVal=`echo \\`kubectl get secret ${registrySecret} -n ${domainNamespace} 2>&1\\`` &&\
+            script.sh label: "create container registry secret",
+                    script: "retVal=`echo \\`kubectl get secret ${registrySecret} -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" \\| grep -q 'not found'; then\n \
                           kubectl create secret docker-registry ${registrySecret} -n ${domainNamespace} --docker-server=http://container-registry.oracle.com --docker-username='${registryAuthUsr}' --docker-password='${registryAuthPsw}' --docker-email='${registryAuthUsr}'\n \
                        fi"
-            script.sh "denRetVal=`echo \\`kubectl get secret ${denRegistrySecret} -n ${domainNamespace} 2>&1\\`` &&\
+            script.sh label: "create denver registry secret",
+                    script: "denRetVal=`echo \\`kubectl get secret ${denRegistrySecret} -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$denRetVal\" \\| grep -q 'not found'; then\n \
                           kubectl create secret docker-registry ${denRegistrySecret} -n ${domainNamespace} --docker-server=http://fmwk8s-dev.dockerhub-den.oraclecorp.com --docker-username='${registryAuthUsr}' --docker-password='${registryAuthPsw}' --docker-email='${registryAuthUsr}'\n \
                        fi"
@@ -80,6 +81,7 @@ class Common extends Base {
         Log.info("begin get k8s master url.")
 
         this.k8sMasterIP = script.sh(
+                label: "get k8s master ip",
                 script: "kubectl get nodes --selector=node-role.kubernetes.io/master " +
                         "-o jsonpath='{range .items[*]}{@.metadata.name}{\"\\t\"}{@.status.addresses[?(@.type==\"InternalIP\")].address}{\"\\n\"}{end}' " +
                         "| sed -n `echo \$((1 + (RANDOM % 10) % 3))`p | awk '{print \$2}'",

@@ -14,7 +14,8 @@ class Logging extends Common {
         try {
             Log.info("begin configure logstash configmap.")
 
-            script.sh "cd ../fmwk8s/kubernetes/framework/logging && \
+            script.sh label: "create logstash configmap",
+                    script: "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-configmap.yaml && \
                        sed -i \"s#%ELASTICSEARCH_HOST%#${elasticSearchHost}:${elasticSearchPort}#g\" logstash-configmap.yaml && \
                        cat logstash-configmap.yaml && \
@@ -33,7 +34,8 @@ class Logging extends Common {
         try {
             Log.info("begin configure logstash.")
 
-            script.sh "cd ../fmwk8s/kubernetes/framework/logging && \
+            script.sh label: "create logstash configuration pod",
+                    script: "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" fmwk8s-logstash-config-pod.yaml && \
                        sed -i \"s#%DOMAIN_PVC%#${domainName}-${domainNamespace}-pvc#g\" fmwk8s-logstash-config-pod.yaml && \
                        cat fmwk8s-logstash-config-pod.yaml && \
@@ -53,7 +55,8 @@ class Logging extends Common {
         try {
             Log.info("begin update and deploy logstash.")
 
-            script.sh "cd ../fmwk8s/kubernetes/framework/logging && \
+            script.sh label: "create logstash pod",
+                    script: "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-deployment.yaml && \
                        sed -i \"s#%DOMAIN_NAMESPACE%#${domainNamespace}#g\" logstash-deployment.yaml && \
                        sed -i \"s#%DOMAIN_PVC%#${domainName}-${domainNamespace}-pvc#g\" logstash-deployment.yaml && \
@@ -104,7 +107,8 @@ class Logging extends Common {
     static getEventLogs(namespace) {
         try {
             Log.info("begin get event logs.")
-            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs && \
+            script.sh label: "get event logs",
+                    script: "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs && \
                        kubectl get events --namespace=${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs/${namespace}-event.txt && \
                        ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/event_logs"
@@ -118,7 +122,8 @@ class Logging extends Common {
     static getPodLogs(podname, namespace) {
         try {
             Log.info("begin get pod logs.")
-            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs && \
+            script.sh label: "get pod logs",
+                    script: "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs && \
                        kubectl logs ${podname} -n ${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs/${podname}-pod.txt && \
                        ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs"
@@ -133,11 +138,13 @@ class Logging extends Common {
         try {
             Log.info("begin get operator logs.")
             def operatorPodName = script.sh(
+                    label: "get operator pod name",
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${namespace} | grep operator",
                     returnStdout: true
             ).trim()
 
-            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/operator_logs && \
+            script.sh label: "get operator logs",
+                    script: "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/operator_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/operator_logs && \
                        kubectl logs ${operatorPodName} -n ${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/operator_logs/${operatorPodName}-pod.txt && \
                        ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/operator_logs"
@@ -152,17 +159,20 @@ class Logging extends Common {
         try {
             Log.info("begin get domain logs.")
             if (yamlUtility.domainInputsMap != null) {
-                script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
+                script.sh label: "get domain logs",
+                        script: "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
-                script.sh "adminServer=`echo \\`kubectl get pods -n ${namespace} 2>&1 | grep admin-server\\``\n \
+                script.sh label: "verify domain was created",
+                        script: "adminServer=`echo \\`kubectl get pods -n ${namespace} 2>&1 | grep admin-server\\``\n \
                        echo \"\$adminServer\"\n \
                        if [[ \$adminServer ]]; then \n \
                              echo \"Domain Found\" \n \
                              kubectl cp ${namespace}/${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}:${yamlUtility.domainInputsMap.get("logHome")} ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs \n \
                        fi"
-                script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
-                       cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
-                script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
+                script.sh label: "verify logs",
+                        script: "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs && \
+                       cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
+                      ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
                 Log.info("get domain logs success.")
             } else {
                 Log.info("no domain logs exist.")
@@ -177,13 +187,14 @@ class Logging extends Common {
         try {
             Log.info("begin get test logs.")
 
-            script.sh "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
+            script.sh label: "get test logs",
+                    script: "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                        ls -ltr ${Test.logDirectory} && \
                        cp -r ${Test.logDirectory}/** ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs/ && \
                        ls -ltr ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                       cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
-            script.sh "ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
+                       cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER} && \
+                       ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}"
 
             Log.info("get test logs success.")
         }
@@ -214,7 +225,8 @@ class Logging extends Common {
     static publishLogsToArtifactory() {
         try {
             Log.info("publish logs to artifactory.")
-            script.sh "pwd && \
+            script.sh label: "get product image version qualifier",
+                    script: "pwd && \
                        ls"
             productImageVersion = script.sh(
                     script: "echo ${productImage}| awk -F':' '{print \$2}'",

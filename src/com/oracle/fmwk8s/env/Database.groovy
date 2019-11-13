@@ -34,7 +34,8 @@ class Database extends Common {
                         credentialsId: 'fmwk8sval_ww.ssh',
                         url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-                script.sh "cd kubernetes/framework/db && \
+                script.sh label: "create oracle db deployment",
+                        script: "cd kubernetes/framework/db && \
                         sed -i \"s#%DB_NAME%#${dbName}#g\" oracle-db.yaml && \
                         sed -i \"s#%DB_PASSWORD%#${dbPassword}#g\" oracle-db.yaml && \
                         sed -i \"s#%DB_NAMESPACE%#${domainNamespace}#g\" oracle-db.yaml && \
@@ -43,7 +44,8 @@ class Database extends Common {
                         cat oracle-db.yaml && \
                         kubectl apply -f oracle-db.yaml -n ${domainNamespace}"
 
-                script.sh "dbstat='dbstat' && \
+                script.sh label: "wait for db status",
+                        script: "dbstat='dbstat' && \
                         i=0 && \
                         until `echo \$dbstat | grep -q 1/1` > /dev/null\n \
                         do \n \
@@ -62,10 +64,12 @@ class Database extends Common {
 
                 Log.info("begin xaview setup for database.")
                 dbPodName = script.sh(
+                        label: "get db pod name",
                         script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${dbName}",
                         returnStdout: true
                 ).trim()
-                script.sh "kubectl exec -it ${dbPodName} -n ${domainNamespace} -- bash -c \"source /home/oracle/.bashrc; sqlplus sys/${dbPassword}@${dbName}pdb as sysdba <<EOF @\\\$ORACLE_HOME/rdbms/admin/xaview.sql / exit EOF\""
+                script.sh label: "setup xaview in db",
+                        script: "kubectl exec -it ${dbPodName} -n ${domainNamespace} -- bash -c \"source /home/oracle/.bashrc; sqlplus sys/${dbPassword}@${dbName}pdb as sysdba <<EOF @\\\$ORACLE_HOME/rdbms/admin/xaview.sql / exit EOF\""
                 Log.info("xaview setup for database success.")
 
                 Log.info("deploy database success.")

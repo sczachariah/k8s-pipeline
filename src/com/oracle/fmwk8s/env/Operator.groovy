@@ -17,10 +17,12 @@ class Operator extends Common {
             script.git branch: "${operatorBranch}",
                     url: 'https://github.com/oracle/weblogic-kubernetes-operator'
 
-            script.sh "retVal==`echo \\`helm ls ${operatorHelmRelease}\\``"
+            script.sh label: "get operator helm release",
+                    script: "retVal==`echo \\`helm ls ${operatorHelmRelease}\\``"
 
             if ("${elkEnable}" == "false") {
-                script.sh "if [[ \$retVal ]]; then\n \
+                script.sh label: "deploy operator without elk",
+                        script: "if [[ \$retVal ]]; then\n \
                                helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
                            else\n \
                                helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
@@ -29,7 +31,8 @@ class Operator extends Common {
                            fi"
             } else {
                 Log.info("elk is enabled")
-                script.sh "if [[ \$retVal ]]; then\n \
+                script.sh label: "deploy operator with elk enabled",
+                        script: "if [[ \$retVal ]]; then\n \
                                helm upgrade --reuse-values --wait ${operatorHelmRelease} kubernetes/charts/weblogic-operator \n \
                            else\n \
                                helm install kubernetes/charts/weblogic-operator --name ${operatorHelmRelease} --namespace ${operatorNamespace} \
@@ -54,9 +57,11 @@ class Operator extends Common {
             Log.info("begin verify kubernetes operator.")
 
             if ("${elkEnable}" == "false") {
-                script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1"
+                script.sh label: "verify operator",
+                        script: "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 1/1"
             } else {
-                script.sh "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 2/2"
+                script.sh label: "verify operator",
+                        script: "kubectl get pods -n ${operatorNamespace} | grep weblogic-operator | grep Running | grep 2/2"
             }
 
             Log.info("verify kubernetes operator success.")
@@ -71,7 +76,8 @@ class Operator extends Common {
         try {
             Log.info("begin set domain namespace.")
 
-            script.sh "helm upgrade \
+            script.sh label: "set operator to manager domain",
+                    script: "helm upgrade \
                        --reuse-values \
                        --set \"domainNamespaces={${domainNamespace}}\" \
                        --wait \
@@ -90,7 +96,8 @@ class Operator extends Common {
         try {
             Log.info("begin create kubernetes operator namespace.")
 
-            script.sh "kubectl create ns ${operatorNamespace} --v=8"
+            script.sh label: "create operator namespace",
+                    script: "kubectl create ns ${operatorNamespace} --v=8"
 
             Log.info("create kubernetes operator namespace success.")
         }
@@ -104,7 +111,8 @@ class Operator extends Common {
         try {
             Log.info("begin clean kubernetes operator.")
 
-            script.sh "helm delete --purge ${operatorHelmRelease}"
+            script.sh label: "cleanup operator",
+                    script: "helm delete --purge ${operatorHelmRelease}"
 
             Log.info("clean kubernetes operator success.")
         }
@@ -117,10 +125,13 @@ class Operator extends Common {
         try {
             Log.info("begin clean kubernetes operator namespace.")
 
-            script.sh "kubectl delete configmaps --all -n ${operatorNamespace}"
-            script.sh "kubectl delete all --all -n ${operatorNamespace}"
+            script.sh label: "cleanup operator configmaps",
+                    script: "kubectl delete configmaps --all -n ${operatorNamespace}"
+            script.sh label: "cleanup operator namespace",
+                    script: "kubectl delete all --all -n ${operatorNamespace}"
             sleep 30
-            script.sh "kubectl delete ns ${operatorNamespace}"
+            script.sh label: "delete operator namespace",
+                    script: "kubectl delete ns ${operatorNamespace}"
             sleep 30
 
             Log.info("clean kubernetes operator namespace success.")
@@ -130,7 +141,8 @@ class Operator extends Common {
         }
         finally {
             try {
-                script.sh "kubectl get ns ${operatorNamespace} -o json | jq '.spec.finalizers=[]' > ns-without-finalizers.json && \
+                script.sh label: "finalize operator namespace",
+                        script: "kubectl get ns ${operatorNamespace} -o json | jq '.spec.finalizers=[]' > ns-without-finalizers.json && \
                        curl -k -X PUT ${k8sMasterUrl}/api/v1/namespaces/${operatorNamespace}/finalize \
                                -H \"Content-Type: application/json\" --data-binary @ns-without-finalizers.json"
             }

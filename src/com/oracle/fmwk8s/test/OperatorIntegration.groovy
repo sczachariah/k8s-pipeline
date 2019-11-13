@@ -24,7 +24,8 @@ class OperatorIntegration extends Test {
                     credentialsId: 'fmwk8sval_ww.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh "cd kubernetes/framework/test/${testId} && \
+            script.sh label: "configure env variables configmap",
+                    script: "cd kubernetes/framework/test/${testId} && \
                         sed -i \"s|%PRODUCT_NAME%|${Common.productName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%OPERATOR_NS%|${Operator.operatorNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%OPERATOR_SA%|${Operator.operatorServiceAccount}|g\" fmwk8s-${testId}-env-configmap.yaml && \
@@ -40,7 +41,8 @@ class OperatorIntegration extends Test {
                         sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"
 
-            script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-env-configmap.yaml -n ${Domain.domainNamespace}"
+            script.sh label: "create env varialbes configmap",
+                    script: "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-env-configmap.yaml -n ${Domain.domainNamespace}"
 
             Log.info("create env configmap success.")
         }
@@ -57,14 +59,16 @@ class OperatorIntegration extends Test {
         try {
             Log.info("begin create persistent volume.")
 
-            script.sh "cd kubernetes/framework/test && \
+            script.sh label: "configure test pv/pvc",
+                    script: "cd kubernetes/framework/test && \
                        sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-tests-pv.yaml && \
                        sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-tests-pvc.yaml && \
                        cat fmwk8s-tests-pv.yaml && \
                        cat fmwk8s-tests-pvc.yaml"
 
-            script.sh "kubectl apply -f kubernetes/framework/test/fmwk8s-tests-pv.yaml -n ${Domain.domainNamespace}"
-            script.sh "kubectl apply -f kubernetes/framework/test/fmwk8s-tests-pvc.yaml -n ${Domain.domainNamespace}"
+            script.sh label: "create test pv/pvc",
+                    script: "kubectl apply -f kubernetes/framework/test/fmwk8s-tests-pv.yaml -n ${Domain.domainNamespace} && \
+                       kubectl apply -f kubernetes/framework/test/fmwk8s-tests-pvc.yaml -n ${Domain.domainNamespace}"
 
             Log.info("create persistent volume success.")
         }
@@ -80,14 +84,16 @@ class OperatorIntegration extends Test {
         try {
             Log.info("begin run test.")
 
-            script.sh "cd kubernetes/framework/test/${testId} && \
+            script.sh label: "configure test pod",
+                    script: "cd kubernetes/framework/test/${testId} && \
                         sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%HOURS_AFTER_SECONDS%|144000|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         cat fmwk8s-${testId}-test-pod.yaml"
 
-            script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} && \
+            script.sh label: "create test pod",
+                    script: "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} && \
                        kubectl get all -n ${Domain.domainNamespace}"
 
             testStatus = "started"
@@ -101,6 +107,7 @@ class OperatorIntegration extends Test {
         }
         finally {
             testPodName = script.sh(
+                    label: "get test pod name",
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${Domain.domainNamespace} | grep ${testId}-test",
                     returnStdout: true
             ).trim()
@@ -114,7 +121,8 @@ class OperatorIntegration extends Test {
         try {
             Log.info("begin wait for test completion.")
 
-            script.sh "testInit='testInit' && \
+            script.sh label: "check test pod status",
+                    script: "testInit='testInit' && \
                         i=0 && \
                         until `echo \$testInit | grep -q 1/1` > /dev/null\n \
                         do \n \
@@ -128,7 +136,8 @@ class OperatorIntegration extends Test {
                         testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
 
-            script.sh "testStat='testStat' && \
+            script.sh label: "check test status",
+                    script: "testStat='testStat' && \
                         i=0 && \
                         until `echo \$testStat | grep -q Completed` > /dev/null\n \
                         do \n \

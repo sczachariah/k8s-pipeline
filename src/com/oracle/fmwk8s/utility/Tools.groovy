@@ -11,7 +11,8 @@ class Tools {
                     credentialsId: 'fmwk8sval_ww.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh "kubectl apply -n ${testNamespace} -f kubernetes/tools/selenium/"
+            script.sh label: "deploy selenium",
+                    script: "kubectl apply -n ${testNamespace} -f kubernetes/tools/selenium/"
 
             Log.info("deploy selenium success.")
         }

@@ -15,7 +15,8 @@ class EnvironmentSetup extends Base {
                     credentialsId: 'fmwk8sval_ww.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh "cd kubernetes/framework && \
+            script.sh label: "create mkdir pod",
+                    script: "cd kubernetes/framework && \
                         sed -i \"s#%FMWK8S_NFS_HOME%#${fmwk8sNfsHome}#g\" fmwk8s-mkdir-pod.yaml && \
                         sed -i \"s#%NFS_DOMAIN_DIR%#${nfsDomainDir}#g\" fmwk8s-mkdir-pod.yaml && \
                         cat fmwk8s-mkdir-pod.yaml && \
@@ -35,7 +36,8 @@ class EnvironmentSetup extends Base {
         try {
             Log.info("begin mount kubeconfig.")
 
-            script.sh "export KUBECONFIG=${script.env.KUBECONFIG} && \
+            script.sh label: "create kubeconfig configmap",
+                    script: "export KUBECONFIG=${script.env.KUBECONFIG} && \
                        kubectl create configmap fmwk8s-kubeconfig-configmap --from-file=kubeconfig=${script.env.KUBECONFIG} -n ${namespace}"
 
             Log.info("mount kubeconfig success.")
@@ -54,7 +56,8 @@ class EnvironmentSetup extends Base {
                     credentialsId: 'fmwk8sval_ww.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh "cd kubernetes/framework && \
+            script.sh label: "create rmdir pod",
+                    script: "cd kubernetes/framework && \
                         sed -i \"s#%FMWK8S_NFS_HOME%#${fmwk8sNfsHome}#g\" fmwk8s-rmdir-pod.yaml && \
                         sed -i \"s#%NFS_DOMAIN_DIR%#${nfsDomainDir}#g\" fmwk8s-rmdir-pod.yaml && \
                         cat fmwk8s-rmdir-pod.yaml && \
@@ -77,7 +80,8 @@ class EnvironmentSetup extends Base {
             else {
                 Log.info("begin wait loop.")
                 isWaiting = true
-                script.sh "sleep ${hoursAfterSeconds}"
+                script.sh label: "sleep for ${hoursAfter}hrs",
+                        script: "sleep ${hoursAfterSeconds}"
                 Log.info("end wait loop.")
                 isWaiting = false
                 Test.cleanup()

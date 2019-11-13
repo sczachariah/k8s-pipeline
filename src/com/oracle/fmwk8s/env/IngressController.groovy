@@ -56,7 +56,8 @@ class IngressController extends Common {
     static deployTraefik() {
         try {
             Log.info("begin deploy traefik ingress controller.")
-            script.sh "helm init --client-only --skip-refresh --wait && \
+            script.sh label: "deploy traefik",
+                    script: "helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
                    helm install stable/traefik --name ${lbHelmRelease} --namespace ${domainNamespace} \
                     --set kubernetes.namespaces={${domainNamespace}} \
@@ -84,7 +85,8 @@ class IngressController extends Common {
         try {
             Log.info("begin deploy apache ingress controller.")
             Log.info(operatorBranch)
-            script.sh "helm init --client-only --skip-refresh --wait && \
+            script.sh label: "deploy apache",
+                    script: "helm init --client-only --skip-refresh --wait && \
                        helm repo update && \
                        helm install ../fmwk8s/kubernetes/framework/ingress-controller/apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} --set image=fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3,imagePullSecrets=${denRegistrySecret}"
 
@@ -106,7 +108,8 @@ class IngressController extends Common {
     static deployVoyager() {
         try {
             Log.info("begin deploy apache ingress controller.")
-            script.sh "helm init --client-only --skip-refresh --wait && \
+            script.sh label: "deploy voyager",
+                    script: "helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
                    helm install stable/voyager --name ${lbHelmRelease} --namespace ${domainNamespace} \
                    --set ingressClass={${domainNamespace}}"
@@ -128,7 +131,8 @@ class IngressController extends Common {
     static deployNginx() {
         try {
             Log.info("begin deploy nginx ingress controller.")
-            script.sh "helm init --client-only --skip-refresh --wait && \
+            script.sh label: "deploy nginx",
+                    script: "helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
                    helm install stable/nginx-ingress --name ${lbHelmRelease} --namespace ${domainNamespace} \
                    --set controller.scope.namespace={${domainNamespace}}"
@@ -152,11 +156,13 @@ class IngressController extends Common {
             Log.info("begin get load balancer port.")
 
             httplbPort = script.sh(
+                    label: "get lb http port",
                     script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
                     returnStdout: true
             ).trim()
 
             httpslbPort = script.sh(
+                    label: "get lb https port",
                     script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'https\' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
                     returnStdout: true
             ).trim()
@@ -181,7 +187,8 @@ class IngressController extends Common {
         try {
             Log.info("begin clean kubernetes ingress controller.")
 
-            script.sh "helm delete --purge ${lbHelmRelease}"
+            script.sh label: "undeploy ingress controller",
+                    script: "helm delete --purge ${lbHelmRelease}"
 
             Log.info("clean kubernetes ingress controller success.")
         }

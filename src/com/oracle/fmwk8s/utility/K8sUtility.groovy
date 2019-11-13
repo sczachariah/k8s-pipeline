@@ -8,7 +8,8 @@ class K8sUtility {
     static checkPodStatus(script, podName, namespace, timeout) {
         try {
             Log.info("begin ${podName} status check.")
-            script.sh "podstat='podstat' && \
+            script.sh label: "check pod status",
+                    script: "podstat='podstat' && \
                         i=0 && \
                         until `echo \$podstat | grep -q 1/1` > /dev/null\n \
                         do \n \
