@@ -52,18 +52,19 @@ class OperatorIntegration extends Test {
         }
     }
 
+    // this is a generic one. need to be done irrespective of what type of test is done. probably will move to parent class
     static createPersistentVolume() {
         try {
             Log.info("begin create persistent volume.")
 
-            script.sh "cd kubernetes/framework/test/${testId} && \
-                       sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-pv.yaml && \
-                       sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-pvc.yaml && \
-                       cat fmwk8s-${testId}-pv.yaml && \
-                       cat fmwk8s-${testId}-pvc.yaml"
+            script.sh "cd kubernetes/framework/test && \
+                       sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-tests-pv.yaml && \
+                       sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-tests-pvc.yaml && \
+                       cat fmwk8s-tests-pv.yaml && \
+                       cat fmwk8s-tests-pvc.yaml"
 
-            script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace}"
-            script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pvc.yaml -n ${Domain.domainNamespace}"
+            script.sh "kubectl apply -f kubernetes/framework/test/fmwk8s-tests-pv.yaml -n ${Domain.domainNamespace}"
+            script.sh "kubectl apply -f kubernetes/framework/test/fmwk8s-tests-pvc.yaml -n ${Domain.domainNamespace}"
 
             Log.info("create persistent volume success.")
         }

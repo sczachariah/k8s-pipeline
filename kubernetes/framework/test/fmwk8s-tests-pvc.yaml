@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: fmwk8s-op-intg-pvc-%RUN_ID%
+  name: fmwk8s-tests-pvc-%RUN_ID%
 spec:
-  storageClassName: fmwk8s-op-intg-pv-%RUN_ID%
+  storageClassName: fmwk8s-tests-pv-%RUN_ID%
   accessModes:
     - ReadWriteMany
   resources:

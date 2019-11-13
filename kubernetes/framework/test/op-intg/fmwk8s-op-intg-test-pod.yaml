@@ -26,6 +26,6 @@ spec:
   volumes:
     - name: fmwk8s-log-volume
       persistentVolumeClaim:
-        claimName: fmwk8s-op-intg-pvc-%RUN_ID%
+        claimName: fmwk8s-tests-pvc-%RUN_ID%
 ---
 ---
