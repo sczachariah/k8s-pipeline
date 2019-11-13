@@ -2,14 +2,14 @@ package com.oracle.fmwk8s.common
 
 class Log extends Base {
     static info(message) {
-        script.echo script: "INFO: ${message}", label: "INFO"
+        script.echo "INFO: ${message}"
     }
 
     static warning(message) {
-        script.echo script: "WARNING: ${message}", label: "WARNING"
+        script.echo "WARNING: ${message}"
     }
 
     static error(message) {
-        script.echo script: "ERROR: ${message}", label: "ERROR"
+        script.echo "ERROR: ${message}"
     }
 }
