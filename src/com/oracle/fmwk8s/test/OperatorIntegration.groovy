@@ -139,7 +139,7 @@ class OperatorIntegration extends Test {
             script.sh label: "check test status",
                     script: "testStat='testStat' && \
                         i=0 && \
-                        until `echo \$testStat | grep -q Completed` > /dev/null\n \
+                        until [`echo \$testStat | grep -q Completed` > /dev/null] || [`echo \$testStat | grep -q Error` > /dev/null]\n \
                         do \n \
                             if [ \$i == 50 ]; then\n \
                                 echo \"Timeout waiting for Test Completion. Exiting!!.\"\n \
@@ -151,7 +151,18 @@ class OperatorIntegration extends Test {
                         testStat=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
 
-            testStatus = "completed"
+            def testContainerStatus = script.sh(
+                    label: "get test status",
+                    script: "kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test",
+                    returnStdout: true
+            ).trim()
+            if (testContainerStatus.toString().contains("Error")) {
+                testStatus = "failure"
+            } else if (testContainerStatus.toString().contains("Completed")) {
+                testStatus = "completed"
+            } else {
+                testStatus = "completed"
+            }
             Log.info("wait for test completion success.")
         }
         catch (exc) {

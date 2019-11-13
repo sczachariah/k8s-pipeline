@@ -29,10 +29,14 @@ class Test extends Common {
                 Log.info("no tests to run.")
             }
         }
+
+        if (testStatus.equalsIgnoreCase("failure")) {
+            throw new Exception("test has failed.")
+        }
     }
 
     static cleanup() {
-        if (testStatus.equalsIgnoreCase("completed") && !EnvironmentSetup.isWaiting) {
+        if ((testStatus.equalsIgnoreCase("completed") || testStatus.equalsIgnoreCase("failure")) && !EnvironmentSetup.isWaiting) {
             try {
                 Log.info("begin cleanup test resources.")
 
