@@ -10,19 +10,13 @@ spec:
     - name: fmwk8s-op-intg-test
       image: "%TEST_IMAGE%"
       imagePullPolicy: Always
+      args: ["touch %LOG_DIRECTORY%/fmwk8s.completed && tail -f /dev/null"]
       envFrom:
         - configMapRef:
             name: fmwk8s-op-intg-env-configmap
       volumeMounts:
         - mountPath: "%LOG_DIRECTORY%"
           name: fmwk8s-log-volume
-      lifecycle:
-        preStop:
-          exec:
-            command: [
-              # Stop Container Termination for Debugging
-              "tail", "-f", "/dev/null", "&"
-            ]
   volumes:
     - name: fmwk8s-log-volume
       persistentVolumeClaim:
