@@ -325,6 +325,7 @@ class Domain extends Common {
             script.sh label: "cleanup jobs/services/pods",
                     script: "kubectl delete jobs --all -n ${domainNamespace} && \
                        kubectl delete services --all -n ${domainNamespace} && \
+                       kubectl delete deployment --all -n ${domainNamespace} && \
                        kubectl delete pods --all -n ${domainNamespace}"
         }
         catch (exc) {
