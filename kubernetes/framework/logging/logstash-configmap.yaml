@@ -14,6 +14,14 @@ data:
         path => "/shared/domains/logs/%DOMAIN_NAME%/soa_server1.log"
         start_position => beginning
       }
+      file {
+        path => "/shared/logs/BasicDomainTest/*.dif"
+        start_position => beginning
+      }
+      file {
+        path => "/shared/logs/BasicDomainTest/*.suc"
+        start_position => beginning
+      }
     }
     filter {
       grok {
