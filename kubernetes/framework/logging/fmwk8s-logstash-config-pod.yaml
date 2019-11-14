@@ -12,6 +12,9 @@ spec:
   - name: domain-storage-volume
     persistentVolumeClaim:
       claimName: %DOMAIN_PVC%
+  - name: test-storage-volume
+    persistentVolumeClaim:
+      claimName: fmwk8s-tests-pvc-%RUN_ID%
   - name: fmwk8s-logstash-configmap
     configMap:
       name: %DOMAIN_NAME%-logstash-configmap
@@ -20,13 +23,15 @@ spec:
   - name: fmwk8s-logstash-config
     image: k8s.gcr.io/busybox
     command: ["/bin/sh"]
-    args: ["-c", "ls -ltr /shared/domains/logstash/"]
+    args: ["-c", "ls -ltr /shared/domains/logstash/ && ls -ltr /shared/logs/BasicDomainTest/"]
     securityContext:
       runAsUser: 756208
       allowPrivilegeEscalation: true
     volumeMounts:
     - name: domain-storage-volume
       mountPath: /shared/domains
+    - name: test-storage-volume
+        mountPath: /shared/logs
     - name: fmwk8s-logstash-configmap
       mountPath: /shared/domains/logstash/logstash.conf
       subPath: logstash.conf
