@@ -10,7 +10,6 @@ class OperatorIntegration extends Test {
     static fireTest() {
         testId = "op-intg"
         createEnvConfigMap()
-        createPersistentVolume()
         runTests()
         publishLogs()
         cleanup()
@@ -48,32 +47,6 @@ class OperatorIntegration extends Test {
         }
         catch (exc) {
             Log.error("create env configmap failed.")
-            throw exc
-        }
-        finally {
-        }
-    }
-
-    // this is a generic one. need to be done irrespective of what type of test is done. probably will move to parent class
-    static createPersistentVolume() {
-        try {
-            Log.info("begin create persistent volume.")
-
-            script.sh label: "configure test pv/pvc",
-                    script: "cd kubernetes/framework/test && \
-                       sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-tests-pv.yaml && \
-                       sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-tests-pvc.yaml && \
-                       cat fmwk8s-tests-pv.yaml && \
-                       cat fmwk8s-tests-pvc.yaml"
-
-            script.sh label: "create test pv/pvc",
-                    script: "kubectl apply -f kubernetes/framework/test/fmwk8s-tests-pv.yaml -n ${Domain.domainNamespace} && \
-                       kubectl apply -f kubernetes/framework/test/fmwk8s-tests-pvc.yaml -n ${Domain.domainNamespace}"
-
-            Log.info("create persistent volume success.")
-        }
-        catch (exc) {
-            Log.error("create persistent volume failed.")
             throw exc
         }
         finally {

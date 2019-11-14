@@ -10,15 +10,23 @@ spec:
     - name: fmwk8s-op-intg-test
       image: "%TEST_IMAGE%"
       imagePullPolicy: Always
+      args: ["/usr/local/bin/run-timer.sh"]
       envFrom:
         - configMapRef:
             name: fmwk8s-op-intg-env-configmap
       volumeMounts:
-        - mountPath: "%LOG_DIRECTORY%"
-          name: fmwk8s-log-volume
+        - name: fmwk8s-log-volume
+          mountPath: "%LOG_DIRECTORY%"
+        - name: fmwk8s-utility-configmap
+          mountPath: /usr/local/bin/run-timer.sh
+          subPath: run-timer.sh
   volumes:
     - name: fmwk8s-log-volume
       persistentVolumeClaim:
         claimName: fmwk8s-tests-pvc-%RUN_ID%
+    - name: fmwk8s-utility-configmap
+      configMap:
+        name: fmwk8s-utility-configmap
+        defaultMode: 0777
 ---
 ---

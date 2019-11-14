@@ -14,6 +14,7 @@ class Test extends Common {
 
     static invokeTest() {
         logDirectory = "/logs/${runId}"
+        doTestHarnessSetup()
 
         if (testType != null && !testType.toString().isEmpty()) {
             if (testType.matches("url-validation")) {
@@ -32,6 +33,38 @@ class Test extends Common {
 
         if (testStatus.equalsIgnoreCase("failure")) {
             throw new Exception("test has failed.")
+        }
+    }
+
+    static doTestHarnessSetup() {
+        try {
+            Log.info("begin test harness setup.")
+
+            script.git branch: 'master',
+                    credentialsId: 'fmwk8sval_ww.ssh',
+                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
+
+            script.sh label: "create fmwk8s utility configmap",
+                    script: "kubectl apply -f kubernetes/framework/fmwk8s-utility-configmap.yaml -n ${Domain.domainNamespace}"
+
+            script.sh label: "configure test pv/pvc",
+                    script: "cd kubernetes/framework/test && \
+                       sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-tests-pv.yaml && \
+                       sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-tests-pvc.yaml && \
+                       cat fmwk8s-tests-pv.yaml && \
+                       cat fmwk8s-tests-pvc.yaml"
+
+            script.sh label: "create test pv/pvc",
+                    script: "kubectl apply -f kubernetes/framework/test/fmwk8s-tests-pv.yaml -n ${Domain.domainNamespace} && \
+                       kubectl apply -f kubernetes/framework/test/fmwk8s-tests-pvc.yaml -n ${Domain.domainNamespace}"
+
+            Log.info("test harness setup success.")
+        }
+        catch (exc) {
+            Log.error("test harness setup failed.")
+            throw exc
+        }
+        finally {
         }
     }
 
@@ -56,5 +89,4 @@ class Test extends Common {
             }
         }
     }
-
 }
