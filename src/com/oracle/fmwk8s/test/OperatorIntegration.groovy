@@ -8,11 +8,21 @@ import com.oracle.fmwk8s.env.Operator
 
 class OperatorIntegration extends Test {
     static fireTest() {
-        testId = "op-intg"
-        createEnvConfigMap()
-        runTests()
-        publishLogs()
-        cleanup()
+        try {
+            Log.info("begin fireTest.")
+            testId = "op-intg"
+            createEnvConfigMap()
+            runTests()
+            publishLogs()
+            Log.info("fireTest success.")
+        }
+        catch (exc) {
+            Log.error("fireTest failed.")
+            testStatus = "failure"
+        }
+        finally {
+            cleanup()
+        }
     }
 
     static createEnvConfigMap() {
