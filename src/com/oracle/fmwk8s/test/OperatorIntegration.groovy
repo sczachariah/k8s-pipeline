@@ -139,7 +139,7 @@ class OperatorIntegration extends Test {
             script.sh label: "check test status",
                     script: "testStat='testStat' && \
                         i=0 && \
-                        until `echo \$testStat | grep -q Completed` &> /dev/null || `echo \$testStat | grep -q Error` &> /dev/null\n \
+                        until `echo \$testStat | grep -q Completed` > /dev/null || `echo \$testStat | grep -q Error` > /dev/null\n \
                         do \n \
                             if [ \$i == 50 ]; then\n \
                                 echo \"Timeout waiting for Test Completion. Exiting!!.\"\n \
