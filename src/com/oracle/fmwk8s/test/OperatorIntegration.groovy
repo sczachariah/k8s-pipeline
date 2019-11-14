@@ -38,6 +38,7 @@ class OperatorIntegration extends Test {
                         sed -i \"s|%ADMIN_T3_CHANNEL_PORT%|${yamlUtility.domainInputsMap.get("t3ChannelPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%TEST_TYPE%|${testType}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"
 
             script.sh label: "create env varialbes configmap",
@@ -90,6 +91,7 @@ class OperatorIntegration extends Test {
         }
     }
 
+    // re design to check for creation of file fmwk8s.completed
     static waitForTests() {
         try {
             Log.info("begin wait for test completion.")
