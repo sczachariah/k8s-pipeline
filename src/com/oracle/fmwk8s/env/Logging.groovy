@@ -17,6 +17,7 @@ class Logging extends Common {
             script.sh label: "create logstash configmap",
                     script: "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-configmap.yaml && \
+                       sed -i \"s#%RUN_ID%#${runId}#g\" logstash-configmap.yaml && \
                        sed -i \"s#%ELASTICSEARCH_HOST%#${elasticSearchHost}:${elasticSearchPort}#g\" logstash-configmap.yaml && \
                        cat logstash-configmap.yaml && \
                        kubectl apply -f logstash-configmap.yaml -n ${domainNamespace} && \
@@ -38,6 +39,7 @@ class Logging extends Common {
                     script: "cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" fmwk8s-logstash-config-pod.yaml && \
                        sed -i \"s#%DOMAIN_PVC%#${domainName}-${domainNamespace}-pvc#g\" fmwk8s-logstash-config-pod.yaml && \
+                       sed -i \"s#%RUN_ID%#${runId}#g\" fmwk8s-logstash-config-pod.yaml && \
                        cat fmwk8s-logstash-config-pod.yaml && \
                        kubectl apply -f fmwk8s-logstash-config-pod.yaml -n ${domainNamespace} && \
                        sleep 60"
@@ -60,6 +62,7 @@ class Logging extends Common {
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-deployment.yaml && \
                        sed -i \"s#%DOMAIN_NAMESPACE%#${domainNamespace}#g\" logstash-deployment.yaml && \
                        sed -i \"s#%DOMAIN_PVC%#${domainName}-${domainNamespace}-pvc#g\" logstash-deployment.yaml && \
+                       sed -i \"s#%RUN_ID%#${runId}#g\" logstash-deployment.yaml && \
                        cat logstash-deployment.yaml && \
                        kubectl apply -f logstash-deployment.yaml -n ${domainNamespace} && \
                        sleep 60"
@@ -79,9 +82,9 @@ class Logging extends Common {
 
             if ("${elkEnable}" == "true") {
                 Log.info("elk is enabled.")
-                configureLogstashConfigmap(script, domainName, domainNamespace)
-                configureLogstash(script, domainName, domainNamespace)
-                updateLogstashDeployment(script, domainName, domainNamespace)
+                configureLogstashConfigmap()
+                configureLogstash()
+                updateLogstashDeployment()
                 Log.info("deploy logstash success.")
             } else {
                 Log.info("elk is disabled.")
