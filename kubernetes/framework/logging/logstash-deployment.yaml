@@ -13,6 +13,9 @@ spec:
         - name: domain-storage-volume
           persistentVolumeClaim:
             claimName: %DOMAIN_PVC%
+        - name: test-storage-volume
+          persistentVolumeClaim:
+            claimName: fmwk8s-tests-pvc-%RUN_ID%
         - name: fmwk8s-logstash-configmap
           configMap:
             name: %DOMAIN_NAME%-logstash-configmap
@@ -28,6 +31,8 @@ spec:
           volumeMounts:
             - name: domain-storage-volume
               mountPath: /shared/domains
+            - name: test-storage-volume
+              mountPath: /shared/logs
             - name: fmwk8s-logstash-configmap
               mountPath: /shared/domains/logstash/logstash.conf
               subPath: logstash.conf
