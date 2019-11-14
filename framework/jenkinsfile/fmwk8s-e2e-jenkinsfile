@@ -24,42 +24,34 @@ pipeline {
     stages {
         stage('initialize validation framework') {
             steps {
-                container('jnlp') {
-                    script {
-                        currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME + "-" + "${this.env.DOMAIN_TYPE}".toString().toUpperCase()
-                        Initializer.initialize(this)
-                    }
+                script {
+                    currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME + "-" + "${this.env.DOMAIN_TYPE}".toString().toUpperCase()
+                    Initializer.initialize(this)
                 }
             }
         }
 
         stage('validate input parameters') {
             steps {
-                container('jnlp') {
-                    script {
-                        Validation.validateInputs()
-                        sleep 1
-                    }
+                script {
+                    Validation.validateInputs()
+                    sleep 1
                 }
             }
         }
 
         stage('deploy kubernetes operator') {
             steps {
-                container('jnlp') {
-                    dir('weblogic-operator') {
-                        script {
-                            Operator.deployOperator()
-                        }
+                dir('weblogic-operator') {
+                    script {
+                        Operator.deployOperator()
                     }
                 }
 
-                container('jnlp') {
-                    script {
-                        Domain.createNamespace()
-                        Common.configureRegistrySecret()
-                        EnvironmentSetup.createNfsFolder()
-                    }
+                script {
+                    Domain.createNamespace()
+                    Common.configureRegistrySecret()
+                    EnvironmentSetup.createNfsFolder()
                 }
             }
         }
@@ -68,27 +60,23 @@ pipeline {
             parallel {
                 stage('setup database') {
                     steps {
-                        container('jnlp') {
-                            dir('fmwk8s') {
-                                script {
-                                    Database.deployDatabase()
-                                    Domain.preparRcu()
-                                }
+                        dir('fmwk8s') {
+                            script {
+                                Database.deployDatabase()
+                                Domain.preparRcu()
                             }
                         }
                     }
                 }
                 stage('prepare fmw domain in pv') {
                     steps {
-                        container('jnlp') {
-                            dir('fmwsamples') {
-                                script {
-                                    Domain.pullSampleScripts()
-                                    Domain.configureDomainSecret()
-                                    Domain.configureRcuSecret()
-                                    Domain.preparePersistentVolume()
-                                    Domain.prepareDomain()
-                                }
+                        dir('fmwsamples') {
+                            script {
+                                Domain.pullSampleScripts()
+                                Domain.configureDomainSecret()
+                                Domain.configureRcuSecret()
+                                Domain.preparePersistentVolume()
+                                Domain.prepareDomain()
                             }
                         }
                     }
@@ -101,28 +89,24 @@ pipeline {
             parallel {
                 stage('create fmw domain') {
                     steps {
-                        container('jnlp') {
-                            dir('fmwsamples') {
-                                script {
-                                    Domain.createDomain()
-                                    Logging.deployLogstash()
-                                }
+                        dir('fmwsamples') {
+                            script {
+                                Domain.createDomain()
+                                Logging.deployLogstash()
                             }
                         }
                     }
                 }
                 stage('configure domain loadbalancer') {
                     steps {
-                        container('jnlp') {
-                            dir('fmwsamples') {
-                                script {
-                                    IngressController.deployLoadBalancer()
-                                }
+                        dir('fmwsamples') {
+                            script {
+                                IngressController.deployLoadBalancer()
                             }
-                            dir('fmwk8s') {
-                                script {
-                                    Domain.configureDomainLoadBalancer()
-                                }
+                        }
+                        dir('fmwk8s') {
+                            script {
+                                Domain.configureDomainLoadBalancer()
                             }
                         }
                     }
@@ -132,11 +116,9 @@ pipeline {
 
         stage('verify domain ready') {
             steps {
-                container('jnlp') {
-                    sh label: 'verify weblogic ready', script: '''
+                sh label: 'verify weblogic ready', script: '''
                             echo "TODO WEBLOGIC READY"
                             '''
-                }
             }
         }
 
@@ -144,20 +126,16 @@ pipeline {
             parallel {
                 stage('wait for completion') {
                     steps {
-                        container('jnlp') {
-                            script {
-                                EnvironmentSetup.waitHoursAfter()
-                            }
+                        script {
+                            EnvironmentSetup.waitHoursAfter()
                         }
                     }
                 }
 
                 stage('execute tests') {
                     steps {
-                        container('jnlp') {
-                            script {
-                                Test.invokeTest()
-                            }
+                        script {
+                            Test.invokeTest()
                         }
                     }
                 }
@@ -166,10 +144,8 @@ pipeline {
 
         stage('publish results') {
             steps {
-                container('jnlp') {
-                    script {
-                        Common.publishLogs()
-                    }
+                script {
+                    Common.publishLogs()
                 }
             }
         }
@@ -177,20 +153,18 @@ pipeline {
 
     post {
         always {
-            container(name: 'jnlp') {
-                script {
-                    Logging.getLogs()
+            script {
+                Logging.getLogs()
 
-                    Operator.cleanOperator()
+                Operator.cleanOperator()
 
-                    IngressController.undeployLoadBalancer()
-                    Domain.cleanDomain()
-                    EnvironmentSetup.deleteNfsFolder()
-                    Domain.cleanDomainNamespace()
+                IngressController.undeployLoadBalancer()
+                Domain.cleanDomain()
+                EnvironmentSetup.deleteNfsFolder()
+                Domain.cleanDomainNamespace()
 
-                    Operator.cleanOperator()
-                    Operator.cleanOperatorNamespace()
-                }
+                Operator.cleanOperator()
+                Operator.cleanOperatorNamespace()
             }
         }
     }
