@@ -74,20 +74,31 @@ class EnvironmentSetup extends Base {
     }
 
     static waitHoursAfter() {
-        if (hoursAfter > 0) {
-            if (isWaiting)
-                Log.warning("already in wait loop.")
-            else {
-                Log.info("begin wait loop.")
-                isWaiting = true
-                script.sh label: "sleep for ${hoursAfter}hrs",
-                        script: "sleep ${hoursAfterSeconds}"
-                Log.info("end wait loop.")
-                isWaiting = false
-                Test.cleanup()
+        try {
+            Log.info("start wait hoursAfter.")
+
+            if (hoursAfter > 0) {
+                if (isWaiting)
+                    Log.warning("already in wait loop.")
+                else {
+                    Log.info("begin wait loop.")
+                    isWaiting = true
+                    script.sh label: "sleep for ${hoursAfter}hrs",
+                            script: "sleep ${hoursAfterSeconds}"
+                    Log.info("end wait loop.")
+                    isWaiting = false
+                }
+            } else {
+                Log.info("skipping wait loop.")
             }
-        } else {
-            Log.info("skipping wait loop.")
+
+            Log.info("wait hoursAfter success.")
+        }
+        catch (exc) {
+            Log.error("wait hoursAfter failed.")
+        }
+        finally {
+            Test.cleanup()
         }
     }
 }
