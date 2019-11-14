@@ -31,7 +31,7 @@ spec:
     - name: domain-storage-volume
       mountPath: /shared/domains
     - name: test-storage-volume
-        mountPath: /shared/logs
+      mountPath: /shared/logs
     - name: fmwk8s-logstash-configmap
       mountPath: /shared/domains/logstash/logstash.conf
       subPath: logstash.conf
