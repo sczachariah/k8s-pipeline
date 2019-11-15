@@ -13,7 +13,6 @@ class OperatorIntegration extends Test {
             testId = "op-intg"
             createEnvConfigMap()
             runTests()
-            publishLogs()
             Log.info("fireTest success.")
         }
         catch (exc) {
@@ -21,6 +20,7 @@ class OperatorIntegration extends Test {
             testStatus = "failure"
         }
         finally {
+            publishLogs()
             cleanup()
         }
     }
@@ -128,7 +128,7 @@ class OperatorIntegration extends Test {
                         do \n \
                             if [ \$i == 50 ]; then\n \
                                 echo \"Timeout waiting for Test Completion. Exiting!!.\"\n \
-                                exit 1\n \
+                                break\n \
                             fi\n \
                         i=\$((i+1))\n \
                         echo \"Test is Running. Iteration \$i of 50. Sleeping\"\n \
