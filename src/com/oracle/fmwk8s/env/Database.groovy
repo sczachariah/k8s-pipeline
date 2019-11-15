@@ -68,10 +68,12 @@ class Database extends Common {
                         script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${dbName}",
                         returnStdout: true
                 ).trim()
-                script.sh label: "setup xaview in db",
-                        script: "kubectl exec -it ${dbPodName} -n ${domainNamespace} -- bash -c \"source /home/oracle/.bashrc; sqlplus sys/${dbPassword}@${dbName}pdb as sysdba <<EOF @\\\$ORACLE_HOME/rdbms/admin/xaview.sql / exit EOF\""
-                Log.info("xaview setup for database success.")
 
+                if (productId.toString().equalsIgnoreCase("oim")) {
+                    script.sh label: "setup xaview in db",
+                            script: "kubectl exec -it ${dbPodName} -n ${domainNamespace} -- bash -c \"source /home/oracle/.bashrc; sqlplus sys/${dbPassword}@${dbName}pdb as sysdba <<EOF @\\\$ORACLE_HOME/rdbms/admin/xaview.sql / exit EOF\""
+                    Log.info("xaview setup for database success.")
+                }
                 Log.info("deploy database success.")
             }
         }
