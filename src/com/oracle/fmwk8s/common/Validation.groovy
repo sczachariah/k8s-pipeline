@@ -21,6 +21,7 @@ class Validation extends Base {
     static def validateInputs() {
         try {
             Log.info("begin validate inputs.")
+            validateProduct(productName)
             validateOperatorVersion(operatorVersion, productName)
             validateProductImageTag(productImage)
             validateDomainType(domainType, productName)
@@ -35,6 +36,20 @@ class Validation extends Base {
         }
 
         Log.info("validate inputs success.")
+    }
+
+    static validateProduct(productName) {
+        try {
+            Log.info("begin product name validation.")
+            if (!Mapping.productIdMap.containsKey(productName)) {
+                Log.error("product ${productName} is not supported by validation framework.")
+                throw new Exception("[validation error] product ${productName} is not supported by validation framework.")
+            }
+            Log.info("product name validation success.")
+        } catch (exc) {
+            Log.error("product name validation failed.")
+            throw exc
+        }
     }
 
     /**
