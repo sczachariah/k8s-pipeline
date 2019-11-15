@@ -125,7 +125,7 @@ class IngressController extends Common {
      * deploys the Nginx load balancer
      *
      * @param script the workflow script of jenkins
-     * @param lbHelmRelease the name given to load balacer
+     * @param lbHelmRelease the name given to load balancer
      * @param domainNamespace the domain namespace to use to deploy the load balancer
      */
     static deployNginx() {
@@ -140,7 +140,7 @@ class IngressController extends Common {
         }
         catch (exc) {
             Log.error("deploy nginx ingress controller failed.")
-            throw exc
+            //throw exc
         }
     }
 
