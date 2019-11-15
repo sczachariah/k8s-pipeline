@@ -10,5 +10,5 @@ data:
     touch ${LOG_DIRECTORY}/fmwk8s.completed
 
     echo "Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..."
-    while true; do sleep ${HOURS_AFTER_SECONDS}; done
+    sleep ${HOURS_AFTER_SECONDS}
 ---
