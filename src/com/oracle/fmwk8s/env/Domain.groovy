@@ -326,7 +326,7 @@ class Domain extends Common {
                     script: "kubectl delete jobs --all -n ${domainNamespace} && \
                        kubectl delete services --all -n ${domainNamespace} && \
                        kubectl delete deployment --all -n ${domainNamespace} && \
-                       kubectl delete pods --all -n ${domainNamespace}"
+                       kubectl delete pods --all -n ${domainNamespace} --grace-period=0 --force"
         }
         catch (exc) {
             Log.error("cleanup domain pods and services failed.")
@@ -339,7 +339,7 @@ class Domain extends Common {
             script.sh label: "cleanup configmap",
                     script: "kubectl delete configmaps --all -n ${domainNamespace}"
             script.sh label: "cleanup statefulsets",
-                    script: "kubectl delete statefulsets --all -n ${domainNamespace}"
+                    script: "kubectl delete statefulsets --all -n ${domainNamespace} --grace-period=0 --force"
         }
         catch (exc) {
             Log.error("cleanup domain configmap and stateful sets failed.")
@@ -361,10 +361,10 @@ class Domain extends Common {
 
         try {
             script.sh label: "cleanup domain pvc",
-                    script: "kubectl delete pvc ${domainName}-${domainNamespace}-pvc -n ${domainNamespace}"
+                    script: "kubectl delete pvc ${domainName}-${domainNamespace}-pvc -n ${domainNamespace} --grace-period=0 --force"
             sleep 180
             script.sh label: "cleanup domain pv",
-                    script: "kubectl delete pv ${domainName}-${domainNamespace}-pv -n ${domainNamespace}"
+                    script: "kubectl delete pv ${domainName}-${domainNamespace}-pv -n ${domainNamespace} --grace-period=0 --force"
         }
         catch (exc) {
             Log.error("cleanup domain persistent volume failed.")

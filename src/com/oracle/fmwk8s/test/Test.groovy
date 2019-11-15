@@ -77,9 +77,9 @@ class Test extends Common {
                         script: "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} --grace-period=0 --force"
                 sleep 30
                 script.sh label: "cleanup test pv/pvc",
-                        script: "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pvc.yaml -n ${Domain.domainNamespace} && \
+                        script: "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pvc.yaml -n ${Domain.domainNamespace} --grace-period=0 --force && \
                                 sleep 30 && \
-                                kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace}"
+                                kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-pv.yaml -n ${Domain.domainNamespace} --grace-period=0 --force"
 
                 Log.info("cleanup test resources success.")
             }

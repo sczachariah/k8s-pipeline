@@ -128,7 +128,7 @@ class Operator extends Common {
             script.sh label: "cleanup operator configmaps",
                     script: "kubectl delete configmaps --all -n ${operatorNamespace}"
             script.sh label: "cleanup operator namespace",
-                    script: "kubectl delete all --all -n ${operatorNamespace}"
+                    script: "kubectl delete all --all -n ${operatorNamespace} --grace-period=0 --force"
             sleep 30
             script.sh label: "delete operator namespace",
                     script: "kubectl delete ns ${operatorNamespace}"
