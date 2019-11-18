@@ -263,7 +263,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         Integer skipCountValue = skipCount.trim().toInteger()
 
         /** Generating the subject and the mail body for mail notification */
-        def subject = "${Test.testStatus} - '[${script.env.BUILD_NUMBER}]'"
+        def subject = "Test Summary for build - '[${script.env.BUILD_NUMBER}]' in '[${Test.testStatus}]' status."
         def body = """<p>Hi,</p>
 """
 
