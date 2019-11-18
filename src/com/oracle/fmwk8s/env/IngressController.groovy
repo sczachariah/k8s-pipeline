@@ -24,26 +24,30 @@ class IngressController extends Common {
      * @param domainNamespace the domain namespace given to the product
      */
     static deployLoadBalancer() {
-        switch ("${lbType}") {
-            case "TRAEFIK":
-                deployTraefik()
-                break
-            case "APACHE":
-                deployApache()
-                break
-            case "VOYAGER":
-                deployVoyager()
-                break
-            case "NGINX":
-                deployNginx()
-                break
-            default:
-                deployTraefik()
-                break
+        try {
+            switch ("${lbType}") {
+                case "TRAEFIK":
+                    deployTraefik()
+                    break
+                case "APACHE":
+                    deployApache()
+                    break
+                case "VOYAGER":
+                    deployVoyager()
+                    break
+                case "NGINX":
+                    deployNginx()
+                    break
+                default:
+                    deployTraefik()
+                    break
+            }
+        } catch (exc) {
         }
-
-        getLoadBalancerPort()
-        sleep 60
+        finally {
+            sleep 60
+            getLoadBalancerPort()
+        }
     }
 
     /**
