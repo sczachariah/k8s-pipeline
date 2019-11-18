@@ -23,7 +23,7 @@ spec:
   - name: fmwk8s-logstash-config
     image: k8s.gcr.io/busybox
     command: ["/bin/sh"]
-    args: ["-c", "ls -ltr /shared/domains/logstash/ && ls -ltr /shared/logs/BasicDomainTest/"]
+    args: ["-c", "ls -ltr /shared/domains/logstash/ && ls -ltr /shared/logs/"]
     securityContext:
       runAsUser: 756208
       allowPrivilegeEscalation: true
