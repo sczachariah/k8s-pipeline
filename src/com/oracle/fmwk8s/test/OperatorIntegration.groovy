@@ -5,6 +5,7 @@ import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Logging
 import com.oracle.fmwk8s.env.Operator
+import com.oracle.fmwk8s.utility.ReportUtility
 
 class OperatorIntegration extends Test {
     static fireTest() {
@@ -20,7 +21,7 @@ class OperatorIntegration extends Test {
             testStatus = "failure"
         }
         finally {
-            publishLogs()
+            publishLogsAndGenerateTestSummaryReport()
             cleanup()
         }
     }
@@ -71,7 +72,7 @@ class OperatorIntegration extends Test {
             script.sh label: "configure test pod",
                     script: "cd kubernetes/framework/test/${testId} && \
                         sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${testId}-test-pod.yaml && \
-                        sed -i \"s|%HOURS_AFTER_SECONDS%|144000|g\" fmwk8s-${testId}-test-pod.yaml && \
+                        sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         cat fmwk8s-${testId}-test-pod.yaml"
@@ -156,7 +157,11 @@ class OperatorIntegration extends Test {
         }
     }
 
-    static publishLogs() {
+    static publishLogsAndGenerateTestSummaryReport() {
+        /** Trying to collect all the test logs under the test_logs directory after successful test runs */
         Logging.getTestLogs()
+
+        /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
+        ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
     }
 }
