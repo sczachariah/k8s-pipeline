@@ -90,13 +90,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 <p>${domainURLs} </p>
 """
         def domainURL
-        Log.info(script,Common.k8sMasterUrl)
-        if ("${Common.cloud}".equalsIgnoreCase("oci-v1.12.9")){
-            domainURL = "https://100.111.150.162:6443/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/overview?namespace=${Common.domainNamespace}"
-        }
-        if("${Common.cloud}".equalsIgnoreCase("kubernetes-v1.15.2")){
-            domainURL = "https://10.248.90.49:6443/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/overview?namespace=${Common.domainNamespace}"
-        }
+        domainURL = "${Common.k8sMasterUrl}/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/overview?namespace=${Common.domainNamespace}"
 
         if ("${Common.testType}" != "N/A") {
             body = body + """
