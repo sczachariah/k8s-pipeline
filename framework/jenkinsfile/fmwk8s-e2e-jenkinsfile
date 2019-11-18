@@ -92,7 +92,6 @@ pipeline {
                         dir('fmwsamples') {
                             script {
                                 Domain.createDomain()
-                                Logging.deployLogstash()
                             }
                         }
                     }
@@ -107,6 +106,15 @@ pipeline {
                         dir('fmwk8s') {
                             script {
                                 Domain.configureDomainLoadBalancer()
+                            }
+                        }
+                    }
+                }
+                stage('deploy logstash') {
+                    steps {
+                        dir('fmwk8s') {
+                            script {
+                                Logging.deployLogstash()
                             }
                         }
                     }
