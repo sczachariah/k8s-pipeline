@@ -7,6 +7,7 @@ import com.oracle.fmwk8s.test.Test
 import java.util.Calendar;
 import groovy.time.TimeCategory
 import com.oracle.fmwk8s.env.Logging
+import com.oracle.fmwk8s.common.Log
 
 class ReportUtility {
     
@@ -89,6 +90,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 <p>${domainURLs} </p>
 """
         def domainURL
+        Log.info(script,Common.k8sMasterUrl)
         if ("${Common.cloud}".equalsIgnoreCase("oci-v1.12.9")){
             domainURL = "https://100.111.150.162:6443/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/overview?namespace=${Common.domainNamespace}"
         }
