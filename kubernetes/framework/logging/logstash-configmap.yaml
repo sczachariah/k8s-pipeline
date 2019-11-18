@@ -19,11 +19,11 @@ data:
         start_position => beginning
       }
       file {
-        path => "/shared/logs/BasicDomainTest/*.dif"
+        path => "/shared/logs/**/*.dif"
         start_position => beginning
       }
       file {
-        path => "/shared/logs/BasicDomainTest/*.suc"
+        path => "/shared/logs/**/*.suc"
         start_position => beginning
       }
     }
