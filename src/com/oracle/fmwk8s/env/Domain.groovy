@@ -211,11 +211,10 @@ class Domain extends Common {
                            sleep 480000"
             }
             Log.info("start " + productId + " domain success.")
-
             // fix operator not managing the domain intermittently
             Operator.setDomainNamespace()
             isDomainReady()
-            ReportUtility.sendNotificationMailPostDomainCreation(script)
+            
         }
         catch (exc) {
             Log.error("create/start " + productId + " domain failed.")
@@ -223,6 +222,7 @@ class Domain extends Common {
         }
         finally {
             ReportUtility.printDomainUrls(script)
+            ReportUtility.sendNotificationMailPostDomainCreation(script)
             createDomainPodName = script.sh(
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${domainName}-create",
                     returnStdout: true
