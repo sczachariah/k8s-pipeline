@@ -16,7 +16,8 @@ class Logging extends Common {
             Log.info("begin configure logstash configmap.")
 
             script.sh label: "create logstash configmap",
-                    script: "cd ../fmwk8s/kubernetes/framework/logging && \
+                    script: "pwd && \
+                       cd ../fmwk8s/kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-configmap.yaml && \
                        sed -i \"s#%RUN_ID%#${runId}#g\" logstash-configmap.yaml && \
                        sed -i \"s#%ELASTICSEARCH_HOST%#${elasticSearchHost}:${elasticSearchPort}#g\" logstash-configmap.yaml && \
