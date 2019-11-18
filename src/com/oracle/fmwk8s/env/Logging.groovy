@@ -17,7 +17,8 @@ class Logging extends Common {
 
             script.sh label: "create logstash configmap",
                     script: "pwd && \
-                       cd ../fmwk8s/kubernetes/framework/logging && \
+                       ls && \
+                       cd kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-configmap.yaml && \
                        sed -i \"s#%RUN_ID%#${runId}#g\" logstash-configmap.yaml && \
                        sed -i \"s#%ELASTICSEARCH_HOST%#${elasticSearchHost}:${elasticSearchPort}#g\" logstash-configmap.yaml && \
@@ -38,7 +39,7 @@ class Logging extends Common {
             Log.info("begin configure logstash.")
 
             script.sh label: "create logstash configuration pod",
-                    script: "cd ../fmwk8s/kubernetes/framework/logging && \
+                    script: "cd kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" fmwk8s-logstash-config-pod.yaml && \
                        sed -i \"s#%DOMAIN_PVC%#${domainName}-${domainNamespace}-pvc#g\" fmwk8s-logstash-config-pod.yaml && \
                        sed -i \"s#%RUN_ID%#${runId}#g\" fmwk8s-logstash-config-pod.yaml && \
@@ -60,7 +61,7 @@ class Logging extends Common {
             Log.info("begin update and deploy logstash.")
 
             script.sh label: "create logstash pod",
-                    script: "cd ../fmwk8s/kubernetes/framework/logging && \
+                    script: "cd kubernetes/framework/logging && \
                        sed -i \"s#%DOMAIN_NAME%#${domainName}#g\" logstash-deployment.yaml && \
                        sed -i \"s#%DOMAIN_NAMESPACE%#${domainNamespace}#g\" logstash-deployment.yaml && \
                        sed -i \"s#%DOMAIN_PVC%#${domainName}-${domainNamespace}-pvc#g\" logstash-deployment.yaml && \
