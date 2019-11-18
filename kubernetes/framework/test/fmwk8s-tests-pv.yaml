@@ -5,7 +5,7 @@ metadata:
   name: fmwk8s-tests-pv-%RUN_ID%
   labels:
     type: fmwk8s-hostpath-pv
-    delete: true
+    delete: "true"
 spec:
   storageClassName: fmwk8s-tests-pv-%RUN_ID%
   capacity:
