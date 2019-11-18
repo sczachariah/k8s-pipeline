@@ -323,10 +323,10 @@ class Domain extends Common {
 
         try {
             script.sh label: "cleanup jobs/services/pods",
-                    script: "kubectl delete jobs --all -n ${domainNamespace} && \
-                       kubectl delete services --all -n ${domainNamespace} && \
-                       kubectl delete deployment --all -n ${domainNamespace} && \
-                       kubectl delete pods --all -n ${domainNamespace} --grace-period=0 --force"
+                    script: "kubectl delete jobs --all -n ${domainNamespace} --cascade && \
+                       kubectl delete services --all -n ${domainNamespace} --cascade && \
+                       kubectl delete deployment --all -n ${domainNamespace} --cascade && \
+                       kubectl delete pods --all -n ${domainNamespace} --grace-period=0 --force --cascade"
         }
         catch (exc) {
             Log.error("cleanup domain pods and services failed.")
@@ -337,9 +337,9 @@ class Domain extends Common {
 
         try {
             script.sh label: "cleanup configmap",
-                    script: "kubectl delete configmaps --all -n ${domainNamespace}"
+                    script: "kubectl delete configmaps --all -n ${domainNamespace} --cascade"
             script.sh label: "cleanup statefulsets",
-                    script: "kubectl delete statefulsets --all -n ${domainNamespace} --grace-period=0 --force"
+                    script: "kubectl delete statefulsets --all -n ${domainNamespace} --grace-period=0 --force --cascade"
         }
         catch (exc) {
             Log.error("cleanup domain configmap and stateful sets failed.")
@@ -350,7 +350,7 @@ class Domain extends Common {
 
         try {
             script.sh label: "cleanup domain",
-                    script: "kubectl delete domain ${domainName} -n ${domainNamespace}"
+                    script: "kubectl delete domain ${domainName} -n ${domainNamespace} --cascade"
         }
         catch (exc) {
             Log.error("cleanup domain resource failed.")
@@ -361,10 +361,10 @@ class Domain extends Common {
 
         try {
             script.sh label: "cleanup domain pvc",
-                    script: "kubectl delete pvc ${domainName}-${domainNamespace}-pvc -n ${domainNamespace} --grace-period=0 --force"
+                    script: "kubectl delete pvc ${domainName}-${domainNamespace}-pvc -n ${domainNamespace} --grace-period=0 --force --cascade"
             sleep 180
             script.sh label: "cleanup domain pv",
-                    script: "kubectl delete pv ${domainName}-${domainNamespace}-pv -n ${domainNamespace} --grace-period=0 --force"
+                    script: "kubectl delete pv ${domainName}-${domainNamespace}-pv -n ${domainNamespace} --grace-period=0 --force --cascade"
         }
         catch (exc) {
             Log.error("cleanup domain persistent volume failed.")
@@ -377,7 +377,7 @@ class Domain extends Common {
     static cleanDomainNamespace() {
         try {
             script.sh label: "cleanup domain namespace",
-                    script: "kubectl delete ns ${domainNamespace}"
+                    script: "kubectl delete ns ${domainNamespace} --grace-period=0 --force --cascade"
             sleep 30
         }
         catch (exc) {

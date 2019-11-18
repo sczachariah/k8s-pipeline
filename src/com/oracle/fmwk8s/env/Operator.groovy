@@ -126,12 +126,12 @@ class Operator extends Common {
             Log.info("begin clean kubernetes operator namespace.")
 
             script.sh label: "cleanup operator configmaps",
-                    script: "kubectl delete configmaps --all -n ${operatorNamespace}"
+                    script: "kubectl delete configmaps --all -n ${operatorNamespace} --cascade"
             script.sh label: "cleanup operator namespace",
-                    script: "kubectl delete all --all -n ${operatorNamespace} --grace-period=0 --force"
+                    script: "kubectl delete all --all -n ${operatorNamespace} --grace-period=0 --force --cascade"
             sleep 30
             script.sh label: "delete operator namespace",
-                    script: "kubectl delete ns ${operatorNamespace}"
+                    script: "kubectl delete ns ${operatorNamespace} --grace-period=0 --force --cascade"
             sleep 30
 
             Log.info("clean kubernetes operator namespace success.")
