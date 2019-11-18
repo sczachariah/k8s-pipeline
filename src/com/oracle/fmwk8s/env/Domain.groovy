@@ -215,6 +215,7 @@ class Domain extends Common {
             // fix operator not managing the domain intermittently
             Operator.setDomainNamespace()
             isDomainReady()
+            ReportUtility.sendNotificationMailPostDomainCreation(script)
         }
         catch (exc) {
             Log.error("create/start " + productId + " domain failed.")
