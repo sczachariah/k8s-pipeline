@@ -145,10 +145,6 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             Log.info("testSuiteNameList :: \n${testSuiteNameList.toString()}")
 
             Log.info("count of *.suc & *.dif files from test logs folder is evaluated successfully")
-
-            /** Method to send mail regarding status of overall test for users*/
-            sendNotificationMailPostTestExecution(script)
-
         } catch (exc) {
             Log.error("count of *.suc & *.dif files from test logs folder has failed!!!.")
             exc.printStackTrace()
