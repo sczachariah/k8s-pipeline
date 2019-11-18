@@ -238,7 +238,7 @@ class Domain extends Common {
 
             script.sh "kubectl get all,domains -n ${domainNamespace}"
             Log.info("begin admin server status check")
-            adminServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}"
+            adminServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("adminServerName").toString().replaceAll("_", "-")}"
             Log.info(adminServerPodName)
             K8sUtility.checkPodStatus(script, adminServerPodName, domainNamespace, 40)
             Log.info("admin server status check completed.")
@@ -251,7 +251,7 @@ class Domain extends Common {
             ).trim()
             Log.info(replicaCount)
             for (int i = 1; i <= Integer.parseInt(replicaCount); i++) {
-                managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase")}${i}"
+                managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase").toString().replaceAll("_", "-")}${i}"
                 K8sUtility.checkPodStatus(script, managedServerPodName, domainNamespace, 40)
             }
             Log.info("managed server status check completed.")
