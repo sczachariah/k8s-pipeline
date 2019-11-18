@@ -365,7 +365,7 @@ class Domain extends Common {
                     script: "kubectl delete pvc ${domainName}-${domainNamespace}-pvc -n ${domainNamespace} --grace-period=0 --force --cascade"
             sleep 180
             script.sh label: "cleanup domain pv",
-                    script: "kubectl delete pv ${domainName}-${domainNamespace}-pv -n ${domainNamespace} --grace-period=0 --force --cascade"
+                    script: "kubectl delete pv ${domainName}-${domainNamespace}-pv --grace-period=0 --force --cascade"
         }
         catch (exc) {
             Log.error("cleanup domain persistent volume failed.")
