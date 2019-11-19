@@ -13,7 +13,7 @@ spec:
   accessModes:
     - ReadWriteOnce
     - ReadWriteMany
-  persistentVolumeReclaimPolicy: Delete
+  persistentVolumeReclaimPolicy: Recycle
   hostPath:
     path: "/scratch/u01/DockerVolume/jenkins/%RUN_ID%"
 ---
