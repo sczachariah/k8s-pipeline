@@ -190,25 +190,43 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 
         body = body + """
 <p>Please find below the access URLs to the environment:</p>
-<p>${domainURLs} </p>
+
 """
+
+        String[] str
+        str = domainURLs.split('\n')
+
+        body = body + """
+<table border="1">
+<tr><td>Domain Url's</td></tr>
+"""
+
+        for( String values : str ){
+            Log.info("value is $values")
+            if("$values".contains("http")){
+                body = body + """<tr><td>${values}</td></tr> """
+            }
+        }
+
+        body = body + """</table>"""
+        
         def domainURL
         domainURL = "${Common.k8sMasterUrl}/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/overview?namespace=${Common.domainNamespace}"
 
         if ("${Common.testType}" != "N/A") {
             body = body + """
-<p>QA tests are being executed against the provisioned environment. Domain and Test pods are accessible here : ${domainURL} </p>
+<p>QA tests are being executed against the provisioned environment. Domain and Test pods are accessible here : <a href="${domainURL}">${domainURL}</a> </p>
 
 <p>A detailed status on test execution will be sent over email once the test execution is completed. </p>
 """
         }else{
             body = body + """
-<p>Domain pods are accessible here : ${domainURL} </p>
+<p>Domain pods are accessible here : <a href="${domainURL}">${domainURL}</a> </p>
 """
         }
         if ("${Common.elkEnable}" == "true") {
             body = body + """
-<p>Operator and Domain logs are available in Kibana : ${Common.kibanaUrl} </p>
+<p>Operator and Domain logs are available in Kibana : <a href="${Common.kibanaUrl}">${Common.kibanaUrl}</a> </p>
 """
         }
 
