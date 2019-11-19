@@ -171,9 +171,6 @@ class Base {
             case "OIG":
                 samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
                 samplesDirectory = ""
-            default:
-                samplesRepo = "unknown"
-                samplesDirectory = "unknown"
                 break
         }
     }
