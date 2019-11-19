@@ -79,6 +79,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         try {
             /**Display contents of the test_logs directory */
             script.sh "ls -ltr ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
+            script.sh "ls -ltr ${Test.logDirectory}/fmwk8s.completed"
+            script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
 
             /** Logic to evaluate no. of *.suc files in test_logs directory given above */
             sucCount = script.sh(
@@ -318,8 +320,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             if (sucCountValue > 0) {
                 body = body + """
             <td valign="top">
-            <h4>Successful Test Cases</h4>
             <ol type="1">
+              <h4>Successful Test Cases</h4>
 """
                 for (String sucTestCaseFileName : sucList) {
                     body = body + """
@@ -334,8 +336,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             if (difCountValue > 0) {
                 body = body + """
             <td valign="top">
-            <h4>Failed Test Cases</h4>
             <ol type="1">
+              <h4>Failed Test Cases</h4>
 """
                 for (String difTestCaseFileName : difList) {
                     body = body + """
@@ -350,8 +352,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             if (skipCountValue > 0) {
                 body = body + """
             <td valign="top">
-            <h4>Skipped Test Cases</h4>
             <ol type="1">
+              <h4>Skipped Test Cases</h4>
 """
                 for (String skipTestCaseFileName : skipList) {
                     body = body + """
