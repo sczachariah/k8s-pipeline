@@ -149,6 +149,7 @@ class OperatorIntegration extends Test {
             } else {
                 testStatus = "completed"
             }
+            //here i should check for that file and put my logic here
             Log.info("wait for test completion success.")
         }
         catch (exc) {
