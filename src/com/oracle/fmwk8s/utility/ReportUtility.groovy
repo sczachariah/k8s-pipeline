@@ -211,7 +211,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         body = body + """</table>"""
         
         def domainURL
-        domainURL = "${Common.k8sMasterUrl}/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/overview?namespace=${Common.domainNamespace}"
+        domainURL = "${Common.k8sMasterUrl}/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#!/overview?namespace=${Common.domainNamespace}"
 
         if ("${Common.testType}" != "N/A") {
             body = body + """
