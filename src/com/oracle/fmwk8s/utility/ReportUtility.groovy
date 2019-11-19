@@ -259,7 +259,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         Integer skipCountValue = skipCount.trim().toInteger()
 
         /** Generating the subject and the mail body for mail notification */
-        def subject = "Test Summary for build - '[${script.env.BUILD_NUMBER}]' in '[${Test.testStatus}]' status."
+        def subject = "Test Summary for build - '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
         def body = """<p>Hi,</p>
 """
 
@@ -318,8 +318,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             if (sucCountValue > 0) {
                 body = body + """
             <td valign="top">
+            <h4>Successful Test Cases</h4>
             <ol type="1">
-              <h4>Successful Test Cases</h4>
 """
                 for (String sucTestCaseFileName : sucList) {
                     body = body + """
@@ -334,8 +334,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             if (difCountValue > 0) {
                 body = body + """
             <td valign="top">
+            <h4>Failed Test Cases</h4>
             <ol type="1">
-              <h4>Failed Test Cases</h4>
 """
                 for (String difTestCaseFileName : difList) {
                     body = body + """
@@ -350,8 +350,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             if (skipCountValue > 0) {
                 body = body + """
             <td valign="top">
+            <h4>Skipped Test Cases</h4>
             <ol type="1">
-              <h4>Skipped Test Cases</h4>
 """
                 for (String skipTestCaseFileName : skipList) {
                     body = body + """
