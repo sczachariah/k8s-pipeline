@@ -264,6 +264,12 @@ class Logging extends Common {
                             }/${runId}/"
                              },
                              {
+                                "pattern": "operator_logs_*.zip",
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
+                                productImageVersion
+                            }/${runId}/"
+                             },
+                             {
                                 "pattern": "pod_logs_*.zip",
                                 "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
                                 productImageVersion
