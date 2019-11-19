@@ -7,8 +7,6 @@ import com.oracle.fmwk8s.common.Log
 class Operator extends Common {
 
     static deployOperator() {
-        getOperatorVersionMappings()
-
         try {
             Log.info("begin deploy kubernetes operator.")
 

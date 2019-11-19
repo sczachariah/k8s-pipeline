@@ -15,6 +15,7 @@ class Initializer {
         commonObj.getProductIdentifier()
         commonObj.getDomainVariables()
         commonObj.getOperatorVariables()
+        commonObj.getOperatorVersionMappings()
         commonObj.getSamplesRepoDetails()
         commonObj.getLoadBalancerVariables()
         commonObj.getNfsVariables()

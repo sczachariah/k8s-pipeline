@@ -120,34 +120,24 @@ class Base {
     }
 
     static getOperatorVersionMappings() {
+        samplesRepo = "https://github.com/oracle/weblogic-kubernetes-operator"
+        samplesDirectory = "domain-home-on-pv"
+
         switch ("${operatorVersion}") {
-            case "2.1":
-                operatorBranch = "release/2.1"
-                operatorImageVersion = "2.1"
-                samplesBranch = "release/2.1"
-                break
-            case "2.2":
-                operatorBranch = "release/2.2"
-                operatorImageVersion = "2.2.0"
-                samplesBranch = "release/2.2"
-                break
-            case "2.2.1":
-                operatorBranch = "release/2.2.1"
-                operatorImageVersion = "2.2.1"
-                samplesBranch = "release/2.2.1"
-                switch (productName) {
-                    case "SOA":
-                        samplesBranch = "soa-2.2.1-dev"
-                }
-                break
             case "2.3.0":
                 operatorBranch = "release/2.3.0"
                 operatorImageVersion = "2.3.0"
                 samplesBranch = "release/2.3.0"
                 switch (productName) {
                     case "SOA":
+                        samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
                         samplesBranch = "soa-2.3.0"
                 }
+                break
+            case "2.4.0":
+                operatorBranch = "release/2.4.0"
+                operatorImageVersion = "2.4.0"
+                samplesBranch = "release/2.4.0"
                 break
             default:
                 operatorBranch = "develop"
@@ -155,7 +145,6 @@ class Base {
                 samplesBranch = "develop"
                 break
         }
-        getSamplesRepoDetails()
     }
 
     static getProductIdentifier() {
@@ -179,26 +168,6 @@ class Base {
 
     static getSamplesRepoDetails() {
         switch ("${productName}") {
-            case "WLS":
-                samplesRepo = "https://github.com/oracle/weblogic-kubernetes-operator"
-                samplesDirectory = "domain-home-on-pv"
-                break
-            case "WLS-INFRA":
-                samplesRepo = "https://github.com/oracle/weblogic-kubernetes-operator"
-                samplesDirectory = ""
-                switch (operatorVersion) {
-                    case "2.3.0":
-                        samplesDirectory = "domain-home-on-pv"
-                }
-                break
-            case "SOA":
-                samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
-                samplesDirectory = ""
-                switch (operatorVersion) {
-                    case "2.3.0":
-                        samplesDirectory = "domain-home-on-pv"
-                }
-                break
             case "OIG":
                 samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
                 samplesDirectory = ""
