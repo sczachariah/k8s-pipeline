@@ -193,6 +193,8 @@ class IngressController extends Common {
 
             script.sh label: "undeploy ingress controller",
                     script: "helm delete --purge ${lbHelmRelease}"
+            script.sh label: "delete helm configmap",
+                    script: "kubectl delete cm -n kube-system --selector=NAME=${lbHelmRelease}"
 
             Log.info("clean kubernetes ingress controller success.")
         }

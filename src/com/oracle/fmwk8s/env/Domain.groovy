@@ -314,6 +314,8 @@ class Domain extends Common {
         try {
             script.sh label: "clean domain ingress rules",
                     script: "helm delete --purge ${domainNamespace}-ingress"
+            script.sh label: "delete helm configmap",
+                    script: "kubectl delete cm -n kube-system --selector=NAME=${domainNamespace}-ingress"
         }
         catch (exc) {
             Log.error("cleanup domain ingress failed.")

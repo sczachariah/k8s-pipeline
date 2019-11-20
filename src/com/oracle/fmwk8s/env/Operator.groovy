@@ -111,6 +111,8 @@ class Operator extends Common {
 
             script.sh label: "cleanup operator",
                     script: "helm delete --purge ${operatorHelmRelease}"
+            script.sh label: "delete helm configmap",
+                    script: "kubectl delete cm -n kube-system --selector=NAME=${operatorHelmRelease}"
 
             Log.info("clean kubernetes operator success.")
         }
