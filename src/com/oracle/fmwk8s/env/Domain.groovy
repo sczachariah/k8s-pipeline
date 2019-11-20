@@ -362,7 +362,8 @@ class Domain extends Common {
 
         try {
             script.sh label: "cleanup domain pvc",
-                    script: "kubectl delete pvc ${domainName}-${domainNamespace}-pvc -n ${domainNamespace} --grace-period=0 --force --cascade"
+                    script: "kubectl delete pvc ${domainName}-${domainNamespace}-pvc -n ${domainNamespace} --grace-period=0 --force --cascade && \
+                             kubectl delete pvc --all -n ${domainNamespace} --grace-period=0 --force --cascade"
             sleep 180
             script.sh label: "cleanup domain pv",
                     script: "kubectl delete pv ${domainName}-${domainNamespace}-pv --grace-period=0 --force --cascade"
