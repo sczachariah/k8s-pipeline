@@ -325,7 +325,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
               for (String overallTestCase : overallTestList) {
                 if (overallTestCase.endsWith(".suc")) {
                     body = body + """
-                            <p>&nbsp;&nbsp;&nbsp;<font color="green">SUCCESS</font></p>
+                            <p>&nbsp;&nbsp;&nbsp;<font color="green">PASSED</font></p>
 """
                 } else if (overallTestCase.endsWith(".dif")) {
                     body = body + """
