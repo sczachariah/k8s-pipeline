@@ -288,10 +288,13 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
   </head>
   <body style="font-family:verdana,courier,arial,helvetica;padding:0; margin:0; -webkit-text-size-adjust:none; width:100%;">
     <div>
-      <table border="1" style="cellpadding:10; cellspacing: 4; width:100%;">
+      <table border="1" style="cellpadding:4; cellspacing:4; width:100%;">
         <tr >
-          <th colspan="1" valign="center" align="left">&nbsp;&nbsp;&nbsp;Job ID&nbsp;:&nbsp;${script.env.BUILD_NUMBER}</th>
-          <th colspan="2" valign="center" align="left">&nbsp;&nbsp;&nbsp;Status&nbsp;:&nbsp;${Test.testStatus.toUpperCase()}</th>
+          <th colspan="1" valign="center" align="left">&nbsp;&nbsp;&nbsp;<h3>JOB ID</h3>&nbsp;:&nbsp;<h3>${script.env.BUILD_NUMBER}</h3></th>
+          <th colspan="2" valign="center" align="left">&nbsp;&nbsp;&nbsp;<h3>TEST STATUS</h3>&nbsp;:&nbsp;<h3>${Test.testStatus.toUpperCase()}</h3></th>
+        </tr>
+        <tr>
+          <th colspan="3">&nbsp;</th>
         </tr>
         <tr>
           <th colspan="1" align="left">&nbsp;&nbsp;&nbsp;Sl. No.</th>
