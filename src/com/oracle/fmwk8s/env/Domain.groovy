@@ -70,20 +70,7 @@ class Domain extends Common {
                         script: "kubectl apply -f kubernetes/framework/db/rcu/${productId}-rcu-configmap.yaml -n ${domainNamespace} && \
                            kubectl apply -f kubernetes/framework/db/rcu/fmwk8s-rcu-pod.yaml -n ${domainNamespace}"
 
-                script.sh label: "wait for rcu status",
-                        script: "rcustat='rcustat' && \
-                           i=0 && \
-                           until `echo \$rcustat | grep -q Completed` > /dev/null\n \
-                           do \n \
-                               if [ \$i == 10 ]; then\n \
-                                   echo \"Timeout waiting for RCU. Exiting!!.\"\n \
-                                   exit 1\n \
-                               fi\n \
-                           i=\$((i+1))\n \
-                           echo \"RCU in progress. Iteration \$i of 10. Sleeping\"\n \
-                           sleep 60\n \
-                           rcustat=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep fmwk8s-rcu\\``\n \
-                           done"
+                K8sUtility.checkPodStatus(script, 'fmwk8s-rcu', domainNamespace, 10, 'Completed')
 
 
                 Log.info("prepare rcu success.")
@@ -241,7 +228,7 @@ class Domain extends Common {
             Log.info("begin admin server status check")
             adminServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("adminServerName").toString().replaceAll("_", "-")}"
             Log.info(adminServerPodName)
-            K8sUtility.checkPodStatus(script, adminServerPodName, domainNamespace, 40)
+            K8sUtility.checkPodStatus(script, adminServerPodName, domainNamespace, 40, '1/1')
             Log.info("admin server status check completed.")
             Log.info("begin managed server status check.")
             script.sh "kubectl get domain -n ${domainNamespace} -o yaml > ${domainName}-domain.yaml && \
@@ -253,7 +240,7 @@ class Domain extends Common {
             Log.info(replicaCount)
             for (int i = 1; i <= Integer.parseInt(replicaCount); i++) {
                 managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase").toString().replaceAll("_", "-")}${i}"
-                K8sUtility.checkPodStatus(script, managedServerPodName, domainNamespace, 40)
+                K8sUtility.checkPodStatus(script, managedServerPodName, domainNamespace, 40, '1/1')
             }
             Log.info("managed server status check completed.")
             Log.info("domain readiness check success.")
