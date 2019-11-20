@@ -28,8 +28,8 @@ class ReportUtility {
     /** List Variable for storing list of skip file names generated after test execution */
     static def skipFileNameList
 
-    /** List Variable for storing test case/suite name for test execution */
-    static def testSuiteNameList
+    /** List Variable for storing list of all suc,dif,skip file names generated after test execution */
+    static def overallExecutedTestCaseList
 
     static printDomainUrls(script) {
         domainURLs = """
@@ -114,7 +114,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             sucFileNameList = script.sh(
                     label: "Fetch the test case names that generated *.suc files in test_logs directory",
                     script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                        find . -name *.suc| uniq | xargs  -n 1 basename |  cut -d '.' -f1",
+                        find . -name *.suc| uniq | xargs -r -n 1 basename",
                     returnStdout: true
             )
             Log.info("sucFileNameList :: \n${sucFileNameList.toString()}")
@@ -123,7 +123,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             difFileNameList = script.sh(
                     label: "Fetch the test case names that generated *.dif files in test_logs directory",
                     script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                        find . -name *.dif| uniq | xargs  -n 1 basename |  cut -d '.' -f1",
+                        find . -name *.dif| uniq | xargs -r -n 1 basename",
                     returnStdout: true
             )
             Log.info("difFileNameList :: \n${difFileNameList.toString()}")
@@ -132,21 +132,18 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             skipFileNameList = script.sh(
                     label: "Fetch the test case names that generated *.skip files in test_logs directory",
                     script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                        find . -name *.skip| uniq | xargs  -n 1 basename |  cut -d '.' -f1",
+                        find . -name *.skip| uniq | xargs -r -n 1 basename",
                     returnStdout: true
             )
             Log.info("skipFileNameList :: \n${skipFileNameList.toString()}")
 
-            /** Fetch the test cases/suites executed during test execution */
-            testSuiteNameList = script.sh(
-                    label: "Fetch the test cases/suites executed during test execution",
-                    script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                        ls -l | grep '^d'|awk '{print \$9}' | cut -d '/' -f1",
-                    returnStdout: true
-            )
-            Log.info("testSuiteNameList :: \n${testSuiteNameList.toString()}")
+            /** Summarize the test cases totally executed and is dumped in test_logs folder.
+             * Fetch the total test case executed *.suc, *.dif and *.skip files in test_logs directory */
+            overallExecutedTestCaseList = sucFileNameList + difFileNameList + skipFileNameList
+            Log.info("Overall Executed Tests :: \n${overallExecutedTestCaseList.toString()}")
 
             Log.info("count of *.suc & *.dif files from test logs folder is evaluated successfully")
+
         } catch (exc) {
             Log.error("count of *.suc & *.dif files from test logs folder has failed!!!.")
             exc.printStackTrace()
@@ -209,7 +206,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         }
 
         body = body + """</table>"""
-        
+
         def domainURL
         domainURL = "${Common.k8sMasterUrl}/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#!/overview?namespace=${Common.domainNamespace}"
 
@@ -262,14 +259,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
      */
     static sendNotificationMailPostTestExecution(script) {
         /** Local Variable declaration for this method */
-        /** sucList - variable to convert string to list elements with whitespace as delimiter for split function */
-        List sucList = sucFileNameList.split()
-        /** difList - variable to convert string to list elements with whitespace as delimiter for split function */
-        List difList = difFileNameList.split()
-        /** skipList - variable to convert string to list elements with whitespace as delimiter for split function */
-        List skipList = skipFileNameList.split()
-        /** testSuiteList - variable to convert string to list elements with whitespace as delimiter for split function */
-        List testSuiteList = testSuiteNameList.split()
+        /** overallTestList - variable to convert string to list elements with whitespace as delimiter for split function */
+        List overallTestList = overallExecutedTestCaseList.split()
 
         /** sucCountValue - variable containing integer value of suc file count  */
         Integer sucCountValue = sucCount.trim().toInteger()
@@ -279,12 +270,12 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         Integer skipCountValue = skipCount.trim().toInteger()
 
         /** Generating the subject and the mail body for mail notification */
-        def subject = "Test Summary for build - '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
-        def body = """<p>Hi,</p>
+        def subject = "Test Summary for build '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
+        def body = """<p font-family:verdana,courier,arial,helvetica;>Hi,</p>
 """
 
         body = body + """
-<p>QA tests has finished execution and please find the detailed status below:</p>
+<p font-family:verdana,courier,arial,helvetica;>QA tests has finished execution and please find the detailed status below:</p>
 <html lang="en">
   <head>
     <title>Test Summary</title>
@@ -292,108 +283,81 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta>
     <meta name="viewport" content="width=320"></meta>
     <style type="text/css"> 
-</style>
+    </style>
   </head>
-  <body style="padding:0; margin:0; -webkit-text-size-adjust:none; width:100%;">
+  <body style="font-family:verdana,courier,arial,helvetica;padding:0; margin:0; -webkit-text-size-adjust:none; width:100%;">
     <div>
       <table border="1" style="cellpadding:10; cellspacing: 4; width:100%;">
-        <tr>
-          <th colspan="5">
-            <h3></h3>
-            <h3>Overall Test Summary Report</h3>
-          </th>
-        </tr>
-        <tr align="center">
-          <th colspan="1">Test Suites</th>
-          <th colspan="1">#Passed</th>
-          <th colspan="1">#Failed</th>
-          <th colspan="1">#Skipped</th>
-          <th colspan="1">#Total</th>
+        <tr >
+          <th colspan="1" valign="center" align="left">&nbsp;&nbsp;&nbsp;Job ID&nbsp;:&nbsp;${script.env.BUILD_NUMBER}</th>
+          <th colspan="2" valign="center" align="left">&nbsp;&nbsp;&nbsp;Status&nbsp;:&nbsp;${Test.testStatus.toUpperCase()}</th>
         </tr>
         <tr>
-          <td valign="center">
-            <ol type="1">
+          <th colspan="1" align="left">&nbsp;&nbsp;&nbsp;Sl. No.</th>
+          <th colspan="1" align="left">&nbsp;&nbsp;&nbsp;Test Cases Executed</th>
+          <th colspan="1" align="left">&nbsp;&nbsp;&nbsp;Results</th>
+        </tr>
+        <tr>
+          <td align="left">
 """
-        for (String testSuiteName : testSuiteList) {
-            body = body + """
-            <li>${testSuiteName.trim()}</li>
+          for(int i = 1; i <= totalSucDifSkipCasesCount; i++) {
+              body = body + """
+              <p>&nbsp;&nbsp;&nbsp;$i.</p>
 """
-        }
-        body = body + """
-            </ol>
+          }
+          body = body + """
           </td>
-          <td align="right" valign="center">${sucCountValue}</td>
-          <td align="right" valign="center">${difCountValue}</td>
-          <td align="right" valign="center">${skipCountValue}</td>
-          <td align="right" valign="center">${totalSucDifSkipCasesCount}</td>
-        </tr>
-      </table>
-      <br></br>
+          <td align="left">
 """
-        if (sucCountValue > 0 || difCountValue > 0 || skipCountValue > 0) {
-            body = body + """
-      <table border="1" style="cellpadding:10; cellspacing: 4; width:100%;">
-        <tr>
-"""
-            if (sucCountValue > 0) {
+              for (String overallTestCase : overallTestList) {
                 body = body + """
-            <td valign="top">
-            <ol type="1">
-              <h4>Successful Test Cases</h4>
+                    <p>&nbsp;&nbsp;&nbsp;${overallTestCase.trim()}</p>
 """
-                for (String sucTestCaseFileName : sucList) {
+              }
+          body = body + """
+          </td>
+          <td align="left">
+"""
+              for (String overallTestCase : overallTestList) {
+                if (overallTestCase.endsWith(".suc")) {
                     body = body + """
-                        <li>${sucTestCaseFileName.trim()}</li>
+                            <p>&nbsp;&nbsp;&nbsp;<font color="green">SUCCESS</font></p>
+"""
+                } else if (overallTestCase.endsWith(".dif")) {
+                    body = body + """
+                            <p>&nbsp;&nbsp;&nbsp;<font color="red">FAILED</font></p>
+"""
+                } else if (overallTestCase.endsWith(".skip")) {
+                    body = body + """
+                            <p>&nbsp;&nbsp;&nbsp;<font color="blue">SKIPPED</font></p>
 """
                 }
-                body = body + """
-            </ol>
-            </td>
+              }
+           body = body + """
+           </td>          
+         </tr>
 """
-            }
-            if (difCountValue > 0) {
-                body = body + """
-            <td valign="top">
-            <ol type="1">
-              <h4>Failed Test Cases</h4>
-"""
-                for (String difTestCaseFileName : difList) {
-                    body = body + """
-                        <li>${difTestCaseFileName.trim()}</li>
-"""
-                }
-                body = body + """
-            </ol>
-            </td>
-"""
-            }
-            if (skipCountValue > 0) {
-                body = body + """
-            <td valign="top">
-            <ol type="1">
-              <h4>Skipped Test Cases</h4>
-"""
-                for (String skipTestCaseFileName : skipList) {
-                    body = body + """
-                        <li>${skipTestCaseFileName.trim()}</li>
-"""
-                }
-                body = body + """
-            </ol>
-            </td>
-"""
-            }
-            body = body + """
-            </tr>
-      </table>
-"""
-        }
-        body = body + """
-    </div>
-  </body>
+    body = body + """
+    </table>
+    <br/>
+    <table border="1" style="cellpadding:10; cellspacing: 4; width:100%;">
+      <tr align="center">
+       <th colspan="1"># of Suc</th>
+       <th colspan="1"># of Dif</th>
+       <th colspan="1"># of Skip</th>
+       <th colspan="1"># of Overall Test Cases Run</th>
+      </tr>
+      <tr>
+       <td align="right" valign="center">${sucCountValue}&nbsp;&nbsp;&nbsp;</td>
+       <td align="right" valign="center">${difCountValue}&nbsp;&nbsp;&nbsp;</td>
+       <td align="right" valign="center">${skipCountValue}&nbsp;&nbsp;&nbsp;</td>
+       <td align="right" valign="center">${totalSucDifSkipCasesCount}&nbsp;&nbsp;&nbsp;</td>
+      </tr>
+  </table>
+</div>
+</body>
 </html>
-<br/>
-<p>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${Logging.productImageVersion}/${Common.runId}/</p>
+<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${Logging.productImageVersion}/${Common.runId}/</p>
 """
         body = body + """
 <p>Regards,</p>

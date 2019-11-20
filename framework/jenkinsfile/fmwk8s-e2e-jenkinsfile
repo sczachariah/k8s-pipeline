@@ -84,7 +84,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('configure domain loadbalancer') {
             steps {
                 dir('fmwsamples') {
