@@ -244,6 +244,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
     static sendMail(script, subject, body) {
         /** plugin used to send user email on status of overall test results after test execution*/
         script.emailext (
+                to: 'akbhat_org_ww@oracle.com',
                 subject: subject,
                 body: body,
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
