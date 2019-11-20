@@ -127,12 +127,12 @@ class OperatorIntegration extends Test {
                         i=0 && \
                         until `echo \"\$testStat\" | grep -q Completed` > /dev/null || `echo \"\$testStat\" | grep -q Error` > /dev/null\n \
                         do \n \
-                            if [ \$i == 50 ]; then\n \
+                            if [ \$i == 100 ]; then\n \
                                 echo \"Timeout waiting for Test Completion. Exiting!!.\"\n \
                                 break\n \
                             fi\n \
                         i=\$((i+1))\n \
-                        echo \"Test is Running. Iteration \$i of 50. Sleeping\"\n \
+                        echo \"Test is Running. Iteration \$i of 100. Sleeping\"\n \
                         sleep 120\n \
                         testStat=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
