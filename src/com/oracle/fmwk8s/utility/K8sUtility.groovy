@@ -5,13 +5,13 @@ import com.oracle.fmwk8s.common.Log
 
 class K8sUtility {
 
-    static checkPodStatus(script, podName, namespace, timeout) {
+    static checkPodStatus(script, podName, namespace, timeout, status) {
         try {
             Log.info("begin ${podName} status check.")
             script.sh label: "check pod status",
                     script: "podstat='podstat' && \
                         i=0 && \
-                        until `echo \$podstat | grep -q 1/1` > /dev/null\n \
+                        until `echo \$podstat | grep -q ${status}` > /dev/null\n \
                         do \n \
                             if [ \$i == ${timeout} ]; then\n \
                                 echo \"timeout waiting for pod ${podName}. exiting!!.\"\n \
