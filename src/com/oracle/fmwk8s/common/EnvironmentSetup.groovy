@@ -98,7 +98,6 @@ class EnvironmentSetup extends Base {
             Log.error("wait hoursAfter failed.")
         }
         finally {
-            Test.cleanup()
         }
     }
 }

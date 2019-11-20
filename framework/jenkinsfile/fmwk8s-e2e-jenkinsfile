@@ -167,6 +167,8 @@ pipeline {
 
                 Operator.cleanOperator()
 
+                Test.cleanup()
+
                 IngressController.undeployLoadBalancer()
                 Domain.cleanDomain()
                 EnvironmentSetup.deleteNfsFolder()

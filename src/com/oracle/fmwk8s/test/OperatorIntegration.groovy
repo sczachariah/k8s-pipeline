@@ -22,7 +22,6 @@ class OperatorIntegration extends Test {
         }
         finally {
             publishLogsAndGenerateTestSummaryReport()
-            cleanup()
         }
     }
 
