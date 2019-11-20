@@ -3,6 +3,7 @@ package com.oracle.fmwk8s.env
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
+import com.oracle.fmwk8s.utility.K8sUtility
 
 /**
  * Database class handles the common database operations that are required
@@ -44,20 +45,7 @@ class Database extends Common {
                         cat oracle-db.yaml && \
                         kubectl apply -f oracle-db.yaml -n ${domainNamespace}"
 
-                script.sh label: "wait for db status",
-                        script: "dbstat='dbstat' && \
-                        i=0 && \
-                        until `echo \$dbstat | grep -q 1/1` > /dev/null\n \
-                        do \n \
-                            if [ \$i == 25 ]; then\n \
-                                echo \"timeout waiting for db. exiting!!.\"\n \
-                                exit 1\n \
-                            fi\n \
-                        i=\$((i+1))\n \
-                        echo \"db is not running. iteration \$i of 25. sleeping\"\n \
-                        sleep 60\n \
-                        dbstat=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep ${dbName}\\``\n \
-                        done"
+                K8sUtility.checkPodStatus(script, dbName, domainNamespace, 10, '1/1')
 
                 Log.info("db container is running.")
                 script.sh "kubectl get pods,svc -n ${domainNamespace} | grep ${dbName}"
