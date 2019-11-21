@@ -290,8 +290,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
     <div>
       <table border="1" style="cellpadding:4; cellspacing:4; width:100%;">
         <tr>
-          <th colspan="1" valign="center" align="left">&nbsp;&nbsp;&nbsp;<h3>JOB ID&nbsp;:&nbsp;${script.env.BUILD_NUMBER}</h3></th>
-          <th colspan="2" valign="center" align="left">&nbsp;&nbsp;&nbsp;<h3>TEST STATUS&nbsp;:&nbsp;${Test.testStatus.toUpperCase()}</h3></th>
+          <th colspan="1" valign="center" align="left"><h3>&nbsp;&nbsp;&nbsp;JOB ID&nbsp;:&nbsp;${script.env.BUILD_NUMBER}</h3></th>
+          <th colspan="2" valign="center" align="left"><h3>&nbsp;&nbsp;&nbsp;TEST STATUS&nbsp;:&nbsp;${Test.testStatus.toUpperCase()}</h3></th>
         </tr>
         <tr>
           <th colspan="3">&nbsp;</th>
