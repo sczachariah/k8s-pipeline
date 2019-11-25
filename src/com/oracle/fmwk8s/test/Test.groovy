@@ -98,8 +98,13 @@ class Test extends Common {
                 /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
                 def fileExists = script.sh(
                         label: "check if the fmwk8s.completed file exists and is created after test execution",
-                        script: "test -f ${Test.logDirectory}/fmwk8s.completed && ${ifFileExists}="+true+" || ${ifFileExists}="+false+";echo ${ifFileExists}",
+                        script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file_exist' || echo 'file_not_exist'",
                         returnStdout: true).trim()
+                if(fileExists == 'file_exist') {
+                    ifFileExists = true
+                }else if(fileExists == 'file_not_exist'){
+                    ifFileExists = false
+                }
                 if(ifFileExists == true && fileExists != null) { waitforfile=false }
                 else{continue}
             }
