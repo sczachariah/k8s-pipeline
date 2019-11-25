@@ -51,18 +51,6 @@ class Mats extends Test {
                         sed -i \"s|%DB_SID%|${Database.dbName}.us.oracle.com|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%JDBC_URL%|jdbc:oracle:thin:@${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%RCUPREFIX%|${domainName}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_IAU_USER%|${Domain.domainName}_IAU|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_IAU_PASSWORD%|Welcome1|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_MDS_USER%|${Domain.domainName}_MDS|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_MDS_PASSWORD%|Welcome1|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_OPSS_USER%|${Domain.domainName}_OPSS|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_OPSS_PASSWORD%|Welcome1|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SDPM_USER%|${Domain.domainName}_UMS|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SDPM_PASSWORD%|Welcome1|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SOA_USER%|${Domain.domainName}_SOAINFRA|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SOA_PASSWORD%|Welcome1|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_STB_USER%|${Domain.domainName}_STB|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_STB_PASSWORD%|Welcome1|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${Common.productId}_server|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%MANAGED_SERVER_PORT%|8001|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         cat fmwk8s-${Common.productId}-env-configmap.yaml"
