@@ -82,20 +82,14 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             script.sh "ls -ltr ${Test.logDirectory}/fmwk8s.completed"
             script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
 
-            Boolean waitforfile = true
-            while(waitforfile){
-                /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
-                def fileExists = script.sh(
-                        label: "check if the fmwk8s.completed file exists and is created after test execution",
-                        script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'exists'",
-                        returnStdout: true).trim()
-                Log.info("file Exists........... :: ${fileExists}")
-                if(fileExists == 'exists') { waitforfile=false }
-                else {continue}
-            }
-
+            /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
+            def fileExists = script.sh(
+                    label: "check if the fmwk8s.completed file exists and is created after test execution",
+                    script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'exists'",
+                    returnStdout: true).trim()
+            Log.info("file Exists........... :: ${fileExists}")
             /** if the fmwk8s.completed file exists, then we calculate suc dif for tests executed */
-            if(!waitforfile) {
+            if(fileExists == 'exists') {
                 /** Logic to evaluate no. of *.suc files in test_logs directory given above */
                 sucCount = script.sh(
                         label: "evaluate no. of *.suc files in test_logs directory",

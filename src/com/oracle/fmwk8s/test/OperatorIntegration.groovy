@@ -1,6 +1,7 @@
 package com.oracle.fmwk8s.test
 
 import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.common.EnvironmentSetup
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Logging
@@ -121,36 +122,40 @@ class OperatorIntegration extends Test {
                         testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
 
-            script.sh label: "check test status",
-                    script: "testStat='testStat' && \
-                        i=0 && \
-                        until `echo \"\$testStat\" | grep -q Completed` > /dev/null || `echo \"\$testStat\" | grep -q Error` > /dev/null\n \
-                        do \n \
-                            if [ \$i == 100 ]; then\n \
-                                echo \"Timeout waiting for Test Completion. Exiting!!.\"\n \
-                                break\n \
-                            fi\n \
-                        i=\$((i+1))\n \
-                        echo \"Test is Running. Iteration \$i of 100. Sleeping\"\n \
-                        sleep 120\n \
-                        testStat=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
-                        done"
+            script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
 
-            def testContainerStatus = script.sh(
-                    label: "get test status",
-                    script: "kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test",
-                    returnStdout: true
-            ).trim()
-            if (testContainerStatus.toString().contains("Error")) {
-                testStatus = "failure"
-            } else if (testContainerStatus.toString().contains("Completed")) {
-                testStatus = "completed"
-            } else {
-                testStatus = "completed"
+            Boolean waitforfile = true
+            while(waitforfile){
+                /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
+                def fileExists = script.sh(
+                        label: "check if the fmwk8s.completed file exists and is created after test execution",
+                        script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'exists'",
+                        returnStdout: true).trim()
+                Log.info("file Exists........... :: ${fileExists}")
+                if(fileExists == 'exists') { waitforfile=false }
+                else {continue}
             }
-            /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
-            ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
-            Log.info("wait for test completion success.")
+
+            /** if the fmwk8s.completed file exists, then we calculate test Status and wait for hoursAfter*/
+            if(!waitforfile) {
+                def testContainerStatus = script.sh(
+                        label: "get test status",
+                        script: "kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test",
+                        returnStdout: true
+                ).trim()
+                if (testContainerStatus.toString().contains("Error")) {
+                    testStatus = "failure"
+                } else if (testContainerStatus.toString().contains("Completed")) {
+                    testStatus = "completed"
+                } else {
+                    testStatus = "completed"
+                }
+                /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
+                ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
+                /** if (file found){  wait for hoursAfter (to be safe. and not rely on timer in container to finish) - reuse EnvironmentSetup.waitHoursAfter}*/
+                EnvironmentSetup.waitHoursAfter()
+                Log.info("wait for test completion success.")
+            }
         }
         catch (exc) {
             Log.error("wait for test completion failed.")
