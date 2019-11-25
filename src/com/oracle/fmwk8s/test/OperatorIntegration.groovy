@@ -124,6 +124,7 @@ class OperatorIntegration extends Test {
 
             script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
 
+            /** wait in loop for fmwk8s.completed file*/
             Boolean waitforfile = true
             while(waitforfile){
                 /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
