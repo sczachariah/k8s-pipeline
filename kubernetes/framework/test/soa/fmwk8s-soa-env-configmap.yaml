@@ -24,7 +24,7 @@ data:
   "DB_PASSWORD": "Oradoc_db1"
   "JDBC_DRIVER": "oracle.jdbc.OracleDriver"
   "JDBC_URL": "%JDBC_URL%"
-  "RCUPREFIX": "%RCUPREFIX"
+  "RCUPREFIX": "%RCUPREFIX%"
   "DB_IAU_USER": "%DB_IAU_USER%"
   "DB_IAU_PASSWORD": "%DB_IAU_PASSWORD%"
   "DB_MDS_USER": "%DB_MDS_USER%"

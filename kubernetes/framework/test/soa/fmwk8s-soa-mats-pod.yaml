@@ -17,8 +17,8 @@ spec:
       volumeMounts:
         - name: fmwk8s-log-volume
           mountPath: "%LOG_DIRECTORY%"
-        - mountPath: %NFS_DOMAIN_DIR%
-          name: domain-storage-volume
+        - name: domain-storage-volume
+          mountPath: %FMWK8S_NFS_DOMAIN_HOME%
         - name: fmwk8s-utility-configmap
           mountPath: /usr/local/bin/run-timer.sh
           subPath: run-timer.sh
