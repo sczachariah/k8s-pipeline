@@ -105,7 +105,7 @@ class Test extends Common {
                 }else if(fileExists == 'file_not_exist'){
                     ifFileExists = false
                 }
-                if(ifFileExists == true && fileExists != null) { waitforfile=false }
+                if(ifFileExists == true) { waitforfile=false }
                 else{continue}
             }
 
