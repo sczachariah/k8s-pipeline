@@ -94,24 +94,21 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
                 /** Logic to evaluate no. of *.suc files in test_logs directory given above */
                 sucCount = script.sh(
                         label: "evaluate no. of *.suc files in test_logs directory",
-                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                        find . -name *.suc  | wc | uniq | awk '{print \$1}'",
+                        script: "cd ${Test.logDirectory} && find . -name *.suc  | wc | uniq | awk '{print \$1}'",
                         returnStdout: true)
                 Log.info("suc........... ::  ${sucCount.toInteger()}")
 
                 /** Logic to evaluate no. of *.dif files in test_logs directory given above */
                 difCount = script.sh(
                         label: "evaluate no. of *.dif files in test_logs directory",
-                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                        find . -name *.dif  | wc | uniq | awk '{print \$1}'",
+                        script: "cd ${Test.logDirectory} && find . -name *.dif  | wc | uniq | awk '{print \$1}'",
                         returnStdout: true).trim()
                 Log.info("dif........... :: ${difCount.toInteger()}")
 
                 /** Logic to evaluate no. of *.skip files in test_logs directory given above */
                 skipCount = script.sh(
                         label: "evaluate no. of *.skip files in test_logs directory",
-                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                    find . -name *.skip  | wc | uniq | awk '{print \$1}'",
+                        script: "cd ${Test.logDirectory} && find . -name *.skip  | wc | uniq | awk '{print \$1}'",
                         returnStdout: true).trim()
                 Log.info("skip........... :: ${skipCount.toInteger()}")
 
@@ -122,8 +119,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
                 /** Fetch the test case names that generated *.suc files in test_logs directory */
                 sucFileNameList = script.sh(
                         label: "Fetch the test case names that generated *.suc files in test_logs directory",
-                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                        find . -name *.suc| uniq | xargs -r -n 1 basename",
+                        script: "cd ${Test.logDirectory} && find . -name *.suc| uniq | xargs -r -n 1 basename",
                         returnStdout: true
                 )
                 Log.info("sucFileNameList :: \n${sucFileNameList.toString()}")
@@ -131,8 +127,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
                 /** Fetch the test case names that generated *.dif files in test_logs directory */
                 difFileNameList = script.sh(
                         label: "Fetch the test case names that generated *.dif files in test_logs directory",
-                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                        find . -name *.dif| uniq | xargs -r -n 1 basename",
+                        script: "cd ${Test.logDirectory} && find . -name *.dif| uniq | xargs -r -n 1 basename",
                         returnStdout: true
                 )
                 Log.info("difFileNameList :: \n${difFileNameList.toString()}")
@@ -140,8 +135,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
                 /** Fetch the test case names that generated *.skip files in test_logs directory */
                 skipFileNameList = script.sh(
                         label: "Fetch the test case names that generated *.skip files in test_logs directory",
-                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
-                        find . -name *.skip| uniq | xargs -r -n 1 basename",
+                        script: "cd ${Test.logDirectory} && find . -name *.skip| uniq | xargs -r -n 1 basename",
                         returnStdout: true
                 )
                 Log.info("skipFileNameList :: \n${skipFileNameList.toString()}")
