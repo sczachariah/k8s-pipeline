@@ -102,15 +102,15 @@ class Test extends Common {
                         label: "check if the fmwk8s.completed file exists and is created after test execution",
                         script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo ${fmwk8sCompletedFileExists} || echo ${fmwk8sCompletedFileNotExists}",
                         returnStdout: true).trim()
-                countOfLooping ++
                 Log.info("value  of fileExists :: ${fileExists}")
-                Log.info("Iteration :: ${countOfLooping}")
                 if(fileExists == "true") {
                     Log.info("in if condition")
                     waitforfile  = false
                 }else if(fileExists == "false"){
                     Log.info("in else if")
                     sleep 120
+                    countOfLooping ++
+                    Log.info("Iteration :: ${countOfLooping}")
                     waitforfile  = true
                     continue
                 }
