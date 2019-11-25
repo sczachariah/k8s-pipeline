@@ -4,20 +4,34 @@ kind: Pod
 metadata:
   name: fmwk8s-soa-mats
 spec:
+  restartPolicy: Never
+  #  terminationGracePeriodSeconds: %HOURS_AFTER_SECONDS%
   containers:
     - name: fmwk8s-soa-mats
       image: "%TEST_IMAGE%"
       imagePullPolicy: Always
+      args: ["/usr/local/bin/run-timer.sh"]
       envFrom:
         - configMapRef:
             name: fmwk8s-soa-env-configmap
-      lifecycle:
-        preStop:
-          exec:
-            command: [
-              # Stop Container Termination for Debugging
-              "tail", "-f", "/dev/null"
-            ]
-  restartPolicy: Never
+      volumeMounts:
+        - name: fmwk8s-log-volume
+          mountPath: "%LOG_DIRECTORY%"
+        - mountPath: %NFS_DOMAIN_DIR%
+          name: domain-storage-volume
+        - name: fmwk8s-utility-configmap
+          mountPath: /usr/local/bin/run-timer.sh
+          subPath: run-timer.sh
+  volumes:
+    - name: fmwk8s-log-volume
+      persistentVolumeClaim:
+        claimName: fmwk8s-tests-pvc-%RUN_ID%
+    - name: fmwk8s-utility-configmap
+      configMap:
+        name: fmwk8s-utility-configmap
+        defaultMode: 0777
+    - name: domain-storage-volume
+      persistentVolumeClaim:
+        claimName: %DOMAIN_PVC%
 ---
 ---
