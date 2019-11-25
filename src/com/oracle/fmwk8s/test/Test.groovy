@@ -93,18 +93,22 @@ class Test extends Common {
 
             /** wait in loop for fmwk8s.completed file*/
             Boolean waitforfile = true
+            Integer countOfLooping = 0
             while(waitforfile){
                 /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
                 def fileExists = script.sh(
                         label: "check if the fmwk8s.completed file exists and is created after test execution",
                         script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file_exist' || echo 'file_not_exist'",
                         returnStdout: true).trim()
+                countOfLooping ++
+                Log.info("Iteration :: ${countOfLooping}")
                 if(fileExists == 'file_exist') {
                     waitforfile  = false
                 }else if(fileExists == 'file_not_exist'){
                     continue
                 }
             }
+            Log.info("Count of looping :: ${countOfLooping}")
 
             /** if the fmwk8s.completed file exists, then we calculate test Status and wait for hoursAfter*/
             if(!waitforfile) {
