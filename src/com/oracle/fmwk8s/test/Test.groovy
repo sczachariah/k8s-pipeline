@@ -89,14 +89,11 @@ class Test extends Common {
                         testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
 
-            script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
+            script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists' || echo 'file not exists'"
 
             /** wait in loop for fmwk8s.completed file*/
             Boolean waitforfile = true
             Boolean ifFileExists = true
-            File checkFile = new File("${Test.logDirectory}/fmwk8s.completed")
-            Log.info("checkFile :: ${checkFile.exists()}, ${checkFile.isDirectory()}, ${checkFile.toString()}")
-
             while(waitforfile){
                 /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
                 def fileExists = script.sh(
