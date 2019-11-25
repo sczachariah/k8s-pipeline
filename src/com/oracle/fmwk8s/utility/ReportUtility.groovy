@@ -264,11 +264,11 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         List overallTestList = (overallExecutedTestCaseList == null) ? [] : overallExecutedTestCaseList.split()
 
         /** sucCountValue - variable containing integer value of suc file count  */
-        Integer sucCountValue = sucCount.trim().toInteger()
+        Integer sucCountValue = (sucCount == null) ? 0 :sucCount.trim().toInteger()
         /** difCountValue - variable containing integer value of dif file count  */
-        Integer difCountValue = difCount.trim().toInteger()
+        Integer difCountValue = (difCount == null) ? 0 :difCount.trim().toInteger()
         /** skipCountValue - variable containing integer value of skip file count  */
-        Integer skipCountValue = skipCount.trim().toInteger()
+        Integer skipCountValue = (skipCount == null) ? 0 :skipCount.trim().toInteger()
 
         /** Generating the subject and the mail body for mail notification */
         def subject = "Test Summary for build '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
