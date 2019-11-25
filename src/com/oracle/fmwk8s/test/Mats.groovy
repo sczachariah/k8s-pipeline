@@ -33,7 +33,7 @@ class Mats extends Test {
                     credentialsId: 'fmwk8sval_ww.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh "cd kubernetes/framework/${Common.productId} && \
+            script.sh "cd kubernetes/framework/test/${Common.productId} && \
                         sed -i \"s|%ADMIN_SERVER_NAME_SVC%|${Domain.domainName}-adminserver.${Domain.domainNamespace}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%MANAGED_SERVER_NAME_SVC%|${Domain.domainName}-cluster-${Common.productId}-cluster.${Domain.domainNamespace}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_USER%|${Domain.weblogicUsername}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
@@ -67,7 +67,7 @@ class Mats extends Test {
                         sed -i \"s|%MANAGED_SERVER_PORT%|8001|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         cat fmwk8s-${Common.productId}-env-configmap.yaml"
 
-            script.sh "kubectl apply -f kubernetes/framework/${Common.productId}/fmwk8s-${Common.productId}-env-configmap.yaml -n ${Domain.domainNamespace}"
+            script.sh "kubectl apply -f kubernetes/framework/test/${Common.productId}/fmwk8s-${Common.productId}-env-configmap.yaml -n ${Domain.domainNamespace}"
 
             Log.info("create env configmap success.")
         }
@@ -87,13 +87,13 @@ class Mats extends Test {
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh label: "configure test pod",
-                    script: "cd kubernetes/framework/test/${testId} && \
-                        sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${Common.productId}-test-pod.yaml && \
-                        sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${Common.productId}-test-pod.yaml && \
-                        sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${Common.productId}-test-pod.yaml && \
-                        sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${Common.productId}-test-pod.yaml && \
-                        sed -i \"s|%NFS_DOMAIN_DIR%|${nfsDomainDir}|g\" fmwk8s-${Common.productId}-test-pod.yaml && \
-                        sed -i \"s|%DOMAIN_PVC%|${domainName}-${domainNamespace}-pvc|g\" fmwk8s-${Common.productId}-test-pod.yaml && \
+                    script: "cd kubernetes/framework/test/${Common.productId} && \
+                        sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
+                        sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
+                        sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
+                        sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
+                        sed -i \"s|%NFS_DOMAIN_DIR%|${nfsDomainDir}|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
+                        sed -i \"s|%DOMAIN_PVC%|${domainName}-${domainNamespace}-pvc|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
                         cat fmwk8s-${Common.productId}-mats-pod.yaml"
 
             script.sh "kubectl apply -f kubernetes/framework/${Common.productId}/fmwk8s-${Common.productId}-mats-pod.yaml -n ${Domain.domainNamespace} && \
