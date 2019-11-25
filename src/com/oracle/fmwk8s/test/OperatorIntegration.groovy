@@ -158,10 +158,10 @@ class OperatorIntegration extends Test {
     }
 
     static publishLogsAndGenerateTestSummaryReport() {
-        /** Trying to collect all the test logs under the test_logs directory after successful test runs */
-        Logging.getTestLogs()
-
         /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
         ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
+
+        /** Trying to collect all the test logs under the test_logs directory after successful test runs */
+        Logging.getTestLogs()
     }
 }

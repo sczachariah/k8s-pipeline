@@ -82,67 +82,81 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             script.sh "ls -ltr ${Test.logDirectory}/fmwk8s.completed"
             script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
 
-            /** Logic to evaluate no. of *.suc files in test_logs directory given above */
-            sucCount = script.sh(
-                    label: "evaluate no. of *.suc files in test_logs directory",
-                    script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
+            Boolean waitforfile = true
+            while(waitforfile){
+                /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
+                def fileExists = script.sh(
+                        label: "check if the fmwk8s.completed file exists and is created after test execution",
+                        script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'exists'",
+                        returnStdout: true).trim()
+                Log.info("file Exists........... :: ${fileExists}")
+                if(fileExists) { waitforfile=false }
+            }
+
+            /** if the fmwk8s.completed file exists, then we calculate suc dif for tests executed */
+            if(!waitforfile) {
+                /** Logic to evaluate no. of *.suc files in test_logs directory given above */
+                sucCount = script.sh(
+                        label: "evaluate no. of *.suc files in test_logs directory",
+                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                         find . -name *.suc  | wc | uniq | awk '{print \$1}'",
-                    returnStdout: true)
-            Log.info("suc........... ::  ${sucCount.toInteger()}")
+                        returnStdout: true)
+                Log.info("suc........... ::  ${sucCount.toInteger()}")
 
-            /** Logic to evaluate no. of *.dif files in test_logs directory given above */
-            difCount = script.sh(
-                    label: "evaluate no. of *.dif files in test_logs directory",
-                    script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
+                /** Logic to evaluate no. of *.dif files in test_logs directory given above */
+                difCount = script.sh(
+                        label: "evaluate no. of *.dif files in test_logs directory",
+                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                         find . -name *.dif  | wc | uniq | awk '{print \$1}'",
-                    returnStdout: true).trim()
-            Log.info("dif........... :: ${difCount.toInteger()}")
+                        returnStdout: true).trim()
+                Log.info("dif........... :: ${difCount.toInteger()}")
 
-            /** Logic to evaluate no. of *.skip files in test_logs directory given above */
-            skipCount = script.sh(
-                    label: "evaluate no. of *.skip files in test_logs directory",
-                    script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
+                /** Logic to evaluate no. of *.skip files in test_logs directory given above */
+                skipCount = script.sh(
+                        label: "evaluate no. of *.skip files in test_logs directory",
+                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                     find . -name *.skip  | wc | uniq | awk '{print \$1}'",
-                    returnStdout: true).trim()
-            Log.info("skip........... :: ${skipCount.toInteger()}")
+                        returnStdout: true).trim()
+                Log.info("skip........... :: ${skipCount.toInteger()}")
 
-            /** Summarize the total no of *.suc, *.dif & *.skip files in test_logs directory given above */
-            totalSucDifSkipCasesCount = sucCount.toInteger() + difCount.toInteger() + skipCount.toInteger()
-            Log.info("total........... :: :: $totalSucDifSkipCasesCount")
+                /** Summarize the total no of *.suc, *.dif & *.skip files in test_logs directory given above */
+                totalSucDifSkipCasesCount = sucCount.toInteger() + difCount.toInteger() + skipCount.toInteger()
+                Log.info("total........... :: :: $totalSucDifSkipCasesCount")
 
-            /** Fetch the test case names that generated *.suc files in test_logs directory */
-            sucFileNameList = script.sh(
-                    label: "Fetch the test case names that generated *.suc files in test_logs directory",
-                    script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
+                /** Fetch the test case names that generated *.suc files in test_logs directory */
+                sucFileNameList = script.sh(
+                        label: "Fetch the test case names that generated *.suc files in test_logs directory",
+                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                         find . -name *.suc| uniq | xargs -r -n 1 basename",
-                    returnStdout: true
-            )
-            Log.info("sucFileNameList :: \n${sucFileNameList.toString()}")
+                        returnStdout: true
+                )
+                Log.info("sucFileNameList :: \n${sucFileNameList.toString()}")
 
-            /** Fetch the test case names that generated *.dif files in test_logs directory */
-            difFileNameList = script.sh(
-                    label: "Fetch the test case names that generated *.dif files in test_logs directory",
-                    script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
+                /** Fetch the test case names that generated *.dif files in test_logs directory */
+                difFileNameList = script.sh(
+                        label: "Fetch the test case names that generated *.dif files in test_logs directory",
+                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                         find . -name *.dif| uniq | xargs -r -n 1 basename",
-                    returnStdout: true
-            )
-            Log.info("difFileNameList :: \n${difFileNameList.toString()}")
+                        returnStdout: true
+                )
+                Log.info("difFileNameList :: \n${difFileNameList.toString()}")
 
-            /** Fetch the test case names that generated *.skip files in test_logs directory */
-            skipFileNameList = script.sh(
-                    label: "Fetch the test case names that generated *.skip files in test_logs directory",
-                    script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
+                /** Fetch the test case names that generated *.skip files in test_logs directory */
+                skipFileNameList = script.sh(
+                        label: "Fetch the test case names that generated *.skip files in test_logs directory",
+                        script: "cd ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs && \
                         find . -name *.skip| uniq | xargs -r -n 1 basename",
-                    returnStdout: true
-            )
-            Log.info("skipFileNameList :: \n${skipFileNameList.toString()}")
+                        returnStdout: true
+                )
+                Log.info("skipFileNameList :: \n${skipFileNameList.toString()}")
 
-            /** Summarize the test cases totally executed and is dumped in test_logs folder.
-             * Fetch the total test case executed *.suc, *.dif and *.skip files in test_logs directory */
-            overallExecutedTestCaseList = sucFileNameList + difFileNameList + skipFileNameList
-            Log.info("Overall Executed Tests :: \n${overallExecutedTestCaseList.toString()}")
+                /** Summarize the test cases totally executed and is dumped in test_logs folder.
+                 * Fetch the total test case executed *.suc, *.dif and *.skip files in test_logs directory */
+                overallExecutedTestCaseList = sucFileNameList + difFileNameList + skipFileNameList
+                Log.info("Overall Executed Tests :: \n${overallExecutedTestCaseList.toString()}")
 
-            Log.info("count of *.suc & *.dif files from test logs folder is evaluated successfully")
+                Log.info("count of *.suc & *.dif files from test logs folder is evaluated successfully")
+            }
 
         } catch (exc) {
             Log.error("count of *.suc & *.dif files from test logs folder has failed!!!.")
