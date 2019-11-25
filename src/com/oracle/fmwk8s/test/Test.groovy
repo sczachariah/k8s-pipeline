@@ -4,6 +4,7 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.EnvironmentSetup
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
+import com.oracle.fmwk8s.utility.ReportUtility
 
 class Test extends Common {
     static def testId
@@ -65,6 +66,68 @@ class Test extends Common {
             throw exc
         }
         finally {
+        }
+    }
+
+    /** Method to wait for test execution and completion based on the file fmwk8s.completed if exists or not */
+    static waitForTests() {
+        try {
+            Log.info("begin wait for test completion.")
+
+            script.sh label: "check test pod status",
+                    script: "testInit='testInit' && \
+                        i=0 && \
+                        until `echo \$testInit | grep -q 1/1` > /dev/null\n \
+                        do \n \
+                            if [ \$i == 10 ]; then\n \
+                                echo \"Timeout waiting for Test Initialization. Exiting!!.\"\n \
+                                exit 1\n \
+                            fi\n \
+                        i=\$((i+1))\n \
+                        echo \"Waiting for Test Initialization. Iteration \$i of 10. Sleeping\"\n \
+                        sleep 60\n \
+                        testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
+                        done"
+
+//            script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
+
+            /** wait in loop for fmwk8s.completed file*/
+            Boolean waitforfile = true
+            while(waitforfile){
+                /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
+                def fileExists = script.sh(
+                        label: "check if the fmwk8s.completed file exists and is created after test execution",
+                        script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'exists'",
+                        returnStdout: true).trim()
+                Log.info("file Exists........... :: ${fileExists}")
+                if(fileExists == 'exists') { waitforfile=false }
+                else {continue}
+            }
+
+            /** if the fmwk8s.completed file exists, then we calculate test Status and wait for hoursAfter*/
+            if(!waitforfile) {
+                def testContainerStatus = script.sh(
+                        label: "get test status",
+                        script: "kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test",
+                        returnStdout: true
+                ).trim()
+                if (testContainerStatus.toString().contains("Error")) {
+                    testStatus = "failure"
+                } else if (testContainerStatus.toString().contains("Completed")) {
+                    testStatus = "completed"
+                } else {
+                    testStatus = "completed"
+                }
+                /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
+                ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
+                /** if (file found){  wait for hoursAfter (to be safe. and not rely on timer in container to finish) - reuse EnvironmentSetup.waitHoursAfter}*/
+                EnvironmentSetup.waitHoursAfter()
+                Log.info("wait for test completion success.")
+            }
+        }
+        catch (exc) {
+            Log.error("wait for test completion failed.")
+            throw exc
         }
     }
 
