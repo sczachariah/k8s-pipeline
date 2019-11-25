@@ -131,7 +131,7 @@ class Test extends Common {
                 /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
                 ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
                 /** if (file found){  wait for hoursAfter (to be safe. and not rely on timer in container to finish) - reuse EnvironmentSetup.waitHoursAfter}*/
-                EnvironmentSetup.waitHoursAfter()
+                EnvironmentSetup.waitHoursAfterInTests()
                 Log.info("wait for test completion success.")
             }
         }
