@@ -104,10 +104,8 @@ class Test extends Common {
                         returnStdout: true).trim()
                 Log.info("value  of fileExists :: ${fileExists}")
                 if(fileExists == "true") {
-                    Log.info("in if condition")
                     waitforfile  = false
                 }else if(fileExists == "false"){
-                    Log.info("in else if")
                     script.sh "sleep 120"
                     countOfLooping ++
                     Log.info("Iteration :: ${countOfLooping}")
@@ -115,7 +113,6 @@ class Test extends Common {
                     continue
                 }
             }
-            Log.info("Count of looping :: ${countOfLooping}")
 
             /** if the fmwk8s.completed file exists, then we calculate test Status and wait for hoursAfter*/
             if(!waitforfile) {
