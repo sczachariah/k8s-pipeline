@@ -261,7 +261,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
     static sendNotificationMailPostTestExecution(script) {
         /** Local Variable declaration for this method */
         /** overallTestList - variable to convert string to list elements with whitespace as delimiter for split function */
-        List overallTestList = (overallExecutedTestCaseList.isEmpty()) ? [] : overallExecutedTestCaseList.split()
+        List overallTestList = (overallExecutedTestCaseList == null) ? [] : overallExecutedTestCaseList.split()
 
         /** sucCountValue - variable containing integer value of suc file count  */
         Integer sucCountValue = sucCount.trim().toInteger()
