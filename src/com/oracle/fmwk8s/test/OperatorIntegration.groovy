@@ -122,7 +122,7 @@ class OperatorIntegration extends Test {
                         testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
 
-            script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
+//            script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
 
             /** wait in loop for fmwk8s.completed file*/
             Boolean waitforfile = true

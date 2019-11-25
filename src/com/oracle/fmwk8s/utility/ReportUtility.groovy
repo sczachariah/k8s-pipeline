@@ -79,6 +79,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         try {
             /**Display contents of the test_logs directory */
             script.sh "ls -ltr ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
+            script.sh "ls -ltr ${Test.logDirectory}"
             script.sh "ls -ltr ${Test.logDirectory}/fmwk8s.completed"
             script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
 
