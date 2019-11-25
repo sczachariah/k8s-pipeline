@@ -108,7 +108,7 @@ class Test extends Common {
                     waitforfile  = false
                 }else if(fileExists == "false"){
                     Log.info("in else if")
-                    sleep 120
+                    script.sh "sleep 120"
                     countOfLooping ++
                     Log.info("Iteration :: ${countOfLooping}")
                     waitforfile  = true
