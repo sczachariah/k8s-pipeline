@@ -93,6 +93,7 @@ class Test extends Common {
 
             /** wait in loop for fmwk8s.completed file*/
             Boolean waitforfile = true
+            Boolean ifFileExists = true
             File checkFile = new File("${Test.logDirectory}/fmwk8s.completed")
             Log.info("checkFile :: ${checkFile.exists()}, ${checkFile.isDirectory()}, ${checkFile.toString()}")
 
@@ -100,10 +101,10 @@ class Test extends Common {
                 /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
                 def fileExists = script.sh(
                         label: "check if the fmwk8s.completed file exists and is created after test execution",
-                        script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'exists'",
+                        script: "test -f ${Test.logDirectory}/fmwk8s.completed && ${ifFileExists}="+true+" || ${ifFileExists}="+false+";echo ${ifFileExists}",
                         returnStdout: true).trim()
-                if(fileExists == 'exists') { waitforfile=false }
-                else if(fileExists == null) {continue}
+                if(ifFileExists == true && fileExists != null) { waitforfile=false }
+                else{continue}
             }
 
             /** if the fmwk8s.completed file exists, then we calculate test Status and wait for hoursAfter*/
