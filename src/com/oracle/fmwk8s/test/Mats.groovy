@@ -11,7 +11,7 @@ class Mats extends Test {
     static fireTest() {
         try {
             Log.info("begin ${Common.productId} product fireTest.")
-            testId = ${Common.productId}
+            testId = Common.productId
             createEnvConfigMap()
             runTests()
             Log.info("${Common.productId} product fireTest success.")
@@ -178,9 +178,9 @@ class Mats extends Test {
 
     static publishLogsAndGenerateTestSummaryReport() {
         /** Trying to collect all the test logs under the test_logs directory after successful test runs */
-        Logging.getTestLogs()
+//        Logging.getTestLogs()
 
         /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
-        ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
+//        ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
     }
 }
