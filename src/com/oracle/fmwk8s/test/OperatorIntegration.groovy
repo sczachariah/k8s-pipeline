@@ -21,7 +21,7 @@ class OperatorIntegration extends Test {
             testStatus = "failure"
         }
         finally {
-            publishLogsAndGenerateTestSummaryReport()
+            publishTestLogs()
         }
     }
 
@@ -148,7 +148,8 @@ class OperatorIntegration extends Test {
             } else {
                 testStatus = "completed"
             }
-            //here i should check for that file and put my logic here
+            /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
+            ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
             Log.info("wait for test completion success.")
         }
         catch (exc) {
@@ -157,10 +158,7 @@ class OperatorIntegration extends Test {
         }
     }
 
-    static publishLogsAndGenerateTestSummaryReport() {
-        /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
-        ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
-
+    static publishTestLogs() {
         /** Trying to collect all the test logs under the test_logs directory after successful test runs */
         Logging.getTestLogs()
     }
