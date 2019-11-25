@@ -43,7 +43,7 @@ class Mats extends Test {
                         sed -i \"s|%ADMIN_SSL_PORT%||g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%DOMAIN_HOME%|${Domain.nfsDomainPath}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%DOMAIN_NAME%|${Domain.domainName}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
-                        sed -i \"s|%SOA_HOST_SVC%|${Domain.domainName}-${Common.productId}_server2.${Domain.domainNamespace}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
+                        sed -i \"s|%DOMAIN_NAMESPACE%|${Domain.domainNamespace}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%DB_HOST%|${Database.dbName}.${Domain.domainNamespace}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%DB_PORT%|${Database.dbPort}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
