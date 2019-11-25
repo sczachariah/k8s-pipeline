@@ -101,11 +101,12 @@ class Test extends Common {
                         script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file_exist' || echo 'file_not_exist'",
                         returnStdout: true).trim()
                 countOfLooping ++
+                Log.info("value  of fileExists :: ${fileExists}")
                 Log.info("Iteration :: ${countOfLooping}")
                 if(fileExists == 'file_exist') {
                     waitforfile  = false
-                    sleep 120
                 }else if(fileExists == 'file_not_exist'){
+                    sleep 120
                     waitforfile  = true
                     continue
                 }
