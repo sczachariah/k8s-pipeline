@@ -105,10 +105,10 @@ class Test extends Common {
                 countOfLooping ++
                 Log.info("value  of fileExists :: ${fileExists}")
                 Log.info("Iteration :: ${countOfLooping}")
-                if(fileExists == true) {
+                if(fileExists == "true") {
                     Log.info("in if condition")
                     waitforfile  = false
-                }else if(fileExists == false){
+                }else if(fileExists == "false"){
                     Log.info("in else if")
                     sleep 120
                     waitforfile  = true
