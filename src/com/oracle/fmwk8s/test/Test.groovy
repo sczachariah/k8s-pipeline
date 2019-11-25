@@ -104,7 +104,9 @@ class Test extends Common {
                 Log.info("Iteration :: ${countOfLooping}")
                 if(fileExists == 'file_exist') {
                     waitforfile  = false
+                    sleep 120
                 }else if(fileExists == 'file_not_exist'){
+                    waitforfile  = true
                     continue
                 }
             }
