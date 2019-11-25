@@ -83,14 +83,16 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
             script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
 
             Boolean waitforfile = true
+            def fileExists = null
             while(waitforfile){
                 /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
-                def fileExists = script.sh(
+                fileExists = script.sh(
                         label: "check if the fmwk8s.completed file exists and is created after test execution",
                         script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'exists'",
                         returnStdout: true).trim()
                 Log.info("file Exists........... :: ${fileExists}")
-                if(fileExists) { waitforfile=false }
+                if(fileExists == 'exists') { waitforfile=false }
+                else {continue}
             }
 
             /** if the fmwk8s.completed file exists, then we calculate suc dif for tests executed */
