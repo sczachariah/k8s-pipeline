@@ -90,8 +90,6 @@ class Test extends Common {
                         testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
 
-            script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists' || echo 'file not exists'"
-
             /** wait in loop for fmwk8s.completed file*/
             Boolean waitforfile = true
             Boolean fmwk8sCompletedFileExists = true
@@ -133,6 +131,10 @@ class Test extends Common {
                 ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
                 /** if (file found){  wait for hoursAfter (to be safe. and not rely on timer in container to finish) - reuse EnvironmentSetup.waitHoursAfter}*/
                 EnvironmentSetup.waitHoursAfter()
+                /** if hourAfter is > 0 then issue mail notification soon after wait for test is completed */
+                if ("${Common.testType}" != "N/A" && hoursAfter > 0) {
+                    ReportUtility.sendNotificationMailPostTestExecution(script)
+                }
                 Log.info("wait for test completion success.")
             }
         }

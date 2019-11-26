@@ -78,10 +78,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         Log.info("Begin to count the *.suc & *.dif files from test logs folder after tests are run.")
         try {
             /**Display contents of the test_logs directory */
-//            script.sh "ls -ltr ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
             script.sh "ls -ltr ${Test.logDirectory}"
-            script.sh "ls -ltr ${Test.logDirectory}/fmwk8s.completed"
-            script.sh "test -f ${Test.logDirectory}/fmwk8s.completed && echo 'file exists'"
 
             /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
             def fileExists = script.sh(
@@ -263,6 +260,14 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
      * @return
      */
     static sendNotificationMailPostTestExecution(script) {
+        Log.info("Begin sendNotificationMailPostTestExecution method")
+
+        def productImageVersion = script.sh(
+                script: "echo ${Common.productImage}| awk -F':' '{print \$2}'",
+                returnStdout: true
+        ).trim()
+        Log.info("product Image version :: ${productImageVersion}")
+
         /** Local Variable declaration for this method */
         /** overallTestList - variable to convert string to list elements with whitespace as delimiter for split function */
         List overallTestList = (overallExecutedTestCaseList == null) ? [] : overallExecutedTestCaseList.split()
@@ -365,12 +370,13 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 </div>
 </body>
 </html>
-<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${Logging.productImageVersion}/${Common.runId}/</p>
+<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
 """
         body = body + """
 <p>Regards,</p>
 <p>FMW K8S Team</p>
 """
         sendMail(script, subject, body)
+        Log.info("end sendNotificationMailPostTestExecution method")
     }
 }
