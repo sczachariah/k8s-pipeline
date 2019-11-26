@@ -264,7 +264,6 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
      * @return
      */
     static sendNotificationMailPostTestExecution(script) {
-        Log.info("Begin sendNotificationMailPostTestExecution method")
         def hourAfterTime
         def productImageVersion = script.sh(
                 script: "echo ${Common.productImage}| awk -F':' '{print \$2}'",
@@ -396,6 +395,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 <p>FMW K8S Team</p>
 """
         sendMail(script, subject, body)
-        Log.info("end sendNotificationMailPostTestExecution method")
+        Log.info("Mail Content :: subject : ${subject}")
+        Log.info("Mail Content :: subject : ${body}")
     }
 }
