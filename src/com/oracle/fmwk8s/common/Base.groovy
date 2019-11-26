@@ -152,22 +152,6 @@ class Base {
         }else {
             productId = Mapping.productIdMap.get(productName)
         }
-//        switch ("${productName}") {
-//            case "WLS":
-//                productId = "weblogic"
-//                break
-//            case "WLS-INFRA":
-//                productId = "fmw-infrastructure"
-//                break
-//            case "SOA":
-//                productId = "soa"
-//                break
-//            case "OIG":
-//                productId = "oim"
-//            default:
-//                productId = "unknown"
-//                break
-//        }
     }
 
     static getSamplesRepoDetails() {
