@@ -4,7 +4,6 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.IngressController
 import com.oracle.fmwk8s.test.Test
-import com.oracle.fmwk8s.env.Logging
 import com.oracle.fmwk8s.common.Log
 
 class ReportUtility {
@@ -318,7 +317,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 """
           for(int i = 1; i <= totalSucDifSkipCasesCount; i++) {
               body = body + """
-              <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;$i.</p>
+              <p>&nbsp;&nbsp;&nbsp;$i.</p>
 """
           }
           body = body + """
@@ -327,7 +326,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 """
               for (String overallTestCase : overallTestList) {
                 body = body + """
-                    <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;${overallTestCase.trim()}</p>
+                    <p>&nbsp;&nbsp;&nbsp;${overallTestCase.trim()}</p>
 """
               }
           body = body + """
@@ -337,15 +336,15 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
               for (String overallTestCase : overallTestList) {
                 if (overallTestCase.endsWith(".suc")) {
                     body = body + """
-                            <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;<font color="green">PASSED</font></p>
+                            <p>&nbsp;&nbsp;&nbsp;<font color="green">PASSED</font></p>
 """
                 } else if (overallTestCase.endsWith(".dif")) {
                     body = body + """
-                            <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;<font color="red">FAILED</font></p>
+                            <p>&nbsp;&nbsp;&nbsp;<font color="red">FAILED</font></p>
 """
                 } else if (overallTestCase.endsWith(".skip")) {
                     body = body + """
-                            <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;<font color="blue">SKIPPED</font></p>
+                            <p>&nbsp;&nbsp;&nbsp;<font color="blue">SKIPPED</font></p>
 """
                 }
               }
@@ -371,8 +370,6 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
       </tr>
   </table>
 </div>
-</body>
-</html>
 """
 
         if(Common.hoursAfter > 0){
@@ -387,12 +384,14 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 """
         }else{
             body = body + """ 
-<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
+<p>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
 """
         }
         body = body + """   
 <p>Thanks & Regards,</p>
 <p>FMW K8S Team</p>
+</body>
+</html>
 """
         sendMail(script, subject, body)
         Log.info("Mail Content :: subject : ${subject}")
