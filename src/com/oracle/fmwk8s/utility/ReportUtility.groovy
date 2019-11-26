@@ -279,8 +279,13 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         /** skipCountValue - variable containing integer value of skip file count  */
         Integer skipCountValue = (skipCount == null) ? 0 :skipCount.trim().toInteger()
 
+        def subject
         /** Generating the subject and the mail body for mail notification */
-        def subject = "Test Summary for build '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
+        if(!Test.testStatus.equalsIgnoreCase("Hours-After-Wait")) {
+            subject = "Final Test Summary for build '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
+        }else if(Test.testStatus.equalsIgnoreCase("Hours-After-Wait")){
+            subject = "Test Summary for build '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
+        }
         def body = """<p font-family:verdana,courier,arial,helvetica;>Hi,</p>
 """
 
