@@ -377,7 +377,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 """
         }else if(Test.testStatus.equalsIgnoreCase("Hours-After-Wait")){
             body = body + """
-<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run will be sent as part of final test summary mail, please wait till ${Common.hoursAfter} hours have been lapsed. </p>           
+<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run will be sent as part of final test summary mail, Please wait till ${Common.hoursAfter} hour(s) for final test summary mail. </p>           
 <p font-family:verdana,courier,arial,helvetica;>Thanks in Advance,</p>
 """
         }
