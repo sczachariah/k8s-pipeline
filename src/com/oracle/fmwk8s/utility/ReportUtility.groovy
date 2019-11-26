@@ -294,22 +294,26 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta>
     <meta name="viewport" content="width=320"></meta>
     <style type="text/css"> 
+    p {
+      font-size: small;
+      font-family: verdana,courier,arial,helvetica,sans-serif;
+     }
     </style>
   </head>
   <body style="font-family:verdana,courier,arial,helvetica;padding:0; margin:0; -webkit-text-size-adjust:none; width:100%;">
     <div>
       <table border="1" style="cellpadding:2; cellspacing: 2; width:100%;">
         <tr>
-          <th colspan="1" valign="center" align="left" font-family:verdana,courier,arial,helvetica;><h3>&nbsp;&nbsp;&nbsp;JOB ID&nbsp;:&nbsp;${script.env.BUILD_NUMBER}</h3></th>
-          <th colspan="2" valign="center" align="left" font-family:verdana,courier,arial,helvetica;><h3>&nbsp;&nbsp;&nbsp;TEST STATUS&nbsp;:&nbsp;${Test.testStatus.toUpperCase()}</h3></th>
+          <th colspan="1" valign="center" align="left"><h3>&nbsp;&nbsp;&nbsp;JOB ID&nbsp;:&nbsp;${script.env.BUILD_NUMBER}</h3></th>
+          <th colspan="2" valign="center" align="left"><h3>&nbsp;&nbsp;&nbsp;TEST STATUS&nbsp;:&nbsp;${Test.testStatus.toUpperCase()}</h3></th>
         </tr>
         <tr>
           <th colspan="3">&nbsp;</th>
         </tr>
         <tr>
-          <th colspan="1" align="left" font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;Sl. No.</th>
-          <th colspan="1" align="left" font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;Test Cases Executed</th>
-          <th colspan="1" align="left" font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;Results</th>
+          <th colspan="1" align="left">&nbsp;&nbsp;&nbsp;Sl. No.</th>
+          <th colspan="1" align="left">&nbsp;&nbsp;&nbsp;Test Cases Executed</th>
+          <th colspan="1" align="left">&nbsp;&nbsp;&nbsp;Results</th>
         </tr>
         <tr>
           <td align="left">
@@ -325,7 +329,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 """
               for (String overallTestCase : overallTestList) {
                 body = body + """
-                    <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;${overallTestCase.trim()}</p>
+                    <p>&nbsp;&nbsp;&nbsp;${overallTestCase.trim()}</p>
 """
               }
           body = body + """
@@ -335,15 +339,15 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
               for (String overallTestCase : overallTestList) {
                 if (overallTestCase.endsWith(".suc")) {
                     body = body + """
-                            <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;<font color="green">PASSED</font></p>
+                            <p>&nbsp;&nbsp;&nbsp;<font color="green">PASSED</font></p>
 """
                 } else if (overallTestCase.endsWith(".dif")) {
                     body = body + """
-                            <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;<font color="red">FAILED</font></p>
+                            <p>&nbsp;&nbsp;&nbsp;<font color="red">FAILED</font></p>
 """
                 } else if (overallTestCase.endsWith(".skip")) {
                     body = body + """
-                            <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;<font color="blue">SKIPPED</font></p>
+                            <p>&nbsp;&nbsp;&nbsp;<font color="blue">SKIPPED</font></p>
 """
                 }
               }
@@ -362,10 +366,10 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
        <th colspan="1"># of Overall Test Cases Run</th>
       </tr>
       <tr>
-       <td align="right" valign="center" font-family:verdana,courier,arial,helvetica;>${sucCountValue}&nbsp;&nbsp;&nbsp;</td>
-       <td align="right" valign="center" font-family:verdana,courier,arial,helvetica;>${difCountValue}&nbsp;&nbsp;&nbsp;</td>
-       <td align="right" valign="center" font-family:verdana,courier,arial,helvetica;>${skipCountValue}&nbsp;&nbsp;&nbsp;</td>
-       <td align="right" valign="center" font-family:verdana,courier,arial,helvetica;>${totalSucDifSkipCasesCount}&nbsp;&nbsp;&nbsp;</td>
+       <td align="right" valign="center">${sucCountValue}&nbsp;&nbsp;&nbsp;</td>
+       <td align="right" valign="center">${difCountValue}&nbsp;&nbsp;&nbsp;</td>
+       <td align="right" valign="center">${skipCountValue}&nbsp;&nbsp;&nbsp;</td>
+       <td align="right" valign="center">${totalSucDifSkipCasesCount}&nbsp;&nbsp;&nbsp;</td>
       </tr>
   </table>
 </div>
@@ -373,18 +377,18 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 
         if(Common.hoursAfter > 0){
             body = body + """
-<p font-family:verdana,courier,arial,helvetica;>The environment is available for use for ${Common.hoursAfter} hours.</p>
-<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run will be published to Artifactory Location after ${Common.hoursAfter} hour(s) :</p>
-<p font-family:verdana,courier,arial,helvetica;>https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
+<p>The environment is available for use for ${Common.hoursAfter} hours.</p>
+<p>The logs and results for this run will be published to Artifactory Location after ${Common.hoursAfter} hour(s) :</p>
+<p>https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
 """
         }else{
             body = body + """ 
-<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
+<p>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
 """
         }
         body = body + """   
-<p font-family:verdana,courier,arial,helvetica;>Thanks & Regards,</p>
-<p font-family:verdana,courier,arial,helvetica;>FMW K8S Team</p>
+<p>Thanks & Regards,</p>
+<p>FMW K8S Team</p>
 </body>
 </html>
 """
