@@ -4,6 +4,7 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.EnvironmentSetup
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
+import com.oracle.fmwk8s.env.Logging
 import com.oracle.fmwk8s.utility.ReportUtility
 
 class Test extends Common {
@@ -131,7 +132,7 @@ class Test extends Common {
                 /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
                 ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
                 /** if (file found){  wait for hoursAfter (to be safe. and not rely on timer in container to finish) - reuse EnvironmentSetup.waitHoursAfter}*/
-                EnvironmentSetup.waitHoursAfterInTests()
+                EnvironmentSetup.waitHoursAfter()
                 Log.info("wait for test completion success.")
             }
         }
@@ -161,5 +162,13 @@ class Test extends Common {
                 exc.printStackTrace()
             }
         }
+    }
+
+    static publishTestLogsAndDoNecessaryCleanup(){
+        /** Trying to collect all the test logs under the test_logs directory after successful test runs */
+        Logging.getTestLogs()
+
+        /**Do the cleanup of test related resources*/
+        cleanup()
     }
 }
