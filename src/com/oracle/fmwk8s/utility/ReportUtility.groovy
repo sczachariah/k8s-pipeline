@@ -263,7 +263,6 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
      * @return
      */
     static sendNotificationMailPostTestExecution(script) {
-        def hourAfterTime
         def productImageVersion = script.sh(
                 script: "echo ${Common.productImage}| awk -F':' '{print \$2}'",
                 returnStdout: true
@@ -373,13 +372,9 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 """
 
         if(Common.hoursAfter > 0){
-            Calendar calendar = Calendar.getInstance()
-            System.out.println("Original = " + calendar.getTime())
-            calendar.add(Calendar.HOUR, Integer.parseInt("${Common.hoursAfter}").intValue())
-            hourAfterTime = calendar.getTime()
             body = body + """
-<p font-family:verdana,courier,arial,helvetica;>The environment is available for use for ${Common.hoursAfter} hours. The environment will be de-commissioned at ${hourAfterTime} </p>
-<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run will be published to Artifactory Location post ${hourAfterTime} time :</p>
+<p font-family:verdana,courier,arial,helvetica;>The environment is available for use for ${Common.hoursAfter} hours.</p>
+<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run will be published to Artifactory Location after ${Common.hoursAfter} hour(s) :</p>
 <p font-family:verdana,courier,arial,helvetica;>https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
 """
         }else{
