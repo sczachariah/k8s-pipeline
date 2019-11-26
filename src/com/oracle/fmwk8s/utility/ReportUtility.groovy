@@ -370,9 +370,18 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 </div>
 </body>
 </html>
+"""
+        if(!Test.testStatus.equalsIgnoreCase("Hours-After-Wait")){
+            body = body + """
 <p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
 """
-        body = body + """
+        }else if(Test.testStatus.equalsIgnoreCase("Hours-After-Wait")){
+            body = body + """
+<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run will be sent as part of final test summary mail, please wait till ${Common.hoursAfter} hours have been lapsed. </p>           
+<p font-family:verdana,courier,arial,helvetica;>Thanks in Advance,</p>
+"""
+        }
+        body = body + """    
 <p>Regards,</p>
 <p>FMW K8S Team</p>
 """

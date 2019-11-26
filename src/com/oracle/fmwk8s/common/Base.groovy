@@ -59,7 +59,6 @@ class Base {
     static def elasticSearchPort = "9200"
 
     static def kibanaUrl = "http://slc16iyc.us.oracle.com:30444/app/kibana"
-    static def testResults
 
     static getInputVariables() {
         cloud = script.env.CLOUD
@@ -148,22 +147,27 @@ class Base {
     }
 
     static getProductIdentifier() {
-        switch ("${productName}") {
-            case "WLS":
-                productId = "weblogic"
-                break
-            case "WLS-INFRA":
-                productId = "fmw-infrastructure"
-                break
-            case "SOA":
-                productId = "soa"
-                break
-            case "OIG":
-                productId = "oim"
-            default:
-                productId = "unknown"
-                break
+        if (!Mapping.productIdMap.containsKey(productName)) {
+            productId = "unknown"
+        }else {
+            productId = Mapping.productIdMap.get(productName)
         }
+//        switch ("${productName}") {
+//            case "WLS":
+//                productId = "weblogic"
+//                break
+//            case "WLS-INFRA":
+//                productId = "fmw-infrastructure"
+//                break
+//            case "SOA":
+//                productId = "soa"
+//                break
+//            case "OIG":
+//                productId = "oim"
+//            default:
+//                productId = "unknown"
+//                break
+//        }
     }
 
     static getSamplesRepoDetails() {
