@@ -129,8 +129,6 @@ class Test extends Common {
                 }
                 /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
                 ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
-                /** if hourAfter is > 0 then issue mail notification soon after wait for test is completed */
-                ReportUtility.sendNotificationMailPostTestExecution(script)
                 /** if (file found){  wait for hoursAfter (to be safe. and not rely on timer in container to finish) - reuse EnvironmentSetup.waitHoursAfter}*/
                 EnvironmentSetup.waitHoursAfter()
                 Log.info("wait for test completion success.")
