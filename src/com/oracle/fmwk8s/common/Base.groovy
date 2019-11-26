@@ -155,11 +155,12 @@ class Base {
     }
 
     static getSamplesRepoDetails() {
-        switch ("${productName}") {
-            case "OIG":
+        for ( String key : Mapping.productIdMap.keySet() ) {
+            //for OIG
+            if(key.equalsIgnoreCase("OIG")){
                 samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
                 samplesDirectory = ""
-                break
+            }
         }
     }
 }
