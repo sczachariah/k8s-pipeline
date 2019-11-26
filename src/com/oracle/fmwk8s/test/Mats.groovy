@@ -21,8 +21,7 @@ class Mats extends Test {
             testStatus = "failed"
         }
         finally {
-            /** Trying to collect all the test logs under the test_logs directory after successful test runs */
-            Logging.getTestLogs()
+            Test.publishTestLogsAndDoNecessaryCleanup()
         }
     }
 
