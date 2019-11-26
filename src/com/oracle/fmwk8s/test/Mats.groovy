@@ -18,7 +18,7 @@ class Mats extends Test {
         }
         catch (exc) {
             Log.error("${Common.productId} product fireTest failed.")
-            testStatus = "failure"
+            testStatus = "failed"
         }
         finally {
             /** Trying to collect all the test logs under the test_logs directory after successful test runs */

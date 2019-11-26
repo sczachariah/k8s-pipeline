@@ -33,7 +33,7 @@ class Test extends Common {
             }
         }
 
-        if (testStatus.equalsIgnoreCase("failure")) {
+        if (testStatus.equalsIgnoreCase("failed")) {
             throw new Exception("test has failed.")
         }
     }
@@ -123,7 +123,7 @@ class Test extends Common {
                         returnStdout: true
                 ).trim()
                 if (testContainerStatus.toString().contains("Error")) {
-                    testStatus = "failure"
+                    testStatus = "failed"
                 } else if (testContainerStatus.toString().contains("Completed")) {
                     testStatus = "completed"
                 } else {

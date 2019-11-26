@@ -19,7 +19,7 @@ class OperatorIntegration extends Test {
         }
         catch (exc) {
             Log.error("fireTest failed.")
-            testStatus = "failure"
+            testStatus = "failed"
         }
         finally {
             Test.publishTestLogsAndDoNecessaryCleanup()
