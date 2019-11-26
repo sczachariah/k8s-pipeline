@@ -147,20 +147,30 @@ class Base {
     }
 
     static getProductIdentifier() {
-        if (!Mapping.productIdMap.containsKey(productName)) {
-            productId = "unknown"
-        }else {
-            productId = Mapping.productIdMap.get(productName)
+        switch ("${productName}") {
+            case "WLS":
+                productId = "weblogic"
+                break
+            case "WLS-INFRA":
+                productId = "fmw-infrastructure"
+                break
+            case "SOA":
+                productId = "soa"
+                break
+            case "OIG":
+                productId = "oim"
+            default:
+                productId = "unknown"
+                break
         }
     }
 
     static getSamplesRepoDetails() {
-        for ( String key : Mapping.productIdMap.keySet() ) {
-            //for OIG
-            if(key.equalsIgnoreCase("OIG")){
+        switch ("${productName}") {
+            case "OIG":
                 samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
                 samplesDirectory = ""
-            }
+                break
         }
     }
 }
