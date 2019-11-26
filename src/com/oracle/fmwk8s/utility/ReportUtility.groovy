@@ -373,24 +373,24 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
       </tr>
   </table>
 </div>
+</body>
+</html>
 """
 
         if(Common.hoursAfter > 0){
             body = body + """
-<p>The environment is available for use for ${Common.hoursAfter} hours.</p>
-<p>The logs and results for this run will be published to Artifactory Location after ${Common.hoursAfter} hour(s) :</p>
-<p>https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
+<p font-family:verdana,courier,arial,helvetica;>The environment is available for use for ${Common.hoursAfter} hours.</p>
+<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run will be published to Artifactory Location after ${Common.hoursAfter} hour(s) :</p>
+<p font-family:verdana,courier,arial,helvetica;>https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
 """
         }else{
             body = body + """ 
-<p>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
+<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
 """
         }
         body = body + """   
-<p>Thanks & Regards,</p>
-<p>FMW K8S Team</p>
-</body>
-</html>
+<p font-family:verdana,courier,arial,helvetica;>Thanks & Regards,</p>
+<p font-family:verdana,courier,arial,helvetica;>FMW K8S Team</p>
 """
         sendMail(script, subject, body)
     }
