@@ -389,7 +389,5 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 </html>
 """
         sendMail(script, subject, body)
-        Log.info("Mail Content :: subject : ${subject}")
-        Log.info("Mail Content :: body : ${body}")
     }
 }
