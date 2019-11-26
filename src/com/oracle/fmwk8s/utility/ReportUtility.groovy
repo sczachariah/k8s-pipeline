@@ -299,7 +299,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
   </head>
   <body style="font-family:verdana,courier,arial,helvetica;padding:0; margin:0; -webkit-text-size-adjust:none; width:100%;">
     <div>
-      <table border="1" width:100%;">
+      <table border="1" style="cellpadding:2; cellspacing: 2; width:100%;">
         <tr>
           <th colspan="1" valign="center" align="left"><h3>&nbsp;&nbsp;&nbsp;JOB ID&nbsp;:&nbsp;${script.env.BUILD_NUMBER}</h3></th>
           <th colspan="2" valign="center" align="left"><h3>&nbsp;&nbsp;&nbsp;TEST STATUS&nbsp;:&nbsp;${Test.testStatus.toUpperCase()}</h3></th>
