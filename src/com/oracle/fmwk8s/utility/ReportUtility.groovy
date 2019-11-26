@@ -261,7 +261,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
      */
     static sendNotificationMailPostTestExecution(script) {
         Log.info("Begin sendNotificationMailPostTestExecution method")
-
+        def hourAfterTime
         def productImageVersion = script.sh(
                 script: "echo ${Common.productImage}| awk -F':' '{print \$2}'",
                 returnStdout: true
@@ -279,13 +279,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         /** skipCountValue - variable containing integer value of skip file count  */
         Integer skipCountValue = (skipCount == null) ? 0 :skipCount.trim().toInteger()
 
-        def subject
         /** Generating the subject and the mail body for mail notification */
-        if(!Test.testStatus.equalsIgnoreCase("Hours-After-Wait")) {
-            subject = "Final Test Summary for build '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
-        }else if(Test.testStatus.equalsIgnoreCase("Hours-After-Wait")){
-            subject = "Test Summary for build '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
-        }
+        def subject = "Test Summary for build '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
         def body = """<p font-family:verdana,courier,arial,helvetica;>Hi,</p>
 """
 
@@ -320,7 +315,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 """
           for(int i = 1; i <= totalSucDifSkipCasesCount; i++) {
               body = body + """
-              <p>&nbsp;&nbsp;&nbsp;$i.</p>
+              <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;$i.</p>
 """
           }
           body = body + """
@@ -329,7 +324,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 """
               for (String overallTestCase : overallTestList) {
                 body = body + """
-                    <p>&nbsp;&nbsp;&nbsp;${overallTestCase.trim()}</p>
+                    <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;${overallTestCase.trim()}</p>
 """
               }
           body = body + """
@@ -339,15 +334,15 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
               for (String overallTestCase : overallTestList) {
                 if (overallTestCase.endsWith(".suc")) {
                     body = body + """
-                            <p>&nbsp;&nbsp;&nbsp;<font color="green">PASSED</font></p>
+                            <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;<font color="green">PASSED</font></p>
 """
                 } else if (overallTestCase.endsWith(".dif")) {
                     body = body + """
-                            <p>&nbsp;&nbsp;&nbsp;<font color="red">FAILED</font></p>
+                            <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;<font color="red">FAILED</font></p>
 """
                 } else if (overallTestCase.endsWith(".skip")) {
                     body = body + """
-                            <p>&nbsp;&nbsp;&nbsp;<font color="blue">SKIPPED</font></p>
+                            <p font-family:verdana,courier,arial,helvetica;>&nbsp;&nbsp;&nbsp;<font color="blue">SKIPPED</font></p>
 """
                 }
               }
@@ -376,19 +371,25 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 </body>
 </html>
 """
-        if(!Test.testStatus.equalsIgnoreCase("Hours-After-Wait")){
+
+        if(Common.hoursAfter > 0){
+            Calendar calendar = Calendar.getInstance()
+            System.out.println("Original = " + calendar.getTime())
+            calendar.add(Calendar.HOUR, Integer.parseInt("${Common.hoursAfter}").intValue())
+            hourAfterTime = calendar.getTime()
             body = body + """
+<p font-family:verdana,courier,arial,helvetica;>The environment is available for use for ${Common.hoursAfter} hours. The environment will be de-commissioned at ${hourAfterTime} </p>
+<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run will be published to Artifactory Location post ${hourAfterTime} time :</p>
+<p font-family:verdana,courier,arial,helvetica;>https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
+"""
+        }else{
+            body = body + """ 
 <p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
 """
-        }else if(Test.testStatus.equalsIgnoreCase("Hours-After-Wait")){
-            body = body + """
-<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run will be sent as part of final test summary mail, Please wait till ${Common.hoursAfter} hour(s) for final test summary mail. </p>           
-<p font-family:verdana,courier,arial,helvetica;>Thanks in Advance,</p>
-"""
         }
-        body = body + """    
-<p>Regards,</p>
-<p>FMW K8S Team</p>
+        body = body + """   
+<p font-family:verdana,courier,arial,helvetica;>Thanks & Regards,</p>
+<p font-family:verdana,courier,arial,helvetica;>FMW K8S Team</p>
 """
         sendMail(script, subject, body)
         Log.info("end sendNotificationMailPostTestExecution method")

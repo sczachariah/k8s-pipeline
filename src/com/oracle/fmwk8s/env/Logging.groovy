@@ -112,9 +112,6 @@ class Logging extends Common {
         getDomainLogs(domainName, domainNamespace)
         archiveLogs()
         publishLogsToArtifactory()
-        if ("${Common.testType}" != "N/A") {
-            ReportUtility.sendNotificationMailPostTestExecution(script)
-        }
     }
 
     static getEventLogs(namespace) {
