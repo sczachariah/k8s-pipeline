@@ -27,7 +27,7 @@ pipeline {
                withCredentials([[$class : 'UsernamePasswordMultiBinding', credentialsId: 'fmwk8sval_ww.docker',
                                               usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]) {
                     container('dind'){
-                        docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME} ${DOCKER_PASSWORD}
+                        docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
 
                         docker pull fmwk8s-dev.dockerhub-den.oraclecorp.com/op-intg-test:latest
 
