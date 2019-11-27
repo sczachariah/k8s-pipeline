@@ -237,7 +237,6 @@ class Logging extends Common {
             script.zip zipFile: "pod_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs"
             script.zip zipFile: "domain_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/domain_logs"
             script.zip zipFile: "operator_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/operator_logs"
-            script.zip zipFile: "test_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
 
             script.archiveArtifacts artifacts: '**/*_logs_*.zip'
             Log.info("archive logs success.")
@@ -316,12 +315,6 @@ class Logging extends Common {
                              },
                              {
                                 "pattern": "pod_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
-                                productImageVersion
-                            }/${runId}/"
-                             },
-                             {
-                                "pattern": "test_logs_*.zip",
                                 "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
                                 productImageVersion
                             }/${runId}/"
