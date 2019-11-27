@@ -22,7 +22,7 @@ class OperatorIntegration extends Test {
             testStatus = "failed"
         }
         finally {
-            Test.publishTestLogsAndDoNecessaryCleanup()
+            Test.doNecessaryCleanup()
         }
     }
 

@@ -165,9 +165,7 @@ class Test extends Common {
         }
     }
 
-    static publishTestLogsAndDoNecessaryCleanup(){
-
-
+    static doNecessaryCleanup(){
         /**Do the cleanup of test related resources*/
         cleanup()
     }
