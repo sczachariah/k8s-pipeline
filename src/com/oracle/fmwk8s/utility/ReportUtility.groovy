@@ -375,21 +375,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 </div>
 </body>
 </html>
-"""
-
-        if(Common.hoursAfter > 0){
-            body = body + """
-<p font-family:verdana,courier,arial,helvetica;>The environment is available for use & debugging for ${Common.hoursAfter} hour(s).</p>
-<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run will be published to Artifactory Location after ${Common.hoursAfter} hour(s):</p>
-<p font-family:verdana,courier,arial,helvetica;>https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
-<p font-family:verdana,courier,arial,helvetica;>P.S: If u access this location before ${Common.hoursAfter} hour(s) the artifactory location may not be accessible! </p>
-"""
-        }else{
-            body = body + """ 
 <p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
-"""
-        }
-        body = body + """   
 <p font-family:verdana,courier,arial,helvetica;>Thanks & Regards,</p>
 <p font-family:verdana,courier,arial,helvetica;>FMW K8S Team</p>
 """

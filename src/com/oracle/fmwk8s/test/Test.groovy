@@ -127,6 +127,9 @@ class Test extends Common {
                 } else {
                     testStatus = "completed"
                 }
+                /** To fetch the test logs, archive it and publish the test
+                 * logs to artifactory before email notification is sent to user after test execution before the hours after wait period */
+                Logging.getTestLogsArchiveAndPublishTestLogsToArtifactory()
                 /** Logic to evaluate the count of *.suc, *.dif & *.skip files in the test_logs folder after test runs */
                 ReportUtility.countOfSucDifFilesAfterTestRunsAndGenerateTestSummaryReport(script)
                 /** if (file found){  wait for hoursAfter (to be safe. and not rely on timer in container to finish) - reuse EnvironmentSetup.waitHoursAfter}*/
@@ -163,8 +166,7 @@ class Test extends Common {
     }
 
     static publishTestLogsAndDoNecessaryCleanup(){
-        /** Trying to collect all the test logs under the test_logs directory after successful test runs */
-        Logging.getTestLogs()
+
 
         /**Do the cleanup of test related resources*/
         cleanup()

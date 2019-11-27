@@ -213,6 +213,21 @@ class Logging extends Common {
         }
     }
 
+    static archiveTestLogs() {
+        try {
+            Log.info("archive test logs.")
+            buildSuffix = "${script.env.BUILD_NUMBER}-${Common.operatorVersion}-${Common.productName}"
+
+            script.zip zipFile: "test_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
+
+            script.archiveArtifacts artifacts: '**/*_logs_*.zip'
+            Log.info("archive test logs success.")
+        }
+        catch (exc) {
+            Log.error("archive test logs failed.")
+        }
+    }
+
     static archiveLogs() {
         try {
             Log.info("archive logs.")
@@ -229,6 +244,39 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("archive logs failed.")
+        }
+    }
+
+    static publishTestLogsToArtifactory() {
+        try {
+            Log.info("publish Test logs to artifactory.")
+            script.sh label: "get product image version qualifier",
+                    script: "pwd && \
+                       ls"
+            productImageVersion = script.sh(
+                    script: "echo ${productImage}| awk -F':' '{print \$2}'",
+                    returnStdout: true
+            ).trim()
+            Log.info(productImageVersion)
+            script.rtUpload(
+                    serverId: "artifacthub.oraclecorp.com",
+                    spec:
+                            """{
+                           "files": [
+                             {
+                                "pattern": "test_logs_*.zip",
+                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
+                                productImageVersion
+                            }/${runId}/"
+                             }                           
+                           ]
+                        }""",
+                    failNoOp: true
+            )
+            Log.info("publish test logs to artifactory success.")
+        }
+        catch (exc) {
+            Log.error("publish test logs to artifactory failed.")
         }
     }
 
@@ -288,4 +336,19 @@ class Logging extends Common {
             Log.error("publish logs to artifactory failed.")
         }
     }
+
+    /**
+     * getTestLogsArchiveAndPublishTestLogsToArtifactory - Method to fetch the test logs, archive it and publish the test
+     * logs to artifactory before email notification is sent to user after test execution before the hours after wait period of time!.
+     * @return
+     */
+    static getTestLogsArchiveAndPublishTestLogsToArtifactory() {
+        /** Trying to collect all the test logs under the test_logs directory after successful test runs */
+        getTestLogs()
+        /** Archive the test logs collected */
+        archiveTestLogs()
+        /** Publish the test logs to artifactory */
+        publishTestLogsToArtifactory()
+    }
+
 }
