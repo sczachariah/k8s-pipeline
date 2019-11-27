@@ -1,0 +1,42 @@
+@Library('fmwk8s-pipeline-library') _
+
+
+import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.common.EnvironmentSetup
+import com.oracle.fmwk8s.common.Initializer
+import com.oracle.fmwk8s.common.Validation
+import com.oracle.fmwk8s.env.*
+import com.oracle.fmwk8s.test.Test
+
+pipeline {
+    agent {
+        kubernetes {
+            cloud "${CLOUD}"
+            namespace 'fmwk8s'
+            yamlFile 'framework/podtemplate/fmwk8s-slave.yaml'
+        }
+    }
+
+    environment {
+        REGISTRY_AUTH = credentials("fmwk8sval_ww.docker")
+    }
+
+    stages {
+        stage('initialize validation framework') {
+            steps {
+               withCredentials([[$class : 'UsernamePasswordMultiBinding', credentialsId: 'fmwk8sval_ww.docker',
+                                              usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]) {
+                    container('dind'){
+                        docker login http://container-registry.oracle.com -u ${DOCKER_USERNAME} ${DOCKER_PASSWORD}
+
+                        docker pull fmwk8s-dev.dockerhub-den.oraclecorp.com/op-intg-test:latest
+
+                        script {
+                            echo `docker inspect  -f '{{.ContainerConfig.Entrypoint}}' fmwk8s-dev.dockerhub-den.oraclecorp.com/op-intg-test:latest` | sed 's/\[//g' 's/\]//g'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
