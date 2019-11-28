@@ -40,10 +40,6 @@ pipeline {
                     EOF
 
                     cat ${WORKSPACE}/create_wrapper_script.sh
-                    chmod 777 ${WORKSPACE}/create_wrapper_script.sh
-
-                    cp -rf ${WORKSPACE}/create_wrapper_script.sh {WORKSPACE}/docker-entrypoint.sh
-                    chmod 777 {WORKSPACE}/docker-entrypoint.sh
 
                     ls -ltr ${WORKSPACE}
                     '''
