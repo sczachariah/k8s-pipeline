@@ -33,7 +33,6 @@ pipeline {
 
                     echo "Create a wrapper script with inspected entrypoint script"
                     cat <<EOF> ${WORKSPACE}/create_wrapper_script.sh
-                    #!/bin/bash
                     sh  echo `docker inspect  -f '{{.ContainerConfig.Entrypoint}}' fmwk8s-dev.dockerhub-den.oraclecorp.com/op-intg-test:latest` | tr '[' ' '|tr ']' ' ' |sed 's/ //g'                '''
                     touch ${LOG_DIRECTORY}/fmwk8s.completed
                     echo "Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..."
