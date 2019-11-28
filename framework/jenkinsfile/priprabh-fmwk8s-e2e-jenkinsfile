@@ -36,21 +36,25 @@ pipeline {
                     echo
                     echo "Create a wrapper script with inspected entrypoint script"
 
-                    touch ${WORKSPACE}/create_wrapper_script.sh
-                    echo "#!/bin/bash" >> ${WORKSPACE}/create_wrapper_script.sh
-                    echo "" >> ${WORKSPACE}/create_wrapper_script.sh
-                    echo "sh  $entrypoint_details" >> ${WORKSPACE}/create_wrapper_script.sh
-                    echo "touch ${LOG_DIRECTORY}/fmwk8s.completed" >> ${WORKSPACE}/create_wrapper_script.sh
-                    echo "echo Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..." >> ${WORKSPACE}/create_wrapper_script.sh
-                    echo "sleep ${HOURS_AFTER_SECONDS}" >> ${WORKSPACE}/create_wrapper_script.sh
+                    touch ${WORKSPACE}/docker-entrypoint.sh
+                    echo "#!/bin/bash" >> ${WORKSPACE}/docker-entrypoint.sh
+                    echo "" >> ${WORKSPACE}/docker-entrypoint.sh
+                    echo "sh  $entrypoint_details" >> ${WORKSPACE}/docker-entrypoint.sh
+                    echo "touch ${LOG_DIRECTORY}/fmwk8s.completed" >> ${WORKSPACE}/docker-entrypoint.sh
+                    echo "echo Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..." >> ${WORKSPACE}/docker-entrypoint.sh
+                    echo "sleep ${HOURS_AFTER_SECONDS}" >> ${WORKSPACE}/docker-entrypoint.sh
 
                     pwd
 
-                    cat ${WORKSPACE}/create_wrapper_script.sh
+                    cat ${WORKSPACE}/docker-entrypoint.sh
 
                     ls -ltr ${WORKSPACE}
                     '''
                 }
+                kubectl apply -f kubernetes/framework/fmwk8s-utility-configmap.yaml
+                cat ${WORKSPACE}/docker-entrypoint.sh | kubectl replace -f kubernetes/framework/fmwk8s-utility-configmap.yaml
+
+                kubectl get cm fmwk8s-utility-configmap --all-namespaces
             }
         }
     }
