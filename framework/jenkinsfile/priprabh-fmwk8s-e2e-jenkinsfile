@@ -49,12 +49,13 @@ pipeline {
                     cat ${WORKSPACE}/docker-entrypoint.sh
 
                     ls -ltr ${WORKSPACE}
+
+                    kubectl apply -f ${WORKSPACE}/kubernetes/framework/fmwk8s-utility-configmap.yaml
+                    cat ${WORKSPACE}/docker-entrypoint.sh | kubectl replace -f kubernetes/framework/fmwk8s-utility-configmap.yaml
+
+                    kubectl get cm fmwk8s-utility-configmap --all-namespaces
                     '''
                 }
-                kubectl apply -f kubernetes/framework/fmwk8s-utility-configmap.yaml
-                cat ${WORKSPACE}/docker-entrypoint.sh | kubectl replace -f kubernetes/framework/fmwk8s-utility-configmap.yaml
-
-                kubectl get cm fmwk8s-utility-configmap --all-namespaces
             }
         }
     }
