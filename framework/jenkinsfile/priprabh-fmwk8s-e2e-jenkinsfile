@@ -42,7 +42,7 @@ pipeline {
                     echo "sh  $entrypoint_details" >> ${WORKSPACE}/create_wrapper_script.sh
                     echo "touch ${LOG_DIRECTORY}/fmwk8s.completed" >> ${WORKSPACE}/create_wrapper_script.sh
                     echo "echo Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..." >> ${WORKSPACE}/create_wrapper_script.sh
-                    echo "sleep ${HOURS_AFTER_SECONDS}"" >> ${WORKSPACE}/create_wrapper_script.sh
+                    echo "sleep ${HOURS_AFTER_SECONDS}" >> ${WORKSPACE}/create_wrapper_script.sh
 
                     pwd
 
