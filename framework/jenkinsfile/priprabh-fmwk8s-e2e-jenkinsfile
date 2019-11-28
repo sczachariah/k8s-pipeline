@@ -37,10 +37,12 @@ pipeline {
                     echo "Create a wrapper script with inspected entrypoint script"
 
                     touch ${WORKSPACE}/create_wrapper_script.sh
-                    sh  $entrypoint_details >> ${WORKSPACE}/create_wrapper_script.sh
-                    touch ${LOG_DIRECTORY}/fmwk8s.completed >> ${WORKSPACE}/create_wrapper_script.sh
-                    echo "Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..." >> ${WORKSPACE}/create_wrapper_script.sh
-                    sleep ${HOURS_AFTER_SECONDS} >> ${WORKSPACE}/create_wrapper_script.sh
+                    echo "#!/bin/bash" >> ${WORKSPACE}/create_wrapper_script.sh
+                    echo "" >> ${WORKSPACE}/create_wrapper_script.sh
+                    echo "sh  $entrypoint_details" >> ${WORKSPACE}/create_wrapper_script.sh
+                    echo "touch ${LOG_DIRECTORY}/fmwk8s.completed" >> ${WORKSPACE}/create_wrapper_script.sh
+                    echo "echo Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..." >> ${WORKSPACE}/create_wrapper_script.sh
+                    echo "sleep ${HOURS_AFTER_SECONDS}"" >> ${WORKSPACE}/create_wrapper_script.sh
 
                     pwd
 
