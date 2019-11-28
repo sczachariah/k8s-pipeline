@@ -35,12 +35,12 @@ pipeline {
                     echo
                     echo
                     echo "Create a wrapper script with inspected entrypoint script"
-                    cat <<EOF> ${WORKSPACE}/create_wrapper_script.sh
-                    sh  $entrypoint_details
-                    touch ${LOG_DIRECTORY}/fmwk8s.completed
-                    echo "Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..."
-                    sleep ${HOURS_AFTER_SECONDS}
-                    EOF
+
+                    touch ${WORKSPACE}/create_wrapper_script.sh
+                    sh  $entrypoint_details >> ${WORKSPACE}/create_wrapper_script.sh
+                    touch ${LOG_DIRECTORY}/fmwk8s.completed >> ${WORKSPACE}/create_wrapper_script.sh
+                    echo "Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..." >> ${WORKSPACE}/create_wrapper_script.sh
+                    sleep ${HOURS_AFTER_SECONDS} >> ${WORKSPACE}/create_wrapper_script.sh
 
                     pwd
 
