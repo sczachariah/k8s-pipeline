@@ -375,7 +375,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 </div>
 </body>
 </html>
-<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
+<p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : </p>
+<p font-family:verdana,courier,arial,helvetica;>https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
 <p font-family:verdana,courier,arial,helvetica;>Thanks & Regards,</p>
 <p font-family:verdana,courier,arial,helvetica;>FMW K8S Team</p>
 """

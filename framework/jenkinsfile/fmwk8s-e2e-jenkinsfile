@@ -143,6 +143,11 @@ pipeline {
 
                 stage('execute tests') {
                     steps {
+                        container('dind'){
+                            script {
+                                Test.dockerInspectTestImageAndCreateWrapperDockerEntryPointScript()
+                            }
+                        }
                         script {
                             Test.invokeTest()
                         }

@@ -10,7 +10,7 @@ spec:
     - name: fmwk8s-op-intg-test
       image: "%TEST_IMAGE%"
       imagePullPolicy: Always
-      args: ["/usr/local/bin/run-timer.sh"]
+      command: ["/usr/local/bin/docker-entrypoint.sh"]
       envFrom:
         - configMapRef:
             name: fmwk8s-op-intg-env-configmap
@@ -18,8 +18,8 @@ spec:
         - name: fmwk8s-log-volume
           mountPath: "%LOG_DIRECTORY%"
         - name: fmwk8s-utility-configmap
-          mountPath: /usr/local/bin/run-timer.sh
-          subPath: run-timer.sh
+          mountPath: /usr/local/bin/docker-entrypoint.sh
+          subPath: docker-entrypoint.sh
   volumes:
     - name: fmwk8s-log-volume
       persistentVolumeClaim:

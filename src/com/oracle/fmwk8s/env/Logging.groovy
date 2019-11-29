@@ -4,7 +4,6 @@ package com.oracle.fmwk8s.env
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.test.Test
-import com.oracle.fmwk8s.utility.ReportUtility
 
 class Logging extends Common {
 

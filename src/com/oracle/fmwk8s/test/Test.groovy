@@ -38,6 +38,48 @@ class Test extends Common {
         }
     }
 
+    static dockerInspectTestImageAndCreateWrapperDockerEntryPointScript(){
+        try {
+            Log.info("begin Docker Inspect TestImage And Create Wrapper DockerEntryPointScript")
+
+            /** Pull docker test image into DIND Container */
+            script.sh label: "Pull docker test image into DIND Container",
+                 script : "docker pull ${Common.testImage}"
+
+            /** Run a docker inspect command on this test image to retrieve the specified entrypoint script details of test image.*/
+            def entryPointScriptFileNameAndPath = script.sh(
+                    label: "Run a docker inspect command on this test image to retrieve the specified entrypoint script details",
+                    script: "echo `docker inspect  -f '{{.ContainerConfig.Entrypoint}}' fmwk8s-dev.dockerhub-den.oraclecorp.com/op-intg-test:latest | tr '[' ' '|tr ']' ' ' |sed 's/ //g'`",
+                    returnStdout: true)
+
+            Log.info("entryPointScriptFileNameAndPath :: ${entryPointScriptFileNameAndPath}")
+
+            /** Create a new wrapper docker entrypoint script for the test image for maintaining hoursafter environment */
+            script.sh label: "Create a new wrapper docker entrypoint script for the test image",
+                    script : "touch ${script.env.WORKSPACE}/docker-entrypoint.sh && \
+                              echo \"#!/bin/bash\" >> ${script.env.WORKSPACE}/docker-entrypoint.sh && \
+                              echo \"\" >> ${script.env.WORKSPACE}/docker-entrypoint.sh && \
+                              echo \"sh ${entryPointScriptFileNameAndPath}\" >> ${script.env.WORKSPACE}/docker-entrypoint.sh && \
+                              echo \"touch %LOG_DIRECTORY%/fmwk8s.completed\" >> ${script.env.WORKSPACE}/docker-entrypoint.sh && \
+                              echo \"echo Retaining Environment for %HOURS_AFTER_SECONDS% seconds...\" >> ${script.env.WORKSPACE}/docker-entrypoint.sh && \
+                              echo \"sleep %HOURS_AFTER_SECONDS%\" >> ${script.env.WORKSPACE}/docker-entrypoint.sh"
+
+            /** Check the contents of the new docker entrypoint script */
+            script.sh label: "Check contents of a new wrapper docker entrypoint script for the test image",
+                    script : "chmod 777 ${script.env.WORKSPACE}/docker-entrypoint.sh && \
+                              cat ${script.env.WORKSPACE}/docker-entrypoint.sh && \
+                              ls -ltr ${script.env.WORKSPACE}"
+
+            Log.info("Docker Inspect TestImage And Create Wrapper DockerEntryPointScript is Success")
+        }
+        catch (exc) {
+            Log.info("Docker Inspect TestImage And Create Wrapper DockerEntryPointScript is Failed")
+            throw exc
+        }
+        finally {
+        }
+    }
+
     static doTestHarnessSetup() {
         try {
             Log.info("begin test harness setup.")
@@ -46,8 +88,16 @@ class Test extends Common {
                     credentialsId: 'fmwk8sval_ww.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh label: "create fmwk8s utility configmap",
-                    script: "kubectl apply -f kubernetes/framework/fmwk8s-utility-configmap.yaml -n ${Domain.domainNamespace}"
+            script.sh label: "replace values in docker-entrypoint.sh",
+                    script: "sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" docker-entrypoint.sh && \
+                 sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" docker-entrypoint.sh && \
+                 cat docker-entrypoint.sh"
+
+            script.sh label: "create a configmap with above given docker-entrypoint.sh script",
+                    script: "kubectl create configmap fmwk8s-utility-configmap -n ${Domain.domainNamespace} --from-file=docker-entrypoint.sh && \
+                kubectl get configmap -n ${Domain.domainNamespace}"
+
+            script.sh "kubectl get configmap fmwk8s-utility-configmap -n ${Domain.domainNamespace} -o yaml"
 
             script.sh label: "configure test pv/pvc",
                     script: "cd kubernetes/framework/test && \

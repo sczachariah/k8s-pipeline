@@ -52,7 +52,7 @@ class OperatorIntegration extends Test {
                         sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"
 
-            script.sh label: "create env varialbes configmap",
+            script.sh label: "create env variables configmap",
                     script: "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-env-configmap.yaml -n ${Domain.domainNamespace}"
 
             Log.info("create env configmap success.")
