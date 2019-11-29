@@ -54,11 +54,10 @@ class Base {
     static def lbHelmRelease
 
     static def elkEnable
-    //static def elasticSearchHost = "elasticsearch.logging.svc.cluster.local"
-    static def elasticSearchHost = "192.168.2.2"
+    static def elasticSearchHost = "elasticsearch-master.logging"
     static def elasticSearchPort = "9200"
 
-    static def kibanaUrl = "http://slc16iyc.us.oracle.com:30444/app/kibana"
+    static def kibanaUrl = "http://fmwk8s-stage.us.oracle.com:30444/app/kibana"
 
     static getInputVariables() {
         cloud = script.env.CLOUD
