@@ -49,7 +49,7 @@ class Test extends Common {
             /** Run a docker inspect command on this test image to retrieve the specified entrypoint script details of test image.*/
             def entryPointScriptFileNameAndPath = script.sh(
                     label: "Run a docker inspect command on this test image to retrieve the specified entrypoint script details",
-                    script: "echo `docker inspect  -f '{{.ContainerConfig.Entrypoint}}' fmwk8s-dev.dockerhub-den.oraclecorp.com/op-intg-test:latest | tr '[' ' '|tr ']' ' ' |sed 's/ //g'`",
+                    script: "echo `docker inspect  -f '{{.ContainerConfig.Entrypoint}}' ${Common.testImage} | tr '[' ' '|tr ']' ' ' |sed 's/ //g'`",
                     returnStdout: true)
 
             Log.info("entryPointScriptFileNameAndPath :: ${entryPointScriptFileNameAndPath}")
