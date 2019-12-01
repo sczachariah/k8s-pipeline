@@ -4,6 +4,7 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.utility.K8sUtility
 import com.oracle.fmwk8s.utility.ReportUtility
+import com.oracle.fmwk8s.utility.YamlUtility
 
 /**
  * Domain class handles the common domain operations that are required
@@ -244,6 +245,34 @@ class Domain extends Common {
             }
             Log.info("managed server status check completed.")
             Log.info("domain readiness check success.")
+
+            Map<Object, Object> map = YamlUtility.readYaml(script, "${domainName}-domain.yaml")
+            def domainYaml = map
+
+            Log.info("Domain YAML :::::::: ................................\n")
+            Log.info(domainYaml.toString())
+
+            for (Object key : map.keySet()) {
+                if (key.equals("spec")) {
+                    LinkedHashMap specs = map.get("spec")
+
+                    for (Object spec : specs.keySet()) {
+                        if (spec.equals("clusters")) {
+                            List clusters = specs.get("clusters")
+                            List managedServers = specs.get("managedServers")
+
+                            for (LinkedHashMap cluster : clusters) {
+                                Log.info("We have clusters : ${cluster.toString()}")
+                                replicaCount = cluster.get("replicas")
+                                Log.info("replicaCount :: ${replicaCount}")
+                            }
+                            for(LinkedHashMap managedServer : managedServers){
+                                Log.info("We have managedServers : ${managedServer.get("serverName")}")
+                            }
+                        }
+                    }
+                }
+            }
         }
         catch (exc) {
             Log.error("domain readiness check failed.")
