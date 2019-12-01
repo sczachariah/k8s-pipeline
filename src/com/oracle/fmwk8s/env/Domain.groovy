@@ -247,17 +247,20 @@ class Domain extends Common {
             Log.info("domain readiness check success.")
 
             Map<Object, Object> map = YamlUtility.readYaml(script, "${domainName}-domain.yaml")
-            def domainYaml = map
 
             Log.info("Domain YAML :::::::: ................................\n")
-            Log.info(domainYaml.toString())
+            Log.info(map.toString())
 
             for (Object key : map.keySet()) {
+                Log.info("inside for : ${key.toString()}")
                 if (key.equals("spec")) {
+                    Log.info("inside if ")
                     LinkedHashMap specs = map.get("spec")
-
+                    Log.info("specs : ${specs.toString()}")
                     for (Object spec : specs.keySet()) {
+                        Log.info("inside second for : ${specs.keySet()}")
                         if (spec.equals("clusters")) {
+                            Log.info("inside clusters")
                             List clusters = specs.get("clusters")
                             List managedServers = specs.get("managedServers")
 
