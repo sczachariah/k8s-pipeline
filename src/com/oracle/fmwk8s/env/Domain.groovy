@@ -234,22 +234,7 @@ class Domain extends Common {
             Log.info("begin managed server status check.")
             script.sh "kubectl get domain -n ${domainNamespace} -o yaml > ${domainName}-domain.yaml && \
                        ls"
-            replicaCount = script.sh(
-                    script: "cat ${domainName}-domain.yaml | grep replicas:|tail -1|awk -F':' '{print \$2}'",
-                    returnStdout: true
-            ).trim()
-            Log.info(replicaCount)
-            for (int i = 1; i <= Integer.parseInt(replicaCount); i++) {
-                managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase").toString().replaceAll("_", "-")}${i}"
-                K8sUtility.checkPodStatus(script, managedServerPodName, domainNamespace, 40, '1/1')
-            }
-            Log.info("managed server status check completed.")
-            Log.info("domain readiness check success.")
-
             Map<Object, Object> map = YamlUtility.readYaml(script, "${domainName}-domain.yaml")
-
-            Log.info("Domain YAML :::::::: ................................\n")
-            Log.info(map.toString())
 
             for (Object key : map.keySet()) {
                 Log.info("inside for : ${key.toString()}")
@@ -258,22 +243,22 @@ class Domain extends Common {
                     for(Object item : items.keySet()){
                         if (item.equals("spec")) {
                             Log.info("inside if ")
-                            LinkedHashMap specs = map.get("spec")
+                            LinkedHashMap specs = items.get("spec")
                             Log.info("specs : ${specs.toString()}")
                             for (Object spec : specs.keySet()) {
                                 Log.info("inside second for : ${specs.keySet()}")
                                 if (spec.equals("clusters")) {
                                     Log.info("inside clusters")
                                     List clusters = specs.get("clusters")
-                                    List managedServers = specs.get("managedServers")
-
                                     for (LinkedHashMap cluster : clusters) {
                                         Log.info("We have clusters : ${cluster.toString()}")
                                         replicaCount = cluster.get("replicas")
                                         Log.info("replicaCount :: ${replicaCount}")
-                                    }
-                                    for(LinkedHashMap managedServer : managedServers){
-                                        Log.info("We have managedServers : ${managedServer.get("serverName")}")
+                                        for (int i = 1; i <= Integer.parseInt(replicaCount); i++) {
+                                            managedServerPodName = "${domainName}-${yamlUtility.domainInputsMap.get("managedServerNameBase").toString().replaceAll("_", "-")}${i}"
+                                            K8sUtility.checkPodStatus(script, managedServerPodName, domainNamespace, 40, '1/1')
+                                        }
+                                        Log.info("managed server status check completed.")
                                     }
                                 }
                             }
@@ -282,6 +267,7 @@ class Domain extends Common {
                 }
 
             }
+            Log.info("domain readiness check success.")
         }
         catch (exc) {
             Log.error("domain readiness check failed.")
