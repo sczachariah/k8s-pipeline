@@ -253,28 +253,34 @@ class Domain extends Common {
 
             for (Object key : map.keySet()) {
                 Log.info("inside for : ${key.toString()}")
-                if (key.equals("spec")) {
-                    Log.info("inside if ")
-                    LinkedHashMap specs = map.get("spec")
-                    Log.info("specs : ${specs.toString()}")
-                    for (Object spec : specs.keySet()) {
-                        Log.info("inside second for : ${specs.keySet()}")
-                        if (spec.equals("clusters")) {
-                            Log.info("inside clusters")
-                            List clusters = specs.get("clusters")
-                            List managedServers = specs.get("managedServers")
+                if(key.equals("items")) {
+                    LinkedHashMap items = map.get("items")
+                    for(Object item : items.keySet()){
+                        if (item.equals("spec")) {
+                            Log.info("inside if ")
+                            LinkedHashMap specs = map.get("spec")
+                            Log.info("specs : ${specs.toString()}")
+                            for (Object spec : specs.keySet()) {
+                                Log.info("inside second for : ${specs.keySet()}")
+                                if (spec.equals("clusters")) {
+                                    Log.info("inside clusters")
+                                    List clusters = specs.get("clusters")
+                                    List managedServers = specs.get("managedServers")
 
-                            for (LinkedHashMap cluster : clusters) {
-                                Log.info("We have clusters : ${cluster.toString()}")
-                                replicaCount = cluster.get("replicas")
-                                Log.info("replicaCount :: ${replicaCount}")
-                            }
-                            for(LinkedHashMap managedServer : managedServers){
-                                Log.info("We have managedServers : ${managedServer.get("serverName")}")
+                                    for (LinkedHashMap cluster : clusters) {
+                                        Log.info("We have clusters : ${cluster.toString()}")
+                                        replicaCount = cluster.get("replicas")
+                                        Log.info("replicaCount :: ${replicaCount}")
+                                    }
+                                    for(LinkedHashMap managedServer : managedServers){
+                                        Log.info("We have managedServers : ${managedServer.get("serverName")}")
+                                    }
+                                }
                             }
                         }
                     }
                 }
+
             }
         }
         catch (exc) {
