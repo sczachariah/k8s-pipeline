@@ -231,6 +231,7 @@ class Domain extends Common {
             Log.info(adminServerPodName)
             K8sUtility.checkPodStatus(script, adminServerPodName, domainNamespace, 40, '1/1')
             Log.info("admin server status check completed.")
+
             Log.info("begin managed server status check.")
             script.sh "kubectl get domain -n ${domainNamespace} -o yaml > ${domainName}-domain.yaml && \
                        ls"
