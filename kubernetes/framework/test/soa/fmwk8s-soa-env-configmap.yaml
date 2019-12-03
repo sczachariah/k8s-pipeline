@@ -18,6 +18,7 @@ data:
   "DB_HOST": "%DB_HOST%"
   "DB_PORT": "%DB_PORT%"
   "DB_SCHEMA_PASSWORD": "%DB_SCHEMA_PASSWORD%"
+  "DB_SERVICE": "%DB_SERVICE%"
   "DB_SID": "%DB_SID%"
   "DB_TYPE": "ORACLE"
   "DB_USER": "SYS"
