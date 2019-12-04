@@ -139,7 +139,8 @@ class IngressController extends Common {
                     script: "helm init --client-only --skip-refresh --wait && \
                    helm repo update && \
                    helm install stable/nginx-ingress --name ${lbHelmRelease} --namespace ${domainNamespace} \
-                   --set controller.scope.namespace={${domainNamespace}} --debug"
+                   --set controller.scope.enabled=true \
+                   --set controller.scope.namespace=${domainNamespace} --debug"
             Log.info("deploy nginx ingress controller success.")
         }
         catch (exc) {
