@@ -87,6 +87,9 @@ class Base {
             case "SOA":
                 domainName = "soainfra"
                 break
+            case "WCP":
+                domainName = "wcpinfra"
+                break
             case "OIG":
                 domainName = "oim"
             default:
@@ -156,6 +159,9 @@ class Base {
             case "SOA":
                 productId = "soa"
                 break
+            case "WCP":
+                productId = "wcp"
+                break
             case "OIG":
                 productId = "oim"
             default:
@@ -166,6 +172,11 @@ class Base {
 
     static getSamplesRepoDetails() {
         switch ("${productName}") {
+            case "WCP":
+                samplesRepo = "https://orahub.oraclecorp.com/tooling/wcp-kubernetes-operator.git"
+                samplesBranch = "PS3"
+                samplesDirectory = ""
+                break
             case "OIG":
                 samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
                 samplesDirectory = ""
