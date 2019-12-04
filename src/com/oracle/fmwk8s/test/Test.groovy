@@ -197,25 +197,27 @@ class Test extends Common {
     }
 
     static cleanup() {
-        if (!EnvironmentSetup.isWaiting) {
-            try {
-                Log.info("begin cleanup test resources.")
-
-                script.sh label: "cleanup test pod",
-                        script: "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
-                sleep 30
-                script.sh label: "cleanup test pv/pvc",
-                        script: "kubectl delete fmwk8s-tests-pvc-${Common.runId} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade && \
-                                 sleep 30 && \
-                                 kubectl delete fmwk8s-tests-pv-${Common.runId} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
-
-                Log.info("cleanup test resources success.")
-            }
-            catch (exc) {
-                Log.error("cleanup test resources failed.")
-                exc.printStackTrace()
-            }
+        if (EnvironmentSetup.isWaiting) {
+            Log.info("bypassing hoursAfter and cleaning test resources.")
         }
+        try {
+            Log.info("begin cleanup test resources.")
+
+            script.sh label: "cleanup test pod",
+                    script: "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
+            sleep 30
+            script.sh label: "cleanup test pv/pvc",
+                    script: "kubectl delete fmwk8s-tests-pvc-${Common.runId} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade && \
+                             sleep 30 && \
+                             kubectl delete fmwk8s-tests-pv-${Common.runId} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
+
+            Log.info("cleanup test resources success.")
+        }
+        catch (exc) {
+            Log.error("cleanup test resources failed.")
+            exc.printStackTrace()
+        }
+
     }
 
     static doNecessaryCleanup() {
