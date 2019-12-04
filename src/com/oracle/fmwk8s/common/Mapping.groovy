@@ -7,6 +7,7 @@ class Mapping {
         productIdMap.put("WLS", "weblogic")
         productIdMap.put("WLS-INFRA", "fmw-infrastructure")
         productIdMap.put("SOA", "soa")
+        productIdMap.put("WCP", "wcp")
         productIdMap.put("OIG", "oim")
     }
 }
