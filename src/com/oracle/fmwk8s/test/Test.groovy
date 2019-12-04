@@ -88,7 +88,10 @@ class Test extends Common {
                     credentialsId: 'fmwk8sval_ww.ssh',
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh label: "replace values in docker-entrypoint.sh",
+            script.sh label: "create fmwk8s utility configmap",
+                    script: "kubectl apply -f kubernetes/framework/fmwk8s-utility-configmap.yaml -n ${Domain.domainNamespace}"
+
+            /*script.sh label: "replace values in docker-entrypoint.sh",
                     script: "sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" docker-entrypoint.sh && \
                  sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" docker-entrypoint.sh && \
                  cat docker-entrypoint.sh"
@@ -97,7 +100,7 @@ class Test extends Common {
                     script: "kubectl create configmap fmwk8s-utility-configmap -n ${Domain.domainNamespace} --from-file=docker-entrypoint.sh && \
                 kubectl get configmap -n ${Domain.domainNamespace}"
 
-            script.sh "kubectl get configmap fmwk8s-utility-configmap -n ${Domain.domainNamespace} -o yaml"
+            script.sh "kubectl get configmap fmwk8s-utility-configmap -n ${Domain.domainNamespace} -o yaml"*/
 
             script.sh label: "configure test pv/pvc",
                     script: "cd kubernetes/framework/test && \

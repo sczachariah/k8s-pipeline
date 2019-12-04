@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fmwk8s-utility-configmap
+data:
+  run-timer.sh: |-
+    #!/bin/bash
+
+    touch ${LOG_DIRECTORY}/fmwk8s.completed
+
+    echo "Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..."
+    sleep ${HOURS_AFTER_SECONDS}
+---
