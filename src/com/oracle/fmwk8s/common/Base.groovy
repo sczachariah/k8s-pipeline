@@ -173,7 +173,7 @@ class Base {
     static getSamplesRepoDetails() {
         switch ("${productName}") {
             case "WCP":
-                samplesRepo = "https://orahub.oraclecorp.com/tooling/wcp-kubernetes-operator.git"
+                samplesRepo = "git@orahub.oraclecorp.com:tooling/wcp-kubernetes-operator.git"
                 samplesBranch = "PS3"
                 samplesDirectory = ""
                 break
