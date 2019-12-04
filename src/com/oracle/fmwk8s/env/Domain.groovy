@@ -71,8 +71,7 @@ class Domain extends Common {
                         script: "kubectl apply -f kubernetes/framework/db/rcu/${productId}-rcu-configmap.yaml -n ${domainNamespace} && \
                            kubectl apply -f kubernetes/framework/db/rcu/fmwk8s-rcu-pod.yaml -n ${domainNamespace}"
 
-                K8sUtility.checkPodStatus(script, 'fmwk8s-rcu', domainNamespace, 10, 'Completed')
-
+                K8sUtility.checkPodStatus(script, 'fmwk8s-rcu', domainNamespace, 25, 'Completed')
 
                 Log.info("prepare rcu success.")
             }
@@ -238,9 +237,9 @@ class Domain extends Common {
             Map<Object, Object> map = YamlUtility.readYaml(script, "${domainName}-domain.yaml")
 
             for (Object key : map.keySet()) {
-                if(key.equals("items")) {
+                if (key.equals("items")) {
                     LinkedHashMap items = map.get("items")
-                    for(Object item : items.keySet()){
+                    for (Object item : items.keySet()) {
                         if (item.equals("spec")) {
                             LinkedHashMap specs = items.get("spec")
                             for (Object spec : specs.keySet()) {

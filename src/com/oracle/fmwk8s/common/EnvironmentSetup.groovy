@@ -1,7 +1,5 @@
 package com.oracle.fmwk8s.common
 
-import com.oracle.fmwk8s.test.Test
-
 class EnvironmentSetup extends Base {
 
     static def isWaiting = false

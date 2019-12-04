@@ -1,12 +1,10 @@
 package com.oracle.fmwk8s.test
 
 import com.oracle.fmwk8s.common.Common
-import com.oracle.fmwk8s.common.EnvironmentSetup
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Logging
 import com.oracle.fmwk8s.env.Operator
-import com.oracle.fmwk8s.utility.ReportUtility
 
 class OperatorIntegration extends Test {
     static fireTest() {

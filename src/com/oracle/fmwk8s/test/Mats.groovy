@@ -5,7 +5,6 @@ import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.Logging
-import com.oracle.fmwk8s.utility.ReportUtility
 
 class Mats extends Test {
     static fireTest() {

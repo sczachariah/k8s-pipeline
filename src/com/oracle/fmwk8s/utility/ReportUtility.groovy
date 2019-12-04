@@ -1,10 +1,10 @@
 package com.oracle.fmwk8s.utility
 
 import com.oracle.fmwk8s.common.Common
+import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
 import com.oracle.fmwk8s.env.IngressController
 import com.oracle.fmwk8s.test.Test
-import com.oracle.fmwk8s.common.Log
 
 class ReportUtility {
 
@@ -86,7 +86,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
                     returnStdout: true).trim()
             Log.info("file Exists........... :: ${fileExists}")
             /** if the fmwk8s.completed file exists, then we calculate suc dif for tests executed */
-            if(fileExists == 'exists') {
+            if (fileExists == 'exists') {
                 /** Logic to evaluate no. of *.suc files in test_logs directory given above */
                 sucCount = script.sh(
                         label: "evaluate no. of *.suc files in test_logs directory",
@@ -179,14 +179,16 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 
 """
 
-        if(Common.hoursAfter > 0){
+        if (Common.hoursAfter > 0) {
             Calendar calendar = Calendar.getInstance()
             System.out.println("Original = " + calendar.getTime())
             calendar.add(Calendar.HOUR, Integer.parseInt("${Common.hoursAfter}").intValue())
             def hourAfterTime
             hourAfterTime = calendar.getTime()
             body = body + """
-<p>The environment is available for use for ${Common.hoursAfter} hours. The environment will be de-commissioned at ${hourAfterTime} </p>
+<p>The environment is available for use for ${Common.hoursAfter} hours. The environment will be de-commissioned at ${
+                hourAfterTime
+            } </p>
 """
         }
 
@@ -203,9 +205,9 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 <tr><td>Domain Url's</td></tr>
 """
 
-        for( String values : str ){
+        for (String values : str) {
             Log.info("value is $values")
-            if("$values".contains("http")){
+            if ("$values".contains("http")) {
                 body = body + """<tr><td>${values}</td></tr> """
             }
         }
@@ -217,11 +219,13 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 
         if ("${Common.testType}" != "N/A") {
             body = body + """
-<p>QA tests are being executed against the provisioned environment. Domain and Test pods are accessible here : <a href="${domainURL}">${domainURL}</a> </p>
+<p>QA tests are being executed against the provisioned environment. Domain and Test pods are accessible here : <a href="${
+                domainURL
+            }">${domainURL}</a> </p>
 
 <p>A detailed status on test execution will be sent over email once the test execution is completed. </p>
 """
-        }else{
+        } else {
             body = body + """
 <p>Domain pods are accessible here : <a href="${domainURL}">${domainURL}</a> </p>
 """
@@ -236,7 +240,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 <p>Regards,</p>
 <p>FMW K8S Team</p>
 """
-        sendMail(script,subject,body)
+        sendMail(script, subject, body)
     }
 
     /**
@@ -248,7 +252,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
      */
     static sendMail(script, subject, body) {
         /** plugin used to send user email on status of overall test results after test execution*/
-        script.emailext (
+        script.emailext(
                 subject: subject,
                 body: body,
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
@@ -274,11 +278,11 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         List overallTestList = (overallExecutedTestCaseList == null) ? [] : overallExecutedTestCaseList.split()
 
         /** sucCountValue - variable containing integer value of suc file count  */
-        Integer sucCountValue = (sucCount == null) ? 0 :sucCount.trim().toInteger()
+        Integer sucCountValue = (sucCount == null) ? 0 : sucCount.trim().toInteger()
         /** difCountValue - variable containing integer value of dif file count  */
-        Integer difCountValue = (difCount == null) ? 0 :difCount.trim().toInteger()
+        Integer difCountValue = (difCount == null) ? 0 : difCount.trim().toInteger()
         /** skipCountValue - variable containing integer value of skip file count  */
-        Integer skipCountValue = (skipCount == null) ? 0 :skipCount.trim().toInteger()
+        Integer skipCountValue = (skipCount == null) ? 0 : skipCount.trim().toInteger()
 
         /** Generating the subject and the mail body for mail notification */
         def subject = "Test Summary for build '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
@@ -304,8 +308,12 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
     <div>
       <table border="1" style="cellpadding:2; cellspacing: 2; width:100%;">
         <tr>
-          <th colspan="1" valign="center" align="left"><h3>&nbsp;&nbsp;&nbsp;JOB ID&nbsp;:&nbsp;${script.env.BUILD_NUMBER}</h3></th>
-          <th colspan="2" valign="center" align="left"><h3>&nbsp;&nbsp;&nbsp;TEST STATUS&nbsp;:&nbsp;${Test.testStatus.toUpperCase()}</h3></th>
+          <th colspan="1" valign="center" align="left"><h3>&nbsp;&nbsp;&nbsp;JOB ID&nbsp;:&nbsp;${
+            script.env.BUILD_NUMBER
+        }</h3></th>
+          <th colspan="2" valign="center" align="left"><h3>&nbsp;&nbsp;&nbsp;TEST STATUS&nbsp;:&nbsp;${
+            Test.testStatus.toUpperCase()
+        }</h3></th>
         </tr>
         <tr>
           <th colspan="3">&nbsp;</th>
@@ -318,44 +326,44 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
         <tr>
           <td align="left">
 """
-          for(int i = 1; i <= totalSucDifSkipCasesCount; i++) {
-              body = body + """
+        for (int i = 1; i <= totalSucDifSkipCasesCount; i++) {
+            body = body + """
               <p>&nbsp;&nbsp;&nbsp;$i.</p>
 """
-          }
-          body = body + """
+        }
+        body = body + """
           </td>
           <td align="left">
 """
-              for (String overallTestCase : overallTestList) {
-                body = body + """
+        for (String overallTestCase : overallTestList) {
+            body = body + """
                     <p>&nbsp;&nbsp;&nbsp;${overallTestCase.trim()}</p>
 """
-              }
-          body = body + """
+        }
+        body = body + """
           </td>
           <td align="left">
 """
-              for (String overallTestCase : overallTestList) {
-                if (overallTestCase.endsWith(".suc")) {
-                    body = body + """
+        for (String overallTestCase : overallTestList) {
+            if (overallTestCase.endsWith(".suc")) {
+                body = body + """
                             <p>&nbsp;&nbsp;&nbsp;<font color="green">PASSED</font></p>
 """
-                } else if (overallTestCase.endsWith(".dif")) {
-                    body = body + """
+            } else if (overallTestCase.endsWith(".dif")) {
+                body = body + """
                             <p>&nbsp;&nbsp;&nbsp;<font color="red">FAILED</font></p>
 """
-                } else if (overallTestCase.endsWith(".skip")) {
-                    body = body + """
+            } else if (overallTestCase.endsWith(".skip")) {
+                body = body + """
                             <p>&nbsp;&nbsp;&nbsp;<font color="blue">SKIPPED</font></p>
 """
-                }
-              }
-           body = body + """
+            }
+        }
+        body = body + """
            </td>          
          </tr>
 """
-    body = body + """
+        body = body + """
     </table>
     <br/>
     <table border="1" style="cellpadding:10; cellspacing: 4; width:100%;">
@@ -376,7 +384,9 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 </body>
 </html>
 <p font-family:verdana,courier,arial,helvetica;>The logs and results for this run is available at Artifactory Location : </p>
-<p font-family:verdana,courier,arial,helvetica;>https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${Common.productName}/${productImageVersion}/${Common.runId}/</p>
+<p font-family:verdana,courier,arial,helvetica;>https://artifacthub.oraclecorp.com/fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${
+            Common.productName
+        }/${productImageVersion}/${Common.runId}/</p>
 <p font-family:verdana,courier,arial,helvetica;>Thanks & Regards,</p>
 <p font-family:verdana,courier,arial,helvetica;>FMW K8S Team</p>
 """

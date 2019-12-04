@@ -38,13 +38,13 @@ class Test extends Common {
         }
     }
 
-    static dockerInspectTestImageAndCreateWrapperDockerEntryPointScript(){
+    static dockerInspectTestImageAndCreateWrapperDockerEntryPointScript() {
         try {
             Log.info("begin Docker Inspect TestImage And Create Wrapper DockerEntryPointScript")
 
             /** Pull docker test image into DIND Container */
             script.sh label: "Pull docker test image into DIND Container",
-                 script : "docker pull ${Common.testImage}"
+                    script: "docker pull ${Common.testImage}"
 
             /** Run a docker inspect command on this test image to retrieve the specified entrypoint script details of test image.*/
             def entryPointScriptFileNameAndPath = script.sh(
@@ -56,7 +56,7 @@ class Test extends Common {
 
             /** Create a new wrapper docker entrypoint script for the test image for maintaining hoursafter environment */
             script.sh label: "Create a new wrapper docker entrypoint script for the test image",
-                    script : "touch ${script.env.WORKSPACE}/docker-entrypoint.sh && \
+                    script: "touch ${script.env.WORKSPACE}/docker-entrypoint.sh && \
                               echo \"#!/bin/bash\" >> ${script.env.WORKSPACE}/docker-entrypoint.sh && \
                               echo \"\" >> ${script.env.WORKSPACE}/docker-entrypoint.sh && \
                               echo \"sh ${entryPointScriptFileNameAndPath}\" >> ${script.env.WORKSPACE}/docker-entrypoint.sh && \
@@ -66,7 +66,7 @@ class Test extends Common {
 
             /** Check the contents of the new docker entrypoint script */
             script.sh label: "Check contents of a new wrapper docker entrypoint script for the test image",
-                    script : "chmod 777 ${script.env.WORKSPACE}/docker-entrypoint.sh && \
+                    script: "chmod 777 ${script.env.WORKSPACE}/docker-entrypoint.sh && \
                               cat ${script.env.WORKSPACE}/docker-entrypoint.sh && \
                               ls -ltr ${script.env.WORKSPACE}"
 
@@ -148,26 +148,26 @@ class Test extends Common {
             Boolean fmwk8sCompletedFileExists = true
             Boolean fmwk8sCompletedFileNotExists = false
             Integer countOfLooping = 0
-            while(waitforfile){
+            while (waitforfile) {
                 /** Logic to check if the fmwk8s.completed file exists and is created after test execution */
                 def fileExists = script.sh(
                         label: "check if the fmwk8s.completed file exists and is created after test execution",
                         script: "test -f ${Test.logDirectory}/fmwk8s.completed && echo ${fmwk8sCompletedFileExists} || echo ${fmwk8sCompletedFileNotExists}",
                         returnStdout: true).trim()
                 Log.info("value  of fileExists :: ${fileExists}")
-                if(fileExists == "true") {
-                    waitforfile  = false
-                }else if(fileExists == "false"){
+                if (fileExists == "true") {
+                    waitforfile = false
+                } else if (fileExists == "false") {
                     script.sh "sleep 120"
-                    countOfLooping ++
+                    countOfLooping++
                     Log.info("Iteration :: ${countOfLooping}")
-                    waitforfile  = true
+                    waitforfile = true
                     continue
                 }
             }
 
             /** if the fmwk8s.completed file exists, then we calculate test Status and wait for hoursAfter*/
-            if(!waitforfile) {
+            if (!waitforfile) {
                 def testContainerStatus = script.sh(
                         label: "get test status",
                         script: "kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test",
@@ -218,7 +218,7 @@ class Test extends Common {
         }
     }
 
-    static doNecessaryCleanup(){
+    static doNecessaryCleanup() {
         /**Do the cleanup of test related resources*/
         cleanup()
     }
