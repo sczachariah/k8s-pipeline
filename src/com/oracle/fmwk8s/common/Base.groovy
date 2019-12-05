@@ -59,6 +59,8 @@ class Base {
 
     static def kibanaUrl = "http://fmwk8s-stage.us.oracle.com:30444/app/kibana"
 
+    static def emailRecipients
+
     static getInputVariables() {
         cloud = script.env.CLOUD
         registryAuthUsr = script.env.REGISTRY_AUTH_USR
@@ -74,6 +76,7 @@ class Base {
         elkEnable = script.env.ELK_ENABLE
         hoursAfter = Long.valueOf(script.env.HOURS_AFTER)
         hoursAfterSeconds = hoursAfter * 60 * 60
+        emailRecipients = script.env.EMAIL_TO
     }
 
     static getDomainVariables() {

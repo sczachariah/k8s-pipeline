@@ -252,7 +252,9 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
      */
     static sendMail(script, subject, body) {
         /** plugin used to send user email on status of overall test results after test execution*/
+        Log.info("Email to : ${Common.emailRecipients}")
         script.emailext(
+                to: Common.emailRecipients,
                 subject: subject,
                 body: body,
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
@@ -299,7 +301,6 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
     <meta name="viewport" content="width=320"></meta>
     <style type="text/css"> 
     p {
-      font-size: small;
       font-family: verdana,courier,arial,helvetica,sans-serif;
      }
     </style>
