@@ -19,9 +19,6 @@ class Mats extends Test {
             Log.error("${Common.productId} product fireTest failed.")
             testStatus = "failed"
         }
-        finally {
-            Test.doNecessaryCleanup()
-        }
     }
 
     static createEnvConfigMap() {

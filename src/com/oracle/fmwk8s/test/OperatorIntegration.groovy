@@ -19,9 +19,6 @@ class OperatorIntegration extends Test {
             Log.error("fireTest failed.")
             testStatus = "failed"
         }
-        finally {
-            Test.doNecessaryCleanup()
-        }
     }
 
     static createEnvConfigMap() {
