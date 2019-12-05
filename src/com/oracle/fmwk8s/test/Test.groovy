@@ -217,11 +217,5 @@ class Test extends Common {
             Log.error("cleanup test resources failed.")
             exc.printStackTrace()
         }
-
-    }
-
-    static doNecessaryCleanup() {
-        /**Do the cleanup of test related resources*/
-        cleanup()
     }
 }
