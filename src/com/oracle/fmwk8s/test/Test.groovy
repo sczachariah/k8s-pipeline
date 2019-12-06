@@ -18,17 +18,20 @@ class Test extends Common {
         logDirectory = "/logs/${runId}"
 
         if (testType != null && !testType.toString().isEmpty()) {
-            doTestHarnessSetup()
-
-            if (testType.matches("url-validation")) {
-                Log.info("invoking ${testType} tests.")
-                UrlValidation.fireTest()
-            } else if (testType.matches("operator-integration-.*")) {
-                Log.info("invoking ${testType} tests.")
-                OperatorIntegration.fireTest()
-            } else if (testType.matches("mats.*")) {
-                Log.info("invoking ${testType} tests.")
-                Mats.fireTest()
+            if (!testType.matches("N/A")) {
+                doTestHarnessSetup()
+                if (testType.matches("url-validation")) {
+                    Log.info("invoking ${testType} tests.")
+                    UrlValidation.fireTest()
+                } else if (testType.matches("operator-integration-.*")) {
+                    Log.info("invoking ${testType} tests.")
+                    OperatorIntegration.fireTest()
+                } else if (testType.matches("mats.*")) {
+                    Log.info("invoking ${testType} tests.")
+                    Mats.fireTest()
+                } else {
+                    Log.info("no matching testType found.")
+                }
             } else {
                 Log.info("no tests to run.")
             }
