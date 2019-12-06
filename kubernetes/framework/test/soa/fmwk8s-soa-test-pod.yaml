@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: fmwk8s-soa-mats-test
+  name: fmwk8s-soa-test
 spec:
   restartPolicy: Never
   #  terminationGracePeriodSeconds: %HOURS_AFTER_SECONDS%
   containers:
-    - name: fmwk8s-soa-mats-test
+    - name: fmwk8s-soa-test
       image: "%TEST_IMAGE%"
       imagePullPolicy: Always
       args: ["/usr/local/bin/run-timer.sh"]
