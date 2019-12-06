@@ -10,7 +10,7 @@ import com.oracle.fmwk8s.utility.ReportUtility
 class Test extends Common {
     static def testId
     static def testPodName
-    static def testStatus = "init"
+    static def testStatus = "nil"
 
     static def logDirectory
 
@@ -19,6 +19,7 @@ class Test extends Common {
 
         if (testType != null && !testType.toString().isEmpty()) {
             if (!testType.matches("N/A")) {
+                testStatus = "init"
                 doTestHarnessSetup()
                 if (testType.matches("url-validation")) {
                     Log.info("invoking ${testType} tests.")
@@ -204,24 +205,28 @@ class Test extends Common {
         if (EnvironmentSetup.isWaiting) {
             Log.info("bypassing hoursAfter and cleaning test resources.")
         }
-        try {
-            Log.info("begin cleanup test resources.")
-            script.sh label: "cleanup test pod",
-                    script: "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
-            sleep 30
-            Log.info("cleanup test resources success.")
-        }
-        catch (exc) {
-            Log.error("cleanup test resources failed.")
-            exc.printStackTrace()
-        }
-        finally {
-            Log.info("cleanup test pv/pvc.")
-            script.sh label: "cleanup test pv/pvc",
-                    script: "kubectl delete pvc fmwk8s-tests-pvc-${Common.runId} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade && \
+        if (!testStatus.toString().equalsIgnoreCase("nil")) {
+            try {
+                Log.info("begin cleanup test resources.")
+                script.sh label: "cleanup test pod",
+                        script: "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
+                sleep 30
+                Log.info("cleanup test resources success.")
+            }
+            catch (exc) {
+                Log.error("cleanup test resources failed.")
+                exc.printStackTrace()
+            }
+            finally {
+                Log.info("cleanup test pv/pvc.")
+                script.sh label: "cleanup test pv/pvc",
+                        script: "kubectl delete pvc fmwk8s-tests-pvc-${Common.runId} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade && \
                              sleep 30 && \
                              kubectl delete pv fmwk8s-tests-pv-${Common.runId} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
+            }
         }
-
+        else{
+            Log.info("skipping test resource cleanup since no tests executed.")
+        }
     }
 }
