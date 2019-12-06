@@ -280,6 +280,7 @@ class Domain extends Common {
                     script: "helm install kubernetes/framework/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
                     --set type=${lbType} \
                     --set wlsDomain.domainUID=${domainName} \
+                    --set wlsDomain.productID=${productId} \
                     --set wlsDomain.domainType=${domainType} \
                     --set wlsDomain.adminServerName=${yamlUtility.domainInputsMap.get("adminServerName")} \
                     --set wlsDomain.clusterName=${yamlUtility.domainInputsMap.get("clusterName")} \

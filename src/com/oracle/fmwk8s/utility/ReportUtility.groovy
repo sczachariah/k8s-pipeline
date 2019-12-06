@@ -59,6 +59,11 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/EssHealthCheck
 """
             }
         }
+        if (Common.productId.toString().equalsIgnoreCase("wcp")) {
+            domainURLs = domainURLs + """
+http://${Common.k8sMasterIP}:${IngressController.httplbPort}/webcenter
+"""
+        }
         domainURLs = domainURLs + """
 -----------------------------------
 """

@@ -11,6 +11,7 @@ type: TRAEFIK
 # WLS domain as backend to the load balancer
 wlsDomain:
   domainUID: domain1
+  productID: wls
   domainType: weblogic
   adminServerName: admin-server
   clusterName: cluster-1
