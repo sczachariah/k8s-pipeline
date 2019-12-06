@@ -96,7 +96,7 @@ class Mats extends Test {
         finally {
             testPodName = script.sh(
                     label: "get test pod name",
-                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${Domain.domainNamespace} | grep ${testId}-test",
+                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${Domain.domainNamespace} | grep ${testId}-mats",
                     returnStdout: true
             ).trim()
             Log.info("begin fetch test pod logs.")
