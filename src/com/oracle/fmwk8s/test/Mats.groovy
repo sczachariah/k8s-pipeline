@@ -73,15 +73,15 @@ class Mats extends Test {
 
             script.sh label: "configure test pod",
                     script: "cd kubernetes/framework/test/${Common.productId} && \
-                        sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
-                        sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
-                        sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
-                        sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
-                        sed -i \"s|%FMWK8S_NFS_DOMAIN_HOME%|/scratch/u01/DockerVolume/domains|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
-                        sed -i \"s|%DOMAIN_PVC%|${domainName}-${domainNamespace}-pvc|g\" fmwk8s-${Common.productId}-mats-pod.yaml && \
-                        cat fmwk8s-${Common.productId}-mats-pod.yaml"
+                        sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${Common.productId}-mats-test-pod.yaml && \
+                        sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${Common.productId}-mats-test-pod.yaml && \
+                        sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${Common.productId}-mats-test-pod.yaml && \
+                        sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${Common.productId}-mats-test-pod.yaml && \
+                        sed -i \"s|%FMWK8S_NFS_DOMAIN_HOME%|/scratch/u01/DockerVolume/domains|g\" fmwk8s-${Common.productId}-mats-test-pod.yaml && \
+                        sed -i \"s|%DOMAIN_PVC%|${domainName}-${domainNamespace}-pvc|g\" fmwk8s-${Common.productId}-mats-test-pod.yaml && \
+                        cat fmwk8s-${Common.productId}-mats-test-pod.yaml"
 
-            script.sh "kubectl apply -f kubernetes/framework/test/${Common.productId}/fmwk8s-${Common.productId}-mats-pod.yaml -n ${Domain.domainNamespace} && \
+            script.sh "kubectl apply -f kubernetes/framework/test/${Common.productId}/fmwk8s-${Common.productId}-mats-test-pod.yaml -n ${Domain.domainNamespace} && \
                        kubectl get all -n ${Domain.domainNamespace}"
 
             testStatus = "started"
