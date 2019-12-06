@@ -16,9 +16,10 @@ class Test extends Common {
 
     static invokeTest() {
         logDirectory = "/logs/${runId}"
-        doTestHarnessSetup()
 
         if (testType != null && !testType.toString().isEmpty()) {
+            doTestHarnessSetup()
+
             if (testType.matches("url-validation")) {
                 Log.info("invoking ${testType} tests.")
                 UrlValidation.fireTest()
