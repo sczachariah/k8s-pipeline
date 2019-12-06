@@ -202,8 +202,13 @@ class Test extends Common {
         }
         try {
             Log.info("begin cleanup test resources.")
-            script.sh label: "cleanup test pod",
-                    script: "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
+            if(testId == "op-intg") {
+                script.sh label: "cleanup test pod",
+                        script: "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
+            }else if(testId == Common.productId){
+                script.sh label: "cleanup mats pod",
+                        script: "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-mats-pod.yaml -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
+            }
             sleep 30
             Log.info("cleanup test resources success.")
         }
@@ -214,9 +219,9 @@ class Test extends Common {
         finally {
             Log.info("cleanup test pv/pvc.")
             script.sh label: "cleanup test pv/pvc",
-                    script: "kubectl delete fmwk8s-tests-pvc-${Common.runId} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade && \
+                    script: "kubectl delete pvc fmwk8s-tests-pvc-${Common.runId} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade && \
                              sleep 30 && \
-                             kubectl delete fmwk8s-tests-pv-${Common.runId} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
+                             kubectl delete pv fmwk8s-tests-pv-${Common.runId} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
         }
 
     }
