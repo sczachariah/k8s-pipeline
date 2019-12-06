@@ -10,7 +10,7 @@ class Mats extends Test {
     static fireTest() {
         try {
             Log.info("begin ${Common.productId} product fireTest.")
-            testId = Common.productId
+            testId = "${Common.productId}-mats"
             createEnvConfigMap()
             runTests()
             Log.info("${Common.productId} product fireTest success.")
@@ -96,7 +96,7 @@ class Mats extends Test {
         finally {
             testPodName = script.sh(
                     label: "get test pod name",
-                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${Domain.domainNamespace} | grep ${testId}-mats",
+                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${Domain.domainNamespace} | grep ${testId}-test",
                     returnStdout: true
             ).trim()
             Log.info("begin fetch test pod logs.")

@@ -128,11 +128,6 @@ class Test extends Common {
         try {
             Log.info("begin wait for test completion.")
 
-            def testPod = "fmwk8s-${testId}-test"
-            if(testId == Common.productId) {
-                testPod = "fmwk8s-${testId}-mats"
-            }
-
             script.sh label: "check test pod status",
                     script: "testInit='testInit' && \
                         i=0 && \
@@ -145,7 +140,7 @@ class Test extends Common {
                         i=\$((i+1))\n \
                         echo \"Waiting for Test Initialization. Iteration \$i of 10. Sleeping\"\n \
                         sleep 60\n \
-                        testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep ${testPod}\\``\n \
+                        testInit=`echo \\`kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
                         done"
 
             /** wait in loop for fmwk8s.completed file*/
@@ -175,7 +170,7 @@ class Test extends Common {
             if (!waitforfile) {
                 def testContainerStatus = script.sh(
                         label: "get test status",
-                        script: "kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep ${testPod}",
+                        script: "kubectl get pods -n ${Domain.domainNamespace} 2>&1 | grep fmwk8s-${testId}-test",
                         returnStdout: true
                 ).trim()
                 if (testContainerStatus.toString().contains("Error")) {
@@ -206,13 +201,9 @@ class Test extends Common {
             Log.info("bypassing hoursAfter and cleaning test resources.")
         }
         try {
-            def testPodYaml = "fmwk8s-${testId}-test-pod.yaml"
-            if(testId == Common.productId) {
-                testPodYaml = "fmwk8s-${testId}-mats-pod.yaml"
-            }
             Log.info("begin cleanup test resources.")
             script.sh label: "cleanup test pod",
-                    script: "kubectl delete -f kubernetes/framework/test/${testId}/${testPodYaml} -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
+                    script: "kubectl delete -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-test-pod.yaml -n ${Domain.domainNamespace} --grace-period=0 --force --cascade"
             sleep 30
             Log.info("cleanup test resources success.")
         }
