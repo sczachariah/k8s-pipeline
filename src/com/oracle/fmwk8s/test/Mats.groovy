@@ -50,6 +50,8 @@ class Mats extends Test {
                         sed -i \"s|%RCUPREFIX%|${domainName}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${Common.productId}_server|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         sed -i \"s|%MANAGED_SERVER_PORT%|8001|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
+                        sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
+                        sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${Common.productId}-env-configmap.yaml && \
                         cat fmwk8s-${Common.productId}-env-configmap.yaml"
 
             script.sh "kubectl apply -f kubernetes/framework/test/${Common.productId}/fmwk8s-${Common.productId}-env-configmap.yaml -n ${Domain.domainNamespace}"
