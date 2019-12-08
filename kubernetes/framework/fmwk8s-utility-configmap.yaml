@@ -7,6 +7,7 @@ data:
   run-timer.sh: |-
     #!/bin/bash
 
+    sudo su -
     touch ${LOG_DIRECTORY}/fmwk8s.completed
 
     echo "Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..."
