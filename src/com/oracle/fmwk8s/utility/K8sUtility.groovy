@@ -19,7 +19,7 @@ class K8sUtility {
                             fi\n \
                         i=\$((i+1))\n \
                         echo \"${podName} is not running. iteration \$i of ${timeout}. sleeping\"\n \
-                        sleep 40\n \
+                        sleep 30\n \
                         podstat=`echo \\`kubectl get pods -n ${namespace} 2>&1 | grep ${podName}\\``\n \
                         done"
             Log.info("${podName} is up and running")
