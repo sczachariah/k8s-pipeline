@@ -118,7 +118,7 @@ class Base {
                 operatorBranch = "release/2.3.0"
                 operatorImageVersion = "2.3.0"
                 samplesBranch = "release/2.3.0"
-                if(Mapping.productIdMap.containsKey("SOA")) {
+                if(Mapping.productIdMap.get("SOA")) {
                     samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
                     samplesBranch = "soa-2.3.0"
                 }
@@ -145,11 +145,11 @@ class Base {
     }
 
     static getSamplesRepoDetails() {
-        if(Mapping.productIdMap.containsKey("SOA")) {
+        if(Mapping.productIdMap.get("SOA")) {
             samplesRepo = "git@orahub.oraclecorp.com:tooling/wcp-kubernetes-operator.git"
             samplesBranch = "PS3"
             samplesDirectory = ""
-        }else if(Mapping.productIdMap.containsKey("OIG")) {
+        }else if(Mapping.productIdMap.get("OIG")) {
             samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
             samplesDirectory = ""
         }
