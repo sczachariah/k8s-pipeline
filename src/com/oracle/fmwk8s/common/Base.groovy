@@ -157,16 +157,5 @@ class Base {
                 samplesDirectory = ""
             }
         }
-        switch ("${productName}") {
-            case "WCP":
-                samplesRepo = "git@orahub.oraclecorp.com:tooling/wcp-kubernetes-operator.git"
-                samplesBranch = "PS3"
-                samplesDirectory = ""
-                break
-            case "OIG":
-                samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
-                samplesDirectory = ""
-                break
-        }
     }
 }
