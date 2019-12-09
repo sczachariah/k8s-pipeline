@@ -3,6 +3,7 @@ package com.oracle.fmwk8s.env
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
+import com.oracle.fmwk8s.common.Mapping
 
 /**
  * IngressController class deploys the different loadBalancers per domain that are required
@@ -25,23 +26,28 @@ class IngressController extends Common {
      */
     static deployLoadBalancer() {
         try {
-            switch ("${lbType}") {
-                case "TRAEFIK":
-                    deployTraefik()
-                    break
-                case "APACHE":
-                    deployApache()
-                    break
-                case "VOYAGER":
-                    deployVoyager()
-                    break
-                case "NGINX":
-                    deployNginx()
-                    break
-                default:
-                    deployTraefik()
-                    break
+            if (!Mapping.loadBalancerMap.containsKey(lbType)) {
+                deployTraefik()
+            }else {
+                "deploy"."${Mapping.loadBalancerMap.get(lbType)}"()
             }
+//            switch ("${lbType}") {
+//                case "TRAEFIK":
+//                    deployTraefik()
+//                    break
+//                case "APACHE":
+//                    deployApache()
+//                    break
+//                case "VOYAGER":
+//                    deployVoyager()
+//                    break
+//                case "NGINX":
+//                    deployNginx()
+//                    break
+//                default:
+//                    deployTraefik()
+//                    break
+//            }
         } catch (exc) {
         }
         finally {
