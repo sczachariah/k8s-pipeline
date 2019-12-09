@@ -26,31 +26,23 @@ class IngressController extends Common {
      */
     static deployLoadBalancer() {
         try {
-            Log.info("lbType :: ${lbType}")
-            if (!Mapping.loadBalancerMap.containsKey(lbType)) {
-                Log.info("inside the if :: deployTraefik")
-                deployTraefik()
-            }else {
-                Log.info("inside the else :: deploy.${Mapping.loadBalancerMap.get(lbType)}")
-                "deploy"+ Mapping.loadBalancerMap.get(lbType)()
+            switch ("${lbType}") {
+                case "TRAEFIK":
+                    deployTraefik()
+                    break
+                case "APACHE":
+                    deployApache()
+                    break
+                case "VOYAGER":
+                    deployVoyager()
+                    break
+                case "NGINX":
+                    deployNginx()
+                    break
+                default:
+                    deployTraefik()
+                    break
             }
-//            switch ("${lbType}") {
-//                case "TRAEFIK":
-//                    deployTraefik()
-//                    break
-//                case "APACHE":
-//                    deployApache()
-//                    break
-//                case "VOYAGER":
-//                    deployVoyager()
-//                    break
-//                case "NGINX":
-//                    deployNginx()
-//                    break
-//                default:
-//                    deployTraefik()
-//                    break
-//            }
         } catch (exc) {
         }
         finally {
@@ -143,7 +135,6 @@ class IngressController extends Common {
      */
     static deployNginx() {
         try {
-            Log.info("inside nginx ")
             Log.info("begin deploy nginx ingress controller.")
             script.sh label: "deploy nginx",
                     script: "helm init --client-only --skip-refresh --wait && \
