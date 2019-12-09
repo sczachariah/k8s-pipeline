@@ -26,10 +26,13 @@ class IngressController extends Common {
      */
     static deployLoadBalancer() {
         try {
+            Log.info("lbType :: ${lbType}")
             if (!Mapping.loadBalancerMap.containsKey(lbType)) {
+                Log.info("inside the if :: deployTraefik")
                 deployTraefik()
             }else {
-                "deploy"."${Mapping.loadBalancerMap.get(lbType)}"()
+                Log.info("inside the else :: deploy.${Mapping.loadBalancerMap.get(lbType)}")
+                "deploy"+ Mapping.loadBalancerMap.get(lbType)()
             }
 //            switch ("${lbType}") {
 //                case "TRAEFIK":
@@ -140,6 +143,7 @@ class IngressController extends Common {
      */
     static deployNginx() {
         try {
+            Log.info("inside nginx ")
             Log.info("begin deploy nginx ingress controller.")
             script.sh label: "deploy nginx",
                     script: "helm init --client-only --skip-refresh --wait && \
