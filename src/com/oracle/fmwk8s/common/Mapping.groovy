@@ -1,9 +1,11 @@
 package com.oracle.fmwk8s.common
 
+import com.oracle.fmwk8s.env.IngressController
+
 class Mapping {
     static Map<String, String> productIdMap = new HashMap<>()
     static Map<String, String> domainNameMap = new HashMap<>()
-    static Map<String, String> loadBalancerMap = new HashMap<>()
+    static Map<String, Object> loadBalancerMap = new HashMap<>()
     static Map<String, String> operatorVersionMap = new HashMap<>()
     static Map<String, String> operatorBranchMap = new HashMap<>()
 
@@ -20,10 +22,10 @@ class Mapping {
         domainNameMap.put("WCP", "wcpinfra")
         domainNameMap.put("OIG", "oim")
 
-        loadBalancerMap.put("TRAEFIK", "Traefik")
-        loadBalancerMap.put("APACHE", "Apache")
-        loadBalancerMap.put("VOYAGER", "Voyager")
-        loadBalancerMap.put("NGINX", "Nginx")
+        loadBalancerMap.put("TRAEFIK", IngressController.deployTraefik())
+        loadBalancerMap.put("APACHE", IngressController.deployApache())
+        loadBalancerMap.put("VOYAGER", IngressController.deployVoyager())
+        loadBalancerMap.put("NGINX", IngressController.deployNginx())
 
         operatorVersionMap.put("2.3.0", "2.3.0")
         operatorVersionMap.put("2.4.0", "2.4.0")

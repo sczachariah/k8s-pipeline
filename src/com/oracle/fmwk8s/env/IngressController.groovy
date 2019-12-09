@@ -26,22 +26,10 @@ class IngressController extends Common {
      */
     static deployLoadBalancer() {
         try {
-            switch ("${lbType}") {
-                case "TRAEFIK":
-                    deployTraefik()
-                    break
-                case "APACHE":
-                    deployApache()
-                    break
-                case "VOYAGER":
-                    deployVoyager()
-                    break
-                case "NGINX":
-                    deployNginx()
-                    break
-                default:
-                    deployTraefik()
-                    break
+            if (!Mapping.loadBalancerMap.containsKey(lbType)) {
+                deployTraefik()
+            }else {
+                Mapping.loadBalancerMap.get(lbType)
             }
         } catch (exc) {
         }
