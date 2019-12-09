@@ -45,7 +45,7 @@ class Database extends Common {
                         cat oracle-db.yaml && \
                         kubectl apply -f oracle-db.yaml -n ${domainNamespace}"
 
-                K8sUtility.checkPodStatus(script, dbName, domainNamespace, 10, '1/1')
+                K8sUtility.checkPodStatus(script, dbName, domainNamespace, 12, '1/1')
 
                 Log.info("db container is running.")
                 script.sh "kubectl get pods,svc -n ${domainNamespace} | grep ${dbName}"
