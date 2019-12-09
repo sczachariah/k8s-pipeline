@@ -2,6 +2,7 @@ package com.oracle.fmwk8s.common
 
 class Mapping {
     static Map<String, String> productIdMap = new HashMap<>()
+    static Map<String, String> domainNameMap = new HashMap<>()
 
     static {
         productIdMap.put("WLS", "weblogic")
@@ -9,5 +10,11 @@ class Mapping {
         productIdMap.put("SOA", "soa")
         productIdMap.put("WCP", "wcp")
         productIdMap.put("OIG", "oim")
+
+        domainNameMap.put("WLS", "weblogic")
+        domainNameMap.put("WLS-INFRA", "wlsinfra")
+        domainNameMap.put("SOA", "soainfra")
+        domainNameMap.put("WCP", "wcpinfra")
+        domainNameMap.put("OIG", "oim")
     }
 }

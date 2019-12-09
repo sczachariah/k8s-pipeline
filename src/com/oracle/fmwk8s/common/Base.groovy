@@ -80,24 +80,10 @@ class Base {
     }
 
     static getDomainVariables() {
-        switch ("${productName}") {
-            case "WLS":
-                domainName = "weblogic"
-                break
-            case "WLS-INFRA":
-                domainName = "wlsinfra"
-                break
-            case "SOA":
-                domainName = "soainfra"
-                break
-            case "WCP":
-                domainName = "wcpinfra"
-                break
-            case "OIG":
-                domainName = "oim"
-            default:
-                domainName = "unknown"
-                break
+        if (!Mapping.domainNameMap.containsKey(productName)) {
+            domainName = "unknown"
+        }else {
+            domainName = Mapping.domainNameMap.get(productName)
         }
         domainNamespace = "${domainName}-domain-ns-${runId}"
         weblogicUsername = 'weblogic'
@@ -132,10 +118,9 @@ class Base {
                 operatorBranch = "release/2.3.0"
                 operatorImageVersion = "2.3.0"
                 samplesBranch = "release/2.3.0"
-                switch (productName) {
-                    case "SOA":
-                        samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
-                        samplesBranch = "soa-2.3.0"
+                if(Mapping.productIdMap.containsKey("SOA")) {
+                    samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
+                    samplesBranch = "soa-2.3.0"
                 }
                 break
             case "2.4.0":
@@ -152,38 +137,21 @@ class Base {
     }
 
     static getProductIdentifier() {
-        switch ("${productName}") {
-            case "WLS":
-                productId = "weblogic"
-                break
-            case "WLS-INFRA":
-                productId = "fmw-infrastructure"
-                break
-            case "SOA":
-                productId = "soa"
-                break
-            case "WCP":
-                productId = "wcp"
-                break
-            case "OIG":
-                productId = "oim"
-            default:
-                productId = "unknown"
-                break
+        if (!Mapping.productIdMap.containsKey(productName)) {
+            productId = "unknown"
+        }else {
+            productId = Mapping.productIdMap.get(productName)
         }
     }
 
     static getSamplesRepoDetails() {
-        switch ("${productName}") {
-            case "WCP":
-                samplesRepo = "git@orahub.oraclecorp.com:tooling/wcp-kubernetes-operator.git"
-                samplesBranch = "PS3"
-                samplesDirectory = ""
-                break
-            case "OIG":
-                samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
-                samplesDirectory = ""
-                break
+        if(Mapping.productIdMap.containsKey("SOA")) {
+            samplesRepo = "git@orahub.oraclecorp.com:tooling/wcp-kubernetes-operator.git"
+            samplesBranch = "PS3"
+            samplesDirectory = ""
+        }else if(Mapping.productIdMap.containsKey("OIG")) {
+            samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
+            samplesDirectory = ""
         }
     }
 }
