@@ -27,7 +27,6 @@ class Mapping {
 
         operatorVersionMap.put("2.3.0", "2.3.0")
         operatorVersionMap.put("2.4.0", "2.4.0")
-        operatorVersionMap.put("default", "default")
 
         operatorBranchMap.put("2.3.0", "release/2.3.0")
         operatorBranchMap.put("2.4.0", "release/2.4.0")

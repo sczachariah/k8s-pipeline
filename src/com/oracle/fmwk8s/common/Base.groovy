@@ -112,28 +112,18 @@ class Base {
     static getOperatorVersionMappings() {
         samplesRepo = "https://github.com/oracle/weblogic-kubernetes-operator"
         samplesDirectory = "domain-home-on-pv"
-
-        switch ("${operatorVersion}") {
-            case "2.3.0":
-                operatorBranch = "release/2.3.0"
-                operatorImageVersion = "2.3.0"
-                samplesBranch = "release/2.3.0"
-                switch (productName) {
-                    case "SOA":
-                        samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
-                        samplesBranch = "soa-2.3.0"
-                }
-                break
-            case "2.4.0":
-                operatorBranch = "release/2.4.0"
-                operatorImageVersion = "2.4.0"
-                samplesBranch = "release/2.4.0"
-                break
-            default:
-                operatorBranch = "develop"
-                operatorImageVersion = "develop"
-                samplesBranch = "develop"
-                break
+        if (!Mapping.operatorVersionMap.containsKey(operatorVersion)) {
+            operatorBranch = Mapping.operatorBranchMap.get("develop")
+            operatorImageVersion = "develop"
+            samplesBranch = Mapping.operatorBranchMap.get("develop")
+        }else {
+            operatorBranch = Mapping.operatorBranchMap.get(operatorVersion)
+            operatorImageVersion = Mapping.operatorVersionMap.get(operatorVersion)
+            samplesBranch = Mapping.operatorBranchMap.get(operatorVersion)
+            if("${productName}" == "SOA"){
+                samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
+                samplesBranch = "soa-2.3.0"
+            }
         }
     }
 
