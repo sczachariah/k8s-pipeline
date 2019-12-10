@@ -26,6 +26,6 @@ class Mapping {
 
         operatorBranchMap.put("2.3.0", "release/2.3.0")
         operatorBranchMap.put("2.4.0", "release/2.4.0")
-        operatorBranchMap.put("default", "default")
+        operatorBranchMap.put("develop", "develop")
     }
 }

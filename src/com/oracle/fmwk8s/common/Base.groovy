@@ -82,7 +82,7 @@ class Base {
     static getDomainVariables() {
         if (!Mapping.domainNameMap.containsKey(productName)) {
             domainName = "unknown"
-        }else {
+        } else {
             domainName = Mapping.domainNameMap.get(productName)
         }
         domainNamespace = "${domainName}-domain-ns-${runId}"
@@ -112,25 +112,21 @@ class Base {
     static getOperatorVersionMappings() {
         samplesRepo = "https://github.com/oracle/weblogic-kubernetes-operator"
         samplesDirectory = "domain-home-on-pv"
-        if (!Mapping.operatorVersionMap.containsKey(operatorVersion)) {
-            operatorBranch = Mapping.operatorBranchMap.get("develop")
-            operatorImageVersion = "develop"
-            samplesBranch = Mapping.operatorBranchMap.get("develop")
-        }else {
-            operatorBranch = Mapping.operatorBranchMap.get(operatorVersion)
-            operatorImageVersion = Mapping.operatorVersionMap.get(operatorVersion)
-            samplesBranch = Mapping.operatorBranchMap.get(operatorVersion)
-            if(("${productName}" == "SOA") && ("${operatorVersion}" == "2.3.0")){
-                samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
-                samplesBranch = "soa-2.3.0"
-            }
+
+        operatorImageVersion = Mapping.operatorVersionMap.get(operatorVersion)
+        operatorBranch = Mapping.operatorBranchMap.get(operatorVersion)
+        samplesBranch = Mapping.operatorBranchMap.get(operatorVersion)
+
+        if (("${productName}" == "SOA") && ("${operatorVersion}" == "2.3.0")) {
+            samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
+            samplesBranch = "soa-2.3.0"
         }
     }
 
     static getProductIdentifier() {
         if (!Mapping.productIdMap.containsKey(productName)) {
             productId = "unknown"
-        }else {
+        } else {
             productId = Mapping.productIdMap.get(productName)
         }
     }
@@ -144,6 +140,7 @@ class Base {
                 break
             case "OIG":
                 samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
+                samplesBranch = "release/2.2.1"
                 samplesDirectory = ""
                 break
         }
