@@ -57,6 +57,7 @@ class Base {
     static def elasticSearchHost = "elasticsearch-master.logging"
     static def elasticSearchPort = "9200"
 
+    //TODO :: Comment this line once the kibana is enabled via ingress
     static def kibanaUrl = "http://fmwk8s-stage.us.oracle.com:30444/app/kibana"
 
     static def emailRecipients
@@ -77,6 +78,18 @@ class Base {
         hoursAfter = Long.valueOf(script.env.HOURS_AFTER)
         hoursAfterSeconds = hoursAfter * 60 * 60
         emailRecipients = script.env.EMAIL_TO
+    }
+
+    static defineKibanaUrl() {
+        if ("${elkEnable}" == "true") {
+            if ("${cloud}".equalsIgnoreCase("oci-v1.12.9")) {
+                kibanaUrl = "https://fmwk8s.us.oracle.com/kibana"
+            } else if ("${cloud}".equalsIgnoreCase("oci-v1.12.9")) {
+                kibanaUrl = "https://fmwk8s-stage.us.oracle.com/kibana"
+            }
+        }else{
+            kibanaUrl = ""
+        }
     }
 
     static getDomainVariables() {

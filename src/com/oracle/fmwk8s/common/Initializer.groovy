@@ -19,6 +19,8 @@ class Initializer {
         commonObj.getSamplesRepoDetails()
         commonObj.getLoadBalancerVariables()
         commonObj.getNfsVariables()
+        //TODO : uncomment this once kibana is enabled using ingress
+//        commonObj.defineKibanaUrl()
         displayInitializedParameterValues()
 
         Log.info("starting E2E pipeline for " + Base.productName + ' with unique runId ' + Base.runId)
