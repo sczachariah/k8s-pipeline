@@ -87,7 +87,7 @@ class Base {
             } else if ("${cloud}".equalsIgnoreCase("oci-v1.12.9")) {
                 kibanaUrl = "https://fmwk8s-stage.us.oracle.com/kibana"
             }
-        }else{
+        } else {
             kibanaUrl = ""
         }
     }
