@@ -112,11 +112,7 @@ class Base {
     static getOperatorVersionMappings() {
         samplesRepo = "https://github.com/oracle/weblogic-kubernetes-operator"
         samplesDirectory = "domain-home-on-pv"
-        if (!Mapping.operatorVersionMap.containsKey(operatorVersion)) {
-            operatorBranch = Mapping.operatorBranchMap.get("develop")
-            operatorImageVersion = "develop"
-            samplesBranch = Mapping.operatorBranchMap.get("develop")
-        }else {
+        if (Mapping.operatorVersionMap.containsKey(operatorVersion)) {
             operatorBranch = Mapping.operatorBranchMap.get(operatorVersion)
             operatorImageVersion = Mapping.operatorVersionMap.get(operatorVersion)
             samplesBranch = Mapping.operatorBranchMap.get(operatorVersion)
