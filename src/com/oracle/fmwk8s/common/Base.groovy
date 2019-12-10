@@ -84,7 +84,7 @@ class Base {
         if ("${elkEnable}" == "true") {
             if ("${cloud}".equalsIgnoreCase("oci-v1.12.9")) {
                 kibanaUrl = "https://fmwk8s.us.oracle.com/kibana"
-            } else if ("${cloud}".equalsIgnoreCase("oci-v1.12.9")) {
+            } else if ("${cloud}".equalsIgnoreCase("kubernetes-v1.15.2")) {
                 kibanaUrl = "https://fmwk8s-stage.us.oracle.com/kibana"
             }
         } else {
