@@ -120,7 +120,7 @@ class Base {
             operatorBranch = Mapping.operatorBranchMap.get(operatorVersion)
             operatorImageVersion = Mapping.operatorVersionMap.get(operatorVersion)
             samplesBranch = Mapping.operatorBranchMap.get(operatorVersion)
-            if("${productName}" == "SOA"){
+            if(("${productName}" == "SOA") && ("${operatorVersion}" == "2.3.0")){
                 samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
                 samplesBranch = "soa-2.3.0"
             }
