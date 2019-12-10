@@ -61,13 +61,13 @@ class OperatorIntegration extends Test {
                         sed -i \"s|%DB_SECRET%|${registrySecret}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%JDBC_URL%|jdbc:oracle:thin:@${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%RCUPREFIX%|${domainName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${testId}-test-pod.yaml && \
-                        sed -i \"s|%OPERATOR_VERSION%|${Common.operatorVersion}|g\" fmwk8s-${testId}-test-pod.yaml && \
-                        sed -i \"s|%OPERATOR_BRANCH%|${Common.operatorBranch}|g\" fmwk8s-${testId}-test-pod.yaml && \
-                        sed -i \"s|%OPERATOR_IMAGE_VERSION%|${Common.operatorImageVersion}|g\" fmwk8s-${testId}-test-pod.yaml && \
-                        sed -i \"s|%SAMPLES_REPO%|${Common.samplesRepo}|g\" fmwk8s-${testId}-test-pod.yaml && \
-                        sed -i \"s|%SAMPLES_DIRECTORY%|${Common.samplesDirectory}|g\" fmwk8s-${testId}-test-pod.yaml && \
-                        sed -i \"s|%SAMPLES_BRANCH%|${Common.samplesBranch}|g\" fmwk8s-${testId}-test-pod.yaml && \
+                        sed -i \"s|%TEST_IMAGE%|${Common.testImage}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%OPERATOR_VERSION%|${Common.operatorVersion}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%OPERATOR_BRANCH%|${Common.operatorBranch}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%OPERATOR_IMAGE_VERSION%|${Common.operatorImageVersion}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%SAMPLES_REPO%|${Common.samplesRepo}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%SAMPLES_DIRECTORY%|${Common.samplesDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%SAMPLES_BRANCH%|${Common.samplesBranch}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"
 
             script.sh label: "create env variables configmap",
