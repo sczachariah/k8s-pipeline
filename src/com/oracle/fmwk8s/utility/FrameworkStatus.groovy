@@ -4,14 +4,16 @@ import com.oracle.fmwk8s.common.Base
 import groovy.json.JsonOutput
 
 class FrameworkStatus {
-    String buildNumber
+    String build
     String runId
     String cloud
     Map<String, String> parameters
+    String jobLink
+    String jobUrl
     String jobStatus
 
     FrameworkStatus(script) {
-        this.buildNumber = "${script.env.BUILD_NUMBER}-${Base.operatorVersion}-${Base.productName}-${Base.domainType.toString().toUpperCase()}"
+        this.build = "${script.currentBuild.displayName}"
         this.runId = Base.runId
         this.cloud = Base.cloud
 
@@ -21,6 +23,8 @@ class FrameworkStatus {
         parameters.put("domainType", Base.domainType)
         parameters.put("productImage", Base.productImage)
 
+        this.jobLink = "${script.env.JENKINS_URL}/blue/organizations/jenkins/${script.env.JOB_NAME}/detail/${script.env.JOB_NAME}/${script.env.BUILD_NUMBER}/pipeline"
+        this.jobUrl = "${script.env.JOB_URL}"
         this.jobStatus = "${script.currentBuild.currentResult}"
     }
 
