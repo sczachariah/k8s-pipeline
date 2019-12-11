@@ -37,7 +37,7 @@ class Mats extends Test {
                         sed -i \"s|%ADMIN_PORT%|${yamlUtility.domainInputsMap.get("adminPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_SERVER_NAME%|${yamlUtility.domainInputsMap.get("adminServerName")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_SSL_PORT%||g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DOMAIN_HOME%|${Domain.nfsDomainPath}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%DOMAIN_HOME%|${Domain.fmwk8sNfsHome}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%DOMAIN_NAME%|${Domain.domainName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%DOMAIN_NAMESPACE%|${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
@@ -80,7 +80,7 @@ class Mats extends Test {
                         sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-test-pod.yaml && \
-                        sed -i \"s|%FMWK8S_NFS_DOMAIN_HOME%|/scratch/u01/DockerVolume/domains|g\" fmwk8s-${testId}-test-pod.yaml && \
+                        sed -i \"s|%FMWK8S_NFS_DOMAIN_HOME%|${fmwk8sNfsHome}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%DOMAIN_PVC%|${domainName}-${domainNamespace}-pvc|g\" fmwk8s-${testId}-test-pod.yaml && \
                         cat fmwk8s-${testId}-test-pod.yaml"
 
