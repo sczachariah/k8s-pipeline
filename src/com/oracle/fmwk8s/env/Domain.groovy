@@ -19,7 +19,7 @@ class Domain extends Common {
 
     static pullSampleScripts() {
         script.git branch: "${samplesBranch}",
-                credentialsId: 'fmwk8sval_ww.ssh',
+                credentialsId: "${sshCredentialId}",
                 url: "${samplesRepo}"
     }
 
@@ -49,7 +49,7 @@ class Domain extends Common {
                 Log.info("begin prepare rcu.")
 
                 script.git branch: 'master',
-                        credentialsId: 'fmwk8sval_ww.ssh',
+                        credentialsId: "${sshCredentialId}",
                         url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                 script.sh label: "create rcu silent script configmap",
@@ -274,7 +274,7 @@ class Domain extends Common {
         try {
             Log.info("begin configure domain loadbalancer.")
             script.git branch: 'master',
-                    credentialsId: 'fmwk8sval_ww.ssh',
+                    credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh label: "create domain ingress rules",

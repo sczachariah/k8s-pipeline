@@ -10,7 +10,7 @@ class EnvironmentSetup extends Base {
             Log.info("begin create nfs folder.")
 
             script.git branch: 'master',
-                    credentialsId: 'fmwk8sval_ww.ssh',
+                    credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh label: "create mkdir pod",
@@ -51,7 +51,7 @@ class EnvironmentSetup extends Base {
             Log.info("begin delete nfs folder.")
 
             script.git branch: 'master',
-                    credentialsId: 'fmwk8sval_ww.ssh',
+                    credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh label: "create rmdir pod",

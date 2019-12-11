@@ -90,7 +90,7 @@ class Test extends Common {
             Log.info("begin test harness setup.")
 
             script.git branch: 'master',
-                    credentialsId: 'fmwk8sval_ww.ssh',
+                    credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh label: "create fmwk8s utility configmap",

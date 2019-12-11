@@ -32,7 +32,7 @@ class Database extends Common {
                 Log.info("begin deploy database.")
 
                 script.git branch: 'master',
-                        credentialsId: 'fmwk8sval_ww.ssh',
+                        credentialsId: "${sshCredentialId}",
                         url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
                 script.sh label: "create oracle db deployment",

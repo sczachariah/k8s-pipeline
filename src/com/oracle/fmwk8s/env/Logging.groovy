@@ -83,7 +83,7 @@ class Logging extends Common {
             Log.info("begin deploy logstash.")
 
             script.git branch: 'master',
-                    credentialsId: 'fmwk8sval_ww.ssh',
+                    credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             if ("${elkEnable}" == "true") {

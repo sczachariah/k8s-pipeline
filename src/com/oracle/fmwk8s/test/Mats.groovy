@@ -26,7 +26,7 @@ class Mats extends Test {
             Log.info("begin create env configmap.")
 
             script.git branch: 'master',
-                    credentialsId: 'fmwk8sval_ww.ssh',
+                    credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh "cd kubernetes/framework/test/${testId} && \
@@ -71,7 +71,7 @@ class Mats extends Test {
             Log.info("begin run test.")
 
             script.git branch: 'master',
-                    credentialsId: 'fmwk8sval_ww.ssh',
+                    credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh label: "configure test pod",

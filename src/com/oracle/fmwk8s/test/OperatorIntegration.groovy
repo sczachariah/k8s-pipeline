@@ -27,7 +27,7 @@ class OperatorIntegration extends Test {
             Log.info("begin create env configmap.")
 
             script.git branch: 'master',
-                    credentialsId: 'fmwk8sval_ww.ssh',
+                    credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh label: "configure env variables configmap",
