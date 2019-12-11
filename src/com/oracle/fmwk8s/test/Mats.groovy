@@ -34,7 +34,7 @@ class Mats extends Test {
                         sed -i \"s|%MANAGED_SERVER_NAME_SVC%|${Domain.domainName}-cluster-${Common.productId}-cluster.${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_USER%|${Domain.weblogicUsername}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_PASSWORD%|${Domain.weblogicPassword}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_PORT%|7001|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%ADMIN_PORT%|${yamlUtility.domainInputsMap.get("adminPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_SERVER_NAME%|${yamlUtility.domainInputsMap.get("adminServerName")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_SSL_PORT%||g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%DOMAIN_HOME%|${Domain.nfsDomainPath}|g\" fmwk8s-${testId}-env-configmap.yaml && \
@@ -46,10 +46,11 @@ class Mats extends Test {
                         sed -i \"s|%DB_SCHEMA_PASSWORD%|Welcome1|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%DB_SERVICE%|${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%DB_SID%|${Database.dbName}.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%DB_NAME%|${Database.dbName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%JDBC_URL%|jdbc:oracle:thin:@${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%RCUPREFIX%|${domainName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${testId}_server|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MANAGED_SERVER_PORT%|8001|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${yamlUtility.domainInputsMap.get("managedServerNameBase")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%MANAGED_SERVER_PORT%|${yamlUtility.domainInputsMap.get("managedServerPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"

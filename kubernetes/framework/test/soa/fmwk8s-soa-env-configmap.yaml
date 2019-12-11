@@ -20,6 +20,7 @@ data:
   "DB_SCHEMA_PASSWORD": "%DB_SCHEMA_PASSWORD%"
   "DB_SERVICE": "%DB_SERVICE%"
   "DB_SID": "%DB_SID%"
+  "DB_NAME": "%DB_NAME%"
   "DB_TYPE": "ORACLE"
   "DB_USER": "SYS"
   "DB_PASSWORD": "Oradoc_db1"
