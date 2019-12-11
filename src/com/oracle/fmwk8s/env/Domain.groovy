@@ -58,6 +58,7 @@ class Domain extends Common {
                            sed -i \"s|%RCUPREFIX%|${domainName}|g\" ${productId}-rcu-configmap.yaml && \
                            sed -i \"s|%SYS_PASSWORD%|${Database.dbPassword}|g\" ${productId}-rcu-configmap.yaml && \
                            sed -i \"s|%PASSWORD%|Welcome1|g\" ${productId}-rcu-configmap.yaml && \
+                           sed -i \"s|%PRODUCT_ID%|${productId}|g\" ${productId}-rcu-configmap.yaml && \
                            cat ${productId}-rcu-configmap.yaml"
 
                 script.sh label: "prepare pod for running rcu",
