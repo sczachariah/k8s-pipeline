@@ -19,7 +19,7 @@ class FrameworkStatus {
         parameters.put("domainType", Base.domainType)
         parameters.put("productImage", Base.productImage)
 
-        this.jobStatus = script.currentBuild.currentResult
+        this.jobStatus = "${script.currentBuild.currentResult}"
     }
 
     static getFrameworkStatusJson(script) {
