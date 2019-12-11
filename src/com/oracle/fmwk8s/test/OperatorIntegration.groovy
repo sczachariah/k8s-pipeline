@@ -56,9 +56,9 @@ class OperatorIntegration extends Test {
                         sed -i \"s|%DB_PORT%|${Database.dbPort}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%DB_SCHEMA_PASSWORD%|Welcome1|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%DB_SERVICE%|${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SID%|${Database.dbName}.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%DB_NAME%|${Database.dbName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%DB_IMAGE%|container-registry.oracle.com/database/${databaseVersion}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SECRET%|${registrySecret}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%REGISTRY_SECRET%|${registrySecret}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%JDBC_URL%|jdbc:oracle:thin:@${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%RCUPREFIX%|${domainName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%TEST_IMAGE%|${Common.testImage}|g\" fmwk8s-${testId}-env-configmap.yaml && \
@@ -68,6 +68,7 @@ class OperatorIntegration extends Test {
                         sed -i \"s|%SAMPLES_REPO%|${Common.samplesRepo}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%SAMPLES_DIRECTORY%|${Common.samplesDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%SAMPLES_BRANCH%|${Common.samplesBranch}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%K8S_MASTER_URL%|${Common.k8sMasterUrl}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         cat fmwk8s-${testId}-env-configmap.yaml"
 
             script.sh label: "create env variables configmap",
