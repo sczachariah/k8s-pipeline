@@ -14,12 +14,13 @@ spec:
           value: %PRODUCT_ID%
         - name: FMWK8S_NFS_HOME
           value: %FMWK8S_NFS_HOME%
-      command: [ "/bin/sh", "-c", "/bin/customize-domain.sh" ]
+      command: ["/bin/sh"]
+      args: ["-c", "/etc/config/customize-domain.sh"]
       volumeMounts:
         - name: domain-storage-volume
           mountPath: %FMWK8S_NFS_HOME%
         - name: fmwk8s-utility-configmap
-          mountPath: /bin
+          mountPath: /etc/config
   volumes:
     - name: fmwk8s-utility-configmap
       configMap:

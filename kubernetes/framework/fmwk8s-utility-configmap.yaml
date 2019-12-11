@@ -12,7 +12,7 @@ data:
     echo "Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..."
     sleep ${HOURS_AFTER_SECONDS}
 
-  wcp-web.xml: |-
+  web.xml: |-
     <?xml version = '1.0' encoding = 'US-ASCII'?>
     <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
@@ -33,7 +33,7 @@ data:
     if [ "${PRODUCT_ID}" == "wcp" ]
     then
       echo "Copying web.xml for wcp..."
-      cp -r /bin/wcp-web.xml ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF/web.xml
-      cat ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF/web.xml
+      cp -r /etc/config/web.xml ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF/
+      ls -ltr ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF
     fi
 ---
