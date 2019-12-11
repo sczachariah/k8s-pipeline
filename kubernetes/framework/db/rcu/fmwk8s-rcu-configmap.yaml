@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: fmw-rcu-configmap
+  name: fmwk8s-rcu-configmap
 data:
   run-rcu.sh: |-
     #!/bin/bash
