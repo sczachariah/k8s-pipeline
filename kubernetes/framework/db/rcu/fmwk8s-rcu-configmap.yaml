@@ -15,7 +15,6 @@ data:
     if [ "%PRODUCT_ID%" == "fmw-infrastructure" ]
     then
 
-      echo "inside fmw-infrastructure if condition"
       /u01/oracle/oracle_common/bin/rcu -silent -createRepository -databaseType ORACLE -connectString $CONNECTION_STRING -dbUser sys -dbRole sysdba \
       -useSamePasswordForAllSchemaUsers true -selectDependentsForComponents true \
       -schemaPrefix $RCUPREFIX \
@@ -30,7 +29,6 @@ data:
     elif [ "%PRODUCT_ID%" == "soa" ]
     then
 
-      echo "inside soa if condition"
       /u01/oracle/oracle_common/bin/rcu -silent -createRepository -databaseType ORACLE -connectString $CONNECTION_STRING -dbUser sys -dbRole sysdba \
       -useSamePasswordForAllSchemaUsers true -selectDependentsForComponents true \
       -variables SOA_PROFILE_TYPE=SMALL,HEALTHCARE_INTEGRATION=NO \
@@ -48,7 +46,6 @@ data:
     elif [ "%PRODUCT_ID%" == "wcp" ]
     then
 
-      echo "inside wcp if condition"
       /u01/oracle/oracle_common/bin/rcu -silent -createRepository -databaseType ORACLE -connectString $CONNECTION_STRING -dbUser sys -dbRole sysdba \
       -useSamePasswordForAllSchemaUsers true -selectDependentsForComponents true \
       -schemaPrefix $RCUPREFIX \
@@ -66,7 +63,6 @@ data:
     elif [ "%PRODUCT_ID%" == "oim" ]
     then
 
-      echo "inside oim if condition"
       /u01/oracle/oracle_common/bin/rcu -silent -createRepository -databaseType ORACLE -connectString $CONNECTION_STRING -dbUser sys -dbRole sysdba \
       -useSamePasswordForAllSchemaUsers true -selectDependentsForComponents true \
       -schemaPrefix $RCUPREFIX \
