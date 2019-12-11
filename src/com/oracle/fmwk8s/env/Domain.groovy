@@ -193,7 +193,7 @@ class Domain extends Common {
                         sed -i \"s|%FMWK8S_NFS_HOME%|${fmwk8sNfsHome}|g\" fmwk8s-customize-domain-pod.yaml && \
                         sed -i \"s|%DOMAIN_PVC%|${domainName}-${domainNamespace}-pvc|g\" fmwk8s-customize-domain-pod.yaml && \
                         cat fmwk8s-customize-domain-pod.yaml && \
-                        kubectl apply -f fmwk8s-customize-domain-pod.yaml"
+                        kubectl apply -f fmwk8s-customize-domain-pod.yaml -n ${domainNamespace}"
             sleep 30
             Log.info("customize " + productId + " domain success.")
 
