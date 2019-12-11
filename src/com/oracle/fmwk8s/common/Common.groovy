@@ -1,5 +1,7 @@
 package com.oracle.fmwk8s.common
 
+import com.oracle.fmwk8s.env.Domain
+
 import java.text.SimpleDateFormat
 
 class Common extends Base {
@@ -12,6 +14,13 @@ class Common extends Base {
         runId = buildNumber + "-" + sdf.format(date)
 
         getKubernetesMasterUrl()
+    }
+
+    static createCommonK8SResources(){
+        Domain.createNamespace()
+        createUtilityConfigmap()
+        configureRegistrySecret()
+        EnvironmentSetup.createNfsFolder()
     }
 
     static configureRegistrySecret() {
@@ -35,6 +44,19 @@ class Common extends Base {
             Log.error("configure registry secret failed.")
             throw exc
         }
+    }
+
+    static createUtilityConfigmap(){
+        Log.info("begin create utility configmap.")
+
+        script.git branch: 'master',
+                credentialsId: "${sshCredentialId}",
+                url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
+
+        script.sh label: "create fmwk8s utility configmap",
+                script: "kubectl apply -f kubernetes/framework/fmwk8s-utility-configmap.yaml -n ${Domain.domainNamespace}"
+
+        Log.info("create utility configmap success.")
     }
 
     static publishLogs() {

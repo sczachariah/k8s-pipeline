@@ -48,11 +48,10 @@ pipeline {
                         Operator.deployOperator()
                     }
                 }
-
-                script {
-                    Domain.createNamespace()
-                    Common.configureRegistrySecret()
-                    EnvironmentSetup.createNfsFolder()
+                dir('fmwk8s') {
+                    script {
+                        Common.createCommonK8SResources()
+                    }
                 }
             }
         }

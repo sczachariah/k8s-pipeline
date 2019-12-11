@@ -81,7 +81,7 @@ class Mats extends Test {
                         sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%RUN_ID%|${Common.runId}|g\" fmwk8s-${testId}-test-pod.yaml && \
-                        sed -i \"s|%FMWK8S_NFS_DOMAIN_HOME%|${fmwk8sNfsHome}|g\" fmwk8s-${testId}-test-pod.yaml && \
+                        sed -i \"s|%FMWK8S_NFS_HOME%|${fmwk8sNfsHome}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%DOMAIN_PVC%|${domainName}-${domainNamespace}-pvc|g\" fmwk8s-${testId}-test-pod.yaml && \
                         cat fmwk8s-${testId}-test-pod.yaml"
 

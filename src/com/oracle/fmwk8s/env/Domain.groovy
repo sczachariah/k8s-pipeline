@@ -179,13 +179,23 @@ class Domain extends Common {
             Log.info("begin create " + productId + " domain.")
             script.sh label: "create domain",
                     script: "./kubernetes/samples/scripts/create-${productId}-domain/${samplesDirectory}/create-domain.sh -i create-domain-inputs.yaml -o script-output-directory"
-
             script.sh label: "prepare domain yaml file",
                     script: "mkdir -p ${domainName}-${domainNamespace} && \
                        ls -ltr script-output-directory/weblogic-domains/ && \
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain && \
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain" + productId + ""
             Log.info("create " + productId + " domain success.")
+
+            Log.info("begin customize " + productId + " domain.")
+            script.sh label: "customize domain",
+                    script: "cd ../fmwk8s/kubernetes/framework/ && \
+                        sed -i \"s|%PRODUCT_ID%|${productId}|g\" fmwk8s-customize-domain-pod.yaml && \
+                        sed -i \"s|%FMWK8S_NFS_HOME%|${fmwk8sNfsHome}|g\" fmwk8s-customize-domain-pod.yaml && \
+                        sed -i \"s|%DOMAIN_PVC%|${domainName}-${domainNamespace}-pvc|g\" fmwk8s-customize-domain-pod.yaml && \
+                        cat fmwk8s-customize-domain-pod.yaml && \
+                        kubectl apply -f fmwk8s-customize-domain-pod.yaml"
+            sleep 30
+            Log.info("customize " + productId + " domain success.")
 
             Log.info("begin start " + productId + " domain")
             yamlUtility.generateDomainYaml(script, productId, "domain")
@@ -199,10 +209,10 @@ class Domain extends Common {
                            sleep 480000"
             }
             Log.info("start " + productId + " domain success.")
+
             // fix operator not managing the domain intermittently
             Operator.setDomainNamespace()
             isDomainReady()
-
         }
         catch (exc) {
             Log.error("create/start " + productId + " domain failed.")

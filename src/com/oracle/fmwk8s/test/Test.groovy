@@ -93,9 +93,6 @@ class Test extends Common {
                     credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh label: "create fmwk8s utility configmap",
-                    script: "kubectl apply -f kubernetes/framework/fmwk8s-utility-configmap.yaml -n ${Domain.domainNamespace}"
-
             /*script.sh label: "replace values in docker-entrypoint.sh",
                     script: "sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" docker-entrypoint.sh && \
                  sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" docker-entrypoint.sh && \

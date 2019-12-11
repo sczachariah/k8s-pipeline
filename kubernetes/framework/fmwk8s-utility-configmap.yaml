@@ -11,4 +11,29 @@ data:
 
     echo "Retaining Environment for ${HOURS_AFTER_SECONDS} seconds..."
     sleep ${HOURS_AFTER_SECONDS}
+
+  wcp-web.xml: |-
+    <?xml version = '1.0' encoding = 'US-ASCII'?>
+    <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+             version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+      <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>SystemTest</param-value>
+      </context-param>
+      <context-param>
+        <param-name>oracle.adf.view.rich.automation.ENABLED</param-name>
+        <param-value>true</param-value>
+      </context-param>
+    </web-app>
+
+  customize-domain.sh: |-
+    #!/bin/bash
+
+    if [ "${PRODUCT_ID}" == "wcp" ]
+    then
+      echo "Copying web.xml for wcp..."
+      cp -r wcp-web.xml ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF/web.xml
+      cat ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF/web.xml
+    fi
 ---
