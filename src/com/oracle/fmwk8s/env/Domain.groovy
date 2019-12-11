@@ -54,12 +54,12 @@ class Domain extends Common {
 
                 script.sh label: "create rcu silent script configmap",
                         script: "cd kubernetes/framework/db/rcu && \
-                           sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" ${productId}-rcu-configmap.yaml && \
-                           sed -i \"s|%RCUPREFIX%|${domainName}|g\" ${productId}-rcu-configmap.yaml && \
-                           sed -i \"s|%SYS_PASSWORD%|${Database.dbPassword}|g\" ${productId}-rcu-configmap.yaml && \
-                           sed -i \"s|%PASSWORD%|Welcome1|g\" ${productId}-rcu-configmap.yaml && \
-                           sed -i \"s|%PRODUCT_ID%|${productId}|g\" ${productId}-rcu-configmap.yaml && \
-                           cat ${productId}-rcu-configmap.yaml"
+                           sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-rcu-configmap.yaml && \
+                           sed -i \"s|%RCUPREFIX%|${domainName}|g\" fmwk8s-rcu-configmap.yaml && \
+                           sed -i \"s|%SYS_PASSWORD%|${Database.dbPassword}|g\" fmwk8s-rcu-configmap.yaml && \
+                           sed -i \"s|%PASSWORD%|Welcome1|g\" fmwk8s-rcu-configmap.yaml && \
+                           sed -i \"s|%PRODUCT_ID%|${productId}|g\" fmwk8s-rcu-configmap.yaml && \
+                           cat fmwk8s-rcu-configmap.yaml"
 
                 script.sh label: "prepare pod for running rcu",
                         script: "cd kubernetes/framework/db/rcu && \
@@ -69,7 +69,7 @@ class Domain extends Common {
                            cat fmwk8s-rcu-pod.yaml"
 
                 script.sh label: "create pod to run rcu",
-                        script: "kubectl apply -f kubernetes/framework/db/rcu/${productId}-rcu-configmap.yaml -n ${domainNamespace} && \
+                        script: "kubectl apply -f kubernetes/framework/db/rcu/fmwk8s-rcu-configmap.yaml -n ${domainNamespace} && \
                            kubectl apply -f kubernetes/framework/db/rcu/fmwk8s-rcu-pod.yaml -n ${domainNamespace}"
 
                 K8sUtility.checkPodStatus(script, 'fmwk8s-rcu', domainNamespace, 25, 'Completed')

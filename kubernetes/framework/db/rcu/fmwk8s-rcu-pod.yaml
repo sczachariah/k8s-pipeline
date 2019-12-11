@@ -10,7 +10,7 @@ spec:
   volumes:
     - name: fmw-rcu-configmap
       configMap:
-        name: %PRODUCT_ID%-rcu-configmap
+        name: fmw-rcu-configmap
         defaultMode: 0777
   containers:
     - name: fmwk8s-rcu
