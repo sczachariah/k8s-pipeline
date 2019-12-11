@@ -7,8 +7,9 @@ class FrameworkStatus {
     String runId
     String cloud
     Map<String, String> parameters
+    String jobStatus
 
-    FrameworkStatus() {
+    FrameworkStatus(script) {
         this.runId = Base.runId
         this.cloud = Base.cloud
 
@@ -17,10 +18,12 @@ class FrameworkStatus {
         parameters.put("productName", Base.productName)
         parameters.put("domainType", Base.domainType)
         parameters.put("productImage", Base.productImage)
+
+        this.jobStatus = script.currentBuild.currentResult
     }
 
     static getFrameworkStatusJson(script) {
-        FrameworkStatus frameworkStatus = new FrameworkStatus();
+        FrameworkStatus frameworkStatus = new FrameworkStatus(script);
         def json = JsonOutput.toJson(frameworkStatus)
         def prettyJson = JsonOutput.prettyPrint(json)
 
