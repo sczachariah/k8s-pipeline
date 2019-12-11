@@ -8,9 +8,9 @@ spec:
     - name: %DB_SECRET%
   restartPolicy: Never
   volumes:
-    - name: fmw-rcu-configmap
+    - name: fmwk8s-rcu-configmap
       configMap:
-        name: fmw-rcu-configmap
+        name: fmwk8s-rcu-configmap
         defaultMode: 0777
   containers:
     - name: fmwk8s-rcu
@@ -19,7 +19,7 @@ spec:
       command: ["/bin/sh"]
       args: ["-c", "/u01/oracle/run-rcu.sh"]
       volumeMounts:
-        - name: fmw-rcu-configmap
+        - name: fmwk8s-rcu-configmap
           mountPath: /u01/oracle/run-rcu.sh
           subPath: run-rcu.sh
 
