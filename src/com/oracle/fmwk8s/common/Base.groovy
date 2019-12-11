@@ -8,6 +8,7 @@ class Base {
     static def yamlUtility = new YamlUtility()
     static def k8sUtility = new K8sUtility()
 
+    static def sshCredentialId = "fmwk8sval_ww.ssh"
     static def cloud
     static def k8sMasterUrl = ""
     static def k8sMasterIP = ""
