@@ -4,12 +4,14 @@ import com.oracle.fmwk8s.common.Base
 import groovy.json.JsonOutput
 
 class FrameworkStatus {
+    String buildNumber
     String runId
     String cloud
     Map<String, String> parameters
     String jobStatus
 
     FrameworkStatus(script) {
+        this.buildNumber = "${script.env.BUILD_NUMBER}-${Base.operatorVersion}-${Base.productName}-${Base.domainType.toString().toUpperCase()}"
         this.runId = Base.runId
         this.cloud = Base.cloud
 
