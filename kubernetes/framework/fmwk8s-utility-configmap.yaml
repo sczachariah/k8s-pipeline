@@ -28,7 +28,7 @@ data:
     </web-app>
 
   customize-domain.sh: |-
-    #!/bin/bash
+    #!/bin/sh
 
     if [ "${PRODUCT_ID}" == "wcp" ]
     then
