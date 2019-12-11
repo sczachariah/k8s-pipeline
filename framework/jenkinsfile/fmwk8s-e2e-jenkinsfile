@@ -7,6 +7,7 @@ import com.oracle.fmwk8s.common.Initializer
 import com.oracle.fmwk8s.common.Validation
 import com.oracle.fmwk8s.env.*
 import com.oracle.fmwk8s.test.Test
+import com.oracle.fmwk8s.utility.FrameworkStatus
 
 pipeline {
     agent {
@@ -168,6 +169,7 @@ pipeline {
     post {
         always {
             script {
+                FrameworkStatus.getFrameworkStatusJson(this)
                 Logging.getLogs()
 
                 Operator.cleanOperator()
