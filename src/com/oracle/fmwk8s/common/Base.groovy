@@ -32,6 +32,7 @@ class Base {
 
     static def testImage
     static def testType
+    static def testTarget
     static def hoursAfter
     static def hoursAfterSeconds
 
@@ -75,6 +76,7 @@ class Base {
         lbType = script.env.K8S_LOADBALANCER
         testImage = script.env.TEST_IMAGE_TAG
         testType = script.env.TEST_TYPE
+        testTarget = script.env.TEST_TARGET
         elkEnable = script.env.ELK_ENABLE
         hoursAfter = Long.valueOf(script.env.HOURS_AFTER)
         hoursAfterSeconds = hoursAfter * 60 * 60

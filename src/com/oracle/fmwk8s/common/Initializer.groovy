@@ -44,6 +44,8 @@ class Initializer {
         Log.info("NFS Domain Path:::" + Base.nfsDomainPath)
         Log.info("Load Balancer Helm Release:::" + Base.lbHelmRelease)
         Log.info("Hours After:::" + Base.hoursAfter)
+        Log.info("Test Type:::" + Base.testType)
+        Log.info("Test Target:::" + Base.testTarget)
         Log.info("validation framework initialization completed")
     }
 
