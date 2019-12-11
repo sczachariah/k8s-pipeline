@@ -10,11 +10,11 @@ spec:
       image: k8s.gcr.io/busybox
       imagePullPolicy: Always
       env:
-      - name: PRODUCT_ID
-        value: %PRODUCT_ID%
-      - name: FMWK8S_NFS_HOME
-        value: %FMWK8S_NFS_HOME%
-      args: ["/bin/customize-domain.sh"]
+        - name: PRODUCT_ID
+          value: %PRODUCT_ID%
+        - name: FMWK8S_NFS_HOME
+          value: %FMWK8S_NFS_HOME%
+      command: [ "/bin/sh", "-c", "/bin/customize-domain.sh" ]
       volumeMounts:
         - name: domain-storage-volume
           mountPath: %FMWK8S_NFS_HOME%
