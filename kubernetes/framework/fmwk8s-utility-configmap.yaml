@@ -33,7 +33,7 @@ data:
     if [ "${PRODUCT_ID}" == "wcp" ]
     then
       echo "Copying web.xml for wcp..."
-      cp -r wcp-web.xml ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF/web.xml
+      cp -r /bin/wcp-web.xml ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF/web.xml
       cat ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF/web.xml
     fi
 ---
