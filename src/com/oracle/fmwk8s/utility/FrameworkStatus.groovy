@@ -25,7 +25,7 @@ class FrameworkStatus {
         def json = JsonOutput.toJson(frameworkStatus)
 
         script.sh label: "print framework status json",
-                script: "echo ${json}"
+                script: "echo \"${json}\""
     }
 }
 
