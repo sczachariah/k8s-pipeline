@@ -11,6 +11,10 @@ import com.oracle.fmwk8s.utility.K8sUtility
  */
 class Database extends Common {
     /** the name of the database service */
+    static dbSchemaUser = Domain.domainName
+    /** the password to connect to db */
+    static dbSchemaPassword = weblogicPassword
+    /** the name of the database service */
     static dbName = "oracledb"
     /** the password to connect to db */
     static dbPassword = "Oradoc_db1"

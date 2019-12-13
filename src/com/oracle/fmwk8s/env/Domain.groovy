@@ -31,7 +31,7 @@ class Domain extends Common {
                 script.sh label: "create rcu credentials",
                         script: "retVal=`echo \\`kubectl get secret ${domainName}-rcu-credentials -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
-                          kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${domainName} -p Welcome1 -a sys -q ${Database.dbPassword} -d ${domainName} -n ${domainNamespace} \n \
+                          kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${Database.dbSchemaUser} -p ${Database.dbSchemaPassword} -a sys -q ${Database.dbPassword} -d ${domainName} -n ${domainNamespace} \n \
                        fi"
 
                 Log.info("configure rcu secrets success.")
@@ -57,7 +57,7 @@ class Domain extends Common {
                            sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-rcu-configmap.yaml && \
                            sed -i \"s|%RCUPREFIX%|${domainName}|g\" fmwk8s-rcu-configmap.yaml && \
                            sed -i \"s|%SYS_PASSWORD%|${Database.dbPassword}|g\" fmwk8s-rcu-configmap.yaml && \
-                           sed -i \"s|%PASSWORD%|Welcome1|g\" fmwk8s-rcu-configmap.yaml && \
+                           sed -i \"s|%PASSWORD%|${Database.dbSchemaPassword}|g\" fmwk8s-rcu-configmap.yaml && \
                            sed -i \"s|%PRODUCT_ID%|${productId}|g\" fmwk8s-rcu-configmap.yaml && \
                            cat fmwk8s-rcu-configmap.yaml"
 
