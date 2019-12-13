@@ -5,7 +5,6 @@ import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.env.Database
 @GrabResolver(name = 'fmw-virtual', root = 'http://artifactory-slc-prod1.oraclecorp.com/artifactory/fmw-virtual/')
 @Grab('org.yaml:snakeyaml:1.24')
-//@Grab('org.apache.commons:commons-lang3:3.9')
 import org.yaml.snakeyaml.*
 
 class YamlUtility implements Serializable {
