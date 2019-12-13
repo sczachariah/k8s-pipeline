@@ -198,7 +198,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/webcenter
         }
 
         body = body + """
-<p>Please find below the access URLs to the environment:</p>
+<p>Please find below the access URLs to the environment. The credentials for the same are ${Common.weblogicUsername}/${Common.weblogicPassword}.</p>
 
 """
 

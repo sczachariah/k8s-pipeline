@@ -1,5 +1,7 @@
 package com.oracle.fmwk8s.common
 
+import com.oracle.fmwk8s.utility.YamlUtility
+
 class Initializer {
     static def commonObj
 
@@ -47,6 +49,12 @@ class Initializer {
         Log.info("Test Type:::" + Base.testType)
         Log.info("Test Target:::" + Base.testTarget)
         Log.info("validation framework initialization completed")
+        try {
+            Log.info(":::::::::::::" + YamlUtility.generatePassword())
+        }
+        catch (exc) {
+            exc.printStackTrace()
+        }
     }
 
     static def initializeCleanupParameterValues(def script) {

@@ -3,9 +3,13 @@ package com.oracle.fmwk8s.utility
 import com.cloudbees.groovy.cps.NonCPS
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.env.Database
+import org.apache.commons.lang3.RandomStringUtils
 @GrabResolver(name = 'fmw-virtual', root = 'http://artifactory-slc-prod1.oraclecorp.com/artifactory/fmw-virtual/')
 @Grab('org.yaml:snakeyaml:1.24')
+@Grab('org.apache.commons:commons-lang3:3.9')
 import org.yaml.snakeyaml.*
+
+import java.util.stream.Collectors
 
 class YamlUtility implements Serializable {
     static pvInputsMap
@@ -194,5 +198,21 @@ class YamlUtility implements Serializable {
 
     static printMap(map) {
         map.each { k, v -> println "${k}:${v}" }
+    }
+
+    @NonCPS
+    static String generatePassword() {
+        String upperCaseLetters = RandomStringUtils.random(1, 65, 90, true, true)
+        String lowerCaseLetters = RandomStringUtils.random(6, 97, 122, true, true)
+        String numbers = RandomStringUtils.randomNumeric(1)
+        String combinedChars = upperCaseLetters.concat(lowerCaseLetters).concat(numbers)
+        List<Character> pwdChars = combinedChars.chars()
+                .mapToObj({ c -> (char) c })
+                .collect(Collectors.toList())
+        Collections.shuffle(pwdChars)
+        String password = pwdChars.stream()
+                .collect(StringBuilder.&new, StringBuilder.&append, StringBuilder.&append)
+                .toString()
+        return password
     }
 }
