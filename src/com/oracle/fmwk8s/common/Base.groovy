@@ -152,6 +152,9 @@ class Base {
             case "WCP":
                 samplesRepo = "git@orahub.oraclecorp.com:tooling/wcp-kubernetes-operator.git"
                 samplesBranch = "PS3"
+                if (productImage.toString().contains("12.2.1.4")) {
+                    samplesBranch = "PS4"
+                }
                 samplesDirectory = ""
                 break
             case "OIG":
