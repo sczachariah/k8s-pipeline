@@ -105,7 +105,7 @@ class Base {
         }
         domainNamespace = "${domainName}-domain-ns-${runId}"
         weblogicUsername = 'weblogic'
-        weblogicPassword = 'Welcome1'
+        weblogicPassword = commonUtility.generatePassword()
     }
 
     static getOperatorVariables() {
