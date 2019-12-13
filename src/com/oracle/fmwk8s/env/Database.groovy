@@ -10,9 +10,7 @@ import com.oracle.fmwk8s.utility.K8sUtility
  * in E2E execution of FMW in Docker/K8S environments
  */
 class Database extends Common {
-    /** the name of the database service */
-    static dbSchemaUser = Domain.domainName
-    /** the password to connect to db */
+    /** the db schema password */
     static dbSchemaPassword = "Welcome1"
     /** the name of the database service */
     static dbName = "oracledb"

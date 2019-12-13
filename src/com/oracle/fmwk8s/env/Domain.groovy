@@ -31,7 +31,7 @@ class Domain extends Common {
                 script.sh label: "create rcu credentials",
                         script: "retVal=`echo \\`kubectl get secret ${domainName}-rcu-credentials -n ${domainNamespace} 2>&1\\`` &&\
                        if echo \"\$retVal\" | grep -q \"not found\"; then \n \
-                          kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${Database.dbSchemaUser} -p ${Database.dbSchemaPassword} -a sys -q ${Database.dbPassword} -d ${domainName} -n ${domainNamespace} \n \
+                          kubernetes/samples/scripts/create-rcu-credentials/create-rcu-credentials.sh -u ${domainName} -p ${Database.dbSchemaPassword} -a sys -q ${Database.dbPassword} -d ${domainName} -n ${domainNamespace} \n \
                        fi"
 
                 Log.info("configure rcu secrets success.")
