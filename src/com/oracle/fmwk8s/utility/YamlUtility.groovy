@@ -3,12 +3,11 @@ package com.oracle.fmwk8s.utility
 import com.cloudbees.groovy.cps.NonCPS
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.env.Database
-import org.apache.commons.lang3.RandomStringUtils
 @GrabResolver(name = 'fmw-virtual', root = 'http://artifactory-slc-prod1.oraclecorp.com/artifactory/fmw-virtual/')
 @Grab('org.yaml:snakeyaml:1.24')
 @Grab('org.apache.commons:commons-lang3:3.9')
 import org.yaml.snakeyaml.*
-
+import org.apache.commons.lang3.RandomStringUtils
 import java.util.stream.Collectors
 
 class YamlUtility implements Serializable {
