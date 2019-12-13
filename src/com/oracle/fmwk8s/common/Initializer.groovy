@@ -49,12 +49,12 @@ class Initializer {
         Log.info("Test Type:::" + Base.testType)
         Log.info("Test Target:::" + Base.testTarget)
         Log.info("validation framework initialization completed")
-        try {
-            Log.info(":::::::::::::" + YamlUtility.generatePassword())
-        }
-        catch (exc) {
-            exc.printStackTrace()
-        }
+//        try {
+//            Log.info(":::::::::::::" + YamlUtility.generatePassword())
+//        }
+//        catch (exc) {
+//            exc.printStackTrace()
+//        }
     }
 
     static def initializeCleanupParameterValues(def script) {
