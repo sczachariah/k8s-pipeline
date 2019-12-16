@@ -45,8 +45,7 @@ class Mats extends Test {
                         sed -i \"s|%DB_PORT%|${Database.dbPort}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%DB_SCHEMA_PASSWORD%|${Database.dbSchemaPassword}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%DB_SERVICE%|${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SID%|${Database.dbName}.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_NAME%|${Database.dbName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%DB_SID%|${Database.dbName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%JDBC_URL%|jdbc:oracle:thin:@${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%RCUPREFIX%|${domainName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${yamlUtility.domainInputsMap.get("managedServerNameBase")}|g\" fmwk8s-${testId}-env-configmap.yaml && \

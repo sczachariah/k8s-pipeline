@@ -55,7 +55,7 @@ class Initializer {
         Base.operatorHelmRelease = "op-" + script.env.RUN_SUFFIX
         Base.domainName = script.env.DOMAIN_NAME
         Base.domainNamespace = script.env.DOMAIN_NAME + "-domain-ns-" + script.env.RUN_SUFFIX
-        Base.fmwk8sNfsHome = "/scratch/u01/DockerVolume/domains"
+        Base.fmwk8sNfsHome = "/scratch/u01/DockerVolume"
         Base.nfsDomainDir = Base.domainNamespace
         Base.nfsDomainPath = Base.fmwk8sNfsHome + "/" + Base.nfsDomainDir
         Base.lbHelmRelease = "lb-" + script.env.RUN_SUFFIX
