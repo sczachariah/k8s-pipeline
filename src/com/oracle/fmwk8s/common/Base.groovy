@@ -155,7 +155,7 @@ class Base {
                 samplesRepo = "git@orahub.oraclecorp.com:tooling/wcp-kubernetes-operator.git"
                 samplesBranch = "PS3"
                 if (productImage.toString().contains("12.2.1.4")) {
-                    samplesBranch = "PS4"
+                    samplesBranch = "master"
                 }
                 samplesDirectory = ""
                 break
