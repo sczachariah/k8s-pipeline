@@ -30,8 +30,8 @@ class Mats extends Test {
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             script.sh "cd kubernetes/framework/test/${testId} && \
-                        sed -i \"s|%ADMIN_SERVER_NAME_SVC%|${Domain.domainName}-adminserver.${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MANAGED_SERVER_NAME_SVC%|${Domain.domainName}-cluster-${Common.productId}-cluster.${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%ADMIN_SERVER_NAME_SVC%|${Domain.domainName}-adminserver.${Domain.domainNamespace}.svc.cluster.local|g\" fmwk8s-${testId}-env-configmap.yaml && \
+                        sed -i \"s|%MANAGED_SERVER_NAME_SVC%|${Domain.domainName}-cluster-${Common.productId}-cluster.${Domain.domainNamespace}.svc.cluster.local|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_USER%|${Domain.weblogicUsername}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_PASSWORD%|${Domain.weblogicPassword}|g\" fmwk8s-${testId}-env-configmap.yaml && \
                         sed -i \"s|%ADMIN_PORT%|${yamlUtility.domainInputsMap.get("adminPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
