@@ -59,6 +59,7 @@ class YamlUtility implements Serializable {
         map.put("t3ChannelPort", 31012)
 //        https://bug.oraclecorp.com/pls/bug/webbug_edit.edit_info_top?rptno=30176526
         map.put("exposeAdminT3Channel", true)
+        map.put("exposeAdminNodePort", false)
         map.put("t3PublicAddress", "fmwk8s.us.oracle.com")
         map.put("namespace", domainNamespace.toString())
         map.put("persistentVolumeClaimName", domainName.toString() + "-" + domainNamespace.toString() + "-pvc")
