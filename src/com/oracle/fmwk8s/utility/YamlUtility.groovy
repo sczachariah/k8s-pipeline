@@ -58,7 +58,7 @@ class YamlUtility implements Serializable {
         map.put("logHome", "/shared/logs/" + domainName.toString())
         map.put("t3ChannelPort", 19001)
 //        https://bug.oraclecorp.com/pls/bug/webbug_edit.edit_info_top?rptno=30176526
-        map.put("exposeAdminT3Channel", true)
+        map.put("exposeAdminT3Channel", false)
         map.put("exposeAdminNodePort", false)
         map.put("t3PublicAddress", "fmwk8s.us.oracle.com")
         map.put("namespace", domainNamespace.toString())
