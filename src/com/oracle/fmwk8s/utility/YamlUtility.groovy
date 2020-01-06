@@ -56,7 +56,7 @@ class YamlUtility implements Serializable {
         map.put("imagePullSecretName", Common.registrySecret.toString())
         map.put("weblogicCredentialsSecretName", domainName.toString() + "-weblogic-credentials")
         map.put("logHome", "/shared/logs/" + domainName.toString())
-        map.put("t3ChannelPort", 31012)
+        map.put("t3ChannelPort", 19001)
 //        https://bug.oraclecorp.com/pls/bug/webbug_edit.edit_info_top?rptno=30176526
         map.put("exposeAdminT3Channel", true)
         map.put("exposeAdminNodePort", false)
