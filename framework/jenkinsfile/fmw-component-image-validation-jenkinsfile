@@ -109,7 +109,7 @@ EOF
                                 mvn test -Dtest=WCPsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
                             fi
                             
-                            if [[ ${PRODUCT_NAME} == *"WCS"* ]]; then
+                            if [[ ${PRODUCT_NAME} == *"WC-SITES"* ]]; then
                                 sed -i -e "s|K8S_IP|${K8S_IP}|g" config/${PRODUCT_NAME}/urlTemplate.properties
                                 sed -i -e "s|ADMIN_NODE_PORT|${ADMIN_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
                                 sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
