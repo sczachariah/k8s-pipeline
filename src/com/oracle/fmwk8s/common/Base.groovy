@@ -153,11 +153,11 @@ class Base {
         switch ("${productName}") {
             case "WCP":
                 samplesRepo = "git@orahub.oraclecorp.com:tooling/wcp-kubernetes-operator.git"
-                samplesBranch = "PS3"
-                if (productImage.toString().contains("12.2.1.4")) {
-                    samplesBranch = "master"
+                samplesBranch = "master"
+                if (productImage.toString().contains("12.2.1.3")) {
+                    samplesBranch = "PS3"
+                    samplesDirectory = ""
                 }
-                samplesDirectory = ""
                 break
             case "OIG":
                 samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
