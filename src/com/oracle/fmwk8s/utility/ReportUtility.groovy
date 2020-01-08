@@ -115,7 +115,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/webcenter
                 skipCountValue = (skipCount == null) ? 0 : skipCount.trim().toInteger()
 
                 /** Summarize the total no of *.suc, *.dif & *.skip files in test_logs directory given above */
-                totalSucDifSkipCasesCount = sucCount.toInteger() + difCount.toInteger() + skipCount.toInteger()
+                totalSucDifSkipCasesCount = sucCountValue + difCountValue + skipCountValue
                 Log.info("total........... :: :: $totalSucDifSkipCasesCount")
 
                 /** Fetch the test case names that generated *.suc files in test_logs directory */
