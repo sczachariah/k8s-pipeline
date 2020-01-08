@@ -127,6 +127,7 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("get event logs failed.")
+            exc.printStackTrace()
         }
     }
 
@@ -142,6 +143,7 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("get pod logs failed.")
+            exc.printStackTrace()
         }
     }
 
@@ -163,6 +165,7 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("get operator logs failed.")
+            exc.printStackTrace()
         }
     }
 
@@ -191,6 +194,7 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("get domain logs failed.")
+            exc.printStackTrace()
         }
     }
 
@@ -211,6 +215,7 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("get test logs failed.")
+            exc.printStackTrace()
         }
     }
 
@@ -226,6 +231,7 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("archive test logs failed.")
+            exc.printStackTrace()
         }
     }
 
@@ -244,6 +250,7 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("archive logs failed.")
+            exc.printStackTrace()
         }
     }
 
@@ -276,6 +283,7 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("publish test logs to artifactory failed.")
+            exc.printStackTrace()
         }
     }
 
@@ -320,6 +328,7 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("publish logs to artifactory failed.")
+            exc.printStackTrace()
         }
     }
 
