@@ -9,7 +9,7 @@ class Logging extends Common {
 
     static def buildSuffix
     static def productImageVersion
-    static def artifactoryVirtualRepo = "http://artifactory-slc-prod1.oraclecorp.com/artifactory/fmw-virtual/"
+    static def artifactoryServer = "http://artifacthub.oraclecorp.com/"
     static def fmwk8sArtifactoryLogLocation
 
     static configureLogstashConfigmap() {

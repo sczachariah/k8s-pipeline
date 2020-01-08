@@ -42,7 +42,7 @@ class FrameworkStatus {
             testSummary.put("${it}".toString().substring(0,"${it}".toString().lastIndexOf(".")), "${it}".contains(".suc") ? "PASS" : ("${it}".contains(".dif") ? "FAIL" : "SKIP"))
         }
 
-        this.logLocation = Logging.artifactoryVirtualRepo + Logging.fmwk8sArtifactoryLogLocation
+        this.logLocation = Logging.artifactoryServer + Logging.fmwk8sArtifactoryLogLocation
     }
 
     static getFrameworkStatusJson(script) {
