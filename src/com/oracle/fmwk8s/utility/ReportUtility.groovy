@@ -110,6 +110,10 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/webcenter
                         returnStdout: true).trim()
                 Log.info("skip........... :: ${skipCount.toInteger()}")
 
+                sucCountValue = (sucCount == null) ? 0 : sucCount.trim().toInteger()
+                difCountValue = (difCount == null) ? 0 : difCount.trim().toInteger()
+                skipCountValue = (skipCount == null) ? 0 : skipCount.trim().toInteger()
+
                 /** Summarize the total no of *.suc, *.dif & *.skip files in test_logs directory given above */
                 totalSucDifSkipCasesCount = sucCount.toInteger() + difCount.toInteger() + skipCount.toInteger()
                 Log.info("total........... :: :: $totalSucDifSkipCasesCount")
@@ -279,13 +283,6 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/webcenter
         /** Local Variable declaration for this method */
         /** overallTestList - variable to convert string to list elements with whitespace as delimiter for split function */
         List overallTestList = (overallExecutedTestCaseList == null) ? [] : overallExecutedTestCaseList.split()
-
-        /** sucCountValue - variable containing integer value of suc file count  */
-        sucCountValue = (sucCount == null) ? 0 : sucCount.trim().toInteger()
-        /** difCountValue - variable containing integer value of dif file count  */
-        difCountValue = (difCount == null) ? 0 : difCount.trim().toInteger()
-        /** skipCountValue - variable containing integer value of skip file count  */
-        skipCountValue = (skipCount == null) ? 0 : skipCount.trim().toInteger()
 
         /** Generating the subject and the mail body for mail notification */
         def subject = "Test Summary for build '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
