@@ -285,7 +285,7 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("publish test logs to artifactory failed.")
-            exc.printStackTrace()
+            throw exc
         }
     }
 
@@ -338,7 +338,7 @@ class Logging extends Common {
         }
         catch (exc) {
             Log.error("publish logs to artifactory failed.")
-            exc.printStackTrace()
+            throw exc
         }
     }
 
