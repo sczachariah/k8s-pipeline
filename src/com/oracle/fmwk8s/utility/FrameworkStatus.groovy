@@ -35,7 +35,7 @@ class FrameworkStatus {
 
         this.jobLink = "${script.env.JENKINS_URL}/blue/organizations/jenkins/${script.env.JOB_NAME}/detail/${script.env.JOB_NAME}/${script.env.BUILD_NUMBER}/pipeline"
         this.jobUrl = "${script.env.JOB_URL}"
-        this.testStatus = Test.testStatus
+        this.testStatus = Test.testStatus.equalsIgnoreCase("completed") ? (ReportUtility.difCountValue > 0 ? "FAIL" : "PASS") : Test.testStatus.toUpperCase()
 
         testSummary = new LinkedHashMap<>()
         ReportUtility.overallExecutedTestCaseList.split().each {

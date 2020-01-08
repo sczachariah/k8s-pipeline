@@ -19,7 +19,12 @@ class ReportUtility {
     static def skipCount
     /** Variable for storing count of total suc, dif, skip files generated after test execution */
     static Integer totalSucDifSkipCasesCount = 0
-
+    /** Variable for storing count of succeeded test cases */
+    static Integer sucCountValue = 0
+    /** Variable for storing count of failed test cases */
+    static Integer difCountValue = 0
+    /** Variable for storing count of skipped test cases */
+    static Integer skipCountValue = 0
     /** List Variable for storing list of suc file names generated after test execution */
     static def sucFileNameList
     /** List Variable for storing list of dif file names generated after test execution */
@@ -284,11 +289,11 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/webcenter
         List overallTestList = (overallExecutedTestCaseList == null) ? [] : overallExecutedTestCaseList.split()
 
         /** sucCountValue - variable containing integer value of suc file count  */
-        Integer sucCountValue = (sucCount == null) ? 0 : sucCount.trim().toInteger()
+        sucCountValue = (sucCount == null) ? 0 : sucCount.trim().toInteger()
         /** difCountValue - variable containing integer value of dif file count  */
-        Integer difCountValue = (difCount == null) ? 0 : difCount.trim().toInteger()
+        difCountValue = (difCount == null) ? 0 : difCount.trim().toInteger()
         /** skipCountValue - variable containing integer value of skip file count  */
-        Integer skipCountValue = (skipCount == null) ? 0 : skipCount.trim().toInteger()
+        skipCountValue = (skipCount == null) ? 0 : skipCount.trim().toInteger()
 
         /** Generating the subject and the mail body for mail notification */
         def subject = "Test Summary for build '[${script.env.BUILD_NUMBER}]' is in '[${Test.testStatus}]' status."
