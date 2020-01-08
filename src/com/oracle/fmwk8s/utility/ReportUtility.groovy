@@ -7,16 +7,8 @@ import com.oracle.fmwk8s.env.IngressController
 import com.oracle.fmwk8s.test.Test
 
 class ReportUtility {
-
     /** Variable Declaration */
-    static def domainURLs
-
-    /** Variable for storing count of suc file generated after test execution */
-    static def sucCount
-    /** Variable for storing count of dif file generated after test execution */
-    static def difCount
-    /** Variable for storing count of skip file generated after test execution */
-    static def skipCount
+    static def domainURLs = ""
     /** Variable for storing count of total suc, dif, skip files generated after test execution */
     static Integer totalSucDifSkipCasesCount = 0
     /** Variable for storing count of succeeded test cases */
@@ -26,14 +18,14 @@ class ReportUtility {
     /** Variable for storing count of skipped test cases */
     static Integer skipCountValue = 0
     /** List Variable for storing list of suc file names generated after test execution */
-    static def sucFileNameList
+    static def sucFileNameList = ""
     /** List Variable for storing list of dif file names generated after test execution */
-    static def difFileNameList
+    static def difFileNameList = ""
     /** List Variable for storing list of skip file names generated after test execution */
-    static def skipFileNameList
+    static def skipFileNameList = ""
 
     /** List Variable for storing list of all suc,dif,skip file names generated after test execution */
-    static def overallExecutedTestCaseList
+    static def overallExecutedTestCaseList = ""
 
     static printDomainUrls(script) {
         domainURLs = """
@@ -98,21 +90,21 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/webcenter
             /** if the fmwk8s.completed file exists, then we calculate suc dif for tests executed */
             if (fileExists == 'exists') {
                 /** Logic to evaluate no. of *.suc files in test_logs directory given above */
-                sucCount = script.sh(
+                def sucCount = script.sh(
                         label: "evaluate no. of *.suc files in test_logs directory",
                         script: "cd ${Test.logDirectory} && find . -name *.suc  | wc | uniq | awk '{print \$1}'",
                         returnStdout: true)
                 Log.info("suc........... ::  ${sucCount.toInteger()}")
 
                 /** Logic to evaluate no. of *.dif files in test_logs directory given above */
-                difCount = script.sh(
+                def difCount = script.sh(
                         label: "evaluate no. of *.dif files in test_logs directory",
                         script: "cd ${Test.logDirectory} && find . -name *.dif  | wc | uniq | awk '{print \$1}'",
                         returnStdout: true).trim()
                 Log.info("dif........... :: ${difCount.toInteger()}")
 
                 /** Logic to evaluate no. of *.skip files in test_logs directory given above */
-                skipCount = script.sh(
+                def skipCount = script.sh(
                         label: "evaluate no. of *.skip files in test_logs directory",
                         script: "cd ${Test.logDirectory} && find . -name *.skip  | wc | uniq | awk '{print \$1}'",
                         returnStdout: true).trim()
