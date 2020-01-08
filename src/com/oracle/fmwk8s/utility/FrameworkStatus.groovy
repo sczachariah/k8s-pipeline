@@ -27,11 +27,11 @@ class FrameworkStatus {
         parameters.put("productName", Base.productName)
         parameters.put("domainType", Base.domainType)
         parameters.put("productImage", Base.productImage)
-        parameters.put("databaseVersion", Base.cloud)
-        parameters.put("loadBalancer", Base.cloud)
-        parameters.put("testImage", Base.cloud)
-        parameters.put("testType", Base.cloud)
-        parameters.put("testTarget", Base.cloud)
+        parameters.put("databaseVersion", Base.databaseVersion)
+        parameters.put("loadBalancer", Base.lbType)
+        parameters.put("testImage", Base.testImage)
+        parameters.put("testType", Base.testType)
+        parameters.put("testTarget", Base.testTarget)
 
         this.jobLink = "${script.env.JENKINS_URL}/blue/organizations/jenkins/${script.env.JOB_NAME}/detail/${script.env.JOB_NAME}/${script.env.BUILD_NUMBER}/pipeline"
         this.jobUrl = "${script.env.JOB_URL}"
@@ -39,7 +39,7 @@ class FrameworkStatus {
 
         testSummary = new LinkedHashMap<>()
         ReportUtility.overallExecutedTestCaseList.split().each {
-            testSummary.put("${it}".toString(), "${it}".contains(".suc") ? "PASS" : ("${it}".contains(".dif") ? "FAIL" : "SKIP"))
+            testSummary.put("${it}".toString().substring(0,"${it}".toString().lastIndexOf(".")), "${it}".contains(".suc") ? "PASS" : ("${it}".contains(".dif") ? "FAIL" : "SKIP"))
         }
 
         this.logLocation = Logging.artifactoryVirtualRepo + Logging.fmwk8sArtifactoryLogLocation

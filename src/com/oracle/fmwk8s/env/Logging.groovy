@@ -10,7 +10,7 @@ class Logging extends Common {
     static def buildSuffix
     static def productImageVersion
     static def artifactoryVirtualRepo = "http://artifactory-slc-prod1.oraclecorp.com/artifactory/fmw-virtual/"
-    static def fmwk8sArtifactoryLogLocation = "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${productImageVersion}/${runId}/"
+    static def fmwk8sArtifactoryLogLocation
 
     static configureLogstashConfigmap() {
         try {
@@ -107,6 +107,7 @@ class Logging extends Common {
     }
 
     static getLogs() {
+        fmwk8sArtifactoryLogLocation = "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${productImageVersion}/${runId}/"
         getEventLogs(operatorNamespace)
         getEventLogs(domainNamespace)
         getOperatorLogs(operatorNamespace)
@@ -327,6 +328,8 @@ class Logging extends Common {
      * @return
      */
     static getTestLogsArchiveAndPublishTestLogsToArtifactory() {
+        fmwk8sArtifactoryLogLocation = "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${productImageVersion}/${runId}/"
+
         /** Trying to collect all the test logs under the test_logs directory after successful test runs */
         getTestLogs()
         /** Archive the test logs collected */
