@@ -290,6 +290,13 @@ class Logging extends Common {
     static publishLogsToArtifactory() {
         try {
             Log.info("publish logs to artifactory.")
+
+            def buildLog = jenkins.model.Jenkins.getInstance()
+                    .getItemByFullName(script.env.JOB_NAME)
+                    .getBuildByNumber(Integer.parseInt(script.env.BUILD_NUMBER))
+                    .logFile.text
+            script.writeFile file: "build_log_${buildSuffix}.txt", text: buildLog
+
             script.sh label: "get product image version qualifier",
                     script: "pwd && \
                        ls"
@@ -304,6 +311,10 @@ class Logging extends Common {
                     spec:
                             """{
                            "files": [
+                             {
+                                "pattern": "build_log*.txt",
+                                "target": "${fmwk8sArtifactoryLogLocation}"
+                             },
                              {
                                 "pattern": "event_logs_*.zip",
                                 "target": "${fmwk8sArtifactoryLogLocation}"

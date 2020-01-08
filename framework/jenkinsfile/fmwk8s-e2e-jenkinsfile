@@ -159,7 +159,8 @@ pipeline {
         stage('publish results') {
             steps {
                 script {
-                    Common.publishLogs()
+                    Logging.getLogs()
+                    FrameworkStatus.getFrameworkStatusJson(this)
                 }
             }
         }
@@ -168,20 +169,15 @@ pipeline {
     post {
         always {
             script {
-                FrameworkStatus.getFrameworkStatusJson(this)
-                Logging.getLogs()
-
                 Operator.cleanOperator()
-
                 Test.cleanup()
-
                 IngressController.undeployLoadBalancer()
                 Domain.cleanDomain()
                 EnvironmentSetup.deleteNfsFolder()
                 Domain.cleanDomainNamespace()
-
                 Operator.cleanOperator()
                 Operator.cleanOperatorNamespace()
+
                 FrameworkStatus.getFrameworkStatusJson(this)
             }
         }

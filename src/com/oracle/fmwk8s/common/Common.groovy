@@ -59,46 +59,6 @@ class Common extends Base {
         Log.info("create utility configmap success.")
     }
 
-    static publishLogs() {
-        try {
-            Log.info("begin publish logs.")
-
-            script.echo "Reports directory: ${script.env.WORKSPACE}/test-output"
-            script.env.DEPLOY_BUILD_DATE = script.sh(returnStdout: true, script: "date -u +'%Y-%m-%d-%H%M'").trim()
-
-            def logContent = jenkins.model.Jenkins.getInstance()
-                    .getItemByFullName(script.env.JOB_NAME)
-                    .getBuildByNumber(Integer.parseInt(script.env.BUILD_NUMBER))
-                    .logFile.text
-            script.writeFile file: "buildlog-${script.env.BUILD_NUMBER}-${script.env.DEPLOY_BUILD_DATE}.txt", text: logContent
-
-//        script.zip zipFile: "test-output-${script.env.BUILD_NUMBER}-${script.env.DEPLOY_BUILD_DATE}.zip", archive: true, dir: "${script.env.WORKSPACE}/test-output"
-            script.rtUpload(
-                    serverId: "artifactory.oraclecorp.com",
-                    spec:
-                            """{
-                           "files": [
-                             {
-                                "pattern": "test-output*.zip",
-                                "target": "cisystem-dev-local/com/oracle/fmwk8s/e2e/${productId}/test-reports/"
-                             },
-                             {
-                                "pattern": "buildlog*.txt",
-                                "target": "cisystem-dev-local/com/oracle/fmwk8s/e2e/${productId}/logs/"
-                             }
-                           ]
-                        }""",
-                    failNoOp: true
-            )
-
-            Log.info("publish logs success.")
-        }
-        catch (exc) {
-            Log.error("publish logs failed.")
-            throw exc
-        }
-    }
-
     static getKubernetesMasterUrl() {
         Log.info("begin get k8s master url.")
 
