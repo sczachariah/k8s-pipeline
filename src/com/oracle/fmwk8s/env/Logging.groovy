@@ -273,9 +273,7 @@ class Logging extends Common {
                            "files": [
                              {
                                 "pattern": "test_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
-                                productImageVersion
-                            }/${runId}/"
+                                "target": "${fmwk8sArtifactoryLogLocation}"
                              }                           
                            ]
                         }""",
@@ -308,27 +306,19 @@ class Logging extends Common {
                            "files": [
                              {
                                 "pattern": "event_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
-                                productImageVersion
-                            }/${runId}/"
+                                "target": "${fmwk8sArtifactoryLogLocation}"
                              },
                              {
                                 "pattern": "domain_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
-                                productImageVersion
-                            }/${runId}/"
+                                "target": "${fmwk8sArtifactoryLogLocation}"
                              },
                              {
                                 "pattern": "operator_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
-                                productImageVersion
-                            }/${runId}/"
+                                "target": "${fmwk8sArtifactoryLogLocation}"
                              },
                              {
                                 "pattern": "pod_logs_*.zip",
-                                "target": "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${
-                                productImageVersion
-                            }/${runId}/"
+                                "target": "${fmwk8sArtifactoryLogLocation}"
                              }                           
                            ]
                         }""",
