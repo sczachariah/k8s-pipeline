@@ -107,7 +107,6 @@ class Logging extends Common {
     }
 
     static getLogs() {
-        fmwk8sArtifactoryLogLocation = "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${productImageVersion}/${runId}/"
         getEventLogs(operatorNamespace)
         getEventLogs(domainNamespace)
         getOperatorLogs(operatorNamespace)
@@ -259,6 +258,7 @@ class Logging extends Common {
                     returnStdout: true
             ).trim()
             Log.info(productImageVersion)
+            fmwk8sArtifactoryLogLocation = "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${productImageVersion}/${runId}/"
             script.rtUpload(
                     serverId: "artifacthub.oraclecorp.com",
                     spec:
@@ -290,6 +290,7 @@ class Logging extends Common {
                     returnStdout: true
             ).trim()
             Log.info(productImageVersion)
+            fmwk8sArtifactoryLogLocation = "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${productImageVersion}/${runId}/"
             script.rtUpload(
                     serverId: "artifacthub.oraclecorp.com",
                     spec:
@@ -328,8 +329,6 @@ class Logging extends Common {
      * @return
      */
     static getTestLogsArchiveAndPublishTestLogsToArtifactory() {
-        fmwk8sArtifactoryLogLocation = "fmwk8s-dev-local/com/oracle/fmwk8sval/logs/${productName}/${productImageVersion}/${runId}/"
-
         /** Trying to collect all the test logs under the test_logs directory after successful test runs */
         getTestLogs()
         /** Archive the test logs collected */
