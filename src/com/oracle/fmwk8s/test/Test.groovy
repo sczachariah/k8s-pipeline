@@ -171,7 +171,7 @@ class Test extends Common {
                         i=\$((i+1))\n \
                         echo \"Waiting for Test Initialization. Iteration \$i of 10. Sleeping\"\n \
                         sleep 60\n \
-                        testInit=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep fmwk8s-${testId}-test\\``\n \
+                        testInit=`echo \\`kubectl get pods -n ${domainNamespace} 2>&1 | grep ${testId}-test\\``\n \
                         done"
 
             /** wait in loop for fmwk8s.completed file*/
@@ -201,7 +201,7 @@ class Test extends Common {
             if (!waitforfile) {
                 def testContainerStatus = script.sh(
                         label: "get test status",
-                        script: "kubectl get pods -n ${domainNamespace} 2>&1 | grep fmwk8s-${testId}-test",
+                        script: "kubectl get pods -n ${domainNamespace} 2>&1 | grep ${testId}-test",
                         returnStdout: true
                 ).trim()
                 if (testContainerStatus.toString().contains("Error")) {
