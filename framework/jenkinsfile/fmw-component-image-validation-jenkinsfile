@@ -115,6 +115,8 @@ EOF
                                 sed -i -e "s|MS_NODE_PORT|${MS_NODE_PORT}|g" config/${PRODUCT_NAME}/urlTemplate.properties
                                 sed -i -e "s|UNAME|${ADMIN_USERNAME}|g" config/${PRODUCT_NAME}/urlTemplate.properties
                                 sed -i -e "s|PWD|${ADMIN_PASSWORD}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|SITES_USERNAME|${SITES_APP_USERNAME}|g" config/${PRODUCT_NAME}/urlTemplate.properties
+                                sed -i -e "s|SITES_PASSWORD|${SITES_APP_PASSWORD}|g" config/${PRODUCT_NAME}/urlTemplate.properties
                                 mvn test -Dtest=WCSsanityTest -DtestTools.properties=${WORKSPACE}/test.props -Dtest.properties=config/${PRODUCT_NAME}/urlTemplate.properties
                             fi
                             
