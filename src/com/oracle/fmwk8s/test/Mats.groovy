@@ -10,60 +10,13 @@ class Mats extends Test {
     static fireTest() {
         try {
             Log.info("begin ${Common.productId} product fireTest.")
-            testId = Common.productId
-            createEnvConfigMap()
+            testId = "mats"
             runTests()
             Log.info("${Common.productId} product fireTest success.")
         }
         catch (exc) {
             Log.error("${Common.productId} product fireTest failed.")
             testStatus = "failed"
-        }
-    }
-
-    static createEnvConfigMap() {
-        try {
-            Log.info("begin create env configmap.")
-
-            script.git branch: 'master',
-                    credentialsId: "${sshCredentialId}",
-                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
-
-            script.sh "cd kubernetes/framework/test/${testId} && \
-                        sed -i \"s|%ADMIN_SERVER_NAME_SVC%|${Domain.domainName}-${yamlUtility.domainInputsMap.get("adminServerName")}.${Domain.domainNamespace}.svc.cluster.local|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MANAGED_SERVER_NAME_SVC%|${Domain.domainName}-cluster-${yamlUtility.domainInputsMap.get("clusterName")}.${Domain.domainNamespace}.svc.cluster.local|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_USER%|${Domain.weblogicUsername}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_PASSWORD%|${Domain.weblogicPassword}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_PORT%|${yamlUtility.domainInputsMap.get("adminPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_T3_CHANNEL_PORT%|${yamlUtility.domainInputsMap.get("t3ChannelPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_SERVER_NAME%|${yamlUtility.domainInputsMap.get("adminServerName")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%ADMIN_SSL_PORT%||g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DOMAIN_HOME%|${Domain.fmwk8sNfsHome}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DOMAIN_NAME%|${Domain.domainName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DOMAIN_NAMESPACE%|${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%CONNECTION_STRING%|${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_HOST%|${Database.dbName}.${Domain.domainNamespace}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_PORT%|${Database.dbPort}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SCHEMA_PASSWORD%|${Database.dbSchemaPassword}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SERVICE%|${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%DB_SID%|${Database.dbName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%JDBC_URL%|jdbc:oracle:thin:@${Database.dbName}.${Domain.domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%RCUPREFIX%|${domainName}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${yamlUtility.domainInputsMap.get("managedServerNameBase")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%MANAGED_SERVER_PORT%|${yamlUtility.domainInputsMap.get("managedServerPort")}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        sed -i \"s|%TEST_TARGET%|${testTarget}|g\" fmwk8s-${testId}-env-configmap.yaml && \
-                        cat fmwk8s-${testId}-env-configmap.yaml"
-
-            script.sh "kubectl apply -f kubernetes/framework/test/${testId}/fmwk8s-${testId}-env-configmap.yaml -n ${Domain.domainNamespace}"
-
-            Log.info("create env configmap success.")
-        }
-        catch (exc) {
-            Log.error("create env configmap failed.")
-        }
-        finally {
         }
     }
 
@@ -77,6 +30,7 @@ class Mats extends Test {
 
             script.sh label: "configure test pod",
                     script: "cd kubernetes/framework/test/${testId} && \
+                        sed -i \"s|%PRODUCT_ID%|${productId}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%TEST_IMAGE%|${testImage}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-${testId}-test-pod.yaml && \
                         sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-${testId}-test-pod.yaml && \
