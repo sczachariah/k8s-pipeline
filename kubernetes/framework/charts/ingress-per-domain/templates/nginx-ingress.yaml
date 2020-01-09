@@ -21,11 +21,11 @@ spec:
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
               servicePort: {{ .Values.wlsDomain.adminServerPort }}
-          {{- if or (eq .Values.wlsDomain.domainType "soa") (eq .Values.wlsDomain.domainType "osb") (eq .Values.wlsDomain.domainType "soaosb") }}
           - path: /em
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
               servicePort: {{ .Values.wlsDomain.adminServerPort }}
+          {{- if or (eq .Values.wlsDomain.domainType "soa") (eq .Values.wlsDomain.domainType "osb") (eq .Values.wlsDomain.domainType "soaosb") }}
           - path: /servicebus
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
@@ -36,10 +36,6 @@ spec:
               servicePort: {{ .Values.wlsDomain.adminServerPort }}
           {{- end }}
           {{- if or (eq .Values.wlsDomain.domainType "soaess") (eq .Values.wlsDomain.domainType "soaessosb") }}
-          - path: /em
-            backend:
-              serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
-              servicePort: {{ .Values.wlsDomain.adminServerPort }}
           - path: /servicebus
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'

@@ -159,8 +159,7 @@ pipeline {
         stage('publish results') {
             steps {
                 script {
-                    Logging.getLogs()
-                    FrameworkStatus.getFrameworkStatusJson(this)
+                    sleep 1
                 }
             }
         }
@@ -169,6 +168,9 @@ pipeline {
     post {
         always {
             script {
+                Logging.getLogs()
+                FrameworkStatus.getFrameworkStatusJson(this)
+
                 Operator.cleanOperator()
                 Test.cleanup()
                 IngressController.undeployLoadBalancer()

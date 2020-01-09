@@ -2,18 +2,18 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: fmwk8s-soa-test
+  name: fmwk8s-%PRODUCT_ID%-mats-test
 spec:
   restartPolicy: Never
   #  terminationGracePeriodSeconds: %HOURS_AFTER_SECONDS%
   containers:
-    - name: fmwk8s-soa-test
+    - name: fmwk8s-%PRODUCT_ID%-mats-test
       image: "%TEST_IMAGE%"
       imagePullPolicy: Always
       args: ["/usr/local/bin/run-timer.sh"]
       envFrom:
         - configMapRef:
-            name: fmwk8s-soa-env-configmap
+            name: fmwk8s-tests-env-configmap
       volumeMounts:
         - name: fmwk8s-log-volume
           mountPath: "%LOG_DIRECTORY%"
