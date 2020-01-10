@@ -50,8 +50,11 @@ class Base {
     static def samplesBranch
     static def samplesDirectory
 
+//    /scratch/u01/DockerVolume/domains
     static def fmwk8sNfsHome
+//    wls-domain-ns-1234
     static def nfsDomainDir
+//    /scratch/u01/DockerVolume/domains/wls-domain-ns-1234
     static def nfsDomainPath
 
     static def lbType
