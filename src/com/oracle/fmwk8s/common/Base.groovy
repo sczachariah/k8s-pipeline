@@ -159,6 +159,12 @@ class Base {
 
     static getSamplesRepoDetails() {
         switch ("${productName}") {
+            case "SOA":
+                if (productImage.toString().contains("12.2.1.4")) {
+                    samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
+                    samplesBranch = "soa-2.4.0-develop-12.2.1.4.0"
+                }
+                break
             case "WCP":
                 samplesRepo = "git@orahub.oraclecorp.com:tooling/wcp-kubernetes-operator.git"
                 samplesBranch = "master"
