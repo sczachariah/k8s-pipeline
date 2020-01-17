@@ -59,6 +59,12 @@ spec:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-cluster-{{ .Values.wlsDomain.clusterName | lower | replace "_" "-" }}'
               servicePort: {{ .Values.wlsDomain.managedServerPort }}
           {{- end }}
+          {{- if (eq .Values.wlsDomain.productID "wcsites") }}
+          - path: /sites
+            backend:
+              serviceName: '{{ .Values.wlsDomain.domainUID }}-cluster-{{ .Values.wlsDomain.clusterName | lower | replace "_" "-" }}'
+              servicePort: {{ .Values.wlsDomain.managedServerPort }}
+          {{- end }}
           - path:
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-cluster-{{ .Values.wlsDomain.clusterName | lower | replace "_" "-" }}'
