@@ -3,6 +3,7 @@ package com.oracle.fmwk8s.utility
 import com.cloudbees.groovy.cps.NonCPS
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.env.Database
+import com.oracle.fmwk8s.env.IngressController
 @GrabResolver(name = 'fmw-virtual', root = 'http://artifactory-slc-prod1.oraclecorp.com/artifactory/fmw-virtual/')
 @Grab('org.yaml:snakeyaml:1.24')
 import org.yaml.snakeyaml.*
@@ -69,6 +70,9 @@ class YamlUtility implements Serializable {
         map.put("rcuSchemaPrefix", domainName.toString())
         map.put("rcuDatabaseURL", Database.dbName.toString() + "." + domainNamespace.toString() + ":" + Database.dbPort.toString() + "/" + Database.dbName.toString() + "pdb.us.oracle.com")
         map.put("rcuCredentialsSecret", domainName.toString() + "-rcu-credentials")
+        map.put("loadBalancerHostName", Common.k8sMasterIP.toString())
+        map.put("loadBalancerPortNumber", IngressController.httplbPort)
+        map.put("loadBalancerProtocol", "http")
 
         this.domainInputsMap = map
         writeYaml(script, map, domainInputsYamlFile)

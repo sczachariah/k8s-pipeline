@@ -13,12 +13,14 @@ class Mapping {
         productIdMap.put("WLS-INFRA", "fmw-infrastructure")
         productIdMap.put("SOA", "soa")
         productIdMap.put("WCP", "wcp")
+        productIdMap.put("WCS", "wcsites")
         productIdMap.put("OIG", "oim")
 
         domainNameMap.put("WLS", "weblogic")
         domainNameMap.put("WLS-INFRA", "wlsinfra")
         domainNameMap.put("SOA", "soainfra")
         domainNameMap.put("WCP", "wcpinfra")
+        domainNameMap.put("WCS", "wcsites")
         domainNameMap.put("OIG", "oim")
 
         operatorVersionMap.put("2.3.0", "2.3.0")

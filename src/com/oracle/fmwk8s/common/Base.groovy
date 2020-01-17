@@ -173,6 +173,10 @@ class Base {
                     samplesDirectory = ""
                 }
                 break
+            case "WCS":
+                samplesRepo = "git@orahub.oraclecorp.com:tooling/wcsites-k8s-operator.git"
+                samplesBranch = "2.4.0"
+                break
             case "OIG":
                 samplesRepo = "git@orahub.oraclecorp.com:idm/oim-kubernetes-operator.git"
                 samplesBranch = "release/2.2.1"
