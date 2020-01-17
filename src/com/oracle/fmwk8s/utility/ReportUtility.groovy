@@ -63,7 +63,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/webcenter
         }
         if (Common.productId.toString().equalsIgnoreCase("wcsites")) {
             domainURLs = domainURLs + """
-http://${Common.k8sMasterIP}:${IngressController.httplbPort}/sites/sitesconfig
+http://${Common.k8sMasterIP}:${IngressController.httplbPort}/sites/sitesconfigsetup
 http://${Common.k8sMasterIP}:${IngressController.httplbPort}/sites
 """
         }
