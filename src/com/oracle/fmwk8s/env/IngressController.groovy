@@ -86,8 +86,9 @@ class IngressController extends Common {
     static configureApacheConfFileConfigmap() {
         try {
             Log.info("begin configure apache conf file configmap.")
+            Log.info("Common.productName.toString() :: ${Common.productName}")
 
-            if (Common.productId.toString().equalsIgnoreCase("soa")) {
+            if (Common.productName.toString().equalsIgnoreCase("SOA")) {
                 script.sh label: "create apache conf file configmap",
                         script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%ADMIN_SERVER_PORT%#${yamlUtility.domainInputsMap.get("adminPort")}#g\" custom-mod-wl-apache-for-soa-configmap.yaml && \
@@ -191,7 +192,7 @@ class IngressController extends Common {
         def sslCertFileMountedPath = "/var/serving-cert/tls.crt"
         def sslKeyFileMountedPath = "/var/serving-cert/tls.key"
         def customImageForApacheWebtier = "fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3"
-        def confFileConfigMapName = Common.productId.toString().equalsIgnoreCase("soa") ?
+        def confFileConfigMapName = Common.productName.toString().equalsIgnoreCase("SOA") ?
                 "custom-mod-wl-apache-for-soa-configmap" :
                 "custom-mod-wl-apache-configmap"
 
