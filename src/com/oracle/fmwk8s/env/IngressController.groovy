@@ -299,7 +299,7 @@ class IngressController extends Common {
         try {
             Log.info("begin get load balancer port.")
 
-            if(!("${lbType}".equalsIgnoreCase("APACHE"))) {
+            if("${lbType}".equalsIgnoreCase("APACHE")) {
                 httplbPort = script.sh(
                         label: "get lb http port",
                         script: "kubectl describe service ${lbHelmRelease}-apache-webtier --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
@@ -314,13 +314,13 @@ class IngressController extends Common {
             }else{
                 httplbPort = script.sh(
                         label: "get lb http port",
-                        script: "kubectl describe service apache-webtier --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
+                        script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
                         returnStdout: true
                 ).trim()
 
                 httpslbPort = script.sh(
                         label: "get lb https port",
-                        script: "kubectl describe service apache-webtier --namespace ${domainNamespace}  | grep -i nodeport | grep \'https\' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
+                        script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'https\' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
                         returnStdout: true
                 ).trim()
             }
