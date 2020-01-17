@@ -87,7 +87,7 @@ class IngressController extends Common {
         try {
             Log.info("begin configure apache conf file configmap.")
 
-             if (Common.productId.toString().equalsIgnoreCase("soa")) {
+            if (Common.productId.toString().equalsIgnoreCase("soa")) {
                 script.sh label: "create apache conf file configmap",
                         script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%ADMIN_SERVER_PORT%#${yamlUtility.domainInputsMap.get("adminPort")}#g\" custom-mod-wl-apache-for-soa-configmap.yaml && \
@@ -98,7 +98,7 @@ class IngressController extends Common {
                        cat custom-mod-wl-apache-for-soa-configmap.yaml && \
                        kubectl apply -f custom-mod-wl-apache-for-soa-configmap.yaml -n ${domainNamespace} && \
                        sleep 60"
-            }else {
+            } else {
                 script.sh label: "create apache conf file configmap",
                         script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%ADMIN_SERVER_PORT%#${yamlUtility.domainInputsMap.get("adminPort")}#g\" custom-mod-wl-apache-configmap.yaml && \
@@ -126,7 +126,7 @@ class IngressController extends Common {
         def sslCertKeyFileName = "apache-sample.key"
 
         /**Prepare your own certificate and private key*/
-        script.sh   label: "Prepare your own certificate and private key",
+        script.sh label: "Prepare your own certificate and private key",
                 script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
                              ls && \
                              export VIRTUAL_HOST_NAME=apache-sample-host && \
@@ -137,14 +137,14 @@ class IngressController extends Common {
                              ls"
 
         /**Prepare the input values for the Apache webtier Helm chart as described in this step.*/
-        def customSSLCertValue = script.sh( label: "get customSSLCertValue",
+        def customSSLCertValue = script.sh(label: "get customSSLCertValue",
                 script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
                                                     base64 -i ${sslCertFileName} | tr -d '\\n'",
                 returnStdout: true
         ).trim()
         Log.info("customSSLCertValue :: ${customSSLCertValue}")
 
-        def customSSLKeyValue = script.sh( label: "get customSSLKeyValue",
+        def customSSLKeyValue = script.sh(label: "get customSSLKeyValue",
                 script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
                                                     base64 -i ${sslCertKeyFileName} | tr -d '\\n'",
                 returnStdout: true
@@ -299,7 +299,7 @@ class IngressController extends Common {
         try {
             Log.info("begin get load balancer port.")
 
-            if("${lbType}".equalsIgnoreCase("APACHE")) {
+            if ("${lbType}".equalsIgnoreCase("APACHE")) {
                 httplbPort = script.sh(
                         label: "get lb http port",
                         script: "kubectl describe service ${lbHelmRelease}-apache-webtier --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
@@ -311,7 +311,7 @@ class IngressController extends Common {
                         script: "kubectl describe service ${lbHelmRelease}-apache-webtier --namespace ${domainNamespace}  | grep -i nodeport | grep \'https\' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
                         returnStdout: true
                 ).trim()
-            }else{
+            } else {
                 httplbPort = script.sh(
                         label: "get lb http port",
                         script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
