@@ -173,7 +173,7 @@ class Base {
                     samplesDirectory = ""
                 }
                 break
-            case "WCS":
+            case "WC-SITES":
                 samplesRepo = "git@orahub.oraclecorp.com:tooling/wcsites-k8s-operator.git"
                 samplesBranch = "2.4.0"
                 break
