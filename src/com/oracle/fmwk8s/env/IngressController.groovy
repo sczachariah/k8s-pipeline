@@ -299,31 +299,18 @@ class IngressController extends Common {
         try {
             Log.info("begin get load balancer port.")
 
-            if ("${lbType}".equalsIgnoreCase("APACHE")) {
-                httplbPort = script.sh(
-                        label: "get lb http port",
-                        script: "kubectl describe service ${lbHelmRelease}-apache-webtier --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
-                        returnStdout: true
-                ).trim()
+            httplbPort = script.sh(
+                    label: "get lb http port",
+                    script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
+                    returnStdout: true
+            ).trim()
 
-                httpslbPort = script.sh(
-                        label: "get lb https port",
-                        script: "kubectl describe service ${lbHelmRelease}-apache-webtier --namespace ${domainNamespace}  | grep -i nodeport | grep \'https\' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
-                        returnStdout: true
-                ).trim()
-            } else {
-                httplbPort = script.sh(
-                        label: "get lb http port",
-                        script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'http \' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
-                        returnStdout: true
-                ).trim()
+            httpslbPort = script.sh(
+                    label: "get lb https port",
+                    script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'https\' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
+                    returnStdout: true
+            ).trim()
 
-                httpslbPort = script.sh(
-                        label: "get lb https port",
-                        script: "kubectl describe service ${lbHelmRelease} --namespace ${domainNamespace}  | grep -i nodeport | grep \'https\' | awk -F/ \'{print \$1}\' | awk -F\' \' \'{print \$3}\'",
-                        returnStdout: true
-                ).trim()
-            }
             Log.info("${httplbPort}")
             Log.info("${httpslbPort}")
             Log.info("get load balancer port success.")
