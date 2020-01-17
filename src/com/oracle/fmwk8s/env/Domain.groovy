@@ -287,8 +287,9 @@ class Domain extends Common {
                     credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh label: "create domain ingress rules",
-                    script: "helm install kubernetes/framework/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
+            if(!("${lbType}".equalsIgnoreCase("APACHE"))) {
+                script.sh label: "create domain ingress rules",
+                        script: "helm install kubernetes/framework/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
                     --set type=${lbType} \
                     --set wlsDomain.domainUID=${domainName} \
                     --set wlsDomain.productID=${productId} \
@@ -298,6 +299,9 @@ class Domain extends Common {
                     --set wlsDomain.adminServerPort=${yamlUtility.domainInputsMap.get("adminPort")} \
                     --set wlsDomain.managedServerPort=${yamlUtility.domainInputsMap.get("managedServerPort")} \
                     --set traefik.hostname=fmwk8s.us.oracle.com"
+            }else{
+                Log.info("There is no ingress for APACHE LB type")
+            }
             Log.info("configure domain loadbalancer success.")
         }
         catch (exc) {
