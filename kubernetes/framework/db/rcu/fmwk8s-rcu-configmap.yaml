@@ -62,6 +62,7 @@ data:
 
     elif [ "%PRODUCT_ID%" == "wcsites" ]
     then
+      echo "RCU config for wcsites is part of create-domain. Hence skipping..."
       sleep 10
 
     elif [ "%PRODUCT_ID%" == "oim" ]
