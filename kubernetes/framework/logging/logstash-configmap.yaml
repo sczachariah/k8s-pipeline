@@ -11,11 +11,11 @@ data:
         start_position => beginning
       }
       file {
-        path => "/shared/domains/logs/%DOMAIN_NAME%/soa_server1.log"
+        path => "/shared/domains/logs/%DOMAIN_NAME%/*.log"
         start_position => beginning
       }
       file {
-        path => "/shared/domains/logs/%DOMAIN_NAME%/*.log"
+        path => "/shared/domains/logs/%DOMAIN_NAME%/*.out"
         start_position => beginning
       }
       file {
