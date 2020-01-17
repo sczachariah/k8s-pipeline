@@ -88,7 +88,8 @@ class IngressController extends Common {
             Log.info("begin configure apache conf file configmap.")
             Log.info("Common.productName.toString() :: ${Common.productName}")
 
-            if (Common.productName.toString().equalsIgnoreCase("SOA")) {
+            if ("${Common.productName}".equalsIgnoreCase("SOA")) {
+                Log.info("inside if")
                 script.sh label: "create apache conf file configmap",
                         script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%ADMIN_SERVER_PORT%#${yamlUtility.domainInputsMap.get("adminPort")}#g\" custom-mod-wl-apache-for-soa-configmap.yaml && \
@@ -100,6 +101,7 @@ class IngressController extends Common {
                        kubectl apply -f custom-mod-wl-apache-for-soa-configmap.yaml -n ${domainNamespace} && \
                        sleep 60"
             } else {
+                Log.info("inside else")
                 script.sh label: "create apache conf file configmap",
                         script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%ADMIN_SERVER_PORT%#${yamlUtility.domainInputsMap.get("adminPort")}#g\" custom-mod-wl-apache-configmap.yaml && \
