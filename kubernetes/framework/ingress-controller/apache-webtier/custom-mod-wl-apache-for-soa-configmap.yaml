@@ -1,0 +1,86 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-mod-wl-apache-for-soa-configmap
+data:
+  custom_mod_wl_apache.conf: |-
+    <IfModule mod_weblogic.c>
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </IfModule>
+
+    # Directive for weblogic admin Console deployed on Weblogic Admin Server
+    <Location /console>
+    SetHandler weblogic-handler
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </Location>
+
+    # Directive for weblogic admin Console deployed on Weblogic Admin Server
+    <Location /weblogic/ready>
+    SetHandler weblogic-handler
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </Location>
+
+    <Location /em>
+    SetHandler weblogic-handler
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </Location>
+
+    <Location /servicebus>
+    SetHandler weblogic-handler
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </Location>
+
+    <Location /lwpfconsole>
+    SetHandler weblogic-handler
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </Location>
+
+    <Location /weblogic/ready>
+    SetHandler weblogic-handler
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </Location>
+
+    # Directive for all application deployed on weblogic cluster with a prepath defined by LOCATION variable
+    # For example, if the LOCAITON is set to '/weblogic', all applications deployed on the cluster can be accessed via
+    # http://myhost:myport/weblogic/application_end_url
+    # where 'myhost' is the IP of the machine that runs the Apache web tier, and
+    #       'myport' is the port that the Apache web tier is publicly exposed to.
+    # Note that LOCATION cannot be set to '/' unless this is the only Location module configured.
+    <Location /soa-infra>
+    WLSRequest On
+    WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    PathTrim /weblogic1
+    </Location>
+
+    <Location /soa/composer>
+    WLSRequest On
+    WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    PathTrim /weblogic1
+    </Location>
+
+    <Location /integration/worklistapp>
+    WLSRequest On
+    WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    PathTrim /weblogic1
+    </Location>
+
+    <Location /ess>
+    WLSRequest On
+    WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    PathTrim /weblogic1
+    </Location>
+
+    <Location /EssHealthCheck>
+    WLSRequest On
+    WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    PathTrim /weblogic1
+    </Location>
+---

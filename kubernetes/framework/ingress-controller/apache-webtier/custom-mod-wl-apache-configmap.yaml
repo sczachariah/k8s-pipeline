@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-mod-wl-apache-configmap
+data:
+  custom_mod_wl_apache.conf: |-
+    <IfModule mod_weblogic.c>
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </IfModule>
+
+    # Directive for weblogic admin Console deployed on Weblogic Admin Server
+    <Location /console>
+    SetHandler weblogic-handler
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </Location>
+
+    # Directive for weblogic admin Console deployed on Weblogic Admin Server
+    <Location /weblogic/ready>
+    SetHandler weblogic-handler
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </Location>
+
+    <Location /em>
+    SetHandler weblogic-handler
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </Location>
+---
