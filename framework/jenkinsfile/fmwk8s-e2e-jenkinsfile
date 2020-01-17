@@ -56,16 +56,11 @@ pipeline {
             }
         }
 
-        stage('configure domain loadbalancer') {
+        stage('deploy loadbalancer') {
             steps {
                 dir('fmwk8s') {
                     script {
                         IngressController.deployLoadBalancer()
-                    }
-                }
-                dir('fmwk8s') {
-                    script {
-                        Domain.configureDomainLoadBalancer()
                     }
                 }
             }
@@ -96,6 +91,16 @@ pipeline {
                         }
                     }
 
+                }
+            }
+        }
+
+        stage('configure domain loadbalancer') {
+            steps {
+                dir('fmwk8s') {
+                    script {
+                        Domain.configureDomainLoadBalancer()
+                    }
                 }
             }
         }
