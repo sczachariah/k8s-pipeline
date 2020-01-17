@@ -56,6 +56,21 @@ pipeline {
             }
         }
 
+        stage('configure domain loadbalancer') {
+            steps {
+                dir('fmwsamples') {
+                    script {
+                        IngressController.deployLoadBalancer()
+                    }
+                }
+                dir('fmwk8s') {
+                    script {
+                        Domain.configureDomainLoadBalancer()
+                    }
+                }
+            }
+        }
+
         stage('prepare fmw product environment') {
             parallel {
                 stage('setup database') {
@@ -81,21 +96,6 @@ pipeline {
                         }
                     }
 
-                }
-            }
-        }
-
-        stage('configure domain loadbalancer') {
-            steps {
-                dir('fmwsamples') {
-                    script {
-                        IngressController.deployLoadBalancer()
-                    }
-                }
-                dir('fmwk8s') {
-                    script {
-                        Domain.configureDomainLoadBalancer()
-                    }
                 }
             }
         }

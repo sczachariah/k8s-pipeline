@@ -60,6 +60,10 @@ data:
       -tablespace USERS \
       -tempTablespace TEMP -f < /tmp/pwd.txt
 
+    elif [ "%PRODUCT_ID%" == "wcsites" ]
+    then
+      sleep 10
+
     elif [ "%PRODUCT_ID%" == "oim" ]
     then
 
