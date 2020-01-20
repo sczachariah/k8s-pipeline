@@ -26,11 +26,7 @@ pipeline {
         stage('initialize validation framework') {
             steps {
                 script {
-                    productImageTag=this.env.PRODUCT_IMAGE_TAG
-                    fmwProductReleaseVersion=""
-                    echo $productImageTag | grep -q  "12.2.1.3" ? echo "It's 12.2.1.3!" : echo "wrong"
-
-                    currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME + "-" + fmwProductReleaseVersion + "-" + "${this.env.DOMAIN_TYPE}".toString().toUpperCase()
+                    currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME + "-" + "${this.env.DOMAIN_TYPE}".toString().toUpperCase()
                     Initializer.initialize(this)
                 }
             }
