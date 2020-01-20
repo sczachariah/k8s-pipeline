@@ -57,30 +57,25 @@ data:
     <Location /soa-infra>
     WLSRequest On
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
-    PathTrim /weblogic1
     </Location>
 
     <Location /soa/composer>
     WLSRequest On
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
-    PathTrim /weblogic1
     </Location>
 
     <Location /integration/worklistapp>
     WLSRequest On
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
-    PathTrim /weblogic1
     </Location>
 
     <Location /ess>
     WLSRequest On
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
-    PathTrim /weblogic1
     </Location>
 
     <Location /EssHealthCheck>
     WLSRequest On
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
-    PathTrim /weblogic1
     </Location>
 ---
