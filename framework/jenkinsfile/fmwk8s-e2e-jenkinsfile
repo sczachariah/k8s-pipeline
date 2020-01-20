@@ -26,8 +26,8 @@ pipeline {
         stage('initialize validation framework') {
             steps {
                 script {
-                    currentBuild.displayName = this.env.BUILD_NUMBER + "-" + this.env.OPERATOR_VERSION + "-" + this.env.PRODUCT_NAME + "-" + "${this.env.DOMAIN_TYPE}".toString().toUpperCase()
                     Initializer.initialize(this)
+                    currentBuild.displayName = Initializer.displayCurrentBuildNumber()
                 }
             }
         }

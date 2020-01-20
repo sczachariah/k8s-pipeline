@@ -3,6 +3,23 @@ package com.oracle.fmwk8s.common
 class Initializer {
     static def commonObj
 
+    static def displayCurrentBuildNumber(){
+        def fmwProductReleaseVersion
+        if ("${Base.productImage}".contains("12.2.1.3")) {
+            fmwProductReleaseVersion = "12.2.1.3"
+        } else if ("${Base.productImage}".contains("12.2.1.4")) {
+            fmwProductReleaseVersion = "12.2.1.4"
+        }
+
+        def displayBuildNumberFormat = Base.script.env.BUILD_NUMBER + "-" +
+                                       Base.script.env.OPERATOR_VERSION + "-" +
+                                       Base.script.env.PRODUCT_NAME + "-" +
+                                       fmwProductReleaseVersion + "-" +
+                                       "${Base.script.env.DOMAIN_TYPE}".toString().toUpperCase()
+
+        return displayBuildNumberFormat
+    }
+
     static def initialize(def script) {
         Base.script = script
 
