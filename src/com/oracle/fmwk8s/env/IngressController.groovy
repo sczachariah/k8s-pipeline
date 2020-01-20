@@ -83,15 +83,14 @@ class IngressController extends Common {
      * apache deployment and url access
      * @return
      */
-    static configureApacheConfFileConfigmap() {
+    static def configureApacheConfFileConfigmap() {
         try {
             Log.info("begin configure apache conf file configmap.")
             Log.info("Common.productName.toString() :: ${Common.productName}")
 
-            if ("${Common.productName}".equalsIgnoreCase("SOA")) {
-                Log.info("inside if")
+            if ("${Common.productName}" == "SOA") {
                 script.sh label: "create apache conf file configmap",
-                        script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
+                        script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%ADMIN_SERVER_PORT%#${yamlUtility.domainInputsMap.get("adminPort")}#g\" custom-mod-wl-apache-for-soa-configmap.yaml && \
                        sed -i \"s#%ADMIN_SERVER_NAME%#${yamlUtility.domainInputsMap.get("adminServerName")}#g\" custom-mod-wl-apache-for-soa-configmap.yaml && \
                        sed -i \"s#%DOMAIN_NAME%#${Domain.domainName}#g\" custom-mod-wl-apache-for-soa-configmap.yaml && \
@@ -101,9 +100,8 @@ class IngressController extends Common {
                        kubectl apply -f custom-mod-wl-apache-for-soa-configmap.yaml -n ${domainNamespace} && \
                        sleep 60"
             } else {
-                Log.info("inside else")
                 script.sh label: "create apache conf file configmap",
-                        script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
+                        script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%ADMIN_SERVER_PORT%#${yamlUtility.domainInputsMap.get("adminPort")}#g\" custom-mod-wl-apache-configmap.yaml && \
                        sed -i \"s#%ADMIN_SERVER_NAME%#${yamlUtility.domainInputsMap.get("adminServerName")}#g\" custom-mod-wl-apache-configmap.yaml && \
                        sed -i \"s#%DOMAIN_NAME%#${Domain.domainName}#g\" custom-mod-wl-apache-configmap.yaml && \
@@ -130,7 +128,7 @@ class IngressController extends Common {
 
         /**Prepare your own certificate and private key*/
         script.sh label: "Prepare your own certificate and private key",
-                script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
+                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                              ls && \
                              export VIRTUAL_HOST_NAME=apache-sample-host && \
                              export SSL_CERT_FILE=apache-sample.crt && \
@@ -141,21 +139,21 @@ class IngressController extends Common {
 
         /**Prepare the input values for the Apache webtier Helm chart as described in this step.*/
         def customSSLCertValue = script.sh(label: "get customSSLCertValue",
-                script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
+                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                                                     base64 -i ${sslCertFileName} | tr -d '\\n'",
                 returnStdout: true
         ).trim()
         Log.info("customSSLCertValue :: ${customSSLCertValue}")
 
         def customSSLKeyValue = script.sh(label: "get customSSLKeyValue",
-                script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
+                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                                                     base64 -i ${sslCertKeyFileName} | tr -d '\\n'",
                 returnStdout: true
         ).trim()
         Log.info("customSSLKeyValue :: ${customSSLKeyValue}")
 
         script.sh label: "create apache webtier secret yaml",
-                script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
+                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%LB_HELM_RELEASE_NAME%#${lbHelmRelease}#g\" secret.yaml && \
                        sed -i \"s#%DOMAIN_NAMESPACE%#${Domain.domainNamespace}#g\" secret.yaml && \
                        sed -i \"s#%CUSTOM_SSL_CERT%#${customSSLCertValue}#g\" secret.yaml && \
@@ -175,7 +173,7 @@ class IngressController extends Common {
         def securePort = (!"${apacheVirtualHostName}".isEmpty()) ? 4433 : 443
 
         script.sh label: "create apache webtier service yaml",
-                script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
+                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%LB_HELM_RELEASE_NAME%#${lbHelmRelease}#g\" service.yaml && \
                        sed -i \"s#%DOMAIN_NAMESPACE%#${Domain.domainNamespace}#g\" service.yaml && \
                        sed -i \"s#%SECURE_PORT%#${securePort}#g\" service.yaml && \
@@ -199,7 +197,7 @@ class IngressController extends Common {
                 "custom-mod-wl-apache-configmap"
 
         script.sh label: "create apache webtier deployment yaml",
-                script: "cd ${script.env.WORKSPACE}/kubernetes/framework/ingress-controller/apache-webtier && \
+                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%DOMAIN_NAMESPACE%#${Domain.domainNamespace}#g\" deployment.yaml && \
                        sed -i \"s#%LB_HELM_RELEASE_NAME%#${lbHelmRelease}#g\" deployment.yaml && \
                        sed -i \"s#%APACHE_WEBTIER_CUSTOM_IMAGE%#${customImageForApacheWebtier}#g\" deployment.yaml && \
@@ -222,7 +220,13 @@ class IngressController extends Common {
     static deployApache() {
         try {
             Log.info("begin deploy apache ingress controller.")
-            Log.info(operatorBranch)
+
+            script.git branch: 'master',
+                    credentialsId: "${sshCredentialId}",
+                    url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
+
+            script.sh label: "changing permissions of the files.",
+                      script: "chmod 777 kubernetes/framework/ingress-controller/apache-webtier/*"
 
             /** The configMap constructed in this method is having conf file required for apache deployment and url access */
             configureApacheConfFileConfigmap()
