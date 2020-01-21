@@ -36,7 +36,7 @@ class YamlUtility implements Serializable {
         Map<Object, Object> map = readYaml(script, domainInputsYamlFile)
 
 //        https://bug.oraclecorp.com/pls/bug/webbug_edit.edit_info_top?rptno=30433422
-        def managedServerNameBase = map.get("managedServerNameBase").toString().replaceAll("_", "-")
+//        def managedServerNameBase = map.get("managedServerNameBase").toString().replaceAll("_", "-")
         def clusterName = map.get("clusterName").toString().replaceAll("_", "-")
 
         map.put("adminPort", 17001)
@@ -44,7 +44,7 @@ class YamlUtility implements Serializable {
         map.put("domainUID", domainName.toString())
         map.put("clusterName", clusterName.toString())
 //        https://bug.oraclecorp.com/pls/bug/webbug_edit.edit_info_top?rptno=30433422
-        map.put("managedServerNameBase", managedServerNameBase.toString())
+//        map.put("managedServerNameBase", managedServerNameBase.toString())
         if (domainType != null && !domainType.toString().equalsIgnoreCase("N/A")) {
             map.put("domainType", domainType.toString())
             if (domainType.toString().equalsIgnoreCase("osb")) {

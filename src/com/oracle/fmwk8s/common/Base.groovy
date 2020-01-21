@@ -143,10 +143,10 @@ class Base {
             samplesBranch = "soa-2.3.0"
         }
         // temp condition to test bug 30433422
-        if (("${productName}" == "SOA") && ("${operatorVersion}" == "2.4.0")) {
-            samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
-            samplesBranch = "soa-2.4.0-develop"
-        }
+        //if (("${productName}" == "SOA") && ("${operatorVersion}" == "2.4.0")) {
+        //    samplesRepo = "https://github.com/sbattagi/weblogic-kubernetes-operator"
+        //    samplesBranch = "soa-2.4.0-develop"
+        //}
     }
 
     static getProductIdentifier() {
