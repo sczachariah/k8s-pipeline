@@ -32,8 +32,16 @@ data:
 
     if [ "${PRODUCT_ID}" == "wcp" ]
     then
-      echo "Copying web.xml for wcp..."
+      echo "copying web.xml to enable rich automation for wcp..."
       cp -Lr /etc/config/web.xml ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF/
       ls -ltr ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF
+    fi
+
+    if [ "${PRODUCT_ID}" == "wcsites" ]
+    then
+      echo "invoking sitesconfig setup for wcsites..."
+      kubectl get pods -n ${MY_POD_NAMESPACE}
+      #curl -kv http://hostname:port/sites/sitesconfig
+      sleep 300
     fi
 ---
