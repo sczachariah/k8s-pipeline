@@ -200,7 +200,7 @@ class Domain extends Common {
                         sed -i \"s|%DOMAIN_PVC%|${domainName}-${domainNamespace}-pvc|g\" fmwk8s-customize-domain-pod.yaml && \
                         cat fmwk8s-customize-domain-pod.yaml && \
                         kubectl apply -f fmwk8s-customize-domain-pod.yaml -n ${domainNamespace}"
-            K8sUtility.checkPodStatus(script, 'fmwk8s-customize-domain', domainNamespace, 30, 'Completed')
+            K8sUtility.checkPodStatus(script, 'fmwk8s-customize-domain', domainNamespace, 60, 'Completed')
             Log.info("customize " + productId + " domain success.")
 
             // start
@@ -219,7 +219,7 @@ class Domain extends Common {
 
             // fix operator not managing the domain intermittently
             Operator.setDomainNamespace()
-            sleep 120
+            sleep 150
             isDomainReady()
         }
         catch (exc) {
