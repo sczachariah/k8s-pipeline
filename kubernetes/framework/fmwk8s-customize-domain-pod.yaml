@@ -28,7 +28,8 @@ spec:
         - name: kubectl-binary
           mountPath: /usr/bin/kubectl
         - name: fmwk8s-domain-yaml
-          mountPath: /etc/config
+          mountPath: /etc/config/domain.yaml
+          subPath: domain.yaml
   volumes:
     - name: fmwk8s-utility-configmap
       configMap:
