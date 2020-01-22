@@ -186,11 +186,10 @@ class Domain extends Common {
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain" + productId + ""
             Log.info("create " + productId + " domain success.")
 
+            Log.info("begin customize " + productId + " domain.")
             yamlUtility.generateDomainYaml(script, productId, "domain")
             script.sh label: "create domain yaml configmap",
                     script: "kubectl create configmap fmwk8s-domain-yaml --from-file=domain.yaml -n ${domainNamespace}"
-
-            Log.info("begin customize " + productId + " domain.")
             script.sh label: "customize domain",
                     script: "cd ../fmwk8s/kubernetes/framework/ && \
                         sed -i \"s|%PRODUCT_ID%|${productId}|g\" fmwk8s-customize-domain-pod.yaml && \
@@ -198,7 +197,7 @@ class Domain extends Common {
                         sed -i \"s|%DOMAIN_PVC%|${domainName}-${domainNamespace}-pvc|g\" fmwk8s-customize-domain-pod.yaml && \
                         cat fmwk8s-customize-domain-pod.yaml && \
                         kubectl apply -f fmwk8s-customize-domain-pod.yaml -n ${domainNamespace}"
-            sleep 30
+            K8sUtility.checkPodStatus(script, 'fmwk8s-customize-domain', domainNamespace, 30, 'Completed')
             Log.info("customize " + productId + " domain success.")
 
             Log.info("begin start " + productId + " domain")

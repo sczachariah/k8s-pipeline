@@ -7,7 +7,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: fmwk8s-customize-domain
-      image: k8s.gcr.io/busybox
+      image: radial/busyboxplus:git
       imagePullPolicy: Always
       env:
         - name: PRODUCT_ID
