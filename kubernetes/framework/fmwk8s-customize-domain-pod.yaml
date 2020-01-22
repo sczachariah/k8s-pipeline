@@ -27,6 +27,8 @@ spec:
           mountPath: /etc/config
         - name: kubectl-binary
           mountPath: /usr/bin/kubectl
+        - name: fmwk8s-domain-yaml
+          mountPath: /etc/config
   volumes:
     - name: fmwk8s-utility-configmap
       configMap:
@@ -38,5 +40,9 @@ spec:
     - name: kubectl-binary
       hostPath:
         path: /usr/bin/kubectl
+    - name: fmwk8s-domain-yaml
+      configMap:
+        name: fmwk8s-domain-yaml
+        defaultMode: 0777
 ---
 ---

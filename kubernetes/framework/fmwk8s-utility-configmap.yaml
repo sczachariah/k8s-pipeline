@@ -41,7 +41,9 @@ data:
     then
       echo "invoking sitesconfig setup for wcsites..."
       kubectl get pods -n ${MY_POD_NAMESPACE}
-      #curl -kv http://hostname:port/sites/sitesconfig
+      kubectl apply -f /etc/config/domain.yaml
+      sleep 300
+      curl -kv http://wcsites-cluster-wcsites-cluster.${MY_POD_NAMESPACE}:18001/sites/sitesconfig
       sleep 300
     fi
 ---

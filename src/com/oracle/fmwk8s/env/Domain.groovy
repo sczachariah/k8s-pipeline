@@ -186,6 +186,10 @@ class Domain extends Common {
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain" + productId + ""
             Log.info("create " + productId + " domain success.")
 
+            yamlUtility.generateDomainYaml(script, productId, "domain")
+            script.sh label: "create domain yaml configmap",
+                    script: "kubectl create configmap fmwk8s-domain-yaml domain.yaml -n ${domainNamespace}"
+
             Log.info("begin customize " + productId + " domain.")
             script.sh label: "customize domain",
                     script: "cd ../fmwk8s/kubernetes/framework/ && \
@@ -198,7 +202,6 @@ class Domain extends Common {
             Log.info("customize " + productId + " domain success.")
 
             Log.info("begin start " + productId + " domain")
-            yamlUtility.generateDomainYaml(script, productId, "domain")
             script.sh label: "verify domain yaml",
                     script: "ls -ltr && cat domain*"
             script.sh label: "apply domain yaml",
@@ -287,7 +290,7 @@ class Domain extends Common {
                     credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            if(!("${lbType}".equalsIgnoreCase("APACHE"))) {
+            if (!("${lbType}".equalsIgnoreCase("APACHE"))) {
                 script.sh label: "create domain ingress rules",
                         script: "helm install kubernetes/framework/charts/ingress-per-domain --name ${domainNamespace}-ingress --namespace ${domainNamespace} \
                     --set type=${lbType} \
@@ -299,7 +302,7 @@ class Domain extends Common {
                     --set wlsDomain.adminServerPort=${yamlUtility.domainInputsMap.get("adminPort")} \
                     --set wlsDomain.managedServerPort=${yamlUtility.domainInputsMap.get("managedServerPort")} \
                     --set traefik.hostname=fmwk8s.us.oracle.com"
-            }else{
+            } else {
                 Log.info("There is no ingress for APACHE LB type")
             }
             Log.info("configure domain loadbalancer success.")
