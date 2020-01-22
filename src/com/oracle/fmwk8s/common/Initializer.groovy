@@ -44,7 +44,6 @@ class Initializer {
 
     static def displayInitializedParameterValues() {
         Log.info("Run ID:::" + Base.runId)
-        Log.info("Build Name:::" + Base.buildName)
         Log.info("Cloud:::" + Base.cloud)
         Log.info("Domain Name:::" + Base.domainName)
         Log.info("Product ID:::" + Base.productId)
