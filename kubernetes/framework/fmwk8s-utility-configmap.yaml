@@ -42,11 +42,11 @@ data:
       echo "invoking sitesconfig setup for wcsites..."
       kubectl get pods -n ${MY_POD_NAMESPACE}
       kubectl apply -f /etc/domain/domain.yaml -n ${MY_POD_NAMESPACE}
-      sleep 300
+      sleep 500
       cat /etc/domain/create-domain-inputs.yaml
-      domainUID = `grep -A3 'domainUID:' /etc/domain/create-domain-inputs.yaml | tail -n1 | awk '{ print $2}'`
-      clusterName = `grep -A3 'clusterName:' /etc/domain/create-domain-inputs.yaml | tail -n1 | awk '{ print $2}'`
+      domainUID=`grep 'domainUID:' /etc/domain/create-domain-inputs.yaml | awk '{print $2}'`
+      clusterName=`grep 'clusterName:' /etc/domain/create-domain-inputs.yaml | awk '{print $2}'`
       curl -kv http://$domainUID-cluster-$clusterName.${MY_POD_NAMESPACE}:18001/sites/sitesconfig
-      sleep 300
+      sleep 800
     fi
 ---
