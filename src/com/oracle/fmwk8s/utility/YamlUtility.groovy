@@ -4,6 +4,7 @@ import com.cloudbees.groovy.cps.NonCPS
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.IngressController
+import org.apache.commons.lang3.RandomStringUtils
 @GrabResolver(name = 'fmw-virtual', root = 'http://artifactory-slc-prod1.oraclecorp.com/artifactory/fmw-virtual/')
 @Grab('org.yaml:snakeyaml:1.24')
 import org.yaml.snakeyaml.*
@@ -146,6 +147,7 @@ class YamlUtility implements Serializable {
 
     static writeYaml(script, map, yamlFile) {
         doPrecreateServiceWA(map)
+        addRestartVersion(map)
         script.writeFile file: yamlFile + ".yaml", text: getYamlContent(map)
 //        script.writeYaml file: yamlFile + ".yaml", data: map
     }
@@ -169,7 +171,15 @@ class YamlUtility implements Serializable {
                 }
             }
         }
+    }
 
+    static addRestartVersion(map) {
+        for (Object key : map.keySet()) {
+            if (key.equals("spec")) {
+                LinkedHashMap specs = map.get("spec")
+                specs.put("restartVersion", RandomStringUtils.randomNumeric(3))
+            }
+        }
     }
 
     @NonCPS

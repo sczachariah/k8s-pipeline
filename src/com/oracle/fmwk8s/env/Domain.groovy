@@ -202,6 +202,7 @@ class Domain extends Common {
             Log.info("customize " + productId + " domain success.")
 
             Log.info("begin start " + productId + " domain")
+            yamlUtility.generateDomainYaml(script, productId, "domain")
             script.sh label: "verify domain yaml",
                     script: "ls -ltr && cat domain*"
             script.sh label: "apply domain yaml",
