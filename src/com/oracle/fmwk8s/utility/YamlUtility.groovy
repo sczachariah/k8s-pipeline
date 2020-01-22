@@ -177,7 +177,16 @@ class YamlUtility implements Serializable {
         for (Object key : map.keySet()) {
             if (key.equals("spec")) {
                 LinkedHashMap specs = map.get("spec")
-                specs.put("restartVersion", RandomStringUtils.randomNumeric(3))
+
+                for (Object spec : specs.keySet()) {
+                    if (spec.equals("clusters")) {
+                        List clusters = specs.get("clusters")
+
+                        for (LinkedHashMap cluster : clusters) {
+                            cluster.put("restartVersion", RandomStringUtils.randomNumeric(3))
+                        }
+                    }
+                }
             }
         }
     }

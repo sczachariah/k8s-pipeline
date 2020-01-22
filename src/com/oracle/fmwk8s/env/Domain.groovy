@@ -219,7 +219,7 @@ class Domain extends Common {
 
             // fix operator not managing the domain intermittently
             Operator.setDomainNamespace()
-            sleep 60
+            sleep 120
             isDomainReady()
         }
         catch (exc) {
