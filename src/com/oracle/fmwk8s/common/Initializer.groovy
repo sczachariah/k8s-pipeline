@@ -14,7 +14,7 @@ class Initializer {
                 Base.script.env.OPERATOR_VERSION + "-" +
                 Base.script.env.PRODUCT_NAME + "-" +
                 Base.fmwProductReleaseVersion +
-                Base.script.env.DOMAIN_TYPE.toString().equalsIgnoreCase("N/A") ? "" : "-" + Base.script.env.DOMAIN_TYPE.toString().toUpperCase()
+                (Base.script.env.DOMAIN_TYPE.toString().equalsIgnoreCase("N/A") ? "" : ("-" + Base.script.env.DOMAIN_TYPE.toString().toUpperCase()))
 
         return Base.buildName
     }
