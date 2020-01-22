@@ -16,6 +16,7 @@ class Base {
     static def k8sMasterIP = ""
 
     static def runId
+    static def buildName
     static def registrySecret = "regcred"
     static def denRegistrySecret = "denregcred"
     static def registryAuthUsr
@@ -28,6 +29,7 @@ class Base {
     static def operatorServiceAccount
     static def operatorHelmRelease
 
+    static def fmwProductReleaseVersion
     static def productId
     static def productName
     static def productImage

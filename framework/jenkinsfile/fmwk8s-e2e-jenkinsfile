@@ -27,7 +27,7 @@ pipeline {
             steps {
                 script {
                     Initializer.initialize(this)
-                    currentBuild.displayName = Initializer.displayCurrentBuildNumber()
+                    currentBuild.displayName = Initializer.getBuildName()
                 }
             }
         }

@@ -223,6 +223,7 @@ class Logging extends Common {
         try {
             Log.info("archive test logs.")
             buildSuffix = "${script.env.BUILD_NUMBER}-${Common.operatorVersion}-${Common.productName}"
+            buildSuffix = buildName
 
             script.zip zipFile: "test_logs_${buildSuffix}.zip", archive: true, dir: "${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/test_logs"
 

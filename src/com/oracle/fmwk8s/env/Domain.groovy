@@ -188,7 +188,7 @@ class Domain extends Common {
 
             yamlUtility.generateDomainYaml(script, productId, "domain")
             script.sh label: "create domain yaml configmap",
-                    script: "kubectl create configmap fmwk8s-domain-yaml domain.yaml -n ${domainNamespace}"
+                    script: "kubectl create configmap fmwk8s-domain-yaml --from-file=domain.yaml -n ${domainNamespace}"
 
             Log.info("begin customize " + productId + " domain.")
             script.sh label: "customize domain",
