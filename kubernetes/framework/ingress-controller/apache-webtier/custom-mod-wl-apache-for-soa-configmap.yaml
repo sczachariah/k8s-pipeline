@@ -56,35 +56,30 @@ data:
     # Note that LOCATION cannot be set to '/' unless this is the only Location module configured.
     <Location /soa-infra>
     SetHandler weblogic-handler
-    WLSRequest On
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
     PathTrim /weblogic1
     </Location>
 
     <Location /soa/composer>
     SetHandler weblogic-handler
-    WLSRequest On
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
     PathTrim /weblogic1
     </Location>
 
     <Location /integration/worklistapp>
     SetHandler weblogic-handler
-    WLSRequest On
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
     PathTrim /weblogic1
     </Location>
 
     <Location /ess>
     SetHandler weblogic-handler
-    WLSRequest On
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
     PathTrim /weblogic1
     </Location>
 
     <Location /EssHealthCheck>
     SetHandler weblogic-handler
-    WLSRequest On
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
     PathTrim /weblogic1
     </Location>
