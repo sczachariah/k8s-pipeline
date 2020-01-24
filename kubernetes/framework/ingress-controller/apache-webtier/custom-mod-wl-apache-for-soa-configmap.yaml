@@ -55,30 +55,25 @@ data:
     #       'myport' is the port that the Apache web tier is publicly exposed to.
     # Note that LOCATION cannot be set to '/' unless this is the only Location module configured.
     <Location /soa-infra>
-    SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
     PathTrim /soa-infra
     </Location>
 
     <Location /soa/composer>
-    SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
     PathTrim /soa/composer
     </Location>
 
     <Location /integration/worklistapp>
-    SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
     PathTrim /integration/worklistapp
     </Location>
 
     <Location /ess>
-    SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
     </Location>
 
     <Location /EssHealthCheck>
-    SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
     </Location>
 ---
