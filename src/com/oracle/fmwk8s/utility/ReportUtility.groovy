@@ -46,7 +46,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/integration/worklis
             if (Domain.domainType.toString().toLowerCase().contains("osb")) {
                 domainURLs = domainURLs + """
 http://${Common.k8sMasterIP}:${IngressController.httplbPort}/servicebus
-http://${Common.k8sMasterIP}:${IngressController.httplbPort}/sbconsole
+http://${Common.k8sMasterIP}:${IngressController.httplbPort}/lwpfconsole
 """
             }
             if (Domain.domainType.toString().toLowerCase().contains("ess")) {

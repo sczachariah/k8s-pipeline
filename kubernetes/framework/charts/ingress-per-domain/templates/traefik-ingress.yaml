@@ -30,7 +30,7 @@ spec:
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
               servicePort: {{ .Values.wlsDomain.adminServerPort }}
-          - path: /sbconsole
+          - path: /lwpfconsole
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
               servicePort: {{ .Values.wlsDomain.adminServerPort }}
@@ -40,7 +40,7 @@ spec:
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
               servicePort: {{ .Values.wlsDomain.adminServerPort }}
-          - path: /sbconsole
+          - path: /lwpfconsole
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
               servicePort: {{ .Values.wlsDomain.adminServerPort }}
