@@ -55,9 +55,12 @@ data:
     #       'myport' is the port that the Apache web tier is publicly exposed to.
     # Note that LOCATION cannot be set to '/' unless this is the only Location module configured.
     <Location /soa-infra>
-    WLSRequest On
+    SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
-    PathTrim /soa-infra
+    WLProxySSL ON
+    WLProxySSLPassThrough ON
+    RewriteEngine On
+    RewriteOptions inherit
     </Location>
 
     <Location /soa/composer>
