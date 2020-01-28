@@ -117,6 +117,7 @@ class IngressController extends Common {
      */
     static def createCertificatePrivateKeySecretYAMLForApacheWebtier() {
         /** Variables required is declared */
+        def apacheVirtualHostName = "apache-sample-host"
         def sslCertFileName = "apache-sample.crt"
         def sslCertKeyFileName = "apache-sample.key"
 
@@ -124,12 +125,11 @@ class IngressController extends Common {
         script.sh label: "Prepare your own certificate and private key",
                 script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                              ls && \
-                             export VIRTUAL_HOST_NAME=apache-sample-host && \
-                             export SSL_CERT_FILE=apache-sample.crt && \
-                             export SSL_CERT_KEY_FILE=apache-sample.key && \
+                             export VIRTUAL_HOST_NAME=${apacheVirtualHostName} && \
+                             export SSL_CERT_FILE=${sslCertFileName} && \
+                             export SSL_CERT_KEY_FILE=${sslCertKeyFileName} && \
                              ls && \
-                             sh certgen.sh && \
-                             ls"
+                             sh certgen.sh"
 
         /**Prepare the input values for the Apache webtier Helm chart as described in this step.*/
         def customSSLCertValue = script.sh(label: "get customSSLCertValue",
@@ -137,14 +137,12 @@ class IngressController extends Common {
                                                     base64 -i ${sslCertFileName} | tr -d '\\n'",
                 returnStdout: true
         ).trim()
-        Log.info("customSSLCertValue :: ${customSSLCertValue}")
 
         def customSSLKeyValue = script.sh(label: "get customSSLKeyValue",
                 script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                                                     base64 -i ${sslCertKeyFileName} | tr -d '\\n'",
                 returnStdout: true
         ).trim()
-        Log.info("customSSLKeyValue :: ${customSSLKeyValue}")
 
         script.sh label: "create apache webtier secret yaml",
                 script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
@@ -163,14 +161,10 @@ class IngressController extends Common {
      */
     static def createServiceYAMLForApacheWebtier() {
         /** Variables declared */
-        def apacheVirtualHostName = "apache-sample-host"
-        def securePort = (!"${apacheVirtualHostName}".isEmpty()) ? 4433 : 443
-
         script.sh label: "create apache webtier service yaml",
                 script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%LB_HELM_RELEASE_NAME%#${lbHelmRelease}#g\" service.yaml && \
                        sed -i \"s#%DOMAIN_NAMESPACE%#${Domain.domainNamespace}#g\" service.yaml && \
-                       sed -i \"s#%SECURE_PORT%#${securePort}#g\" service.yaml && \
                        cat service.yaml && \
                        kubectl apply -f service.yaml -n ${Domain.domainNamespace} && \
                        sleep 60"
