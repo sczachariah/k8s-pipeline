@@ -57,30 +57,45 @@ data:
     <Location /soa-infra>
     SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    WLProxySSL ON
     WLProxySSLPassThrough ON
+    RewriteEngine On
+    RewriteOptions inherit
     </Location>
 
     <Location /soa/composer>
     SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    WLProxySSL ON
     WLProxySSLPassThrough ON
+    RewriteEngine On
+    RewriteOptions inherit
     </Location>
 
     <Location /integration/worklistapp>
     SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    WLProxySSL ON
     WLProxySSLPassThrough ON
+    RewriteEngine On
+    RewriteOptions inherit
     </Location>
 
     <Location /ess>
     SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    WLProxySSL ON
     WLProxySSLPassThrough ON
+    RewriteEngine On
+    RewriteOptions inherit
     </Location>
 
     <Location /EssHealthCheck>
     SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    WLProxySSL ON
     WLProxySSLPassThrough ON
+    RewriteEngine On
+    RewriteOptions inherit
     </Location>
 ---
