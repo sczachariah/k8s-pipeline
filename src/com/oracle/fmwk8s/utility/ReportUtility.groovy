@@ -46,14 +46,12 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/em
 http://${Common.k8sMasterIP}:${IngressController.httplbPort}/soa-infra/
 http://${Common.k8sMasterIP}:${IngressController.httplbPort}/soa/composer
 http://${Common.k8sMasterIP}:${IngressController.httplbPort}/integration/worklistapp
-http://${Common.k8sMasterIP}:${IngressController.httplbPort}/integration/services
 """
             }
             if (Domain.domainType.toString().toLowerCase().contains("osb")) {
                 domainURLs = domainURLs + """
 http://${Common.k8sMasterIP}:${IngressController.httplbPort}/servicebus
 http://${Common.k8sMasterIP}:${IngressController.httplbPort}/lwpfconsole
-http://${Common.k8sMasterIP}:${IngressController.httplbPort}/sbconsole
 """
             }
             if (Domain.domainType.toString().toLowerCase().contains("ess")) {
