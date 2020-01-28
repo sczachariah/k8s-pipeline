@@ -7,7 +7,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: fmwk8s-customize-domain
-      image: radial/busyboxplus:git
+      image: cisystem.docker.oraclecorp.com/fmw-k8s-syseng-oel7-slave:latest
       imagePullPolicy: Always
       env:
         - name: PRODUCT_ID
@@ -25,10 +25,6 @@ spec:
           mountPath: %FMWK8S_NFS_HOME%
         - name: fmwk8s-utility-configmap
           mountPath: /etc/config
-        - name: kubectl-binary
-          mountPath: /usr/bin/kubectl
-        - name: zip-binary
-          mountPath: /usr/bin/zip
         - name: fmwk8s-domain-yaml
           mountPath: /etc/domain
   volumes:
@@ -39,12 +35,6 @@ spec:
     - name: domain-storage-volume
       persistentVolumeClaim:
         claimName: %DOMAIN_PVC%
-    - name: kubectl-binary
-      hostPath:
-        path: /usr/bin/kubectl
-    - name: zip-binary
-      hostPath:
-        path: /usr/bin/zip
     - name: fmwk8s-domain-yaml
       configMap:
         name: fmwk8s-domain-yaml
