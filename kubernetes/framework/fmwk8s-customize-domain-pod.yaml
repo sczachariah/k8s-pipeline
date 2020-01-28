@@ -29,7 +29,7 @@ spec:
         - name: fmwk8s-utility-configmap
           mountPath: /etc/config
         - name: fmwk8s-domain-yaml
-      mountPath: /etc/domain
+          mountPath: /etc/domain
   volumes:
     - name: fmwk8s-utility-configmap
       configMap:
