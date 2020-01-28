@@ -17,6 +17,12 @@ data:
     WebLogicPort %ADMIN_SERVER_PORT%
     </Location>
 
+    <Location /consolehelp>
+    SetHandler weblogic-handler
+    WebLogicHost %DOMAIN_NAME%-%ADMIN_SERVER_NAME%
+    WebLogicPort %ADMIN_SERVER_PORT%
+    </Location>
+
     # Directive for weblogic admin Console deployed on Weblogic Admin Server
     <Location /weblogic/ready>
     SetHandler weblogic-handler
