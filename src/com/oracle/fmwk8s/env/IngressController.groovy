@@ -161,10 +161,14 @@ class IngressController extends Common {
      */
     static def createServiceYAMLForApacheWebtier() {
         /** Variables declared */
+        def apacheVirtualHostName = "apache-sample-host"
+        def securePort = (!"${apacheVirtualHostName}".isEmpty()) ? 4433 : 443
+
         script.sh label: "create apache webtier service yaml",
                 script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                        sed -i \"s#%LB_HELM_RELEASE_NAME%#${lbHelmRelease}#g\" service.yaml && \
                        sed -i \"s#%DOMAIN_NAMESPACE%#${Domain.domainNamespace}#g\" service.yaml && \
+                       sed -i \"s#%SECURE_PORT%#${securePort}#g\" service.yaml && \
                        cat service.yaml && \
                        kubectl apply -f service.yaml -n ${Domain.domainNamespace} && \
                        sleep 60"
