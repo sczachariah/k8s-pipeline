@@ -17,6 +17,10 @@ spec:
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
               servicePort: {{ .Values.wlsDomain.adminServerPort }}
+          - path: /consolehelp
+            backend:
+              serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
+              servicePort: {{ .Values.wlsDomain.adminServerPort }}
           - path: /weblogic/ready
             backend:
               serviceName: '{{ .Values.wlsDomain.domainUID }}-{{ .Values.wlsDomain.adminServerName | lower | replace "_" "-" }}'
