@@ -21,6 +21,7 @@ class Initializer {
 
     static def initialize(def script) {
         Base.script = script
+        Base.pipelineStartTime = Base.getCurrentDateTime()
 
         Log.info("begin initializing validation framework")
         script.sh "touch /logs/jenkinsSample"

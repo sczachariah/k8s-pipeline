@@ -9,6 +9,10 @@ class FrameworkStatus {
     String buildName
     String runId
     String jobStatus
+    String pipelineStartTime
+    String pipelineEndTime
+    String testStartTime
+    String testEndTime
     Map<String, String> parameters
     String jobLink
     String jobUrl
@@ -20,6 +24,10 @@ class FrameworkStatus {
         this.buildName = "${script.currentBuild.displayName}"
         this.runId = Base.runId
         this.jobStatus = "${script.currentBuild.currentResult}"
+        this.pipelineStartTime = Base.pipelineStartTime
+        this.pipelineEndTime = Base.pipelineEndTime
+        this.testStartTime = Base.testStartTime
+        this.testEndTime = Base.testEndTime
 
         parameters = new LinkedHashMap<>()
         parameters.put("cloud", Base.cloud)
@@ -32,6 +40,7 @@ class FrameworkStatus {
         parameters.put("testImage", Base.testImage)
         parameters.put("testType", Base.testType)
         parameters.put("testTarget", Base.testTarget)
+        parameters.put("hoursAfter", Base.hoursAfter)
 
         this.jobLink = "${script.env.JENKINS_URL}/blue/organizations/jenkins/${script.env.JOB_NAME}/detail/${script.env.JOB_NAME}/${script.env.BUILD_NUMBER}/pipeline"
         this.jobUrl = "${script.env.JOB_URL}"
@@ -46,6 +55,7 @@ class FrameworkStatus {
     }
 
     static getFrameworkStatusJson(script) {
+        Base.pipelineEndTime = Base.getCurrentDateTime()
         FrameworkStatus frameworkStatus = new FrameworkStatus(script);
         def json = JsonOutput.toJson(frameworkStatus)
         def prettyJson = JsonOutput.prettyPrint(json)

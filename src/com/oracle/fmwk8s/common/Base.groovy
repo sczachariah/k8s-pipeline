@@ -4,11 +4,18 @@ import com.oracle.fmwk8s.utility.CommonUtility
 import com.oracle.fmwk8s.utility.K8sUtility
 import com.oracle.fmwk8s.utility.YamlUtility
 
+import java.text.SimpleDateFormat
+
 class Base {
     static def script
     static def yamlUtility = new YamlUtility()
     static def commonUtility = new CommonUtility()
     static def k8sUtility = new K8sUtility()
+
+    static def pipelineStartTime
+    static def pipelineEndTime
+    static def testStartTime
+    static def testEndTime
 
     static def sshCredentialId = "fmwk8sval_ww.ssh"
     static def cloud
@@ -185,5 +192,11 @@ class Base {
                 samplesDirectory = ""
                 break
         }
+    }
+
+    static getCurrentDateTime() {
+        def date = new Date()
+        def sdf = new SimpleDateFormat("MMM-dd-yyyy HH:mm:ss Z")
+        return sdf.format(date).toString()
     }
 }

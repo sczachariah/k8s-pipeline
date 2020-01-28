@@ -1,5 +1,6 @@
 package com.oracle.fmwk8s.test
 
+import com.oracle.fmwk8s.common.Base
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
 import com.oracle.fmwk8s.env.Domain
@@ -36,6 +37,7 @@ class OperatorIntegration extends Test {
                        kubectl get all -n ${Domain.domainNamespace}"
 
             testStatus = "started"
+            Base.testStartTime = Base.getCurrentDateTime()
             Test.waitForTests()
 
             Log.info("run test success.")
@@ -45,6 +47,7 @@ class OperatorIntegration extends Test {
             throw exc
         }
         finally {
+            Base.testEndTime = Base.getCurrentDateTime()
             testPodName = script.sh(
                     label: "get test pod name",
                     script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${Domain.domainNamespace} | grep ${testId}-test",
