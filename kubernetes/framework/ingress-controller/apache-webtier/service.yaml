@@ -17,6 +17,6 @@ spec:
       protocol: TCP
       targetPort: 80
     - name: https
-n      port: %SECURE_PORT%
+      port: %SECURE_PORT%
       protocol: TCP
       targetPort: %SECURE_PORT%
