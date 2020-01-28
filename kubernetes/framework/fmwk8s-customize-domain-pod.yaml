@@ -6,8 +6,8 @@ metadata:
 spec:
   restartPolicy: Never
   securityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
+    runAsUser: 0
+    runAsGroup: 0
   containers:
     - name: fmwk8s-customize-domain
       image: cisystem.docker.oraclecorp.com/fmw-k8s-syseng-oel7-slave:latest
