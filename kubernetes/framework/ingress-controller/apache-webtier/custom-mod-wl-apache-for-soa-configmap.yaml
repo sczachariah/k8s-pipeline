@@ -64,24 +64,38 @@ data:
     </Location>
 
     <Location /soa/composer>
-    WLSRequest On
+    SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
-    PathTrim /soa/composer
+    WLProxySSL ON
+    WLProxySSLPassThrough ON
+    RewriteEngine On
+    RewriteOptions inherit
     </Location>
 
     <Location /integration/worklistapp>
-    WLSRequest On
+    SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
-    PathTrim /integration/worklistapp
+    WLProxySSL ON
+    WLProxySSLPassThrough ON
+    RewriteEngine On
+    RewriteOptions inherit
     </Location>
 
     <Location /ess>
-    WLSRequest On
+    SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    WLProxySSL ON
+    WLProxySSLPassThrough ON
+    RewriteEngine On
+    RewriteOptions inherit
     </Location>
 
     <Location /EssHealthCheck>
-    WLSRequest On
+    SetHandler weblogic-handler
     WebLogicCluster %DOMAIN_NAME%-cluster-%CLUSTER_NAME%:%MANAGED_SERVER_PORT%
+    WLProxySSL ON
+    WLProxySSLPassThrough ON
+    RewriteEngine On
+    RewriteOptions inherit
     </Location>
 ---
