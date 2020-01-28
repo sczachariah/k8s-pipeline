@@ -42,11 +42,11 @@ data:
       mv $em /tmp
       cd /tmp
       unzip em.ear
-      jar -xvf em.war WEB-INF/web.xml
+      unzip em.war
       sed -i 's/<!-- AUTOMATION_MODE_UNCOMMENT//g' WEB-INF/web.xml
       sed -i 's/AUTOMATION_MODE_UNCOMMENT -->//g' WEB-INF/web.xml
-      jar -uvf em.war WEB-INF/web.xml
-      jar -cvf em.ear adf APP-INF lib deployment.xml em.war META-INF
+      zip -u em.war WEB-INF/web.xml
+      zip -u em.ear em.war
       mv em.ear $em
     fi
 
