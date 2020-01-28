@@ -85,30 +85,24 @@ class IngressController extends Common {
      */
     static def configureApacheConfFileConfigmap() {
         try {
-            Log.info("begin configure apache conf file configmap.")
-            Log.info("Common.productName.toString() :: ${Common.productName}")
+            def confFileConfigMapName = Common.productName.toString().equalsIgnoreCase("SOA") ?
+                    "custom-mod-wl-apache-for-soa-configmap" :
+                    "custom-mod-wl-apache-configmap"
 
-            if ("${Common.productName}" == "SOA") {
-                script.sh label: "create apache conf file configmap",
-                        script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
-                       sed -i \"s#%ADMIN_SERVER_PORT%#${yamlUtility.domainInputsMap.get("adminPort")}#g\" custom-mod-wl-apache-for-soa-configmap.yaml && \
-                       sed -i \"s#%ADMIN_SERVER_NAME%#${yamlUtility.domainInputsMap.get("adminServerName")}#g\" custom-mod-wl-apache-for-soa-configmap.yaml && \
-                       sed -i \"s#%DOMAIN_NAME%#${Domain.domainName}#g\" custom-mod-wl-apache-for-soa-configmap.yaml && \
-                       sed -i \"s#%CLUSTER_NAME%#${yamlUtility.domainInputsMap.get("clusterName")}#g\" custom-mod-wl-apache-for-soa-configmap.yaml && \
-                       sed -i \"s#%MANAGED_SERVER_PORT%#${yamlUtility.domainInputsMap.get("managedServerPort")}#g\" custom-mod-wl-apache-for-soa-configmap.yaml && \
-                       cat custom-mod-wl-apache-for-soa-configmap.yaml && \
-                       kubectl apply -f custom-mod-wl-apache-for-soa-configmap.yaml -n ${domainNamespace} && \
+            Log.info("begin configure apache conf file configmap.")
+            Log.info("Common.productName.toString() :: ${Common.productName}, configmap file name :: ${confFileConfigMapName}.yaml")
+
+            script.sh label: "create apache conf file configmap",
+                    script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
+                       sed -i \"s#%ADMIN_SERVER_PORT%#${yamlUtility.domainInputsMap.get("adminPort")}#g\" ${confFileConfigMapName}.yaml && \
+                       sed -i \"s#%ADMIN_SERVER_NAME%#${yamlUtility.domainInputsMap.get("adminServerName")}#g\" ${confFileConfigMapName}.yaml && \
+                       sed -i \"s#%DOMAIN_NAME%#${Domain.domainName}#g\" ${confFileConfigMapName}.yaml && \
+                       sed -i \"s#%CLUSTER_NAME%#${yamlUtility.domainInputsMap.get("clusterName")}#g\" ${confFileConfigMapName}.yaml && \
+                       sed -i \"s#%MANAGED_SERVER_PORT%#${yamlUtility.domainInputsMap.get("managedServerPort")}#g\" ${confFileConfigMapName}.yaml && \
+                       cat ${confFileConfigMapName}.yaml && \
+                       kubectl apply -f ${confFileConfigMapName}.yaml -n ${domainNamespace} && \
                        sleep 60"
-            } else {
-                script.sh label: "create apache conf file configmap",
-                        script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
-                       sed -i \"s#%ADMIN_SERVER_PORT%#${yamlUtility.domainInputsMap.get("adminPort")}#g\" custom-mod-wl-apache-configmap.yaml && \
-                       sed -i \"s#%ADMIN_SERVER_NAME%#${yamlUtility.domainInputsMap.get("adminServerName")}#g\" custom-mod-wl-apache-configmap.yaml && \
-                       sed -i \"s#%DOMAIN_NAME%#${Domain.domainName}#g\" custom-mod-wl-apache-configmap.yaml && \
-                       cat custom-mod-wl-apache-configmap.yaml && \
-                       kubectl apply -f custom-mod-wl-apache-configmap.yaml -n ${domainNamespace} && \
-                       sleep 60"
-            }
+
             Log.info("configure apache conf file configmap success.")
         }
         catch (exc) {
