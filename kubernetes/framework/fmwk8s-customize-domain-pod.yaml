@@ -5,6 +5,8 @@ metadata:
   name: fmwk8s-customize-domain
 spec:
   restartPolicy: Never
+  securityContext:
+    runAsUser: 0
   containers:
     - name: fmwk8s-customize-domain
       image: cisystem.docker.oraclecorp.com/fmw-k8s-syseng-oel7-slave:latest
@@ -26,7 +28,7 @@ spec:
         - name: fmwk8s-utility-configmap
           mountPath: /etc/config
         - name: fmwk8s-domain-yaml
-          mountPath: /etc/domain
+      mountPath: /etc/domain
   volumes:
     - name: fmwk8s-utility-configmap
       configMap:
