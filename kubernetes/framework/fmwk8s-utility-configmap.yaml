@@ -35,6 +35,14 @@ data:
       echo "copying web.xml to enable rich automation for wcp..."
       cp -Lr /etc/config/web.xml ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF/
       ls -ltr ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF
+
+      echo "updating em.war web.xml to enable rich automation for wcp..."
+      em=`find ${FMWK8S_NFS_HOME}/domains -name em.war | grep -v cache`
+      echo "em.war path : $em"
+      jar -xvf $em WEB-INF/web.xml
+      sed -i 's/<!-- AUTOMATION_MODE_UNCOMMENT//g' WEB-INF/web.xml
+      sed -i 's/AUTOMATION_MODE_UNCOMMENT -->//g' WEB-INF/web.xml
+      jar -uvf $em WEB-INF/web.xml
     fi
 
     if [ "${PRODUCT_ID}" == "wcsites" ]
