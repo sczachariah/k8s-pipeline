@@ -37,12 +37,17 @@ data:
       ls -ltr ${FMWK8S_NFS_HOME}/domains/applications/extend.spaces.webapp.war/WEB-INF
 
       echo "updating em.war web.xml to enable rich automation for wcp..."
-      em=`find ${FMWK8S_NFS_HOME}/domains -name em.war | grep -v cache`
-      echo "em.war path : $em"
-      jar -xvf $em WEB-INF/web.xml
+      em=`find ${FMWK8S_NFS_HOME}/domains -name em.ear`
+      echo "em.ear path : $em"
+      mv $em /tmp
+      cd /tmp
+      unzip em.ear
+      jar -xvf em.war WEB-INF/web.xml
       sed -i 's/<!-- AUTOMATION_MODE_UNCOMMENT//g' WEB-INF/web.xml
       sed -i 's/AUTOMATION_MODE_UNCOMMENT -->//g' WEB-INF/web.xml
-      jar -uvf $em WEB-INF/web.xml
+      jar -uvf em.war WEB-INF/web.xml
+      jar -cvf em.ear adf APP-INF lib deployment.xml em.war META-INF
+      mv em.ear $em
     fi
 
     if [ "${PRODUCT_ID}" == "wcsites" ]
