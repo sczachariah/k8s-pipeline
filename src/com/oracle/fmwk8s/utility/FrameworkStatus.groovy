@@ -8,6 +8,8 @@ import groovy.json.JsonOutput
 class FrameworkStatus {
     String buildName
     String runId
+    String productName
+    String releaseVersion
     String jobStatus
     String pipelineStartTime
     String pipelineEndTime
@@ -23,6 +25,8 @@ class FrameworkStatus {
     FrameworkStatus(script) {
         this.buildName = "${script.currentBuild.displayName}"
         this.runId = Base.runId
+        this.productName = Base.productName
+        this.releaseVersion = Base.fmwProductReleaseVersion
         this.jobStatus = "${script.currentBuild.currentResult}"
         this.pipelineStartTime = Base.pipelineStartTime
         this.pipelineEndTime = Base.pipelineEndTime
