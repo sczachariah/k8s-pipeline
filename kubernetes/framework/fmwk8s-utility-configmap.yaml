@@ -48,6 +48,7 @@ data:
       zip -u em.war WEB-INF/web.xml
       zip -u em.ear em.war
       cp -rf em.ear $em
+      chmod -R 777 $em
       ls -ltr $em
     fi
 
