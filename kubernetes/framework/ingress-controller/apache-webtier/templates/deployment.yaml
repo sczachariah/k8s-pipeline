@@ -24,10 +24,11 @@ spec:
           secret:
             defaultMode: 420
             secretName: {{ .Values.domain.domainUID }}-apache-webtier-cert
+
         - name: {{ .Values.domain.domainUID }}-apache-webtier
-        configMap:
-          name: {{ .Values.apacheWebtier.customConfigMapFileName }}
-          defaultMode: 0777
+          configMap:
+            name: {{ .Values.apacheWebtier.customConfigMapFileName }}
+            defaultMode: 0777
       containers:
         - env:
             - name: VIRTUAL_HOST_NAME
