@@ -113,6 +113,8 @@ class Operator extends Common {
                     script: "helm delete --purge ${operatorHelmRelease}"
             script.sh label: "delete helm configmap",
                     script: "kubectl delete cm -n kube-system --selector=NAME=${operatorHelmRelease}"
+            script.sh label: "delete operator cluster roles",
+                    script: "kubectl delete clusterroles --selector=weblogic.operatorName=${operatorNamespace}"
 
             Log.info("clean kubernetes operator success.")
         }
