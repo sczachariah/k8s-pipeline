@@ -126,7 +126,7 @@ class IngressController extends Common {
             script.sh label: "changing permissions of the files.",
                     script: "chmod 777 kubernetes/framework/ingress-controller/apache-webtier/*"
 
-            script.sh label: "debug apache-webtier",
+            script.sh label: "debug & deploy apache-webtier",
                     script: "helm init --client-only --skip-refresh --wait && \
                     helm repo update && \
                     cd kubernetes/framework/ingress-controller && \
@@ -146,27 +146,6 @@ class IngressController extends Common {
                         --set apacheWebtier.sslKeyFileMountedPath=${sslKeyFileMountedPath} \
                         --set apacheWebtier.customImage=${customImageForApacheWebtier} \
                         --debug"
-
-            script.sh label: "deploy apache-webtier",
-                    script: "helm init --client-only --skip-refresh --wait && \
-                    helm repo update && \
-                    cd kubernetes/framework/ingress-controller && \
-                    helm install apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} \
-                        --set kubernetes.namespaces={${domainNamespace}} \
-                        --set domain.domainUID=${Domain.domainName} \
-                        --set domain.adminServerName=${yamlUtility.domainInputsMap.get("adminServerName")} \
-                        --set domain.adminServerPort=${yamlUtility.domainInputsMap.get("adminPort")} \
-                        --set domain.clusterName=${yamlUtility.domainInputsMap.get("clusterName")} \
-                        --set domain.managedServerPort=${yamlUtility.domainInputsMap.get("managedServerPort")} \
-                        --set apacheWebtier.sslCert=${customSSLCertValue} \
-                        --set apacheWebtier.sslCertKey=${customSSLKeyValue} \
-                        --set apacheWebtier.securePortValue=${securePort} \
-                        --set apacheWebtier.customConfigMapFileName=${confFileConfigMapName} \
-                        --set apacheWebtier.virtualHostName=${apacheVirtualHostName} \
-                        --set apacheWebtier.sslCertFileMountedPath=${sslCertFileMountedPath} \
-                        --set apacheWebtier.sslKeyFileMountedPath=${sslKeyFileMountedPath} \
-                        --set apacheWebtier.customImage=${customImageForApacheWebtier} \
-                        --wait"
 
             Log.info("deploy apache-webtier helm chart success.")
         }
