@@ -1,21 +1,21 @@
 kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
-  name: {{ .Values.domain.domainUID }}-apache-webtier
+  name: {{ .Values.apacheWebtier.lbHelmRelease }}-apache-webtier
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.domain.domainUID }}-apache-webtier
+    app: {{ .Values.apacheWebtier.lbHelmRelease }}-apache-webtier
     weblogic.resourceVersion: "loadbalancer-v2"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.domain.domainUID }}-apache-webtier
+      app: {{ .Values.apacheWebtier.lbHelmRelease }}-apache-webtier
       weblogic.resourceVersion: "loadbalancer-v2"
   template:
     metadata:
       labels:
-        app: {{ .Values.domain.domainUID }}-apache-webtier
+        app: {{ .Values.apacheWebtier.lbHelmRelease }}-apache-webtier
         weblogic.resourceVersion: "loadbalancer-v2"
     spec:
       terminationGracePeriodSeconds: 60
@@ -23,9 +23,9 @@ spec:
         - name: serving-cert
           secret:
             defaultMode: 420
-            secretName: {{ .Values.domain.domainUID }}-apache-webtier-cert
+            secretName: {{ .Values.apacheWebtier.lbHelmRelease }}-apache-webtier-cert
 
-        - name: {{ .Values.domain.domainUID }}-apache-webtier
+        - name: {{ .Values.apacheWebtier.lbHelmRelease }}-apache-webtier
           configMap:
             name: {{ .Values.apacheWebtier.customConfigMapFileName }}
             defaultMode: 0777
@@ -37,13 +37,13 @@ spec:
               value: {{ .Values.apacheWebtier.sslCertFileMountedPath }}
             - name: SSL_CERT_KEY_FILE
               value: {{ .Values.apacheWebtier.sslKeyFileMountedPath }}
-          name: {{ .Values.domain.domainUID }}-apache-webtier
+          name: {{ .Values.apacheWebtier.lbHelmRelease }}-apache-webtier
           image: {{ .Values.apacheWebtier.customImage }}
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: serving-cert
               mountPath: "/var/serving-cert"
-            - name: {{ .Values.domain.domainUID }}-apache-webtier
+            - name: {{ .Values.apacheWebtier.lbHelmRelease }}-apache-webtier
               mountPath: "/config/custom_mod_wl_apache.conf"
               subPath: custom_mod_wl_apache.conf
           readinessProbe:

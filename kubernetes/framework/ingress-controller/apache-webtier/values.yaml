@@ -23,4 +23,5 @@ apacheWebtier:
   sslCertFileMountedPath: /var/serving-cert/tls.crt
   sslKeyFileMountedPath: /var/serving-cert/tls.key
   customImage: fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3
+  lbHelmRelease: 1234
 

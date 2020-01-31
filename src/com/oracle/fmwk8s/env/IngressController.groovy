@@ -145,6 +145,7 @@ class IngressController extends Common {
                         --set apacheWebtier.sslCertFileMountedPath=${sslCertFileMountedPath} \
                         --set apacheWebtier.sslKeyFileMountedPath=${sslKeyFileMountedPath} \
                         --set apacheWebtier.customImage=${customImageForApacheWebtier} \
+                        --set apacheWebtier.lbHelmRelease=${lbHelmRelease} \
                         --debug"
 
             Log.info("deploy apache-webtier helm chart success.")
