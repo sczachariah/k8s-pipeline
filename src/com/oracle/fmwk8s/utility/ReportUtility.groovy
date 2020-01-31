@@ -41,7 +41,8 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/em
         }
         if (Common.productId.toString().equalsIgnoreCase("soa")) {
             if (Domain.domainType.toString().toLowerCase().contains("soa") ||
-                    Domain.domainType.toString().toLowerCase().contains("osb")) {
+                    Domain.domainType.toString().toLowerCase().contains("soaosb") ||
+                    Domain.domainType.toString().toLowerCase().contains("soaessosb")) {
                 domainURLs = domainURLs + """
 http://${Common.k8sMasterIP}:${IngressController.httplbPort}/soa-infra/
 http://${Common.k8sMasterIP}:${IngressController.httplbPort}/soa/composer

@@ -1,0 +1,26 @@
+# Copyright 2018, 2019, Oracle Corporation and/or its affiliates.  All rights reserved.
+# Licensed under the Universal Permissive License v 1.0 as shown at http://oss.oracle.com/licenses/upl.
+
+# Default values for apache-webtier.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# domain as backend to the load balancer
+domain:
+  domainUID: domain1
+  adminServerName: admin-server
+  clusterName: cluster-1
+  adminServerPort: 7001
+  managedServerPort: 8001
+
+# Apache-Webtier specific values
+apacheWebtier:
+  sslCert: tls.crt
+  sslCertKey: tls.key
+  securePortValue: 4433
+  customConfigMapFileName: custom-mod-wl-apache-configmap
+  virtualHostName: apache-sample-host
+  sslCertFileMountedPath: /var/serving-cert/tls.crt
+  sslKeyFileMountedPath: /var/serving-cert/tls.key
+  customImage: fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3
+

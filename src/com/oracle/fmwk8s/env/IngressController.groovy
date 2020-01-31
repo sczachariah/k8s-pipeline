@@ -83,45 +83,26 @@ class IngressController extends Common {
      * apache deployment and url access
      * @return
      */
-    static def configureApacheConfFileConfigmap() {
-        try {
-            def confFileConfigMapName = "custom-mod-wl-apache-configmap"
-
-            Log.info("begin configure apache conf file configmap.")
-            Log.info("Common.productName.toString() :: ${Common.productName}, configmap file name :: ${confFileConfigMapName}.yaml")
-
-            script.sh label: "create apache conf file configmap",
-                    script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
-                       sed -i \"s#%ADMIN_SERVER_PORT%#${yamlUtility.domainInputsMap.get("adminPort")}#g\" ${confFileConfigMapName}.yaml && \
-                       sed -i \"s#%ADMIN_SERVER_NAME%#${yamlUtility.domainInputsMap.get("adminServerName")}#g\" ${confFileConfigMapName}.yaml && \
-                       sed -i \"s#%DOMAIN_NAME%#${Domain.domainName}#g\" ${confFileConfigMapName}.yaml && \
-                       sed -i \"s#%CLUSTER_NAME%#${yamlUtility.domainInputsMap.get("clusterName")}#g\" ${confFileConfigMapName}.yaml && \
-                       sed -i \"s#%MANAGED_SERVER_PORT%#${yamlUtility.domainInputsMap.get("managedServerPort")}#g\" ${confFileConfigMapName}.yaml && \
-                       cat ${confFileConfigMapName}.yaml && \
-                       kubectl apply -f ${confFileConfigMapName}.yaml -n ${domainNamespace} && \
-                       sleep 60"
-
-            Log.info("configure apache conf file configmap success.")
-        }
-        catch (exc) {
-            Log.error("configure apache conf file configmap failed.")
-            throw exc
-        }
-    }
 
     /**
-     * createCertificatePrivateKeySecretYAMLForApacheWebtier - Create certificate , private key & secret yaml file for apache webtier
+     * createDeploymentYAMLForApacheWebtier - Create deployment yaml file for apache webtier
      * @return
      */
-    static def createCertificatePrivateKeySecretYAMLForApacheWebtier() {
-        /** Variables required is declared */
-        def apacheVirtualHostName = "apache-sample-host"
-        def sslCertFileName = "apache-sample.crt"
-        def sslCertKeyFileName = "apache-sample.key"
+    static def deployApacheWebtierHelmChart() {
+        try {
+            /** Variables required is declared */
+            def apacheVirtualHostName = "apache-sample-host"
+            def sslCertFileName = "apache-sample.crt"
+            def sslCertKeyFileName = "apache-sample.key"
+            def sslCertFileMountedPath = "/var/serving-cert/tls.crt"
+            def sslKeyFileMountedPath = "/var/serving-cert/tls.key"
+            def customImageForApacheWebtier = "fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3"
+            def confFileConfigMapName = "custom-mod-wl-apache-configmap"
+            def securePort = (!"${apacheVirtualHostName}".isEmpty()) ? 4433 : 443
 
-        /**Prepare your own certificate and private key*/
-        script.sh label: "Prepare your own certificate and private key",
-                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
+            /**Prepare your own certificate and private key*/
+            script.sh label: "Prepare your own certificate and private key",
+                    script: "cd kubernetes/framework/ingress-controller && \
                              ls && \
                              export VIRTUAL_HOST_NAME=${apacheVirtualHostName} && \
                              export SSL_CERT_FILE=${sslCertFileName} && \
@@ -129,73 +110,49 @@ class IngressController extends Common {
                              ls && \
                              sh certgen.sh"
 
-        /**Prepare the input values for the Apache webtier Helm chart as described in this step.*/
-        def customSSLCertValue = script.sh(label: "get customSSLCertValue",
-                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
+            /**Prepare the input values for the Apache webtier Helm chart as described in this step.*/
+            def customSSLCertValue = script.sh(label: "get customSSLCertValue",
+                    script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                                                     base64 -i ${sslCertFileName} | tr -d '\\n'",
-                returnStdout: true
-        ).trim()
+                    returnStdout: true
+            ).trim()
 
-        def customSSLKeyValue = script.sh(label: "get customSSLKeyValue",
-                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
+            def customSSLKeyValue = script.sh(label: "get customSSLKeyValue",
+                    script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
                                                     base64 -i ${sslCertKeyFileName} | tr -d '\\n'",
-                returnStdout: true
-        ).trim()
+                    returnStdout: true
+            ).trim()
 
-        script.sh label: "create apache webtier secret yaml",
-                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
-                       sed -i \"s#%LB_HELM_RELEASE_NAME%#${lbHelmRelease}#g\" secret.yaml && \
-                       sed -i \"s#%DOMAIN_NAMESPACE%#${Domain.domainNamespace}#g\" secret.yaml && \
-                       sed -i \"s#%CUSTOM_SSL_CERT%#${customSSLCertValue}#g\" secret.yaml && \
-                       sed -i \"s#%CUSTOM_SSL_KEY%#${customSSLKeyValue}#g\" secret.yaml && \
-                       cat secret.yaml && \
-                       kubectl apply -f secret.yaml -n ${Domain.domainNamespace} && \
-                       sleep 60"
-    }
+            script.sh label: "changing permissions of the files.",
+                    script: "chmod 777 kubernetes/framework/ingress-controller/apache-webtier/*"
 
-    /**
-     * createServiceYAMLForApacheWebtier - Create service yaml file for apache webtier
-     * @return
-     */
-    static def createServiceYAMLForApacheWebtier() {
-        /** Variables declared */
-        def apacheVirtualHostName = "apache-sample-host"
-        def securePort = (!"${apacheVirtualHostName}".isEmpty()) ? 4433 : 443
+            script.sh label: "deploy apache-webtier",
+                    script: "helm init --client-only --skip-refresh --wait && \
+                    helm repo update && \
+                    cd kubernetes/framework/ingress-controller && \
+                    helm install apache-webtier --name ${lbHelmRelease} --namespace ${domainNamespace} \
+                        --set kubernetes.namespaces={${domainNamespace}} \
+                        --set domain.domainUID=${Domain.domainName} \
+                        --set domain.adminServerName=${yamlUtility.domainInputsMap.get("adminServerName")} \
+                        --set domain.adminServerPort=${yamlUtility.domainInputsMap.get("adminPort")} \
+                        --set domain.clusterName=${yamlUtility.domainInputsMap.get("clusterName")} \
+                        --set domain.managedServerPort=${yamlUtility.domainInputsMap.get("managedServerPort")} \
+                        --set apacheWebtier.sslCert=${customSSLCertValue} \
+                        --set apacheWebtier.sslCertKey=${customSSLKeyValue} \
+                        --set apacheWebtier.securePortValue=${securePort} \
+                        --set apacheWebtier.customConfigMapFileName=${confFileConfigMapName} \
+                        --set apacheWebtier.virtualHostName=${apacheVirtualHostName} \
+                        --set apacheWebtier.sslCertFileMountedPath=${sslCertFileMountedPath} \
+                        --set apacheWebtier.sslKeyFileMountedPath=${sslKeyFileMountedPath} \
+                        --set apacheWebtier.customImage=${customImageForApacheWebtier} \
+                        --wait"
 
-        script.sh label: "create apache webtier service yaml",
-                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
-                       sed -i \"s#%LB_HELM_RELEASE_NAME%#${lbHelmRelease}#g\" service.yaml && \
-                       sed -i \"s#%DOMAIN_NAMESPACE%#${Domain.domainNamespace}#g\" service.yaml && \
-                       sed -i \"s#%SECURE_PORT%#${securePort}#g\" service.yaml && \
-                       cat service.yaml && \
-                       kubectl apply -f service.yaml -n ${Domain.domainNamespace} && \
-                       sleep 60"
-    }
-
-    /**
-     * createDeploymentYAMLForApacheWebtier - Create deployment yaml file for apache webtier
-     * @return
-     */
-    static def createDeploymentYAMLForApacheWebtier() {
-        /** Variables declared */
-        def apacheVirtualHostName = "apache-sample-host"
-        def sslCertFileMountedPath = "/var/serving-cert/tls.crt"
-        def sslKeyFileMountedPath = "/var/serving-cert/tls.key"
-        def customImageForApacheWebtier = "fmwk8s-dev.dockerhub-den.oraclecorp.com/oracle/apache:12.2.1.3"
-        def confFileConfigMapName = "custom-mod-wl-apache-configmap"
-
-        script.sh label: "create apache webtier deployment yaml",
-                script: "cd kubernetes/framework/ingress-controller/apache-webtier && \
-                       sed -i \"s#%DOMAIN_NAMESPACE%#${Domain.domainNamespace}#g\" deployment.yaml && \
-                       sed -i \"s#%LB_HELM_RELEASE_NAME%#${lbHelmRelease}#g\" deployment.yaml && \
-                       sed -i \"s#%APACHE_WEBTIER_CUSTOM_IMAGE%#${customImageForApacheWebtier}#g\" deployment.yaml && \
-                       sed -i \"s#%CUSTOM_CONF_FILE_CONFIGMAP%#${confFileConfigMapName}#g\" deployment.yaml && \
-                       sed -i \"s#%APACHE_VIRTUAL_HOST_NAME%#${apacheVirtualHostName}#g\" deployment.yaml && \
-                       sed -i \"s#%CUSTOM_SSL_CERT_FILE%#${sslCertFileMountedPath}#g\" deployment.yaml && \
-                       sed -i \"s#%CUSTOM_SSL_KEY_FILE%#${sslKeyFileMountedPath}#g\" deployment.yaml && \
-                       cat deployment.yaml && \
-                       kubectl apply -f deployment.yaml -n ${Domain.domainNamespace} && \
-                       sleep 60"
+            Log.info("deploy apache-webtier helm chart success.")
+        }
+        catch (exc) {
+            Log.error("deploy apache helm chart failed.")
+            throw exc
+        }
     }
 
     /**
@@ -207,28 +164,15 @@ class IngressController extends Common {
      */
     static deployApache() {
         try {
-            Log.info("begin deploy apache ingress controller.")
+            Log.info("begin deploy apache-webtier ingress controller.")
 
             script.git branch: 'master',
                     credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
-            script.sh label: "changing permissions of the files.",
-                      script: "chmod 777 kubernetes/framework/ingress-controller/apache-webtier/*"
+            deployApacheWebtierHelmChart()
 
-            /** The configMap constructed in this method is having conf file required for apache deployment and url access */
-            configureApacheConfFileConfigmap()
-
-            /** Create certificate , private key & secret yaml file for apache webtier */
-            createCertificatePrivateKeySecretYAMLForApacheWebtier()
-
-            /** Create service yaml file for apache webtier */
-            createServiceYAMLForApacheWebtier()
-
-            /** Create deployment yaml file for apache webtier */
-            createDeploymentYAMLForApacheWebtier()
-
-            Log.info("deploy apache ingress controller success.")
+            Log.info("deploy apache-webtier ingress controller success.")
         }
         catch (exc) {
             Log.error("deploy apache ingress controller failed.")
