@@ -19,8 +19,8 @@ class Mapping {
         productIdMap.put("OIG", "oim")
 
         domainNameMap.put("WLS", "weblogic")
-        productIdMap.put("WLS-GENERIC", "weblogic")
-        productIdMap.put("WLS-DEVELOPER", "weblogic")
+        domainNameMap.put("WLS-GENERIC", "weblogic")
+        domainNameMap.put("WLS-DEVELOPER", "weblogic")
         domainNameMap.put("WLS-INFRA", "wlsinfra")
         domainNameMap.put("SOA", "soainfra")
         domainNameMap.put("WCP", "wcpinfra")
