@@ -18,9 +18,9 @@ spec:
         - name: FMWK8S_NFS_HOME
           value: %FMWK8S_NFS_HOME%
         - name: LB_HOST
-          value: %LB_HOST%
+          value: "%LB_HOST%"
         - name: LB_PORT
-          value: %LB_PORT%
+          value: "%LB_PORT%"
         - name: MY_POD_NAMESPACE
           valueFrom:
             fieldRef:
