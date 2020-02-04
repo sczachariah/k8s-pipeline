@@ -197,6 +197,8 @@ class Domain extends Common {
                     script: "cd ../fmwk8s/kubernetes/framework/ && \
                         sed -i \"s|%PRODUCT_ID%|${productId}|g\" fmwk8s-customize-domain-pod.yaml && \
                         sed -i \"s|%FMWK8S_NFS_HOME%|${fmwk8sNfsHome}|g\" fmwk8s-customize-domain-pod.yaml && \
+                        sed -i \"s|%LB_HOST%|${k8sMasterIP}|g\" fmwk8s-customize-domain-pod.yaml && \
+                        sed -i \"s|%LB_PORT%|${IngressController.httplbPort}|g\" fmwk8s-customize-domain-pod.yaml && \
                         sed -i \"s|%DOMAIN_PVC%|${domainName}-${domainNamespace}-pvc|g\" fmwk8s-customize-domain-pod.yaml && \
                         cat fmwk8s-customize-domain-pod.yaml && \
                         kubectl apply -f fmwk8s-customize-domain-pod.yaml -n ${domainNamespace}"
