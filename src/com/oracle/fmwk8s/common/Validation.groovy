@@ -100,12 +100,11 @@ class Validation extends Base {
         try {
             Log.info("begin domain type validation.")
             if ("${domainType}".equalsIgnoreCase("N/A") && "${productName}".equalsIgnoreCase("SOA")) {
-                Log.error("Domain type ${domainType} is not applicable for product ${productName} .")
-                throw new Exception("[validation error] domain type ${domainType} is not applicable for product ${productName} .")
-            }
-            if (!("${domainType}".equalsIgnoreCase("N/A")) && !("${productName}".equalsIgnoreCase("SOA"))) {
-                Log.error("Domain type ${domainType} is not applicable for product ${productName} .")
-                throw new Exception("[validation error] domain type ${domainType} is not applicable for product ${productName} .")
+                Log.error("Domain type ${domainType} is not applicable for product ${productName}. So defaulting to domainType=soa")
+                Base.domainType = "soa"
+            } else if (!("${domainType}".equalsIgnoreCase("N/A")) && !("${productName}".equalsIgnoreCase("SOA"))) {
+                Log.error("Domain type ${domainType} is not applicable for product ${productName}. So defaulting to domainType=N/A")
+                Base.domainType = "N/A"
             }
             Log.info("domain type validation success.")
         }
