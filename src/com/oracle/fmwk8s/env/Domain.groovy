@@ -178,6 +178,7 @@ class Domain extends Common {
 
             // create
             Log.info("begin create " + productId + " domain.")
+            sleep 120
             script.sh label: "create domain",
                     script: "./kubernetes/samples/scripts/create-${productId}-domain/${samplesDirectory}/create-domain.sh -i create-domain-inputs.yaml -o script-output-directory"
             script.sh label: "prepare domain yaml file",
