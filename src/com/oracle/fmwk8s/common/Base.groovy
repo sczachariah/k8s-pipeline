@@ -73,7 +73,6 @@ class Base {
     static def elasticSearchHost = "elasticsearch-master.logging"
     static def elasticSearchPort = "9200"
 
-    //TODO :: Comment this line once the kibana is enabled via ingress
     static def kibanaUrl = "http://fmwk8s-stage.us.oracle.com:30444/app/kibana"
 
     static def emailRecipients
