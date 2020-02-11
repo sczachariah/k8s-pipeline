@@ -131,6 +131,14 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/sites
                 Log.info("total........... :: :: $totalSucDifSkipCasesCount")
 
                 /** Fetch the test case names that generated *.suc files in test_logs directory */
+                def tempTestFileNameList = script.sh(
+                        label: "Fetch the test case names that generated *.suc files in test_logs directory",
+                        script: "for i in `find . -name *.suc | uniq`; do    echo `dirname \$i|xargs basename`\"/\"`basename \$i`; done",
+                        returnStdout: true
+                )
+                Log.info("tempTestFileNameList :: \n${tempTestFileNameList.toString()}")
+
+                /** Fetch the test case names that generated *.suc files in test_logs directory */
                 sucFileNameList = script.sh(
                         label: "Fetch the test case names that generated *.suc files in test_logs directory",
                         script: "cd ${Test.logDirectory} && find . -name *.suc| uniq | xargs -r -n 1 basename",
