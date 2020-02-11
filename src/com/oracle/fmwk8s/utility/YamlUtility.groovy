@@ -48,8 +48,11 @@ class YamlUtility implements Serializable {
 //        map.put("managedServerNameBase", managedServerNameBase.toString())
         if (domainType != null && !domainType.toString().equalsIgnoreCase("N/A")) {
             map.put("domainType", domainType.toString())
+//            if (domainType.toString().equalsIgnoreCase("osb")) {
+//                map.put("clusterName", "osb-cluster")
+//            }
             if (domainType.toString().equalsIgnoreCase("osb")) {
-                map.put("clusterName", "osb-cluster")
+                map.put("managedServerNameBase", map.get("managedServerNameBase").toString().replaceAll("soa", "osb"))
             }
         }
         map.put("domainHome", "/shared/domains/" + domainName.toString())
