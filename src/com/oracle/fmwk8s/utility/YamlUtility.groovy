@@ -56,7 +56,7 @@ class YamlUtility implements Serializable {
         }
         map.put("domainHome", "/shared/domains/" + domainName.toString())
         map.put("configuredManagedServerCount", 4)
-        map.put("initialManagedServerReplicas", 2)
+        map.put("initialManagedServerReplicas", 2) // for managed servers count to be increased from 1 to 2
         map.put("managedServerPort", 18001)
         map.put("image", Common.productImage.toString())
         map.put("imagePullSecretName", Common.registrySecret.toString())
