@@ -13,7 +13,7 @@ import com.oracle.fmwk8s.utility.YamlUtility
  */
 class Domain extends Common {
     static def weblogicCredentialsSecretName
-    static def createDomainPodName
+    static def createDomainJobName
     static def adminServerPodName
     static def managedServerPodName
     static def replicaCount
@@ -193,12 +193,12 @@ class Domain extends Common {
             throw exc
         }
         finally {
-            createDomainPodName = script.sh(
-                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${domainName}-create",
+            createDomainJobName = script.sh(
+                    script: "kubectl get jobs -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${domainName}-create",
                     returnStdout: true
             ).trim()
             Log.info("begin fetch create domain job pod logs.")
-            Logging.getPodLogs(createDomainPodName, domainNamespace)
+            Logging.getPodLogs("job/${createDomainJobName}", domainNamespace)
             Log.info("fetch create domain job pod logs success.")
         }
     }
