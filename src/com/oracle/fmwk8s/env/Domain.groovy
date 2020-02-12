@@ -2,6 +2,7 @@ package com.oracle.fmwk8s.env
 
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.common.Log
+import com.oracle.fmwk8s.test.Test
 import com.oracle.fmwk8s.utility.K8sUtility
 import com.oracle.fmwk8s.utility.ReportUtility
 import com.oracle.fmwk8s.utility.YamlUtility
@@ -158,6 +159,7 @@ class Domain extends Common {
                        ls -ltr . && cat create-domain-inputs"
 
             yamlUtility.generateDomainInputsYaml(script, domainType, domainName, domainNamespace, "create-domain-inputs")
+            Test.createEnvConfigMap()
 
             script.sh label: "verify domain inputs yaml",
                     script: "cat create-domain-inputs.yaml"
