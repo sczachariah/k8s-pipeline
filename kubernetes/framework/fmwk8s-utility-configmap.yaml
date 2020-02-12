@@ -55,14 +55,12 @@ data:
     if [ "${PRODUCT_ID}" == "wcsites" ]
     then
       echo "applying domain yaml to start the domain..."
-      kubectl get pods -n ${MY_POD_NAMESPACE}
-      kubectl apply -f /etc/domain/domain.yaml -n ${MY_POD_NAMESPACE}
+      kubectl get pods -n ${DOMAIN_NS}
+      kubectl apply -f /etc/domain/domain.yaml -n ${DOMAIN_NS}
       sleep 720
 
       echo "invoking sitesconfig setup for wcsites..."
-      domainUID=`grep 'domainUID:' /etc/domain/create-domain-inputs.yaml | awk '{print $2}'`
-      clusterName=`grep 'clusterName:' /etc/domain/create-domain-inputs.yaml | awk '{print $2}'`
-      curl -kv http://$domainUID-cluster-$clusterName.${MY_POD_NAMESPACE}:18001/sites/sitesconfig
+      curl -kv http://${MANAGED_SERVER_NAME_SVC}:${MANAGED_SERVER_PORT}/sites/sitesconfig
       sleep 800
     fi
 

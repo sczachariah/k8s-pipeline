@@ -213,7 +213,6 @@ class Domain extends Common {
                     script: "kubectl create configmap fmwk8s-domain-yaml --from-file=create-domain-inputs.yaml --from-file=domain.yaml -n ${domainNamespace}"
             script.sh label: "customize domain",
                     script: "cd ../fmwk8s/kubernetes/framework/ && \
-                        sed -i \"s|%PRODUCT_ID%|${productId}|g\" fmwk8s-customize-domain-pod.yaml && \
                         sed -i \"s|%FMWK8S_NFS_HOME%|${fmwk8sNfsHome}|g\" fmwk8s-customize-domain-pod.yaml && \
                         sed -i \"s|%LB_HOST%|${k8sMasterIP}|g\" fmwk8s-customize-domain-pod.yaml && \
                         sed -i \"s|%LB_PORT%|${IngressController.httplbPort}|g\" fmwk8s-customize-domain-pod.yaml && \

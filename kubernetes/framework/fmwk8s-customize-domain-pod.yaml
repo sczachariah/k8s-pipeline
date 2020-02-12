@@ -13,18 +13,10 @@ spec:
       image: cisystem.docker.oraclecorp.com/fmw-k8s-syseng-oel7-slave:latest
       imagePullPolicy: Always
       env:
-        - name: PRODUCT_ID
-          value: %PRODUCT_ID%
-        - name: FMWK8S_NFS_HOME
-          value: %FMWK8S_NFS_HOME%
         - name: LB_HOST
           value: "%LB_HOST%"
         - name: LB_PORT
           value: "%LB_PORT%"
-        - name: MY_POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
       envFrom:
         - configMapRef:
             name: fmwk8s-tests-env-configmap
