@@ -1,6 +1,7 @@
 package com.oracle.fmwk8s.utility
 
 import com.cloudbees.groovy.cps.NonCPS
+import com.oracle.fmwk8s.common.Base
 import com.oracle.fmwk8s.common.Common
 import com.oracle.fmwk8s.env.Database
 import com.oracle.fmwk8s.env.IngressController
@@ -149,6 +150,7 @@ class YamlUtility implements Serializable {
     static writeYaml(script, map, yamlFile) {
         doPrecreateServiceWA(map)
         addRestartVersion(map)
+        addConfigOverride(map)
         script.writeFile file: yamlFile + ".yaml", text: getYamlContent(map)
 //        script.writeYaml file: yamlFile + ".yaml", data: map
     }
@@ -187,6 +189,17 @@ class YamlUtility implements Serializable {
                             cluster.put("restartVersion", RandomStringUtils.randomNumeric(3))
                         }
                     }
+                }
+            }
+        }
+    }
+
+    static addConfigOverride(map) {
+        if (Base.domainType.toString().contains("osb")) {
+            for (Object key : map.keySet()) {
+                if (key.equals("spec")) {
+                    LinkedHashMap specs = map.get("spec")
+                    specs.put("configOverrides", "fmwk8s-overrides-config-map")
                 }
             }
         }
