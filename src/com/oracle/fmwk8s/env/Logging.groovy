@@ -134,10 +134,11 @@ class Logging extends Common {
     static getPodLogs(podname, namespace) {
         try {
             Log.info("begin get pod logs.")
+            def filename = podname.toString().replaceAll("/","-") + "-pod.txt"
             script.sh label: "get pod logs",
                     script: "mkdir -p ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs && \
                        chmod 777 ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs && \
-                       kubectl logs ${podname} -n ${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs/${podname}-pod.txt && \
+                       kubectl logs ${podname} -n ${namespace} > ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs/${filename} && \
                        ls ${script.env.WORKSPACE}/${script.env.BUILD_NUMBER}/pod_logs"
             Log.info("get pod logs success.")
         }
