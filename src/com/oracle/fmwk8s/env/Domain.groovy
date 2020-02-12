@@ -159,7 +159,6 @@ class Domain extends Common {
                        ls -ltr . && cat create-domain-inputs"
 
             yamlUtility.generateDomainInputsYaml(script, domainType, domainName, domainNamespace, "create-domain-inputs")
-            Test.createEnvConfigMap()
 
             script.sh label: "verify domain inputs yaml",
                     script: "cat create-domain-inputs.yaml"

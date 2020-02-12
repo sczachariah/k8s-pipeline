@@ -88,6 +88,7 @@ pipeline {
             steps {
                 dir('fmwk8s') {
                     script {
+                        Test.createEnvConfigMap()
                         IngressController.deployLoadBalancer()
                         Domain.configureDomainLoadBalancer()
                     }
