@@ -66,7 +66,7 @@ data:
       sleep 800
     fi
 
-    if [ "${PRODUCT_ID}" == "soa" && "${DOMAIN_TYPE}" == *"osb"* ]
+    if [ "${PRODUCT_ID}" == "soa" ] && [ "${DOMAIN_TYPE}" == *"osb"* ]
     then
       echo "creating config overrides for the domain..."
       mkdir fmwk8sconfigoverride
