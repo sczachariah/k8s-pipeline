@@ -119,7 +119,6 @@ class Test extends Common {
 						sed -i \"s|%MANAGED_SERVER_NAME_SVC%|${domainName}-cluster-${yamlUtility.domainInputsMap.get("clusterName")}.${domainNamespace}.svc.cluster.local|g\" fmwk8s-tests-env-configmap.yaml && \
 						sed -i \"s|%MANAGED_SERVER_NAME_BASE%|${yamlUtility.domainInputsMap.get("managedServerNameBase")}|g\" fmwk8s-tests-env-configmap.yaml && \
 						sed -i \"s|%MANAGED_SERVER_PORT%|${yamlUtility.domainInputsMap.get("managedServerPort")}|g\" fmwk8s-tests-env-configmap.yaml && \
-						sed -i \"s|%CLUSTER_NAME%|${yamlUtility.domainInputsMap.get("clusterName")}|g\" fmwk8s-tests-env-configmap.yaml && \
 						sed -i \"s|%DB_HOST%|${Database.dbName}.${domainNamespace}|g\" fmwk8s-tests-env-configmap.yaml && \
                         sed -i \"s|%DB_PORT%|${Database.dbPort}|g\" fmwk8s-tests-env-configmap.yaml && \
 						sed -i \"s|%JDBC_URL%|jdbc:oracle:thin:@${Database.dbName}.${domainNamespace}:${Database.dbPort}/${Database.dbName}pdb.us.oracle.com|g\" fmwk8s-tests-env-configmap.yaml && \
