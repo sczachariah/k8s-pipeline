@@ -25,6 +25,9 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+      envFrom:
+        - configMapRef:
+            name: fmwk8s-tests-env-configmap
       command: ["/bin/sh"]
       args: ["-c", "/etc/config/customize-domain.sh"]
       volumeMounts:
