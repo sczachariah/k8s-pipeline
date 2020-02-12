@@ -87,7 +87,7 @@ data:
       </d:domain>
       EOF
 
-      cat <<EOF > fmwk8sconfigoverride/config.xml
+      cat fmwk8sconfigoverride/config.xml
 
       echo "creating config overrides config map for the domain..."
       kubectl create cm fmwk8s-overrides-config-map -n ${DOMAIN_NS} --from-file ./fmwk8sconfigoverride
