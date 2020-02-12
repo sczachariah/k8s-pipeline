@@ -72,20 +72,20 @@ data:
       mkdir fmwk8sconfigoverride
 
       cat <<EOF > fmwk8sconfigoverride/version.txt
-      2.0
-      EOF
+    2.0
+    EOF
 
       cat <<EOF > fmwk8sconfigoverride/config.xml
-      <?xml version='1.0' encoding='UTF-8'?>
-      <d:domain xmlns:d="http://xmlns.oracle.com/weblogic/domain"
-                xmlns:f="http://xmlns.oracle.com/weblogic/domain-fragment"
-                xmlns:s="http://xmlns.oracle.com/weblogic/situational-config">
-        <d:cluster>
-          <d:name>${OSB_CLUSTER_NAME}</d:name>
-          <d:cluster-address f:combine-mode="add">${OSB_SERVER_NAME_SVC}:${OSB_SERVER_PORT}</d:cluster-address>
-        </d:cluster>
-      </d:domain>
-      EOF
+    <?xml version='1.0' encoding='UTF-8'?>
+    <d:domain xmlns:d="http://xmlns.oracle.com/weblogic/domain"
+    xmlns:f="http://xmlns.oracle.com/weblogic/domain-fragment"
+    xmlns:s="http://xmlns.oracle.com/weblogic/situational-config">
+    <d:cluster>
+    <d:name>${OSB_CLUSTER_NAME}</d:name>
+    <d:cluster-address f:combine-mode="add">${OSB_SERVER_NAME_SVC}:${OSB_SERVER_PORT}</d:cluster-address>
+    </d:cluster>
+    </d:domain>
+    EOF
 
       cat fmwk8sconfigoverride/config.xml
 
