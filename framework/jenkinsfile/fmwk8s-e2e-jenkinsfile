@@ -95,14 +95,13 @@ pipeline {
             }
         }
 
-        stage('deploy fmw domain') {
+        stage('prepare fmw domain') {
             parallel {
-                stage('create fmw domain') {
+                stage('prepare fmw domain') {
                     steps {
                         dir('fmwsamples') {
                             script {
                                 Domain.prepareDomain()
-                                Domain.createDomain()
                             }
                         }
                     }
@@ -114,6 +113,36 @@ pipeline {
                                 Logging.deployLogstash()
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        stage('create fmw domain') {
+            steps {
+                dir('fmwsamples') {
+                    script {
+                        Domain.createDomain()
+                    }
+                }
+            }
+        }
+
+        stage('customize fmw domain') {
+            steps {
+                dir('fmwsamples') {
+                    script {
+                        Domain.customizeDomain()
+                    }
+                }
+            }
+        }
+
+        stage('start fmw domain') {
+            steps {
+                dir('fmwsamples') {
+                    script {
+                        Domain.startDomain()
                     }
                 }
             }

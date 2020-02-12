@@ -188,7 +188,24 @@ class Domain extends Common {
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain && \
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain" + productId + ""
             Log.info("create " + productId + " domain success.")
+        }
+        catch (exc) {
+            Log.error("create " + productId + " domain failed.")
+            throw exc
+        }
+        finally {
+            createDomainPodName = script.sh(
+                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${domainName}-create",
+                    returnStdout: true
+            ).trim()
+            Log.info("begin fetch create domain job pod logs.")
+            Logging.getPodLogs(createDomainPodName, domainNamespace)
+            Log.info("fetch create domain job pod logs success.")
+        }
+    }
 
+    static customizeDomain() {
+        try {
             // customize
             Log.info("begin customize " + productId + " domain.")
             Operator.setDomainNamespace()
@@ -206,7 +223,20 @@ class Domain extends Common {
                         kubectl apply -f fmwk8s-customize-domain-pod.yaml -n ${domainNamespace}"
             K8sUtility.checkPodStatus(script, 'fmwk8s-customize-domain', domainNamespace, 60, 'Completed')
             Log.info("customize " + productId + " domain success.")
+        }
+        catch (exc) {
+            Log.error("customize " + productId + " domain failed.")
+            throw exc
+        }
+        finally {
+            Log.info("begin fetch customize domain pod logs.")
+            Logging.getPodLogs("fmwk8s-customize-domain", domainNamespace)
+            Log.info("fetch customize domain pod logs success.")
+        }
+    }
 
+    static startDomain() {
+        try {
             // start
             Log.info("begin start " + productId + " domain")
             yamlUtility.generateDomainYaml(script, productId, "domain")
@@ -227,19 +257,12 @@ class Domain extends Common {
             isDomainReady()
         }
         catch (exc) {
-            Log.error("create/start " + productId + " domain failed.")
+            Log.error("start " + productId + " domain failed.")
             throw exc
         }
         finally {
             ReportUtility.printDomainUrls(script)
             ReportUtility.sendNotificationMailPostDomainCreation(script)
-            createDomainPodName = script.sh(
-                    script: "kubectl get pods -o go-template --template \'{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}\' -n ${domainNamespace} | grep ${domainName}-create",
-                    returnStdout: true
-            ).trim()
-            Log.info("begin fetch create domain job pod logs.")
-            Logging.getPodLogs(createDomainPodName, domainNamespace)
-            Log.info("fetch create domain job pod logs success.")
         }
     }
 
