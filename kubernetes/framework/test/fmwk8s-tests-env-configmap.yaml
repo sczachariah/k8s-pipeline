@@ -63,7 +63,7 @@ data:
   "OSB_SERVER_NAME_BASE": "osb_server"
   "OSB_SERVER1": "osb_server1"
   "OSB_SERVER2": "osb_server2"
-  "OSB_SERVER_PORT": "9001"
   "OSB_CLUSTER_NAME": "osb_cluster"
+  "OSB_SERVER_PORT": "%OSB_SERVER_PORT%"
 ---
 ---

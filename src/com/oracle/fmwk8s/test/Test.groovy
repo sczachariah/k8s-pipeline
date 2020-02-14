@@ -141,8 +141,10 @@ class Test extends Common {
 						sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-tests-env-configmap.yaml && \
 						sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-tests-env-configmap.yaml && \
 						sed -i \"s|%OSB_SERVER_NAME_SVC%|${domainName}-cluster-osb-cluster.${domainNamespace}.svc.cluster.local|g\" fmwk8s-tests-env-configmap.yaml && \
+						sed -i \"s|%OSB_SERVER_PORT%|((${domainType}.toString().equalsIgnoreCase("osb")) ? ${yamlUtility.domainInputsMap.get("managedServerPort")} : 9001 |g\" fmwk8s-tests-env-configmap.yaml && \
                         cat fmwk8s-tests-env-configmap.yaml"
 
+            //The hardcoding done for the OSB should be reverted once the domain inputs take more than one cluster as input.
             script.sh label: "create env variables configmap",
                     script: "kubectl apply -f kubernetes/framework/test/fmwk8s-tests-env-configmap.yaml -n ${domainNamespace}"
 
