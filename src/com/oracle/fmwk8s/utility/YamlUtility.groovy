@@ -15,6 +15,14 @@ class YamlUtility implements Serializable {
     static domainInputsMap
     static domainYaml
 
+    //OSB related parameter variables
+    static def osbServerNameBase = ""
+    static def osbServer1 = ""
+    static def osbServer2 = ""
+    static def osbServerPort = ""
+    static def osbClusterName = ""
+    static def osbServerNameSvc = ""
+
     static void main(String[] args) {
         YamlUtility yamlUtility = new YamlUtility();
         yamlUtility.generateDomainYaml("oim", "domain.yaml")
@@ -50,14 +58,18 @@ class YamlUtility implements Serializable {
         if (domainType != null && !domainType.toString().equalsIgnoreCase("N/A")) {
             map.put("domainType", domainType.toString())
             if (domainType.toString().equalsIgnoreCase("osb")) {
-                map.put("clusterName", "osb_cluster")
-                map.put("managedServerNameBase", "osb_server")
+                //Note : The hardcoding done for the OSB parameters should be reverted
+                //once the domain inputs yaml take more than one cluster as input.
+                getOSBDomainTypeRelatedParameters()
+                map.put("clusterName", osbClusterName)
+                map.put("managedServerNameBase", osbServerNameBase)
             }
         }
         map.put("domainHome", "/shared/domains/" + domainName.toString())
         map.put("configuredManagedServerCount", 4)
         map.put("initialManagedServerReplicas", 2) // for managed servers count to be increased from 1 to 2
         map.put("managedServerPort", 18001)
+        osbServerPort = map.get("managedServerPort")
         map.put("image", Common.productImage.toString())
         map.put("imagePullSecretName", Common.registrySecret.toString())
         map.put("weblogicCredentialsSecretName", domainName.toString() + "-weblogic-credentials")
@@ -202,6 +214,19 @@ class YamlUtility implements Serializable {
                     specs.put("configOverrides", "fmwk8s-overrides-config-map")
                 }
             }
+        }
+    }
+
+    static getOSBDomainTypeRelatedParameters() {
+        //Note : The hardcoding done for the OSB parameters should be reverted
+        // once the domain inputs yaml take more than one cluster as input.
+        if(Base.domainType.contains("osb")) {
+            osbServerNameBase = "osb_server"
+            osbServer1 = "osb_server1"
+            osbServer2 = "osb_server2"
+            osbServerPort = "9001"
+            osbClusterName = "osb_cluster"
+            osbServerNameSvc = Base.domainName + "-cluster-osb-cluster." + Base.domainNamespace + ".svc.cluster.local"
         }
     }
 
