@@ -93,6 +93,35 @@ class Test extends Common {
                     credentialsId: "${sshCredentialId}",
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
+            //Note : The hardcoding done for the OSB parameters should be reverted once the domain inputs yaml take more than one cluster as input.
+            def osbServerNameBase
+            def osbServer1
+            def osbServer2
+            def osbServerPort
+            def osbClusterName
+            def osbServerNameSvc
+
+            if("${domainType}".contains("osb")) {
+                osbServerNameBase = "osb_server"
+                osbServer1 = "osb_server1"
+                osbServer2 = "osb_server2"
+                osbServerPort = "9001"
+                osbClusterName = "osb_cluster"
+                osbServerNameSvc = "${domainName}-cluster-osb-cluster.${domainNamespace}.svc.cluster.local"
+            }else{
+                osbServerNameBase = ""
+                osbServer1 = ""
+                osbServer2 = ""
+                osbServerPort = ""
+                osbClusterName = ""
+                osbServerNameSvc = ""
+            }
+
+            if("${domainType}".equalsIgnoreCase("osb"))
+            {
+                osbServerPort = yamlUtility.domainInputsMap.get("managedServerPort")
+            }
+
             script.sh label: "configure env variables configmap",
                     script: "cd kubernetes/framework/test/ && \
                         sed -i \"s|%PRODUCT_ID%|${productId}|g\" fmwk8s-tests-env-configmap.yaml && \
@@ -140,11 +169,14 @@ class Test extends Common {
 						sed -i \"s|%TEST_TARGET%|${testTarget}|g\" fmwk8s-tests-env-configmap.yaml && \
 						sed -i \"s|%LOG_DIRECTORY%|${logDirectory}|g\" fmwk8s-tests-env-configmap.yaml && \
 						sed -i \"s|%HOURS_AFTER_SECONDS%|${hoursAfterSeconds}|g\" fmwk8s-tests-env-configmap.yaml && \
-						sed -i \"s|%OSB_SERVER_NAME_SVC%|${domainName}-cluster-osb-cluster.${domainNamespace}.svc.cluster.local|g\" fmwk8s-tests-env-configmap.yaml && \
-						sed -i \"s|%OSB_SERVER_PORT%|((${domainType}.toString().equalsIgnoreCase("osb")) ? ${yamlUtility.domainInputsMap.get("managedServerPort")} : 9001 |g\" fmwk8s-tests-env-configmap.yaml && \
+						sed -i \"s|%OSB_SERVER_NAME_SVC%|${osbServerNameSvc}|g\" fmwk8s-tests-env-configmap.yaml && \
+						sed -i \"s|%OSB_SERVER_PORT%|${osbServerPort}|g\" fmwk8s-tests-env-configmap.yaml && \
+						sed -i \"s|%OSB_SERVER_NAME_BASE%|${osbServerNameBase}|g\" fmwk8s-tests-env-configmap.yaml && \
+						sed -i \"s|%OSB_SERVER1%|${osbServer1}|g\" fmwk8s-tests-env-configmap.yaml && \
+						sed -i \"s|%OSB_SERVER2%|${osbServer2}|g\" fmwk8s-tests-env-configmap.yaml && \
+						sed -i \"s|%OSB_CLUSTER_NAME%|${osbClusterName}|g\" fmwk8s-tests-env-configmap.yaml && \
                         cat fmwk8s-tests-env-configmap.yaml"
 
-            //The hardcoding done for the OSB should be reverted once the domain inputs take more than one cluster as input.
             script.sh label: "create env variables configmap",
                     script: "kubectl apply -f kubernetes/framework/test/fmwk8s-tests-env-configmap.yaml -n ${domainNamespace}"
 
