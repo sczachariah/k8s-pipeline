@@ -53,14 +53,17 @@ class YamlUtility implements Serializable {
         map.put("adminServerName", "admin-server")
         map.put("domainUID", domainName.toString())
         map.put("clusterName", clusterName.toString())
+        map.put("managedServerPort", 18001)
 //        https://bug.oraclecorp.com/pls/bug/webbug_edit.edit_info_top?rptno=30433422
 //        map.put("managedServerNameBase", managedServerNameBase.toString())
         if (domainType != null && !domainType.toString().equalsIgnoreCase("N/A")) {
             map.put("domainType", domainType.toString())
+            getOSBDomainTypeRelatedParameters()
             if (domainType.toString().equalsIgnoreCase("osb")) {
                 //Note : The hardcoding done for the OSB parameters should be reverted
                 //once the domain inputs yaml take more than one cluster as input.
                 getOSBDomainTypeRelatedParameters()
+                osbServerPort = map.get("managedServerPort")
                 map.put("clusterName", osbClusterName)
                 map.put("managedServerNameBase", osbServerNameBase)
             }
@@ -68,8 +71,6 @@ class YamlUtility implements Serializable {
         map.put("domainHome", "/shared/domains/" + domainName.toString())
         map.put("configuredManagedServerCount", 4)
         map.put("initialManagedServerReplicas", 2) // for managed servers count to be increased from 1 to 2
-        map.put("managedServerPort", 18001)
-        osbServerPort = map.get("managedServerPort")
         map.put("image", Common.productImage.toString())
         map.put("imagePullSecretName", Common.registrySecret.toString())
         map.put("weblogicCredentialsSecretName", domainName.toString() + "-weblogic-credentials")
