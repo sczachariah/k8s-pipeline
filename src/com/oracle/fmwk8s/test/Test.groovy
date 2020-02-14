@@ -94,12 +94,12 @@ class Test extends Common {
                     url: 'git@orahub.oraclecorp.com:fmw-platform-qa/fmw-k8s-pipeline.git'
 
             //Note : The hardcoding done for the OSB parameters should be reverted once the domain inputs yaml take more than one cluster as input.
-            def osbServerNameBase
-            def osbServer1
-            def osbServer2
-            def osbServerPort
-            def osbClusterName
-            def osbServerNameSvc
+            def osbServerNameBase = ""
+            def osbServer1 = ""
+            def osbServer2 = ""
+            def osbServerPort = ""
+            def osbClusterName = ""
+            def osbServerNameSvc = ""
 
             if("${domainType}".contains("osb")) {
                 osbServerNameBase = "osb_server"
@@ -108,13 +108,6 @@ class Test extends Common {
                 osbServerPort = "9001"
                 osbClusterName = "osb_cluster"
                 osbServerNameSvc = "${domainName}-cluster-osb-cluster.${domainNamespace}.svc.cluster.local"
-            }else{
-                osbServerNameBase = ""
-                osbServer1 = ""
-                osbServer2 = ""
-                osbServerPort = ""
-                osbClusterName = ""
-                osbServerNameSvc = ""
             }
 
             if("${domainType}".equalsIgnoreCase("osb"))
