@@ -187,6 +187,8 @@ class Domain extends Common {
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain && \
                        cp -r script-output-directory/weblogic-domains/${domainName}/domain.yaml domain" + productId + ""
             Log.info("create " + productId + " domain success.")
+
+            yamlUtility.generateDomainYaml(script, productId, "domain")
         }
         catch (exc) {
             Log.error("create " + productId + " domain failed.")
@@ -208,7 +210,6 @@ class Domain extends Common {
             // customize
             Log.info("begin customize " + productId + " domain.")
             Operator.setDomainNamespace()
-            yamlUtility.generateDomainYaml(script, productId, "domain")
             script.sh label: "create domain yaml configmap",
                     script: "kubectl create configmap fmwk8s-domain-yaml --from-file=create-domain-inputs.yaml --from-file=domain.yaml -n ${domainNamespace}"
             script.sh label: "customize domain",
