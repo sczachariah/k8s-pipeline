@@ -88,7 +88,6 @@ pipeline {
             steps {
                 dir('fmwk8s') {
                     script {
-                        Test.createEnvConfigMap()
                         IngressController.deployLoadBalancer()
                         Domain.configureDomainLoadBalancer()
                     }
@@ -124,6 +123,16 @@ pipeline {
                 dir('fmwsamples') {
                     script {
                         Domain.createDomain()
+                    }
+                }
+            }
+        }
+
+        stage('generate Env. variables configMap') {
+            steps {
+                dir('fmwk8s') {
+                    script {
+                        Test.createEnvConfigMap()
                     }
                 }
             }

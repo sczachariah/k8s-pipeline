@@ -133,7 +133,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/sites
                 /** Fetch the test case names that generated *.suc files in test_logs directory */
                 sucFileNameList = script.sh(
                         label: "Fetch the test case names that generated *.suc files in test_logs directory",
-                        script: "cd ${Test.logDirectory} && for i in `find . -name *.suc | uniq`; do    echo `dirname \$i|xargs basename`\"/\"`basename \$i`; done",
+                        script: "cd ${Test.logDirectory} && find . -name *.suc| uniq | xargs -r -n 1 basename",
                         returnStdout: true
                 )
                 Log.info("sucFileNameList :: \n${sucFileNameList.toString()}")
@@ -141,7 +141,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/sites
                 /** Fetch the test case names that generated *.dif files in test_logs directory */
                 difFileNameList = script.sh(
                         label: "Fetch the test case names that generated *.dif files in test_logs directory",
-                        script: "cd ${Test.logDirectory} && for i in `find . -name *.dif | uniq`; do    echo `dirname \$i|xargs basename`\"/\"`basename \$i`; done",
+                        script: "cd ${Test.logDirectory} && find . -name *.dif| uniq | xargs -r -n 1 basename",
                         returnStdout: true
                 )
                 Log.info("difFileNameList :: \n${difFileNameList.toString()}")
@@ -149,7 +149,7 @@ http://${Common.k8sMasterIP}:${IngressController.httplbPort}/sites
                 /** Fetch the test case names that generated *.skip files in test_logs directory */
                 skipFileNameList = script.sh(
                         label: "Fetch the test case names that generated *.skip files in test_logs directory",
-                        script: "cd ${Test.logDirectory} && for i in `find . -name *.skip | uniq`; do    echo `dirname \$i|xargs basename`\"/\"`basename \$i`; done",
+                        script: "cd ${Test.logDirectory} && find . -name *.skip| uniq | xargs -r -n 1 basename",
                         returnStdout: true
                 )
                 Log.info("skipFileNameList :: \n${skipFileNameList.toString()}")
