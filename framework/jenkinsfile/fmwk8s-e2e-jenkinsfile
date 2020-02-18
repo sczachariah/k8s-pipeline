@@ -128,7 +128,7 @@ pipeline {
             }
         }
 
-        stage('generate Env. variables configMap') {
+        stage('create env variables configMap') {
             steps {
                 dir('fmwk8s') {
                     script {
